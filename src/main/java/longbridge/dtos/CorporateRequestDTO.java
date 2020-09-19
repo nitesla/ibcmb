@@ -215,10 +215,10 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
     @Override
     @JsonIgnore
     public JsonSerializer<CorporateRequestDTO> getSerializer() {
-        return new JsonSerializer<CorporateRequestDTO>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CorporateRequestDTO value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
                 gen.writeStartObject();
                 gen.writeStringField("Name", value.corporateName);
                 gen.writeStringField("Type", value.corporateType);
@@ -259,7 +259,7 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
                         gen.writeStringField("Role", user.getRole());
                     }
 
-                    if(!user.getAccountPermissions().isEmpty()) {
+                    if (!user.getAccountPermissions().isEmpty()) {
                         gen.writeObjectFieldStart("Account Permissions");
 
                         Integer accountNum = 0;
@@ -267,7 +267,7 @@ public class CorporateRequestDTO extends AbstractDTO implements PrettySerializer
                             gen.writeObjectFieldStart((++accountNum).toString());
 
                             gen.writeStringField("Account Number", permission.getAccountNumber());
-                            gen.writeStringField("Account Name", permission.getAccountName() );
+                            gen.writeStringField("Account Name", permission.getAccountName());
                             gen.writeStringField("Account Permission", permission.getPermission().name());
 
                             gen.writeEndObject();

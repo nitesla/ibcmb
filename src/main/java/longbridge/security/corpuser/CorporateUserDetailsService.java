@@ -28,13 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("corpUserDetails")
 public class CorporateUserDetailsService implements UserDetailsService {
 
-    private CorporateUserRepo corporateUserRepo;
-    private CustomBruteForceService bruteForceService;
-    private IpAddressUtils addressUtils;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private CorporateRepo corporateRepo;
-    private FailedLoginService failedLoginService;
-    private SessionUtils sessionUtils;
+    private final CorporateUserRepo corporateUserRepo;
+    private final CustomBruteForceService bruteForceService;
+    private final IpAddressUtils addressUtils;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final CorporateRepo corporateRepo;
+    private final FailedLoginService failedLoginService;
 
     @Autowired
     public CorporateUserDetailsService(CorporateUserRepo corporateUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils, CorporateRepo corporateRepo
@@ -45,7 +44,6 @@ public class CorporateUserDetailsService implements UserDetailsService {
         this.addressUtils = addressUtils;
         this.corporateRepo = corporateRepo;
         this.failedLoginService=failedLoginService;
-        this.sessionUtils=sessionUtils;
     }
 
     @Override

@@ -57,7 +57,7 @@ public class AdmMakerCheckerConfigController {
 		}else{
 			makerCheckers= makerCheckerService.getEntities(pageable);
 		}
-        DataTablesOutput<MakerChecker> out = new DataTablesOutput<MakerChecker>();
+        DataTablesOutput<MakerChecker> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(makerCheckers.getContent());
         out.setRecordsFiltered(makerCheckers.getTotalElements());
@@ -70,8 +70,7 @@ public class AdmMakerCheckerConfigController {
     public ResponseEntity<HttpStatus> changeMakerCheckerEntry(@RequestBody MakerChecker makerChecker)
     {
         makerCheckerService.configureMakerChecker(makerChecker);
-        ResponseEntity<HttpStatus> resp = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return resp;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

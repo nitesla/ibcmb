@@ -28,7 +28,7 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
     @Autowired
     FailedLoginService failedLoginService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override

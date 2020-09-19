@@ -39,7 +39,7 @@ public class OpsTransactionFeesController {
     private MessageSource messageSource;
     @Autowired
     private TransactionService transactionService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @ModelAttribute
@@ -119,7 +119,7 @@ public class OpsTransactionFeesController {
     DataTablesOutput<TransactionFeeDTO> getTransactionFees(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<TransactionFeeDTO> transactionFees = transactionService.getTransactionFees(pageable);
-        DataTablesOutput<TransactionFeeDTO> out = new DataTablesOutput<TransactionFeeDTO>();
+        DataTablesOutput<TransactionFeeDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(transactionFees.getContent());
         out.setRecordsFiltered(transactionFees.getTotalElements());

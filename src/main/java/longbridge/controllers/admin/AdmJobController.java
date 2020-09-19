@@ -29,8 +29,8 @@ public class AdmJobController {
     CronJobServiceImpl cronJobService;
     @Autowired
     private MessageSource messageSource;
-    private Locale locale = LocaleContextHolder.getLocale();
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @GetMapping
     public String manage() {
 

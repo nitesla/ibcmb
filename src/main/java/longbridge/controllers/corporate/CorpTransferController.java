@@ -58,22 +58,17 @@ public class CorpTransferController {
     CorpTransferRequestRepo transferRequestRepo;
     @Value("${jrxmlImage.path}")
     private String imagePath;
-    private CorporateService corporateService;
-    private CorporateRepo corporateRepo;
-    private CorporateUserService corporateUserService;
-    private IntegrationService integrationService;
-    private CorpTransferService transferService;
-    private AccountService accountService;
-    private MessageSource messages;
-    private LocaleResolver localeResolver;
-    private CorpLocalBeneficiaryService corpLocalBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferErrorService transferErrorService;
-    private SecurityService securityService;
-    private TransferUtils transferUtils;
+    private final CorporateService corporateService;
+    private final CorporateUserService corporateUserService;
+    private final CorpTransferService transferService;
+    private final AccountService accountService;
+    private final CorpLocalBeneficiaryService corpLocalBeneficiaryService;
+    private final TransferErrorService transferErrorService;
+    private final SecurityService securityService;
+    private final TransferUtils transferUtils;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -89,15 +84,10 @@ public class CorpTransferController {
     @Autowired
     public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
         this.corporateService = corporateService;
-        this.corporateRepo = corporateRepo;
         this.corporateUserService = corporateUserService;
-        this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
-        this.messages = messages;
-        this.localeResolver = localeResolver;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
-        this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
         this.transferUtils = transferUtils;
@@ -399,7 +389,7 @@ public class CorpTransferController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpTransferRequestDTO> requests = corpTransferService.getTransferRequest(pageable);
         logger.info("REQUESTS ============================ {}", requests);
-        DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<CorpTransferRequestDTO>();
+        DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(requests.getContent());
         out.setRecordsFiltered(requests.getTotalElements());
@@ -448,16 +438,12 @@ public class CorpTransferController {
             redirectAttributes.addFlashAttribute("transferType", transferType);
 
 
-        } catch (TransferAuthorizationException te) {
-            logger.error("Failed to authorize transfer", te);
-            redirectAttributes.addFlashAttribute("failure", te.getMessage());
         } catch (InternetBankingTransferException te) {
             logger.error("Error making transfer", te);
             redirectAttributes.addFlashAttribute("failure", te.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Failed to authorize transfer", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
+        } catch (InternetBankingException te) {
+            logger.error("Failed to authorize transfer", te);
+            redirectAttributes.addFlashAttribute("failure", te.getMessage());
         }
         return "redirect:/corporate/transfer/requests";
 
@@ -524,7 +510,7 @@ public class CorpTransferController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
             response.setContentType("application/x-download");
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
+            response.setHeader("Content-Disposition", "attachment; filename=\"rpt_tran-hist.pdf\"");
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
             JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -563,7 +549,7 @@ public class CorpTransferController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_receipt");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"receipt.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"receipt.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());

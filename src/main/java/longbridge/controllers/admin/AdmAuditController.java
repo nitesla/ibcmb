@@ -36,7 +36,7 @@ import static java.lang.Integer.parseInt;
 @Controller
 @RequestMapping(value = "/admin/audit")
 public class AdmAuditController {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     AuditConfigService auditCfgService;
@@ -60,7 +60,7 @@ public class AdmAuditController {
         }else{
             auditConf = auditCfgService.getEntities(pageable);
         }
-        DataTablesOutput<AuditConfig> out = new DataTablesOutput<AuditConfig>();
+        DataTablesOutput<AuditConfig> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
@@ -118,7 +118,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         }else {
             auditDTOs = auditCfgService.searchRevisedEntity(className,pageable,csearch);
         }
-        DataTablesOutput<AuditDTO> out = new DataTablesOutput<AuditDTO>();
+        DataTablesOutput<AuditDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(auditDTOs.getContent());
         out.setRecordsFiltered(auditDTOs.getTotalElements());
@@ -143,7 +143,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         {
             audit=auditCfgService.getRevisionEntitiesByDate(pageables);
         }
-        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(audit.getContent());
         out.setRecordsFiltered(audit.getTotalElements());
@@ -170,7 +170,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> auditConf=null;
         auditConf = auditCfgService.getRevisedDetailsForEntity(refId,classname,pageable);
-        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
@@ -219,8 +219,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
     @ResponseBody
     public ResponseEntity<HttpStatus> changeAuditEntry(@RequestBody AuditConfig auditEntry) {
         auditCfgService.saveAuditConfig(auditEntry);
-        ResponseEntity<HttpStatus> resp = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return resp;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @GetMapping("/revised/entity/search")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> searchRevisedEntity(
@@ -243,7 +242,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
             audit=  auditCfgService.searchMod(pageables,auditSearchDTO);
             logger.info("the search query is {}",auditSearchDTO);
         }
-        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(audit.getContent());
         out.setRecordsFiltered(audit.getTotalElements());
@@ -291,7 +290,7 @@ RevisedEntitiesUtil entitiesUtil = new RevisedEntitiesUtil();
         AuditSearchDTO auditSearchDTO = new AuditSearchDTO(id,entityName,fromDate,endDate,ipAddress,lastChangedBy);
         logger.info("the search query is {}",auditSearchDTO);
         auditConf=  auditCfgService.searchMod(pageable,auditSearchDTO);
-        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());

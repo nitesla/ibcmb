@@ -365,10 +365,10 @@ public class CorporateUserDTO extends AbstractDTO implements PrettySerializer {
     @Override
     @JsonIgnore
     public JsonSerializer<CorporateUserDTO> getSerializer() {
-        return new JsonSerializer<CorporateUserDTO>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CorporateUserDTO value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
                 gen.writeStringField("Corporate Name", value.corporateName);
@@ -405,8 +405,8 @@ public class CorporateUserDTO extends AbstractDTO implements PrettySerializer {
                         gen.writeObjectFieldStart((++count).toString());
 
                         gen.writeStringField("Account Number", accountPermission.getAccountNumber());
-                        gen.writeStringField("Account Name", accountPermission.getAccountName() );
-                        gen.writeStringField("Account Permission", accountPermission.getPermission().name() );
+                        gen.writeStringField("Account Name", accountPermission.getAccountName());
+                        gen.writeStringField("Account Permission", accountPermission.getPermission().name());
 
                         gen.writeEndObject();
                     }
@@ -482,9 +482,8 @@ public class CorporateUserDTO extends AbstractDTO implements PrettySerializer {
             if (other.getId() != null) return false;
         } else if (!super.getId().equals(other.getId())) return false;
         if (userName == null) {
-            if (other.userName != null) return false;
-        } else if (!userName.equals(other.userName)) return false;
-        return true;
+            return other.userName == null;
+        } else return userName.equals(other.userName);
     }
 
     @JsonIgnore

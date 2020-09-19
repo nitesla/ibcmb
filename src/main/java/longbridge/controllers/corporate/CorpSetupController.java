@@ -33,9 +33,9 @@ import java.util.*;
 @RequestMapping("/corporate/setup")
 public class CorpSetupController {
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Value("${antiphishingimagepath}")
     private String imagePath;
@@ -66,24 +66,20 @@ public class CorpSetupController {
             "jpeg", "jpg", "gif", "png", "bmp" // and other formats you need
     };
     // filter to identify images based on their extensions
-    static final FilenameFilter IMAGE_FILTER = new FilenameFilter() {
-
-        @Override
-        public boolean accept(final File dir, final String name) {
-            for (final String ext : EXTENSIONS) {
-                if (name.endsWith("." + ext)) {
-                    return (true);
-                }
+    static final FilenameFilter IMAGE_FILTER = (dir, name) -> {
+        for (final String ext : EXTENSIONS) {
+            if (name.endsWith("." + ext)) {
+                return (true);
             }
-            return (false);
         }
+        return (false);
     };
 
     @GetMapping
     public String setUp(Model model){
 
         File phish = new File(fullImagePath);
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         if (phish.isDirectory()) { // make sure it's a directory
             for (final File f : phish.listFiles(IMAGE_FILTER)) {
                 images.add(f.getName());
@@ -184,7 +180,7 @@ logger.info("posting response ");
             Long length = image.length();
             // length <= Integer.MAX_VALUE;
             //TODO: check file is not bigger than max int
-            byte buffer[] = new byte[length.intValue()];
+            byte[] buffer = new byte[length.intValue()];
 
 
             try {

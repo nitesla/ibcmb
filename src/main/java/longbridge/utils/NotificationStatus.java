@@ -8,7 +8,7 @@ public enum NotificationStatus {
     I("Initiated and expecting response from NCS"),
     P("Successfully notified");
 
-    private String description;
+    private final String description;
 
     NotificationStatus(String description){
         this.description = description;

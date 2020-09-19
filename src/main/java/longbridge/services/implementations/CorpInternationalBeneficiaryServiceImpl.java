@@ -34,7 +34,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private CorpInternationalBeneficiaryRepo corpInternationalBeneficiaryRepo;
+    private final CorpInternationalBeneficiaryRepo corpInternationalBeneficiaryRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -84,7 +84,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
                 String customerName = user.getFirstName()+" "+user.getLastName();
                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
 
-                String alertSubject = String.format(messageSource.getMessage("beneficiary.alert.subject", null, locale));
+                String alertSubject = messageSource.getMessage("beneficiary.alert.subject", null, locale);
                 if ("SMS".equalsIgnoreCase(preference)) {
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);
 

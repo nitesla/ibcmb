@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TransferStatusWritter implements ItemWriter<TransactionStatus> {
-    private Logger logger= LoggerFactory.getLogger(getClass());
+    private final Logger logger= LoggerFactory.getLogger(getClass());
     private CreditRequestRepo creditRequestRepo;
     private BulkTransferRepo bulkTransferRepo;
 

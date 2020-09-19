@@ -27,8 +27,8 @@ import java.io.IOException;
 public class AjaxSessionTimeoutHandlingFilter extends GenericFilterBean {
     private static final Logger logger = LoggerFactory.getLogger(AjaxSessionTimeoutHandlingFilter.class);
 
-    private ThrowableAnalyzer throwableAnalyzer = new DefaultThrowableAnalyzer();
-    private AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
+    private final ThrowableAnalyzer throwableAnalyzer = new DefaultThrowableAnalyzer();
+    private final AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl();
 
     private int customSessionExpiredErrorCode = 401;
 
@@ -100,13 +100,9 @@ public class AjaxSessionTimeoutHandlingFilter extends GenericFilterBean {
         {
             super.initExtractorMap();
 
-            registerExtractor(ServletException.class, new ThrowableCauseExtractor()
-            {
-                public Throwable extractCause(Throwable throwable)
-                {
-                    ThrowableAnalyzer.verifyThrowableHierarchy(throwable, ServletException.class);
-                    return ((ServletException) throwable).getRootCause();
-                }
+            registerExtractor(ServletException.class, throwable -> {
+                ThrowableAnalyzer.verifyThrowableHierarchy(throwable, ServletException.class);
+                return ((ServletException) throwable).getRootCause();
             });
         }
 

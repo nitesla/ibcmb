@@ -30,7 +30,7 @@ import java.util.Locale;
 @Controller
 @RequestMapping("/ops/verifications")
 public class OpsVerificationController {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private VerificationService verificationService;
 
@@ -70,13 +70,9 @@ public class OpsVerificationController {
         try {
             String message = verificationService.cancel(verification);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (VerificationException ve) {
+        } catch (InternetBankingException ve) {
             logger.error("Error canceling operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Error canceling operation", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
         }
         return "redirect:/ops/verifications/pendingops";
     }
@@ -119,7 +115,7 @@ public class OpsVerificationController {
     DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getPendingForUser(pageable);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -133,7 +129,7 @@ public class OpsVerificationController {
     DataTablesOutput<Verification> getAllVerification(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Verification> verifications = verificationService.getVerificationsForUser(pageable);
-        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+        DataTablesOutput<Verification> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(verifications.getContent());
         out.setRecordsFiltered(verifications.getTotalElements());
@@ -155,7 +151,7 @@ public class OpsVerificationController {
     DataTablesOutput<VerificationDTO> getPendingOperation(@PathVariable String operation, DataTablesInput input, Principal principal) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getPendingOperations(operation, pageable);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -175,7 +171,7 @@ public class OpsVerificationController {
     DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getVerifiedOperations(pageable);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());

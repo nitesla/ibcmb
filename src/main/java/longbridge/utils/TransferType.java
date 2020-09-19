@@ -22,7 +22,7 @@ public enum TransferType {
 
 
 
-    private String description;
+    private final String description;
 
     TransferType(String description){
         this.description = description;

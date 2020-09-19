@@ -227,11 +227,10 @@ public class CorpBeneficiaryController {
                         logger.error("International Beneficiary Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/corporate/beneficiary";
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/corporate/beneficiary";
                 }
+                return "redirect:/corporate/beneficiary";
             } catch (InternetBankingException e) {
                 logger.error("International Beneficiary Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -263,11 +262,10 @@ public class CorpBeneficiaryController {
                         logger.error("International Beneficiary Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/corporate/beneficiary/international";
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/corporate/beneficiary/international";
                 }
+                return "redirect:/corporate/beneficiary/international";
             } catch (InternetBankingException e) {
                 logger.error("International Beneficiary Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -381,10 +379,8 @@ public class CorpBeneficiaryController {
         List<FinancialInstitutionDTO> sortedBanks =
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
                         .stream()
-                        .filter(i -> !i.getInstitutionCode().equalsIgnoreCase(bankCode))
-                        .collect(Collectors.toList());
+                        .filter(i -> !i.getInstitutionCode().equalsIgnoreCase(bankCode)).sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName)).collect(Collectors.toList());
 
-        sortedBanks.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
         model.addAttribute("localBanks", sortedBanks);
         model.addAttribute("bankCode", bankCode);
 

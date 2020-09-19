@@ -31,7 +31,7 @@ import java.util.Locale;
 @RequestMapping("/admin/settings")
 public class AdmSettingController {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ConfigurationService configurationService;
@@ -108,7 +108,7 @@ public class AdmSettingController {
 				 settings = configurationService.getSettings(pageable);
 			}
 	       
-	        DataTablesOutput<SettingDTO> out = new DataTablesOutput<SettingDTO>();
+	        DataTablesOutput<SettingDTO> out = new DataTablesOutput<>();
 	        out.setDraw(input.getDraw());
 	        out.setData(settings.getContent());
 	        out.setRecordsFiltered(settings.getTotalElements());

@@ -22,7 +22,7 @@ public class TransferErrorService {
     private TransferCodeRepo transferCodeRepo;
     final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public void setMessages(MessageSource messages) {

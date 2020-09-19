@@ -42,7 +42,7 @@ import java.util.Map;
 @RequestMapping("admin/roles")
 public class AdmRoleController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private RoleService roleService;
 
@@ -115,7 +115,7 @@ public class AdmRoleController {
         RoleDTO role = roleService.getRole(roleId);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<User> users = roleService.getUsers(role, pageable);
-        DataTablesOutput<User> out = new DataTablesOutput<User>();
+        DataTablesOutput<User> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(users.getContent());
         out.setRecordsFiltered(users.getTotalElements());
@@ -135,7 +135,7 @@ public class AdmRoleController {
 		}else{
 			roles = roleService.getRoles(pageable);
 		}
-        DataTablesOutput<RoleDTO> out = new DataTablesOutput<RoleDTO>();
+        DataTablesOutput<RoleDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(roles.getContent());
         out.setRecordsFiltered(roles.getTotalElements());
@@ -206,16 +206,9 @@ public class AdmRoleController {
             String message = roleService.updateRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
-        }
-        catch (DuplicateObjectException e){
+        } catch (InternetBankingException e){
             result.addError(new ObjectError("error", e.getMessage()));
             logger.error("Error updating role", e);
-            return "adm/role/edit";
-        }
-
-        catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error updating role", ibe);
             return "adm/role/edit";
         }
     }

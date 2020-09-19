@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/retail")
 public class SettingController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
@@ -123,21 +123,19 @@ public class SettingController {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
                     .filter(Objects::nonNull)
-                    .map(i -> {
+                    .peek(i -> {
 
                         if ("LAA".equalsIgnoreCase(i.getAccountType())) {
                             loansAccountList.add(i.getAccountNumber());
 
                         }
-                                return i;
                             }
                     ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
-                    .map(i -> {
+                    .peek(i -> {
                         Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
                         if (code != null && code.getDescription() != null) {
                             i.setAccountType(code.getDescription());
                         }
-                        return i;
                     })
                     .collect(Collectors.toList());
         }
@@ -175,7 +173,7 @@ public class SettingController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList,pageable);
-        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        DataTablesOutput<Account> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(loanAccounts.getContent());
         out.setRecordsFiltered(loanAccounts.getTotalElements());
@@ -309,13 +307,8 @@ public class SettingController {
                 retailUserService.setSecurityQuestion(user.getId());
 
                 return "redirect:/retail/token";
-            }
-            catch (InternetBankingSecurityException e){
+            } catch (InternetBankingException e){
                 redirectAttributes.addFlashAttribute("failure",e.getMessage());
-                return "redirect:/retail/reset/securityquestion";
-            }
-            catch (InternetBankingException ibe){
-                redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
                 return "redirect:/retail/reset/securityquestion";
             }
         }

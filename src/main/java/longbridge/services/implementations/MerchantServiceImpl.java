@@ -37,7 +37,7 @@ public class MerchantServiceImpl implements MerchantService {
 	@Autowired
 	private MessageSource messageSource;
 
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 
 
@@ -61,10 +61,8 @@ public class MerchantServiceImpl implements MerchantService {
 	
 	private void prepare(Merchant merchant) {
 		if (merchant.getProducts() != null) {
-			merchant.getProducts().removeIf(product -> {
-				return product.getId() == null;
-			});
-			merchant.getProducts().stream().forEach(product -> {
+			merchant.getProducts().removeIf(product -> product.getId() == null);
+			merchant.getProducts().forEach(product -> {
 				product.setMerchant(merchant);
 				if (product.getId() < 0)
 					product.setId(null);
@@ -134,8 +132,7 @@ public class MerchantServiceImpl implements MerchantService {
 		for(String category : categories) {
 			lst.add(new CategoryDTO(category));
 		}
-		PageImpl<CategoryDTO> page = new PageImpl<CategoryDTO>(lst);
-		return page;
+        return new PageImpl<CategoryDTO>(lst);
 		//return merchantrepo.findCategoriesOnly(pageDetails);
 	}
 

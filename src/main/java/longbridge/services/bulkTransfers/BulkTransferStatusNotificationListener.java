@@ -73,11 +73,7 @@ public class BulkTransferStatusNotificationListener extends JobExecutionListener
 
         long durationInMins = (nextStatusCheck - submittedAt) / (1000 * 60);
 
-        if (durationInMins > Long.parseLong(cutoffTime)) {
-            return true;
-        }
-
-        return false;
+        return durationInMins > Long.parseLong(cutoffTime);
     }
 
     private  Date getSubmittedDate(BulkTransfer bulkTransfer){

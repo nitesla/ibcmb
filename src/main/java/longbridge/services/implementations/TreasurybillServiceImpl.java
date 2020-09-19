@@ -14,7 +14,7 @@ public class TreasurybillServiceImpl implements TreasurybillService {
     @Autowired
     IntegrationService integrationService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
@@ -23,11 +23,7 @@ public class TreasurybillServiceImpl implements TreasurybillService {
         BigDecimal deposit = new BigDecimal(amount);
         int comparator = availableBalance.compareTo(deposit);
         logger.info("the comparator {}", comparator);
-        if (comparator > 0) {
-            return true;
-        }
-
-        return false;
+        return comparator > 0;
     }
 
 }

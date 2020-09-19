@@ -40,7 +40,7 @@ public enum StatusCode {
         }
     };
 
-    private String code;
+    private final String code;
 
     StatusCode(String code) {
         this.code = code;

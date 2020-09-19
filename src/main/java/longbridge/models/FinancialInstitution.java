@@ -87,35 +87,33 @@ public class FinancialInstitution extends AbstractEntity implements PrettySerial
 
     @Override @JsonIgnore
     public JsonSerializer<FinancialInstitution> getSerializer() {
-        return new JsonSerializer<FinancialInstitution>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(FinancialInstitution value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Institution Code",value.institutionCode);
-                gen.writeStringField("Institution Name",value.institutionName);
-                gen.writeStringField("Institution Type",value.institutionType.name());
+                gen.writeStringField("Institution Code", value.institutionCode);
+                gen.writeStringField("Institution Name", value.institutionName);
+                gen.writeStringField("Institution Type", value.institutionType.name());
                 gen.writeEndObject();
             }
         };
     }
     @Override @JsonIgnore
     public JsonSerializer<FinancialInstitution> getAuditSerializer() {
-        return new JsonSerializer<FinancialInstitution>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(FinancialInstitution value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("institutionCode",value.institutionCode);
-                gen.writeStringField("institutionName",value.institutionName);
-                gen.writeStringField("institutionType",value.institutionType.name());
+                gen.writeStringField("institutionCode", value.institutionCode);
+                gen.writeStringField("institutionName", value.institutionName);
+                gen.writeStringField("institutionType", value.institutionType.name());
                 gen.writeEndObject();
             }
         };

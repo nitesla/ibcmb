@@ -13,20 +13,17 @@ public class Converters {
 
 
     ModelMapper mm = new ModelMapper();
-    Converter<RetailUser,MobileRetailUserDTO> userConverter = new Converter<RetailUser, MobileRetailUserDTO>() {
-        @Override
-        public MobileRetailUserDTO convert(MappingContext<RetailUser, MobileRetailUserDTO> context) {
+    Converter<RetailUser,MobileRetailUserDTO> userConverter = context -> {
 
-            RetailUser retailUser = context.getSource();
-            MobileRetailUserDTO mobileRetailUserDTO = context.getDestination();
-            mobileRetailUserDTO.setUserName(retailUser.getUserName());
-            mobileRetailUserDTO.setBvn(retailUser.getBvn());
-            mobileRetailUserDTO.setLastLoginDate(retailUser.getLastLoginDate().toString());
-            mobileRetailUserDTO.setFirstName(retailUser.getFirstName());
-            mobileRetailUserDTO.setLastName(retailUser.getLastName());
+        RetailUser retailUser = context.getSource();
+        MobileRetailUserDTO mobileRetailUserDTO = context.getDestination();
+        mobileRetailUserDTO.setUserName(retailUser.getUserName());
+        mobileRetailUserDTO.setBvn(retailUser.getBvn());
+        mobileRetailUserDTO.setLastLoginDate(retailUser.getLastLoginDate().toString());
+        mobileRetailUserDTO.setFirstName(retailUser.getFirstName());
+        mobileRetailUserDTO.setLastName(retailUser.getLastName());
 
-            return mobileRetailUserDTO;
-        }
+        return mobileRetailUserDTO;
     };
 
 

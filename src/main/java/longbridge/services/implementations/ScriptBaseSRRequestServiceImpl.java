@@ -14,9 +14,6 @@ import java.util.Map;
 public class ScriptBaseSRRequestServiceImpl implements ServiceRequestFeeService {
 
 	private final String SCRIPT_PATH = "SCRIPT_PATH";
-	private final String SCRIPT_SUFFIX = ".js";
-	private final String HOOK_NAME = "calculator";
-	private final String REQUEST_KEY = "request_key";
 	@Autowired
 	ConfigurationService config;
 	
@@ -37,7 +34,9 @@ public class ScriptBaseSRRequestServiceImpl implements ServiceRequestFeeService 
 			Compilable compiler = (Compilable) engine;
 			try {
 				CompiledScript comScript= compiler.compile(scriptReader);
+				String REQUEST_KEY = "request_key";
 				engine.put(REQUEST_KEY, dto.getBody());
+				String HOOK_NAME = "calculator";
 				Object object = invocable.invokeFunction(HOOK_NAME);
 				
 				if(object instanceof Number)
@@ -71,6 +70,7 @@ public class ScriptBaseSRRequestServiceImpl implements ServiceRequestFeeService 
 		if(setting != null && setting.isEnabled())
 		{
 			String path = setting.getValue();
+			String SCRIPT_SUFFIX = ".js";
 			File file = new File(path, name + SCRIPT_SUFFIX);
 			if(file.exists())
 				return new FileReader(file);

@@ -25,8 +25,8 @@ import java.util.*;
 
 @Service
 public class UserRegServiceImpl implements UserRegService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     IntegrationService integrationService;
@@ -260,7 +260,6 @@ public class UserRegServiceImpl implements UserRegService {
             boolean codeValid = DateFormatter.validate(regCodeDate, new Date());
             logger.info("REGCODE IN SESSION {} ", regCode);
 //        Integer reg = Integer.parseInt(regCode);
-            ;
             String message = messageSource.getMessage("regCode.validate.expired", null, locale);
 
             if (code.equals(regCode)) {
@@ -366,8 +365,7 @@ public class UserRegServiceImpl implements UserRegService {
     public CustomerDetails customerDetails(String accountNumber, String email, String birthDate) {
 
         try {
-            CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-            return  details;
+            return integrationService.isAccountValid(accountNumber, email, birthDate);
         } catch (InternetBankingException e) {
           return null;
         }

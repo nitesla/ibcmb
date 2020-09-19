@@ -37,7 +37,7 @@ import java.util.Locale;
 public class OpsLimitController {
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CodeService codeService;
@@ -118,7 +118,7 @@ public class OpsLimitController {
     DataTablesOutput<ClassLimitDTO> getRetailClassLimits(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         List<ClassLimitDTO> classLimits = transactionLimitService.getRetailClassLimits();
-        DataTablesOutput<ClassLimitDTO> out = new DataTablesOutput<ClassLimitDTO>();
+        DataTablesOutput<ClassLimitDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(classLimits);
         out.setRecordsFiltered(classLimits.size());
@@ -136,7 +136,7 @@ public class OpsLimitController {
     @ResponseBody
     DataTablesOutput<ClassLimitDTO> getCorporateClassLimits(DataTablesInput input) {
         List<ClassLimitDTO> classLimits = transactionLimitService.getCorporateClassLimits();
-        DataTablesOutput<ClassLimitDTO> out = new DataTablesOutput<ClassLimitDTO>();
+        DataTablesOutput<ClassLimitDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(classLimits);
         out.setRecordsFiltered(classLimits.size());
@@ -353,7 +353,7 @@ public class OpsLimitController {
     @ResponseBody
     DataTablesOutput<AccountLimitDTO> getRetailAccountLimits(DataTablesInput input) {
         List<AccountLimitDTO> accountLimits = transactionLimitService.getRetailAccountLimits();
-        DataTablesOutput<AccountLimitDTO> out = new DataTablesOutput<AccountLimitDTO>();
+        DataTablesOutput<AccountLimitDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(accountLimits);
         out.setRecordsFiltered(accountLimits.size());
@@ -371,7 +371,7 @@ public class OpsLimitController {
     @ResponseBody
     DataTablesOutput<AccountLimitDTO> getCorporateAccountLimits(DataTablesInput input) {
         List<AccountLimitDTO> accountLimits = transactionLimitService.getCorporateAccountLimits();
-        DataTablesOutput<AccountLimitDTO> out = new DataTablesOutput<AccountLimitDTO>();
+        DataTablesOutput<AccountLimitDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(accountLimits);
         out.setRecordsFiltered(accountLimits.size());

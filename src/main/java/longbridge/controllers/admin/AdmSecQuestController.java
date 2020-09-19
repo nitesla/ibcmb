@@ -32,7 +32,7 @@ import java.util.Locale;
 @RequestMapping("/admin/secquestions")
 public class AdmSecQuestController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private VerificationService verificationService;
@@ -55,7 +55,7 @@ public class AdmSecQuestController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<SecQuestionDTO> sq = securityQuestionService.getSecQuestions(pageable);
-        DataTablesOutput<SecQuestionDTO> out = new DataTablesOutput<SecQuestionDTO>();
+        DataTablesOutput<SecQuestionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(sq.getContent());
         out.setRecordsFiltered(sq.getTotalElements());

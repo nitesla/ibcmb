@@ -48,6 +48,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -65,10 +66,10 @@ public class NAPSTransferController {
     @Autowired
     private MessageSource messageSource;
 
-    private AccountService accountService;
-    private RetailUserService retailUserService;
-    private BulkRetailTransferService bulkRetailTransferService;
-    private FinancialInstitutionService financialInstitutionService;
+    private final AccountService accountService;
+    private final RetailUserService retailUserService;
+    private final BulkRetailTransferService bulkRetailTransferService;
+    private final FinancialInstitutionService financialInstitutionService;
     @Autowired
     IntegrationService integrationService;
     @Autowired
@@ -91,7 +92,7 @@ public class NAPSTransferController {
         this.financialInstitutionService=financialInstitutionService;
     }
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String SERVER_FILE_PATH = "/Users/user/Documents/UPLOAD_FOLDER/Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
 
@@ -142,7 +143,7 @@ public class NAPSTransferController {
             fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(search,pageable);
         }else {
             fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
-        }DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
+        }DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fis.getContent());
         out.setRecordsFiltered(fis.getTotalElements());
@@ -160,7 +161,7 @@ public class NAPSTransferController {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             System.out.println(errorMessage);
             OutputStream outputStream = response.getOutputStream();
-            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+            outputStream.write(errorMessage.getBytes(StandardCharsets.UTF_8));
             outputStream.close();
             return;
         }
@@ -171,7 +172,7 @@ public class NAPSTransferController {
         }
         System.out.println("mimetype : " + mimeType);
         response.setContentType(mimeType);
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+        response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
         response.setContentLength((int) file.length());
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         //Copy bytes from source to destination(outputstream in this example), closes both streams.
@@ -278,11 +279,10 @@ public class NAPSTransferController {
                     NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
                     if(details.getAccountName()!=null && !details.getAccountName().equals("")) {
                         row.getCell(5).setCellValue(details.getAccountName());
-                        logger.info("NameEnquiry" + row.getCell(5));
                     }else {
                         row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
-                        logger.info("NameEnquiry" + row.getCell(5));
                     }
+                    logger.info("NameEnquiry" + row.getCell(5));
 
                 }else{
                     row.getCell(5).setCellValue("Account Name");
@@ -421,7 +421,7 @@ public class NAPSTransferController {
             String debitAccount = request.getParameter("debitAccount");
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<CreditRequest> requestList = mapper.readValue(requests, new TypeReference<List<CreditRequest>>() {
+            List<CreditRequest> requestList = mapper.readValue(requests, new TypeReference<>() {
             });
 
             logger.info("Transfer List {}",requestList);
@@ -492,7 +492,7 @@ DataTablesOutput<BulkTransferDTO> getAllTransfers(DataTablesInput input, Princip
 
     Pageable pageable = DataTablesUtils.getPageable(input);
     Page<BulkTransferDTO> transfers = bulkRetailTransferService.getBulkTransferRequests(pageable);
-    DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<BulkTransferDTO>();
+    DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<>();
     out.setDraw(input.getDraw());
     out.setData(transfers.getContent());
     out.setRecordsFiltered(transfers.getTotalElements());

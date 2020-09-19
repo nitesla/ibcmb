@@ -40,7 +40,7 @@ import java.util.Locale;
 @RequestMapping("/corporate/token")
 public class CorpTokenManagementController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SecurityService securityService;

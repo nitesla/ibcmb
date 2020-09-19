@@ -46,7 +46,7 @@ public class CorpServiceRequestController {
     @Autowired
     private CodeService codeService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CorporateUserService userService;
@@ -76,7 +76,7 @@ public class CorpServiceRequestController {
         ObjectMapper objectMapper = new ObjectMapper();
         ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO();
         try {
-            ArrayList<NameValue> myFormObjects = objectMapper.readValue(requestBody, new TypeReference<ArrayList<NameValue>>() {
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(requestBody, new TypeReference<>() {
             });
             Iterator<NameValue> iterator = myFormObjects.iterator();
             while (iterator.hasNext()) {
@@ -195,7 +195,7 @@ public class CorpServiceRequestController {
 
             if (field.getFieldType() != null && field.getFieldType().equals("LIST")) {
                 String list = field.getTypeData();
-                String myList[] = list.split(",");
+                String[] myList = list.split(",");
                 model.addAttribute("fixedList", myList);
             }
         }
@@ -216,7 +216,7 @@ public class CorpServiceRequestController {
         Corporate corporate = user.getCorporate();
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(corporate, pageable);
-        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
+        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());
         out.setRecordsFiltered(serviceRequests.getTotalElements());

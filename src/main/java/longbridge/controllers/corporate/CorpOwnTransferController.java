@@ -41,16 +41,15 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer/ownaccount")
 public class CorpOwnTransferController {
 
-    private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private AccountService accountService;
-    private TransferValidator validator;
-    private FinancialInstitutionService financialInstitutionService;
-    private ApplicationContext appContext;
-    private TransferErrorService errorService;
-    private TransferUtils transferUtils;
+    private final CorporateUserService corporateUserService;
+    private final CorpTransferService corpTransferService;
+    private final AccountService accountService;
+    private final TransferValidator validator;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferErrorService errorService;
+    private final TransferUtils transferUtils;
 
-    private String page = "corp/transfer/ownaccount/";
+    private final String page = "corp/transfer/ownaccount/";
     @Value("${bank.code}")
     private String bankCode;
 
@@ -65,7 +64,6 @@ public class CorpOwnTransferController {
         this.accountService = accountService;
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
-        this.appContext = appContext;
         this.transferUtils = transferUtils;
     }
 

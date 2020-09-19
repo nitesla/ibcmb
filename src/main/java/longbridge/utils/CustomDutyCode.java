@@ -78,7 +78,7 @@ public enum CustomDutyCode {
         }
     };
 
-    private String code;
+    private final String code;
 
     CustomDutyCode(String code) {
         this.code = code;

@@ -54,15 +54,14 @@ public class CustomPaymentNotification implements PrettySerializer {
 
     @Override @JsonIgnore
     public JsonSerializer<CustomPaymentNotification> getSerializer() {
-        return new JsonSerializer<CustomPaymentNotification>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CustomPaymentNotification value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Code",value.getCode());
-                gen.writeStringField("Description",value.message);
-                gen.writeStringField("Type",value.paymentRef);
+                gen.writeStringField("Code", value.getCode());
+                gen.writeStringField("Description", value.message);
+                gen.writeStringField("Type", value.paymentRef);
                 gen.writeEndObject();
             }
         };
@@ -70,20 +69,19 @@ public class CustomPaymentNotification implements PrettySerializer {
 
     @Override @JsonIgnore
     public JsonSerializer<CustomPaymentNotification> getAuditSerializer() {
-        return new JsonSerializer<CustomPaymentNotification>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CustomPaymentNotification value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
 //                if(value.id != null) {
 //                    gen.writeStringField("id", value.id.toString());
 //                }else {
 //                    gen.writeStringField("id", "");
 //                }
-                gen.writeStringField("code",value.code);
-                gen.writeStringField("description",value.message);
-                gen.writeStringField("type",value.paymentRef);
+                gen.writeStringField("code", value.code);
+                gen.writeStringField("description", value.message);
+                gen.writeStringField("type", value.paymentRef);
                 gen.writeEndObject();
             }
         };

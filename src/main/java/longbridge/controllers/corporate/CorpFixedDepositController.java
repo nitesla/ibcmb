@@ -31,7 +31,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/corporate/fixdeposit")
 public class CorpFixedDepositController {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private FixedDepositService fixedDepositService;
     @Autowired
@@ -67,7 +67,7 @@ public class CorpFixedDepositController {
         Page<FixedDepositDTO> fixedDepositDTOS = null;
         CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
         fixedDepositDTOS = fixedDepositService.getFixedDepositDetials(corporateUser.getCorporate().getCustomerId(),pageable);
-        DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<FixedDepositDTO>();
+        DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fixedDepositDTOS.getContent());
         out.setRecordsFiltered(fixedDepositDTOS.getTotalElements());

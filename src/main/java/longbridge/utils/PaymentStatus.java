@@ -8,7 +8,7 @@ public enum PaymentStatus {
     P("Account Debited Successfully"),
     X("Debit Failed");
 
-    private String description;
+    private final String description;
 
     PaymentStatus(String description){
         this.description = description;

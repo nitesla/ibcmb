@@ -63,7 +63,8 @@ public class PaymentServiceImpl implements PaymentService {
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
-            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus()== null){
+               // billPayment.setStatus("SUCCESSFUL");
                 return messageSource.getMessage("Payment Successful",null,locale);
             }else {
                 return messageSource.getMessage("Payment Failed",null,locale);
@@ -89,7 +90,8 @@ public class PaymentServiceImpl implements PaymentService {
 
             billPayment = billPaymentRepo.save(billPayment);
             logger.info("Added payment {}",billPayment);
-            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus() == null){
+               // billPayment.setStatus("SUCCESSFUL");
                 return messageSource.getMessage("Payment Successful",null,locale);
             }else {
                 return messageSource.getMessage("Payment Failed",null,locale);
@@ -117,8 +119,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -130,8 +131,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -143,8 +143,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -156,8 +155,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findUsingPattern("COP_" + user.getId(),pattern, pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
 
     }
 
@@ -232,14 +230,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     private RetailUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        RetailUser retailUser = (RetailUser) principal.getUser();
-        return retailUser;
+        return (RetailUser) principal.getUser();
     }
 
     private CorporateUser getCurrentCorpUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser corporateUser = (CorporateUser) principal.getUser();
-        return corporateUser;
+        return (CorporateUser) principal.getUser();
     }
 
 

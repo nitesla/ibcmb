@@ -25,7 +25,7 @@ import static longbridge.utils.StringUtil.searchModifiedEntityTypeEntity;
 @Transactional
 public class RevisedEntitiesUtil {
 
-    static Logger logger = LoggerFactory.getLogger(RevisedEntitiesUtil.class);
+    static final Logger logger = LoggerFactory.getLogger(RevisedEntitiesUtil.class);
 
     private static final String PACKAGE_NAME = "longbridge.models.";
 

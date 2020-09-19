@@ -81,7 +81,7 @@ CompletedTransferController {
 
             transferRequests = transferService.getCompletedTransfer(search.toUpperCase(), pageable);
         } else transferRequests = transferService.getCompletedTransfer(pageable);
-        DataTablesOutput<TransferRequestDTO> out = new DataTablesOutput<TransferRequestDTO>();
+        DataTablesOutput<TransferRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());
         out.setRecordsFiltered(transferRequests.getTotalElements());
@@ -125,7 +125,7 @@ CompletedTransferController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"rpt_tran-hist.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());

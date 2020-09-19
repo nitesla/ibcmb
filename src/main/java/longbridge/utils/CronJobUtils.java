@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by Longbridge on 7/1/2017.
  */
 public class CronJobUtils {
-    private static Logger logger = LoggerFactory.getLogger(new CronJobUtils().getClass());
+    private static final Logger logger = LoggerFactory.getLogger(CronJobUtils.class);
 
     public static Map<String,String> getSecondExpression(String second){
         Map<String,String> expression = new HashMap<>();
@@ -54,7 +54,7 @@ public class CronJobUtils {
         Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
         StringBuilder builderExprVal = new StringBuilder(exrInit);
-        StringBuilder builderExprDesc = new StringBuilder("");
+        StringBuilder builderExprDesc = new StringBuilder();
         if(hourChecker.equalsIgnoreCase("everyHour")){
             builderExprVal.append("0 0/"+exactHour);
             builderExprDesc.append("Every ");
@@ -86,7 +86,7 @@ public class CronJobUtils {
         Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
         StringBuilder builderExprVal = new StringBuilder(exrInit);
-        StringBuilder builderExprDesc = new StringBuilder("");
+        StringBuilder builderExprDesc = new StringBuilder();
         if(dailyChecker.equalsIgnoreCase("everyDay")){
             builderExprVal.append(dailyMin);
             builderExprVal.append(" "+dailyHour);
@@ -129,7 +129,7 @@ public class CronJobUtils {
         Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
         StringBuilder builderExprVal = new StringBuilder(exrInit);
-        StringBuilder builderExprDesc = new StringBuilder("");
+        StringBuilder builderExprDesc = new StringBuilder();
             builderExprVal.append(minute);
             builderExprVal.append(" "+hour);
             builderExprVal.append(" ? * ");
@@ -168,7 +168,7 @@ Sample Cron expression expected
         Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
         StringBuilder builderExprVal = new StringBuilder(exrInit);
-        StringBuilder builderExprDesc = new StringBuilder("");
+        StringBuilder builderExprDesc = new StringBuilder();
         builderExprVal.append(monthMinute);
         builderExprVal.append(" " + monthHour);
         if("eachMonthDay".equalsIgnoreCase(monthChecker)) {
@@ -198,7 +198,7 @@ Sample Cron expression expected
         Map<String,String> expression = new HashMap<>();
         String exrInit = "0 ";
         StringBuilder builderExprVal = new StringBuilder(exrInit);
-        StringBuilder builderExprDesc = new StringBuilder("");
+        StringBuilder builderExprDesc = new StringBuilder();
         builderExprVal.append(yearMinute);
         builderExprVal.append(" " + yearHour);
         if("perMonth".equalsIgnoreCase(yearChecker)) {
@@ -272,8 +272,7 @@ private static String getTimeSuffix(String hour){
     }
     private static String normalizeTime(String hour){
         if(Integer.parseInt(hour) >12){
-            String regHour = String.valueOf(Integer.parseInt(hour) -12);
-            return regHour;
+            return String.valueOf(Integer.parseInt(hour) -12);
         }else{
             return hour;
         }

@@ -49,9 +49,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 
 
-    Locale locale = LocaleContextHolder.getLocale();
+    final Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String addTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
@@ -113,7 +113,7 @@ public class TransactionServiceImpl implements TransactionService {
     public Page<TransactionFeeDTO> getTransactionFees(Pageable pageable){
         Iterable<TransactionFee> transactionFees = transactionFeeRepo.findAll(pageable);
         List<TransactionFeeDTO> dtos = convertEntitiesToDTOs(transactionFees);
-        return new PageImpl<TransactionFeeDTO>(dtos,pageable,dtos.size());
+        return new PageImpl<>(dtos, pageable, dtos.size());
 
     }
 

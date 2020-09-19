@@ -19,7 +19,7 @@ public class CustomUserPrincipal implements CustomeUserDetails {
 
 	private final User user;
 	private String ipAddress;
-	private LocalDate today = LocalDate.now();
+	private final LocalDate today = LocalDate.now();
 	private Long corpId;
 	private String sfactorAuthIndicator="N";    //set default token auth to N
 

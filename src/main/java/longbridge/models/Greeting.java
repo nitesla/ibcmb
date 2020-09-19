@@ -2,7 +2,6 @@ package longbridge.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -153,28 +152,27 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
 
     @Override @JsonIgnore
     public JsonSerializer<Greeting> getSerializer() {
-        return new JsonSerializer<Greeting>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Greeting value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Event Name",value.eventName);
-                if("GNL".equals(value.type)) gen.writeStringField("Type","General");
-                else gen.writeStringField("Type","Personal");
-                gen.writeStringField("Message",value.message);
-                gen.writeStringField("Creation Date",value.createdOn.toString());
-                gen.writeStringField("Execution Date",value.executedOn.toString());
-                gen.writeStringField("Expiration Date",value.expiredOn.toString());
-                gen.writeStringField("Creator",value.createdBy);
-                String recurring="";
-                if(value.recurringDate)recurring="Yes";
-                else recurring="No";
-                gen.writeStringField("Is Event Recurring?",recurring);
-                gen.writeStringField("User Id",value.userId);
-                gen.writeStringField("Number of Days",value.duration.toString());
-                gen.writeStringField("Image Name",value.imageLink);
-                gen.writeStringField("Type of User",value.userType);
+                gen.writeStringField("Event Name", value.eventName);
+                if ("GNL".equals(value.type)) gen.writeStringField("Type", "General");
+                else gen.writeStringField("Type", "Personal");
+                gen.writeStringField("Message", value.message);
+                gen.writeStringField("Creation Date", value.createdOn.toString());
+                gen.writeStringField("Execution Date", value.executedOn.toString());
+                gen.writeStringField("Expiration Date", value.expiredOn.toString());
+                gen.writeStringField("Creator", value.createdBy);
+                String recurring = "";
+                if (value.recurringDate) recurring = "Yes";
+                else recurring = "No";
+                gen.writeStringField("Is Event Recurring?", recurring);
+                gen.writeStringField("User Id", value.userId);
+                gen.writeStringField("Number of Days", value.duration.toString());
+                gen.writeStringField("Image Name", value.imageLink);
+                gen.writeStringField("Type of User", value.userType);
                 gen.writeEndObject();
             }
         };
@@ -184,30 +182,29 @@ public class Greeting extends AbstractEntity implements PrettySerializer {
     @Override
     @JsonIgnore
     public JsonSerializer<Greeting> getAuditSerializer() {
-        return new JsonSerializer<Greeting>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Greeting value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("Event Name",value.eventName);
-                if("GNL".equals(value.type)) gen.writeStringField("Type","General");
-                else gen.writeStringField("Type","Personal");
-                gen.writeStringField("Message",value.message);
-                gen.writeStringField("Type of User",value.userType);
-                gen.writeStringField("Execution Date",value.executedOn.toString());
-                gen.writeStringField("Number of Days",value.duration.toString());
-                gen.writeStringField("Image Name",value.imageLink);
+                gen.writeStringField("Event Name", value.eventName);
+                if ("GNL".equals(value.type)) gen.writeStringField("Type", "General");
+                else gen.writeStringField("Type", "Personal");
+                gen.writeStringField("Message", value.message);
+                gen.writeStringField("Type of User", value.userType);
+                gen.writeStringField("Execution Date", value.executedOn.toString());
+                gen.writeStringField("Number of Days", value.duration.toString());
+                gen.writeStringField("Image Name", value.imageLink);
 
-                String recurring="";
-                if(value.recurringDate)recurring="Yes";
-                else recurring="No";
-                gen.writeStringField("Is Event Recurring?",recurring);
+                String recurring = "";
+                if (value.recurringDate) recurring = "Yes";
+                else recurring = "No";
+                gen.writeStringField("Is Event Recurring?", recurring);
                 gen.writeEndObject();
 
             }

@@ -1,10 +1,8 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.models.CorporateUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

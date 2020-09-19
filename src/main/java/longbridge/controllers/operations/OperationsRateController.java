@@ -38,7 +38,7 @@ import java.util.Locale;
 
     @Autowired
     InvestmentRateService rateService;
-    Logger logger= LoggerFactory.getLogger(this.getClass());
+    final Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
         @GetMapping()

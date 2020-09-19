@@ -45,8 +45,8 @@ import java.util.stream.Collectors;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 	@Value("${ebank.service.uri}")
 	private String URI;
@@ -98,17 +98,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${antifraud.status.check}")
 	private String antiFraudStatusCheckUrl;
 
-	private RestTemplate template;
-	private MailService mailService;
-	private TemplateEngine templateEngine;
-	private ConfigurationService configService;
-	private TransferErrorService errorService;
-	private MessageSource messageSource;
-	private AccountRepo accountRepo;
-	private CorporateRepo corporateRepo;
-	private AntiFraudRepo antiFraudRepo;
-	private CoverageRepo coverageRepo;
-	private NeftTransferRepo neftTransferRepo;
+	private final RestTemplate template;
+	private final MailService mailService;
+	private final TemplateEngine templateEngine;
+	private final ConfigurationService configService;
+	private final TransferErrorService errorService;
+	private final MessageSource messageSource;
+	private final AccountRepo accountRepo;
+	private final CorporateRepo corporateRepo;
+	private final AntiFraudRepo antiFraudRepo;
+    private final NeftTransferRepo neftTransferRepo;
 
 
 	@Autowired
@@ -125,8 +124,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-		this.coverageRepo = coverageRepo;
-		this.neftTransferRepo = neftTransferRepo;
+        this.neftTransferRepo = neftTransferRepo;
 	}
 
 
@@ -505,8 +503,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			}
 			case INTERNATIONAL_TRANSFER: {
-				TransRequest request = sendInternationalTransferRequest(transRequest);
-				return request;
+                return sendInternationalTransferRequest(transRequest);
 			}
 
 			case OWN_ACCOUNT_TRANSFER: {
@@ -560,9 +557,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}
 
 			case RTGS: {
-				TransRequest request = sendTransfer(transRequest);
 
-				return request;
+                return sendTransfer(transRequest);
 			}
 //			case NEFT: {
 //				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
@@ -698,9 +694,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}
 
 			case RTGS: {
-				TransRequest request = sendRTGSTransferRequest(transRequest);
 
-				return request;
+                return sendRTGSTransferRequest(transRequest);
 			}
 		}
 		logger.trace("request did not match any type");
@@ -713,8 +708,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
 		String uri = URI + "/transfer/naps";
 		try {
-			TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
-			return details;
+            return template.getForObject(uri, TransferDetails.class, naps);
 		} catch (Exception e) {
 			logger.error("Error making NAPS transfer", e);
 			return new TransferDetails();
@@ -729,8 +723,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("acctNo", acctNo);
 		try {
-			AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
-			return details;
+            return template.getForObject(uri, AccountDetails.class, params);
 		} catch (Exception e) {
 			logger.error("Error getting account details for {}", acctNo,e);
 			return new AccountDetails();
@@ -831,8 +824,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("accountNumber", accNo);
 		params.put("transactionChannel", channel);
 		try {
-			String response = template.postForObject(uri, params, String.class);
-			result = (response);
+            result = (template.postForObject(uri, params, String.class));
 		} catch (Exception e) {
 			logger.error("Error occurred getting  daily account limit", e);
 		}
@@ -955,8 +947,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("transactionChannel", channel[0]);
 		params.put("tranAmount", channel[1]);
 		try {
-			Rate details = template.postForObject(uri, params, Rate.class);
-			return details;
+            return template.postForObject(uri, params, Rate.class);
 		} catch (Exception e) {
 
 			logger.error("Error occurred getting  fee", e);
@@ -1229,8 +1220,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		String uri = antiFraudStatusCheckUrl+query;
 		try {
-			TransferDetails details = template.getForObject(uri, TransferDetails.class);
-			return details;
+            return template.getForObject(uri, TransferDetails.class);
 		} catch (Exception e) {
 			logger.error("Error getting status", e);
 		}
@@ -1486,6 +1476,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
+		logger.info("Terminal ID is", terminalId);
 		params.put("amount", billPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
@@ -1527,6 +1518,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
+		logger.info("Terminal ID is", terminalId);
 		params.put("amount", recurringPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
@@ -1638,10 +1630,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("Date", newdate);
 		params.put("SettlementTimeF", newdate);
 		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
-				.map(neftTransfer -> {
-					updateNeftSettlement(newdate, neftTransfer);
-					return neftTransfer;
-				})
+				.peek(neftTransfer -> updateNeftSettlement(newdate, neftTransfer))
 				.collect(Collectors.toList());
 		params.put("PFItemDataStores", neftTransfers);
 
