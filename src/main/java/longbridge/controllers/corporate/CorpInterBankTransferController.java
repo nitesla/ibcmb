@@ -296,6 +296,9 @@ public class CorpInterBankTransferController {
         if (type.equalsIgnoreCase("RTGS")) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
 
+        } else if (type.equalsIgnoreCase("NEFT")){
+            transferRequestDTO.setTransferType(TransferType.NEFT);
+
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
 

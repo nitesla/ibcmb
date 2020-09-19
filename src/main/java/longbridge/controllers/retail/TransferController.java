@@ -121,6 +121,9 @@ public class TransferController {
 
                     return "redirect:/retail/transfer/ownaccount";
                 }
+                case NEFT:{
+                    return "redirect:/retail/transfer/interbank";
+                }
 
                 case RTGS: {
                     return "redirect:/retail/transfer/interbank";
