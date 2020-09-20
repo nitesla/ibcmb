@@ -213,7 +213,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
 
     @Override
     public FinancialInstitution getFinancialInstitutionByName(String institutionName) {
-        return financialInstitutionRepo.findFirstByInstitutionNameIgnoreCase(institutionName);
+        return financialInstitutionRepo.findFirstByInstitutionCodeIgnoreCase(institutionName);
     }
 
     @Override

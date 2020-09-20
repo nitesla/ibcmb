@@ -155,7 +155,8 @@ public class CorpInterBankTransferController {
     }
 
     @PostMapping("/new")
-    public String getBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+    public String getBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result,
+                                 Model model, HttpServletRequest servletRequest) throws Exception {
         model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
         if (servletRequest.getSession().getAttribute("add") != null)
             servletRequest.getSession().removeAttribute("add");
@@ -188,8 +189,16 @@ public class CorpInterBankTransferController {
         String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
         BigDecimal amountLimit = new BigDecimal(userAmountLimit);
         BigDecimal userAmount = corpTransferRequestDTO.getAmount();
+        if (userAmount == null){
+            String amounterrorMessage = "Please supply amount";
+            model.addAttribute("amounterrorMessage", amounterrorMessage);
+            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+            model.addAttribute("benName", newBenName);
+            return page + "pageii";
+        }
         int a = amountLimit.intValue();
         int b = userAmount.intValue();
+
         if (b > a){
             String errorMessage = "You can not transfer more than account limit";
             model.addAttribute("errorMessage", errorMessage);
@@ -305,7 +314,9 @@ public class CorpInterBankTransferController {
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             String benName = dto.getPreferredName()!=null?dto.getPreferredName():dto.getAccountName();
             model.addAttribute("benName", benName);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+           transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+           logger.info("DETAILS == {}", financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
         return page + "pageii";
