@@ -1476,7 +1476,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
-		logger.info("Terminal ID is", terminalId);
+		logger.info("Terminal ID is {}", terminalId);
 		params.put("amount", billPayment.getAmount().toPlainString());
 		params.put("appid",appId);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
@@ -1496,6 +1496,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			billPayment.setResponseCode(payment.getResponseCode());
 			billPayment.setTransactionRef(payment.getTransactionRef());
 			billPayment.setApprovedAmount(payment.getApprovedAmount());
+			billPayment.setTerminalId(terminalId);
+			logger.info("Saved Terminal Id is {}", terminalId);
 			return billPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
@@ -1539,6 +1541,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			recurringPayment.setResponseCode(payment.getResponseCode());
 			recurringPayment.setTransactionRef(payment.getTransactionRef());
 			recurringPayment.setApprovedAmount(payment.getApprovedAmount());
+			recurringPayment.setTerminalId(terminalId);
+			logger.info("Saved Terminal Id is {}", terminalId);
 			return recurringPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
