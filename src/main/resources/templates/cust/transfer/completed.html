@@ -52,6 +52,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function() {
+            var returnedData =null;
             var url = "/retail/transfer/history/all";
             var table = $('#ct').DataTable({
                 responsive: true,
@@ -112,25 +113,42 @@
                         "targets" : 5,
                         "data" : "status",
                         "render" : function(data, type,full, meta) {
+                            returnedData=data;
                             if (type === 'display') {
+
                                 if(data == '00'||data == '000')
                                     return "Transaction Successful";
-                                if(data=="09"||data=="34"){
-                                    return "Pending";
+                                if(data=="09"||data=="34"|| data=="Pending"){
+                                    return "Transaction Successful";
                                 }
-                                else return "Failed";
+                                else
+                                    return "Failed";
 
                             }
                             return data;
                         }
                     },
+
                     {
-                    "targets" : 6,
-                    "data" : "DT_RowId",
-                    "render" : function(data, type,row, meta) {
-                        return '<a href="'+ data +'/downloadreceipt" target="_blank">Receipt</a>';
-                    }
-                }]
+                        "targets" : 6,
+                        "data" : "DT_RowId",
+                        "render" : function(data, type,row, meta) {
+                            return '<a href="'+ data +'/receipt" target="_blank">Receipt</a>';
+                        }
+                    }]
+
+            // {
+            //             "targets": 6,
+            //             "data": "DT_RowId",
+            //             "render": function(data, type, full, meta) {
+            //                 if (returnedData == '00' || returnedData == '000') {
+            //                     return '<a href="' + data + '/downloadreceipt" target="_blank">Receipt</a>';
+            //                 }
+            //                 else
+            //                     return returnedData;
+            //
+            //             }
+            //         }]
 
 //            $("#search").on("click", function(e) {
 //                e.preventDefault();

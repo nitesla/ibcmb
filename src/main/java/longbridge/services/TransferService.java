@@ -1,6 +1,8 @@
 package longbridge.services;
 
+import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import longbridge.models.DirectDebit;
@@ -58,6 +60,9 @@ public interface TransferService {
 
     @PreAuthorize("hasAuthority('VIEW_TRANSACTIONS')")
     Page<TransferRequestDTO> getTransferReviews(TransferType transfertype, String accountNumber, Date startDate, Date endDate, Pageable pageDetails);
+
+//    Object addTransferRequest(TransferRequestDTO transferRequestDTO) throws InternetBankingException;
+
 
 
 

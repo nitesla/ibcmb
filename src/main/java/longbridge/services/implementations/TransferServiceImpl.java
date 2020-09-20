@@ -196,14 +196,16 @@ public class TransferServiceImpl implements TransferService {
             return convertEntityToDTO(transRequest);
 
 
-           /* if (transRequest.getStatus() != null) {
-                if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00")||
-                        transRequest.getStatus().equalsIgnoreCase("34"))
-                return convertEntityToDTO(transRequest);
-                throw new InternetBankingTransferException(transRequest.getStatus());
-            }
-            throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());*/
-        }
+//            if (transRequest.getStatus() != null) {
+//                if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00")||
+//                        transRequest.getStatus().equalsIgnoreCase("34"))
+//                return convertEntityToDTO(transRequest);
+//                throw new InternetBankingTransferException(transRequest.getStatus());
+           }
+
+
+//            throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
+//        }
         throw new InternetBankingTransferException(messages.getMessage("transfer.failed",null,locale));
     }
 

@@ -174,7 +174,8 @@ public class InternationalTransferController {
                     internationalTransferRequest.setChannel(transferRequest.getChannel());
 
                     try {
-                        TransferRequestDTO transferRequestDTO = transferService.makeTransfer(internationalTransferRequest);
+                       TransferRequestDTO transferRequestDTO = transferService.makeTransfer(internationalTransferRequest);
+
                         redirectAttributes.addFlashAttribute("message",transferRequestDTO.getStatusDescription());
 
                     }catch (InternetBankingTransferException e){
