@@ -185,7 +185,7 @@ public class TransferServiceImpl implements TransferService {
        }
             logger.trace("Transfer Details: ", transRequest);
         
-        if (transRequest == null) {
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
 
             logger.info("uniqueid {}",transRequest);
             transRequest2.setStatus("00");
@@ -201,6 +201,12 @@ public class TransferServiceImpl implements TransferService {
                 throw new InternetBankingTransferException(transRequest.getStatus());
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());*/
+        } else if (transRequest != null){
+            logger.info("uniqueid {}",transRequest);
+            transRequest = transferRequestRepo.save(transRequest);
+            return convertEntityToDTO(transRequest);
+
+
         }
         throw new InternetBankingTransferException(messages.getMessage("transfer.failed",null,locale));
     }
