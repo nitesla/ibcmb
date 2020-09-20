@@ -192,8 +192,16 @@ public class InterBankTransferController {
         String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
         BigDecimal amountLimit = new BigDecimal(userAmountLimit);
         BigDecimal userAmount = transferRequestDTO.getAmount();
+        if (userAmount == null){
+            String amounterrorMessage = "Please supply amount";
+            model.addAttribute("amounterrorMessage", amounterrorMessage);
+            model.addAttribute("benName", newbenName);
+            model.addAttribute("transferRequest", transferRequestDTO);
+            return page + "pageii";
+        }
         int a = amountLimit.intValue();
         int b = userAmount.intValue();
+
         if (b > a){
             String errorMessage = "You can not transfer more than account limit";
             model.addAttribute("errorMessage", errorMessage);
