@@ -92,39 +92,37 @@ public class Setting extends AbstractEntity implements PrettySerializer{
 
     @Override @JsonIgnore
     public JsonSerializer<Setting> getSerializer() {
-        return new JsonSerializer<Setting>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Setting value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Name",value.name);
-                gen.writeStringField("Description",value.description);
-                gen.writeStringField("Value",value.value);
-                gen.writeBooleanField("Enabled",value.enabled);
-                gen.writeStringField("Type",value.type);
+                gen.writeStringField("Name", value.name);
+                gen.writeStringField("Description", value.description);
+                gen.writeStringField("Value", value.value);
+                gen.writeBooleanField("Enabled", value.enabled);
+                gen.writeStringField("Type", value.type);
                 gen.writeEndObject();
             }
         };
     }
 @Override @JsonIgnore
     public JsonSerializer<Setting> getAuditSerializer() {
-        return new JsonSerializer<Setting>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Setting value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("name",value.name);
-                gen.writeStringField("description",value.description);
-                gen.writeStringField("value",value.value);
-                gen.writeBooleanField("enabled",value.enabled);
-                gen.writeStringField("type",value.type);
+                gen.writeStringField("name", value.name);
+                gen.writeStringField("description", value.description);
+                gen.writeStringField("value", value.value);
+                gen.writeBooleanField("enabled", value.enabled);
+                gen.writeStringField("type", value.type);
                 gen.writeEndObject();
             }
         };

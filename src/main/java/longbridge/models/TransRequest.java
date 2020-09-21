@@ -255,26 +255,26 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     @Override
     @JsonIgnore
     public JsonSerializer<TransRequest> getAuditSerializer() {
-        return new JsonSerializer<TransRequest>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(TransRequest value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("customerAccountNumber", value.customerAccountNumber);
-                if(value.transferType !=null) {
+                if (value.transferType != null) {
                     gen.writeStringField("transferType", value.transferType.toString());
-                }else {
+                } else {
                     gen.writeStringField("transferType", "");
                 }
-                if(value.tranDate !=null) {
+                if (value.tranDate != null) {
                     gen.writeStringField("tranDate", value.tranDate.toString());
-                }else {
+                } else {
                     gen.writeStringField("tranDate", "");
                 }
                 gen.writeStringField("beneficiaryAccountNumber", value.beneficiaryAccountNumber);
@@ -287,14 +287,14 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 gen.writeStringField("narration", value.narration);
                 gen.writeStringField("statusDescription", value.statusDescription);
                 gen.writeStringField("currencyCode", value.currencyCode);
-                if(value.amount != null){
+                if (value.amount != null) {
                     gen.writeStringField("amount", value.amount.toString());
-                }else {
+                } else {
                     gen.writeStringField("amount", "");
                 }
-                if(value.charge != null){
-                    gen.writeStringField("charge", value.charge.toString());
-                }else {
+                if (value.charge != null) {
+                    gen.writeStringField("charge", value.charge);
+                } else {
                     gen.writeStringField("charge", "");
                 }
 

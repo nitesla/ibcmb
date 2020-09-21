@@ -45,24 +45,16 @@ public class SecurityServiceImpl implements SecurityService {
     private String defaultUser;
 
     private MessageSource messageSource;
-    private BCryptPasswordEncoder passwordEncoder;
-    private ModelMapper modelMapper;
-    private IpAddressUtils ipAddressUtils;
-    private IntegrationService integrationService;
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    private VelocityEngine ve;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final VelocityEngine ve;
     private Template t;
-    private VelocityContext context;
-    private CustomHttpClient httpClient;
+    private final VelocityContext context;
+    private final CustomHttpClient httpClient;
 
     @Autowired
     public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder, IntegrationService integrationService,
                                ModelMapper modelMapper, IpAddressUtils ipAddressUtils, CustomHttpClient httpClient) {
-        this.passwordEncoder = passwordEncoder;
-        this.integrationService = integrationService;
 
-        this.modelMapper = modelMapper;
-        this.ipAddressUtils = ipAddressUtils;
         Properties props = new Properties();
         props.put("resource.loader", "class");
         props.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
@@ -587,9 +579,8 @@ public class SecurityServiceImpl implements SecurityService {
 
             logger.info("******************END RESPONSE***********");
 
-            Integer number = Integer
+            return Integer
                     .parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
-            return number;
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -624,9 +615,8 @@ public class SecurityServiceImpl implements SecurityService {
             if (!isSuccessful)
                 throw new InternetBankingSecurityException(msg);
 
-            Integer number = Integer
+            return Integer
                     .parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
-            return number;
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -664,9 +654,8 @@ public class SecurityServiceImpl implements SecurityService {
 
             logger.info("******************END RESPONSE***********");
 
-            Integer number = Integer
+            return Integer
                     .parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
-            return number;
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

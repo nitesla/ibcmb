@@ -26,16 +26,15 @@ import java.util.stream.StreamSupport;
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${bank.code}")
     private String bankCode;
-    private RetailUserService retailUserService;
-    private AccountService accountService;
-    private ServiceReqConfigService reqConfigService;
-    private MessageService messageService;
-    private FinancialInstitutionService financialInstitutionService;
-    private NotificationsService notificationsService;
+    private final RetailUserService retailUserService;
+    private final AccountService accountService;
+    private final ServiceReqConfigService reqConfigService;
+    private final MessageService messageService;
+    private final NotificationsService notificationsService;
 
     @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
@@ -45,7 +44,6 @@ public class RetailControllerAdvice {
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
         this.messageService = messageService;
-        this.financialInstitutionService = financialInstitutionService;
         this.notificationsService = notificationsService;
     }
 
@@ -162,7 +160,7 @@ public class RetailControllerAdvice {
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
 
 
             model.addAttribute("accounts", accountList);

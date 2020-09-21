@@ -21,34 +21,26 @@ public class CronJobsbkp2 implements SchedulingConfigurer {
 @Autowired
 private CronJobService cronJobService;
     private String cronConfig() {
-        String cronTabExpression = "*/30 * * * * *";
-//        if (defaultConfigDto != null && !defaultConfigDto.getFieldValue().isEmpty()) {
+        //        if (defaultConfigDto != null && !defaultConfigDto.getFieldValue().isEmpty()) {
 //            cronTabExpression = "0 0 4 * * ?";
 //        }
-        return cronTabExpression;
+        return "*/30 * * * * *";
     }
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.addTriggerTask(new Runnable() {
-            @Override
-            public void run() {
+        taskRegistrar.addTriggerTask(() -> {
 //                cronJobService.updateAllAccountName();
 //                cronJobService.updateAllBVN();
 //                cronJobService.updateAllAccountCurrency();
 //                cronJobService.updateAccountStatus(null,null);
 //                System.out.println("Cron job running");
-            }
-        }, new Trigger() {
-            @Override
-            public Date nextExecutionTime(TriggerContext triggerContext) {
-                String cron = cronConfig();
+        }, triggerContext -> {
+            String cron = cronConfig();
 //                System.out.println("cron job "+cron);
-                CronTrigger trigger = new CronTrigger(cron);
-                Date nextExec = trigger.nextExecutionTime(triggerContext);
+            CronTrigger trigger = new CronTrigger(cron);
 
 //                System.out.println("the expression is "+trigger.getExpression());
-                return nextExec;
-            }
+            return trigger.nextExecutionTime(triggerContext);
         });
     }
 

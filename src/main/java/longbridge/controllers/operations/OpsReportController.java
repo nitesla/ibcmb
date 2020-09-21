@@ -53,7 +53,7 @@ public class OpsReportController {
     private MessageSource messageSource;
     @Autowired
     private CodeService codeService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${report.path}")
     private String REPORT_PATH;
     @Autowired
@@ -82,7 +82,7 @@ public class OpsReportController {
         }else {
             reportDTOS = reportService.getPageableReportsForuser(pageable);
         }
-        DataTablesOutput<ReportDTO> out = new DataTablesOutput<ReportDTO>();
+        DataTablesOutput<ReportDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(reportDTOS.getContent());
         out.setRecordsFiltered(reportDTOS.getTotalElements());
@@ -160,7 +160,7 @@ public class OpsReportController {
                     exporter.exportReport();
                     response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
                     response.setContentType("application/vnd.ms-excel");
-                    response.addHeader("Content-Disposition", String.format("inline; filename=\"" + reportDTO.getReportName() + ".xls\""));
+                    response.addHeader("Content-Disposition", "inline; filename=\"" + reportDTO.getReportName() + ".xls\"");
                     OutputStream responseOutputStream = response.getOutputStream();
                     responseOutputStream.write(pdfReportStream.toByteArray());
 
@@ -179,7 +179,7 @@ public class OpsReportController {
                         response.setContentType("application/pdf");
                         response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
 
-                        response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + reportDTO.getReportName() + ".pdf\""));
+                        response.addHeader("Content-Disposition", "attachment; filename=\"" + reportDTO.getReportName() + ".pdf\"");
 
                         OutputStream responseOutputStream = response.getOutputStream();
                         responseOutputStream.write(pdfReportStream.toByteArray());
@@ -199,29 +199,18 @@ public class OpsReportController {
 //                    return modelAndView;
                 }
 
-            } catch (IllegalStateException e) {
+            } catch (IllegalStateException | IOException e) {
 //                e.printStackTrace();
 //                ModelAndView modelAndView =  new ModelAndView("redirect:/admin/report/generate/index");
 //                model.addAttribute("failure", messageSource.getMessage("report.generate.error", null, locale));
 //                return modelAndView;
 
-            }catch (IOException e) {
-//                e.printStackTrace();
-//                ModelAndView modelAndView =  new ModelAndView("redirect:/admin/report/generate/index");
-//                model.addAttribute("failure", messageSource.getMessage("report.generate.error", null, locale));
-//                return modelAndView;
-
-            } catch (BeansException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 ModelAndView modelAndView =  new ModelAndView("redirect:/ops/report/generate/index");
                 model.addAttribute("failure", messageSource.getMessage("report.generate.error", null, locale));
                 return modelAndView;
 
-            }catch (Exception e){
-                e.printStackTrace();
-                ModelAndView modelAndView =  new ModelAndView("redirect:/ops/report/generate/index");
-                model.addAttribute("failure", messageSource.getMessage("report.generate.error", null, locale));
-                return modelAndView;
             }
         }
         return new ModelAndView();

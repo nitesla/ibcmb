@@ -40,17 +40,17 @@ public class CorpLoanController {
     private LoanDetailsService loanDetailsService;
     @Autowired
     private MessageSource messageSource;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
     @Value("${jrxmlImage.path}")
     private String imagePath;
 
     @PostMapping("/email")
     public String sendLoanDetailsinMail(MailLoanDTO mailLoanDTO, RedirectAttributes redirectAttributes) {
         String recipientEmail = mailLoanDTO.getRecipientEmail();
-        String recipientName = mailLoanDTO.getRecipientName();;
+        String recipientName = mailLoanDTO.getRecipientName();
 
         try {
             loanDetailsService.sendLoanDetails(recipientEmail, recipientName, mailLoanDTO.getAccountNumber());
@@ -84,7 +84,7 @@ public class CorpLoanController {
         List<LoanDTO> loanDTOList = new ArrayList<>();
         loanDTOList.add(loan);
         response.setContentType("application/x-download");
-        response.setHeader("Content-disposition", String.format("attachment; filename=\"loan_report.pdf\""));
+        response.setHeader("Content-disposition", "attachment; filename=\"loan_report.pdf\"");
         OutputStream outputStream = response.getOutputStream();
         JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
@@ -127,7 +127,7 @@ public class CorpLoanController {
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(baos.size()));
         response.setContentType("application/vnd.ms-excel");
-        response.addHeader("Content-disposition", String.format("attachment; filename=\"loan_report.xlsx\""));
+        response.addHeader("Content-disposition", "attachment; filename=\"loan_report.xlsx\"");
         OutputStream outputStream = response.getOutputStream();
         outputStream.write(baos.toByteArray());
         outputStream.close();

@@ -40,17 +40,17 @@ import java.util.stream.StreamSupport;
 @RequestMapping(value = "/retail/transfer/international")
 public class InternationalTransferController {
 
-    private RetailUserService retailUserService;
-    private TransferService transferService;
-    private CodeService codeService;
-    private InternationalBeneficiaryService beneficiaryService;
-    private InternationalTransferValidator validator;
-    private AccountService accountService;
-    private TransferErrorService transferErrorService;
-    private TransferUtils transferUtils;
+    private final RetailUserService retailUserService;
+    private final TransferService transferService;
+    private final CodeService codeService;
+    private final InternationalBeneficiaryService beneficiaryService;
+    private final InternationalTransferValidator validator;
+    private final AccountService accountService;
+    private final TransferErrorService transferErrorService;
+    private final TransferUtils transferUtils;
     private final String page = "cust/transfer/international/";
     private final Logger logger= LoggerFactory.getLogger(this.getClass());
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
     public InternationalTransferController(RetailUserService retailUserService, TransferService transferService, CodeService codeService, InternationalBeneficiaryService beneficiaryService, InternationalTransferValidator validator, AccountService accountService, TransferErrorService transferErrorService, TransferUtils transferUtils,MessageSource messageSource) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
@@ -267,7 +267,7 @@ public class InternationalTransferController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

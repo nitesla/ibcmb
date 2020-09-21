@@ -28,11 +28,7 @@ public class FailedLoginService {
     @Autowired
     private CorporateUserRepo corporateUserRepo;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-    private int MAX_ATTEMPT = 3;
-
-
-    private int expiryTime = 2;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
     public FailedLoginService() {
@@ -151,11 +147,11 @@ public class FailedLoginService {
     }
 
     private int getMaxAttempt() {
+        int MAX_ATTEMPT = 3;
         try {
             SettingDTO settingDTO = configService.getSettingByName("MAX_FAILED_LOGIN_TRIALS");
             if (settingDTO.isEnabled()) {
-                int timeout = Integer.parseInt(settingDTO.getValue());
-                return timeout;
+                return Integer.parseInt(settingDTO.getValue());
 
             }
         } catch (Exception e) {
@@ -167,11 +163,11 @@ public class FailedLoginService {
     }
 
     private int getExpiryTime() {
+        int expiryTime = 2;
         try {
             SettingDTO settingDTO = configService.getSettingByName("LOCK_OUT_DURATION");
             if (settingDTO.isEnabled()) {
-                int timeout = Integer.parseInt(settingDTO.getValue());
-                return timeout;
+                return Integer.parseInt(settingDTO.getValue());
 
             }
         } catch (Exception e) {

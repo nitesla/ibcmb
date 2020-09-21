@@ -42,14 +42,14 @@ import java.util.Locale;
 public class AccountConfigServiceImpl implements AccountConfigService {
 
 
-    private AccountRestrictionRepo accountRestrictionRepo;
-    private AccountClassRestrictionRepo accountClassRestrictionRepo;
-    private CodeService codeService;
-    private ModelMapper modelMapper;
-    private AccountRepo accountRepo;
-    private MessageSource messageSource;
-    private EntityManager entityManager;
-    private UserAccountRestrictionRepo userAccountRestrictionRepo;
+    private final AccountRestrictionRepo accountRestrictionRepo;
+    private final AccountClassRestrictionRepo accountClassRestrictionRepo;
+    private final CodeService codeService;
+    private final ModelMapper modelMapper;
+    private final AccountRepo accountRepo;
+    private final MessageSource messageSource;
+    private final EntityManager entityManager;
+    private final UserAccountRestrictionRepo userAccountRestrictionRepo;
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -73,11 +73,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
         Account account = accountRepo.findFirstByAccountNumber(accountNumber);
         if (account != null) {
-            if ("Y".equals(account.getHiddenFlag())) {
-                return true;
-            }
+            return !"Y".equals(account.getHiddenFlag());
         }
-        return false;
+        return true;
     }
 
     @Override

@@ -55,12 +55,12 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 //    @Value("${custom.beneficiaryAcct}")
 //    private String beneficiaryAcct;
 
-    private IntegrationService integrationService;
-    private AccountService accountService;
-    private ConfigurationService configService;
-    private FinancialInstitutionService financialInstitutionService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final IntegrationService integrationService;
+    private final AccountService accountService;
+    private final ConfigurationService configService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @Autowired
@@ -306,21 +306,23 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public Page<CorpPaymentRequest> findEntities(String filter, String search, Pageable pageable) {
         Corporate corporate = getCurrentUser().getCorporate();
         logger.info("filter type {}",filter);
-        if(filter.equals("Status")){
-            return corpPaymentRequestRepo.findUsingPattern(search,pageable);
-        }else if(filter.equals("Date")){
-            try {
-                Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(search);
-                LOGGER.info("startDate : {}",startDate);
-                Date endDate = addDays(startDate,1);
-                LOGGER.info("endDate : ",endDate);
-            return corpPaymentRequestRepo.findCorpPaymentRequestByCorporateAndTranDateBetween(corporate,pageable,startDate,endDate);
-            }catch (ParseException e){
-                LOGGER.error(e.getMessage());
-            }
-            }else if(filter.equals("Amount")){
-            LOGGER.info("filter : {} id {}",search, corporate.getId());
-            return corpPaymentRequestRepo.filterByAmount(corporate.getId(),pageable,search);
+        switch (filter) {
+            case "Status":
+                return corpPaymentRequestRepo.findUsingPattern(search, pageable);
+            case "Date":
+                try {
+                    Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(search);
+                    LOGGER.info("startDate : {}", startDate);
+                    Date endDate = addDays(startDate, 1);
+                    LOGGER.info("endDate : ", endDate);
+                    return corpPaymentRequestRepo.findCorpPaymentRequestByCorporateAndTranDateBetween(corporate, pageable, startDate, endDate);
+                } catch (ParseException e) {
+                    LOGGER.error(e.getMessage());
+                }
+                break;
+            case "Amount":
+                LOGGER.info("filter : {} id {}", search, corporate.getId());
+                return corpPaymentRequestRepo.filterByAmount(corporate.getId(), pageable, search);
         }
         return corpPaymentRequestRepo.findUsingPattern(search,pageable);
     }
@@ -380,8 +382,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser corporateUser = (CorporateUser) principal.getUser();
-        return corporateUser;
+        return (CorporateUser) principal.getUser();
     }
 
     private List<CorporateRole> getExistingRoles(List<CorporateRole> roles) {
@@ -520,9 +521,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
         dutyPayment.setPaymentRef(customPaymentNotification.getPaymentRef());
         LOGGER.debug("dutyPayment:{}",dutyPayment);
         customDutyPaymentRepo.save(dutyPayment);
-        if("00".equals(customPaymentNotification.getCode()) || "000".equals(customPaymentNotification.getCode())){ // Transfer successful
-            return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
-        }
+        // Transfer successful
         return messageSource.getMessage(customPaymentNotification.getMessage(), null, locale);
     }
 
@@ -576,7 +575,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     public List<CorpPaymentRequest> updatePendingStatus(){
         Corporate corporate=getCurrentUser().getCorporate();
         List<CorpPaymentRequest> corpPaymentRequests=corpPaymentRequestRepo.findPendingRequestForCorporate(corporate.getId());
-        corpPaymentRequests.stream().forEach(i->updatePayamentStatus(i.getId()));
+        corpPaymentRequests.forEach(i->updatePayamentStatus(i.getId()));
 
         logger.info("corp {}",corpPaymentRequests.size());
         return corpPaymentRequests;

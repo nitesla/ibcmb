@@ -37,14 +37,14 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/retail/transfer/local")
 public class LocalTransferController {
 
-    private RetailUserService retailUserService;
-    private TransferService transferService;
-    private LocalBeneficiaryService localBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
-    private TransferErrorService transferErrorService;
-    private TransferUtils transferUtils;
-    private String page = "cust/transfer/local/";
+    private final RetailUserService retailUserService;
+    private final TransferService transferService;
+    private final LocalBeneficiaryService localBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferValidator validator;
+    private final TransferErrorService transferErrorService;
+    private final TransferUtils transferUtils;
+    private final String page = "cust/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
@@ -212,7 +212,7 @@ public class LocalTransferController {
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null)
-            model.addAttribute("beneficiary", (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary"));
+            model.addAttribute("beneficiary", request.getSession().getAttribute("Lbeneficiary"));
 
         return page + "pageii";
     }

@@ -158,7 +158,8 @@ public interface RetailUserService {
      * @param securityAnswer the answer to the user's security question
      * @return the username if the inputs are valid or an error message if the invalid
      */
-    String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer);;
+    String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer);
+
     void increaseNoOfTokenAttempt(RetailUser user);
     void resetNoOfTokenAttempt(RetailUser user);
     String validateAccount();

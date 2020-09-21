@@ -25,7 +25,7 @@ public class AdmFeedBackSummaryController {
     @Autowired
     private CustomerFeedBackService customerFeedBackService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/enquire")
     public String feedBackEnquiry() {

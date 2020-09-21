@@ -31,7 +31,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     SessionUtils sessionUtils;
-    private LocalDate today = LocalDate.now();
+    private final LocalDate today = LocalDate.now();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired

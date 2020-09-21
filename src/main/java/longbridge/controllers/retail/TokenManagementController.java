@@ -40,11 +40,11 @@ import java.util.Locale;
 @RequestMapping("/retail/token")
 public class TokenManagementController {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SecurityService securityService;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private MessageSource messageSource;
     @Autowired
@@ -87,14 +87,10 @@ public class TokenManagementController {
                 return "redirect:/retail/dashboard";
             }
 
-        }
-        catch (InternetBankingSecurityException ibe){
+        } catch (Exception ibe){
             logger.error("Error authenticating token",ibe);
             redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
 
-        }catch (Exception e){
-            logger.error("Error authenticating token",e);
-            redirectAttributes.addFlashAttribute("failure",e.getMessage());
         }
         if(user != null){
             retailUserService.increaseNoOfTokenAttempt(user);

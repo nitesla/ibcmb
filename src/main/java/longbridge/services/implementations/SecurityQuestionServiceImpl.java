@@ -37,9 +37,9 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public List<SecurityQuestions> getSecQuestions() {
@@ -59,8 +59,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
         long t = page.getTotalElements();
 
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<SecQuestionDTO> pageImpl = new PageImpl<SecQuestionDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<SecQuestionDTO>(dtOs, pageDetails, t);
     }
 
     @Override

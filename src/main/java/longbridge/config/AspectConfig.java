@@ -18,42 +18,36 @@ public class AspectConfig {
     @Bean
     public MakerCheckerAdvisor mkCheckerAspect(){
 
-        MakerCheckerAdvisor aspect = Aspects.aspectOf(MakerCheckerAdvisor.class);
-        return aspect;
+        return Aspects.aspectOf(MakerCheckerAdvisor.class);
     }
 
     @Bean
     public AdminUserAdvisor postAdminAspect(){
 
-        AdminUserAdvisor aspect = Aspects.aspectOf(AdminUserAdvisor.class);
-        return aspect;
+        return Aspects.aspectOf(AdminUserAdvisor.class);
     }
 
     @Bean
     public OpsUserAdvisor postOpsAspect(){
 
-        OpsUserAdvisor aspect = Aspects.aspectOf(OpsUserAdvisor.class);
-        return aspect;
+        return Aspects.aspectOf(OpsUserAdvisor.class);
     }
 
     @Bean
     public RetailUserAdvisor postRetailAspect(){
 
-        RetailUserAdvisor aspect = Aspects.aspectOf(RetailUserAdvisor.class);
-        return aspect;
+        return Aspects.aspectOf(RetailUserAdvisor.class);
     }
 
     @Bean
     public CorporateUserAdvisor postCorporateUserAspect(){
 
-        CorporateUserAdvisor aspect = Aspects.aspectOf(CorporateUserAdvisor.class);
-        return aspect;
+        return Aspects.aspectOf(CorporateUserAdvisor.class);
     }
 
     @Bean
     public CorporateAdvisor postCorporateAspect(){
 
-        CorporateAdvisor aspect = Aspects.aspectOf(CorporateAdvisor.class);
-        return aspect;
+        return Aspects.aspectOf(CorporateAdvisor.class);
     }
 }

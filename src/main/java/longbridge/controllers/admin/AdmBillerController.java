@@ -35,7 +35,7 @@ public class AdmBillerController {
     @Autowired
     private BillerCategoryRepo billerCategoryRepo;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping
     public String indexPage(){
@@ -71,7 +71,7 @@ public class AdmBillerController {
         }else {
             billerCategory = billerService.getBillerCategories(pageable);
         }
-        DataTablesOutput<BillerCategory> out = new DataTablesOutput<BillerCategory>();
+        DataTablesOutput<BillerCategory> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(billerCategory.getContent());
         out.setRecordsFiltered(billerCategory.getTotalElements());
@@ -92,8 +92,7 @@ public class AdmBillerController {
     @ResponseBody
     @GetMapping("/paymentitems")
     public List<PaymentItem> paymentItemTable(HttpServletRequest request){
-        List<PaymentItem> paymentItems = (List<PaymentItem>) request.getSession().getAttribute("billeritems");
-        return paymentItems;
+        return (List<PaymentItem>) request.getSession().getAttribute("billeritems");
     }
 
 
@@ -110,7 +109,7 @@ public class AdmBillerController {
             billers = billerService.getBillersByCategory(categoryname,pageable);
         }
 
-        DataTablesOutput<Biller> out = new DataTablesOutput<Biller>();
+        DataTablesOutput<Biller> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(billers.getContent());
         out.setRecordsFiltered(billers.getTotalElements());
@@ -134,8 +133,7 @@ public class AdmBillerController {
     @PostMapping("/updatepaymentitems")
     public String updatePaymentItems(HttpServletRequest request){
         Long billerId = (Long) request.getSession().getAttribute("billerId");
-        String response = billerService.refreshPaymentItems(billerId);
-        return response;
+        return billerService.refreshPaymentItems(billerId);
     }
 
 

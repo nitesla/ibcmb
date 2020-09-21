@@ -45,11 +45,11 @@ import static longbridge.models.UserAccountRestriction.RestrictionType.*;
 @Service
 public class CorporateUserServiceImpl implements CorporateUserService {
 
-    private CorporateUserRepo corporateUserRepo;
+    private final CorporateUserRepo corporateUserRepo;
 
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
     @Autowired
     private MessageSource messageSource;
@@ -75,7 +75,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     private FailedLoginService failedLoginService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private EntityManager entityManager;
@@ -913,8 +913,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Page<CorporateUser> page = corporateUserRepo.findByCorporateId(corpId, pageDetails);
         List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -925,8 +924,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -947,8 +945,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUser getUserByCifAndEmailIgnoreCase(Corporate corporate, String email) {
-        CorporateUser corporateUser = corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, email);
-        return corporateUser;
+        return corporateUserRepo.findFirstByCorporateAndEmailIgnoreCase(corporate, email);
     }
 
     @Override
@@ -1326,8 +1323,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             dtOs.add(corporateUserDTO);
         }
         long t = page.getTotalElements();
-        Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
     }
 
     private CorporateUser getCurrentUser() {

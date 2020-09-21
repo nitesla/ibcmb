@@ -41,15 +41,15 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/retail/transfer/ownaccount")
 public class OwnTransferController {
 
-    private TransferService transferService;
-    private AccountService accountService;
-    private TransferValidator validator;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferErrorService errorService;
-    private RetailUserService retailUserService;
-    private TransferUtils transferUtils;
+    private final TransferService transferService;
+    private final AccountService accountService;
+    private final TransferValidator validator;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferErrorService errorService;
+    private final RetailUserService retailUserService;
+    private final TransferUtils transferUtils;
 
-    private String page = "cust/transfer/ownaccount/";
+    private final String page = "cust/transfer/ownaccount/";
 
     @Value("${bank.code}")
     private String bankCode;
@@ -60,7 +60,7 @@ public class OwnTransferController {
     @Value("${geolocation.key}")
     private String geolocationKey;
 */
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public OwnTransferController(TransferService transferService, AccountService accountService, TransferValidator validator, FinancialInstitutionService financialInstitutionService,

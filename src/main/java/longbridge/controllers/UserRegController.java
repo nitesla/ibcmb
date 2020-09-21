@@ -61,9 +61,9 @@ public class UserRegController {
     @Autowired
     private ConfigurationService configService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${antiphishingimagepath}")
     private String imagePath;
@@ -291,7 +291,7 @@ public class UserRegController {
     public
     @ResponseBody
     String[] getTokenSerials(@PathVariable String username) {
-        String no[] = new String[0];
+        String[] no = new String[0];
         logger.info("Username in Controller : " + username);
 
         RetailUser user = retailUserService.getUserByName(username);
@@ -302,7 +302,7 @@ public class UserRegController {
                 logger.info("SERIALS {}", sn);
                 //List<String> sec = null;
                 if (sn != null && !sn.isEmpty()) {
-                    String myList[] = sn.trim().split(",");
+                    String[] myList = sn.trim().split(",");
 
                     logger.info("SERIALS {}", myList);
                     return myList;
@@ -392,7 +392,6 @@ public class UserRegController {
         boolean codeValid = DateFormatter.validate(regCodeDate, new Date());
         logger.info("REGCODE IN SESSION {} ", regCode);
 //        Integer reg = Integer.parseInt(regCode);
-        ;
         String message = messageSource.getMessage("regCode.validate.expired", null, locale);
 
         if (code.equals(regCode)) {
@@ -607,7 +606,7 @@ public class UserRegController {
         model.addAttribute("registrationForm", registrationForm);
 
         File phish = new File(fullImagePath);
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         if (phish.isDirectory()) { // make sure it's a directory
             for (final File f : phish.listFiles(IMAGE_FILTER)) {
                 images.add(f.getName());
@@ -659,17 +658,13 @@ public class UserRegController {
             "jpeg", "jpg", "gif", "png", "bmp" // and other formats you need
     };
     // filter to identify images based on their extensions
-    static final FilenameFilter IMAGE_FILTER = new FilenameFilter() {
-
-        @Override
-        public boolean accept(final File dir, final String name) {
-            for (final String ext : EXTENSIONS) {
-                if (name.endsWith("." + ext)) {
-                    return (true);
-                }
+    static final FilenameFilter IMAGE_FILTER = (dir, name) -> {
+        for (final String ext : EXTENSIONS) {
+            if (name.endsWith("." + ext)) {
+                return (true);
             }
-            return (false);
         }
+        return (false);
     };
 
 
@@ -755,7 +750,7 @@ public class UserRegController {
         Long length = image.length();
         // length <= Integer.MAX_VALUE;
         //TODO: check file is not bigger than max int
-        byte buffer[] = new byte[length.intValue()];
+        byte[] buffer = new byte[length.intValue()];
 
 
         try {
@@ -784,13 +779,9 @@ public class UserRegController {
             logger.info("MESSAGE", message);
 //            redirectAttributes.addAttribute("success", "true");
             return "true";
-        } catch (InternetBankingSecurityException e) {
-            logger.error("Error creating retail user", e);
-            //redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
-            return e.getMessage();
         } catch (InternetBankingException e) {
             logger.error("Error creating retail user", e);
-
+            //redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
             return e.getMessage();
         }
 

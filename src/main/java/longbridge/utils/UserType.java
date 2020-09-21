@@ -9,7 +9,7 @@ public enum UserType {
     CORPORATE("corporate"),
     BOTH("both");
 
-    private String description;
+    private final String description;
 
     UserType(String description){
         this.description = description;

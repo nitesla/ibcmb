@@ -43,27 +43,27 @@ import java.util.stream.StreamSupport;
 public class BeneficiaryController {
 
 
-    Locale locale = LocaleContextHolder.getLocale();
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private LocalBeneficiaryService localBeneficiaryService;
-    private MessageSource messages;
+    private final LocalBeneficiaryService localBeneficiaryService;
+    private final MessageSource messages;
 
-    private InternationalBeneficiaryService internationalBeneficiaryService;
+    private final InternationalBeneficiaryService internationalBeneficiaryService;
 
-    private FinancialInstitutionService financialInstitutionService;
-    private SecurityService securityService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final SecurityService securityService;
 
-    private RetailUserService retailUserService;
+    private final RetailUserService retailUserService;
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
 
     @Value("${bank.code}")
     private String bankCode;
-    private ConfigurationService configService;
+    private final ConfigurationService configService;
 
-    private CodeService codeService;
+    private final CodeService codeService;
 
 
     @Autowired
@@ -218,11 +218,10 @@ public class BeneficiaryController {
                         logger.error("Beneficiary Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/retail/beneficiary/international";
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/retail/beneficiary/international";
                 }
+                return "redirect:/retail/beneficiary/international";
             } catch (InternetBankingException e) {
                 logger.error("International Beneficiary Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -311,15 +310,10 @@ public class BeneficiaryController {
         try {
             String message = internationalBeneficiaryService.addInternationalBeneficiary(internationalBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
-        }
-        catch (DuplicateObjectException doe){
+        } catch (InternetBankingException doe){
             logger.error("International Beneficiary Error", doe);
             redirectAttributes.addFlashAttribute("failure", doe.getMessage());
 
-        }
-        catch (InternetBankingException e) {
-            logger.error("International Beneficiary Error", e);
-            redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
         return "redirect:/retail/beneficiary/international";
     }

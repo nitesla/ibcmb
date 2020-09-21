@@ -39,16 +39,16 @@ import java.util.*;
  */
 @Service
 public class BulkTransferServiceImpl implements BulkTransferService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    private BulkTransferRepo bulkTransferRepo;
+    private final BulkTransferRepo bulkTransferRepo;
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
-    private BulkTransferJobLauncher jobLauncher;
+    private final BulkTransferJobLauncher jobLauncher;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private CorporateService corporateService;
@@ -75,11 +75,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private AccountConfigService accountConfigService;
-    @Autowired
     private IntegrationService integrationService;
-
-    private RestTemplate template;
 
     @Autowired
     IpAddressUtils ipAddressUtils;
@@ -90,7 +86,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Value("${naps.url}")
     private String url;
 
-    private NapsAntiFraudRepo napsAntiFraudRepo;
+    private final NapsAntiFraudRepo napsAntiFraudRepo;
 
 
     @Autowired
@@ -100,7 +96,6 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         this.bulkTransferRepo = bulkTransferRepo;
         this.jobLauncher = jobLauncher;
         this.messageSource = messageSource;
-        this.template=template;
         this.napsAntiFraudRepo=napsAntiFraudRepo;
     }
 
@@ -299,8 +294,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
 */
         long t = page.getTotalElements();
-        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);
-        return pageImpl;
+        return new PageImpl<BulkTransferDTO>(dtOs, details, t);
     }
 
     public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer) {
@@ -346,11 +340,10 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public Page<CreditRequestDTO> getCreditRequests(BulkTransfer bulkTransfer, Pageable pageable) {
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
-        Page<CreditRequest> page = new PageImpl<CreditRequest>(creditRequests);
+        Page<CreditRequest> page = new PageImpl<>(creditRequests);
         List<CreditRequestDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<CreditRequestDTO> pageImpl = new PageImpl<CreditRequestDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<CreditRequestDTO>(dtOs, pageable, t);
     }
 
     @Override
@@ -358,8 +351,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
         BulkTransfer bulkTransfer = bulkTransferRepo.findById(bulkTransferId).get();
         List<CreditRequest> creditRequests = bulkTransfer.getCrRequestList();
-        List<CreditRequestDTO> dtOs = convertEntToDTOs(creditRequests);
-        return dtOs;
+        return convertEntToDTOs(creditRequests);
 
     }
 
@@ -368,16 +360,14 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         Page<CreditRequest> page = (Page<CreditRequest>) bulkTransfer.getCrRequestList();
         List<CreditRequest> creditRequests = page.getContent();
         long t = page.getTotalElements();
-        Page<CreditRequest> pageImpl = new PageImpl<CreditRequest>(creditRequests, pageable, t);
-        return pageImpl;
+        return new PageImpl<CreditRequest>(creditRequests, pageable, t);
     }
 
     @Override
     public CreditRequestDTO getCreditRequest(Long id) {
 
         CreditRequest creditRequest = creditRequestRepo.findById(id).get();
-        CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
-        return creditRequestDTO;
+        return convertEntityToDTO(creditRequest);
     }
 
 
@@ -418,8 +408,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser corporateUser = (CorporateUser) principal.getUser();
-        return corporateUser;
+        return (CorporateUser) principal.getUser();
     }
 
     private List<CorporateRole> getExistingRoles(List<CorporateRole> roles) {
@@ -508,12 +497,10 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     }
 
    public List<BulkTransfer> getBulkTransferRequestsForCorporate(Corporate corporate){
-        List<BulkTransfer> bulkTransfers=bulkTransferRepo.findByCorporate(corporate);
-        return bulkTransfers;
+       return bulkTransferRepo.findByCorporate(corporate);
    }
    public List<BulkTransfer>getByStatus(){
-       List<BulkTransfer> bulkTransfers=bulkTransferRepo.findByStatus("Processing");
-        return bulkTransfers;
+       return bulkTransferRepo.findByStatus("Processing");
    }
 
 

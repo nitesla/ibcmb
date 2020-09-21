@@ -27,7 +27,7 @@ import static longbridge.utils.StringUtil.searchModifiedEntityTypeEntity;
 public class AuditRepoImpl {
     @Autowired
     EntityManager em;
-Logger logger = LoggerFactory.getLogger(AuditRepoImpl.class);
+final Logger logger = LoggerFactory.getLogger(AuditRepoImpl.class);
 //        @Override
 //        public Page<T> findUsingPattern(String pattern, Pageable details)
 //        {
@@ -93,7 +93,7 @@ Logger logger = LoggerFactory.getLogger(AuditRepoImpl.class);
                 System.out.println("the result is "+entityTypeEntities.get(0));
             }
 
-            return new PageImpl<ModifiedEntityTypeEntity>(entityTypeEntities, pageable, count);
+            return new PageImpl<>(entityTypeEntities, pageable, count);
         } catch (Exception e) {
             e.printStackTrace();
             return new PageImpl<>(new ArrayList<>());

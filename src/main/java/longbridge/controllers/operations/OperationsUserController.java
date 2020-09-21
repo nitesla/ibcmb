@@ -83,12 +83,8 @@ public class OperationsUserController {
 
                 return "redirect:/ops/dashboard";
             }
-        }
-        catch (InternetBankingException ibe){
+        } catch (Exception ibe){
             logger.error("Error authenticating token",ibe);
-        }
-        catch (Exception e) {
-            logger.error("Error authenticating token",e);
         }
         redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
         return "redirect:/ops/token";

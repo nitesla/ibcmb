@@ -32,9 +32,9 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
     private ModelMapper modelMapper;
     @Autowired
     private MessageSource messageSource;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private InternationalBeneficiaryRepo internationalBeneficiaryRepo;
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     public InternationalBeneficiaryServiceImpl() {

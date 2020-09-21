@@ -41,7 +41,7 @@ import java.util.Locale;
 @Service
 public class OperationsUserServiceImpl implements OperationsUserService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private OperationsUserRepo operationsUserRepo;
 
@@ -74,7 +74,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Value("${host.url}")
     private String hostUrl;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     public OperationsUserServiceImpl() {
 
@@ -117,8 +117,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -164,8 +163,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     public OperationsUser getUserByName(String name) {
-        OperationsUser opsUser = this.operationsUserRepo.findFirstByUserNameIgnoreCase(name);
-        return opsUser;
+        return this.operationsUserRepo.findFirstByUserNameIgnoreCase(name);
     }
 
     @Override
@@ -377,7 +375,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    public String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException, PasswordException {
+    public String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException {
 
         if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new WrongPasswordException();
@@ -492,8 +490,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -503,8 +500,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
     }
 
 

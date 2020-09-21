@@ -41,7 +41,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Autowired
 	private EntityManager entityManager;
 
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 	@Transactional
 	@Override
@@ -85,8 +85,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		Page<Setting> page = settingRepo.findAll(pageDetails);
 		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-		Page<SettingDTO> pageImpl = new PageImpl<SettingDTO>(dtOs, pageDetails, t);
-		return pageImpl;
+        return new PageImpl<SettingDTO>(dtOs, pageDetails, t);
 	}
 
 	private List<SettingDTO> convertEntitiesToDTOs(List<Setting> content) {
@@ -154,8 +153,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		Page<Setting> page = settingRepo.findUsingPattern(pattern, pageDetails);
 		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-		Page<SettingDTO> pageImpl = new PageImpl<SettingDTO>(dtOs, pageDetails, t);
-		return pageImpl;
+        return new PageImpl<SettingDTO>(dtOs, pageDetails, t);
 	}
 
 }

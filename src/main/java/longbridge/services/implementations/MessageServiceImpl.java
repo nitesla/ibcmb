@@ -43,15 +43,11 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private EntityManager entityManager;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private MessageRepo messageRepo;
-    private MailBoxRepo mailBoxRepo;
-    private AdminUserService adminUserService;
-    private OperationsUserService operationsUserService;
-    private RetailUserService retailUserService;
-    private CorporateUserService corporateUserService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final MessageRepo messageRepo;
+    private final MailBoxRepo mailBoxRepo;
 
 //    @Override
 //    public MessageDTO getLastSentMessage(String sender) {
@@ -67,10 +63,6 @@ public class MessageServiceImpl implements MessageService {
     public MessageServiceImpl(MessageRepo messageRepo, MailBoxRepo mailBoxRepo, AdminUserService adminUserService, OperationsUserService operationsUserService, RetailUserService retailUserService, CorporateUserService corporateUserService) {
         this.messageRepo = messageRepo;
         this.mailBoxRepo = mailBoxRepo;
-        this.adminUserService = adminUserService;
-        this.operationsUserService = operationsUserService;
-        this.retailUserService = retailUserService;
-        this.corporateUserService = corporateUserService;
     }
 
     @Override
@@ -291,7 +283,7 @@ public class MessageServiceImpl implements MessageService {
     public List<MessageDTO> getSentMessages(User user) {
         List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreatedDesc(user.getId(), user.getUserType(),MessageCategory.SENT.toString());
         logger.info("the message ================================================================================ " + messages);
-        List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
+        List<MessageDTO> sentMessages = new ArrayList<>();
         if (messages == null) {
             return sentMessages;
         }
@@ -304,7 +296,7 @@ public class MessageServiceImpl implements MessageService {
     public List<MessageDTO> getMessagesByTag(User user, MessageCategory messageCategory) {
         List<Message>  messages = messageRepo.findMessageByUserAndTagOrderByDateCreatedDesc(user.getId(), user.getUserType(),messageCategory.toString());
         logger.info("the {} messages are {}",messageCategory,messages.size());
-        List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
+        List<MessageDTO> sentMessages = new ArrayList<>();
         if (messages == null) {
             return sentMessages;
         }
@@ -317,14 +309,12 @@ public class MessageServiceImpl implements MessageService {
 
         List<MessageDTO> dtOs = convertEntitiesToDTOs(messages.getContent());
         long t = messages.getTotalElements();
-        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<MessageDTO>(dtOs, pageable, t);
     }
     @Override
     @Transactional
     public Long countMessagesByTag(User user, MessageCategory messageCategory) {
-        Long  messagesCount = messageRepo.countMessageByUserAndTag(user.getId(), user.getUserType(),messageCategory.toString());
-        return messagesCount;
+        return messageRepo.countMessageByUserAndTag(user.getId(), user.getUserType(),messageCategory.toString());
     }
 
 
@@ -334,8 +324,7 @@ public class MessageServiceImpl implements MessageService {
         Page<Message> page = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
         List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<MessageDTO>(dtOs, pageable, t);
 
     }
 
@@ -395,8 +384,7 @@ public class MessageServiceImpl implements MessageService {
 
         List<MessageDTO> dtOs = convertEntitiesToDTOs(messages.getContent());
         long t = messages.getTotalElements();
-        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<MessageDTO>(dtOs, pageDetails, t);
     }
 
     @Override

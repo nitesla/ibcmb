@@ -33,7 +33,7 @@ public class CustomerFeedBackServiceImpl implements CustomerFeedBackService {
     @Autowired
     ModelMapper modelMapper;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Override
@@ -58,7 +58,7 @@ public class CustomerFeedBackServiceImpl implements CustomerFeedBackService {
             CustomerFeedBackSummaryDTO result = new CustomerFeedBackSummaryDTO();
             String retailRating = customerFeedBackRepo.findAverageForUserType(tranType, "RETAIL", startDate, endDate);
            logger.info("the retailrating is {}",retailRating);
-            String corporateRating = customerFeedBackRepo.findAverageForUserType(tranType, "CORPORATE", startDate, endDate);;
+            String corporateRating = customerFeedBackRepo.findAverageForUserType(tranType, "CORPORATE", startDate, endDate);
             String bothRating = customerFeedBackRepo.findAverageForBothTypes(tranType, startDate, endDate);
             result.setTranType(tranType);
             result.setRetailRatingReviews(Integer.parseInt(this.getStringPart(0, retailRating)));

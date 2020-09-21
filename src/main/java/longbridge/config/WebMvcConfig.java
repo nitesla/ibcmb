@@ -158,8 +158,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     //
     @Bean
     public AdminAuthenticationSuccessHandler successHandler() {
-        AdminAuthenticationSuccessHandler handler = new AdminAuthenticationSuccessHandler();
-        return handler;
+        return new AdminAuthenticationSuccessHandler();
     }
 
     @Bean

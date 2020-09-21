@@ -66,7 +66,7 @@ public class AdmReportController {
     private RoleService roleService;
     @Autowired
     private ReportUtils reportUtils;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private ReportService reportService;
     @Autowired
@@ -94,7 +94,7 @@ public class AdmReportController {
         }else {
             reportDTOS = reportService.findReports(csearch,pageable);
         }
-        DataTablesOutput<ReportDTO> out = new DataTablesOutput<ReportDTO>();
+        DataTablesOutput<ReportDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(reportDTOS.getContent());
         out.setRecordsFiltered(reportDTOS.getTotalElements());
@@ -136,7 +136,7 @@ public class AdmReportController {
             return "adm/report/add";
         }
         String permissionCode =  webRequest.getParameter("permissionCode");
-        String sysFileName = reportUtils.generateFileName();
+        String sysFileName = ReportUtils.generateFileName();
         logger.info("the report name {} done by {} and permission {}",reportName,principal.getName(),permissionCode);
         try {
             ReportDTO reportDTO = reportService.extractParameters(reportName,permissionCode,principal.getName(),sysFileName,file.getOriginalFilename(),file);
@@ -262,7 +262,7 @@ public class AdmReportController {
         }else {
             reportDTOS = reportService.getPageableReportsForuser(pageable);
         }
-        DataTablesOutput<ReportDTO> out = new DataTablesOutput<ReportDTO>();
+        DataTablesOutput<ReportDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(reportDTOS.getContent());
         out.setRecordsFiltered(reportDTOS.getTotalElements());
@@ -377,7 +377,7 @@ public class AdmReportController {
         }
         System.out.println("mimetype : " + mimeType);
         response.setContentType(mimeType);
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + reportDTO.getOrigFileName() + "\""));
+        response.setHeader("Content-Disposition", "inline; filename=\"" + reportDTO.getOrigFileName() + "\"");
 //        response.setContentLength(String.valueOf(pdfReportStream.size()));
         InputStream inputStream = new BufferedInputStream(stream);
         //Copy bytes from source to destination(outputstream in this example), closes both streams.
@@ -419,7 +419,7 @@ public class AdmReportController {
                     exporter.exportReport();
                     response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
                     response.setContentType("application/vnd.ms-excel");
-                    response.addHeader("Content-Disposition", String.format("inline; filename=\"" + reportDTO.getReportName() + ".xlsx\""));
+                    response.addHeader("Content-Disposition", "inline; filename=\"" + reportDTO.getReportName() + ".xlsx\"");
                     OutputStream responseOutputStream = response.getOutputStream();
                     responseOutputStream.write(pdfReportStream.toByteArray());
 
@@ -430,7 +430,7 @@ public class AdmReportController {
                     if(reportDTO.getJrxmlFile() != null) {
                         response.setContentType("application/pdf");
 //                        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
-                        response.addHeader("Content-Disposition", String.format("attachment; filename=\"" + reportDTO.getReportName() + ".pdf\""));
+                        response.addHeader("Content-Disposition", "attachment; filename=\"" + reportDTO.getReportName() + ".pdf\"");
 
                         JasperExportManager.exportReportToPdfStream(print, response.getOutputStream());
 

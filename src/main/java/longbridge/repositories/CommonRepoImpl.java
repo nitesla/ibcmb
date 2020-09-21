@@ -29,7 +29,7 @@ import java.util.*;
 public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements CommonRepo<T, ID> {
     private final JpaEntityInformation<T, ?> entityInformation;
     private final EntityManager em ;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public CommonRepoImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager em)
     {
         super(entityInformation, em);
@@ -95,12 +95,9 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
         Assert.notNull(id, "The given id is null!");
         try {
             return super.getOne(id);
-        } catch (EntityNotFoundException e) {
-            System.out.println("the exception caught "+e.getMessage());
+        } catch (NoSuchElementException e) {
             return null;
-        }catch (NoSuchElementException e) {
-            return null;
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("the exception caught "+e.getMessage());
             return null;
         }
@@ -181,7 +178,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
         query.setFirstResult(Math.toIntExact(details.getOffset()));
         query.setMaxResults(details.getPageSize());
         List<T> list = query.getResultList();
-        return new PageImpl<T>(list, details, count);
+        return new PageImpl<>(list, details, count);
     }
 
 

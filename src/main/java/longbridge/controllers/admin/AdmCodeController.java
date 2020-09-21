@@ -33,7 +33,7 @@ import java.util.Locale;
 @RequestMapping("/admin/codes")
 public class AdmCodeController {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CodeService codeService;
 
@@ -115,7 +115,7 @@ public class AdmCodeController {
 
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<CodeTypeDTO> codeTypes = codeService.getCodeTypes(pageable);
-		DataTablesOutput<CodeTypeDTO> out = new DataTablesOutput<CodeTypeDTO>();
+		DataTablesOutput<CodeTypeDTO> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
 		out.setData(codeTypes.getContent());
 		out.setRecordsFiltered(codeTypes.getTotalElements());
@@ -128,7 +128,7 @@ public class AdmCodeController {
 
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<CodeDTO> codes = codeService.getCodes(pageable);
-		DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+		DataTablesOutput<CodeDTO> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
 		out.setData(codes.getContent());
 		out.setRecordsFiltered(codes.getTotalElements());
@@ -141,7 +141,7 @@ public class AdmCodeController {
 		System.out.println(codeType);
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<CodeDTO> codes = codeService.getCodesByType(codeType, pageable);
-		DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+		DataTablesOutput<CodeDTO> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
 		out.setData(codes.getContent());
 		out.setRecordsFiltered(codes.getTotalElements());

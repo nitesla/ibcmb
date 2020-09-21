@@ -117,12 +117,9 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		} else if (!code.equals(other.code))
 			return false;
 		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
+            return other.type == null;
+		} else return type.equals(other.type);
+    }
 
 	@Override
 	public String toString() {
@@ -137,16 +134,15 @@ public class Code extends AbstractEntity implements PrettySerializer{
 
 	@Override @JsonIgnore
 	public JsonSerializer<Code> getSerializer() {
-		return new JsonSerializer<Code>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(Code value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException
-			{
+					throws IOException {
 				gen.writeStartObject();
-				gen.writeStringField("Code",value.code);
-				gen.writeStringField("Description",value.description);
-				gen.writeStringField("Type",value.type);
-				gen.writeStringField("Extra Information",value.extraInfo);
+				gen.writeStringField("Code", value.code);
+				gen.writeStringField("Description", value.description);
+				gen.writeStringField("Type", value.type);
+				gen.writeStringField("Extra Information", value.extraInfo);
 				gen.writeEndObject();
 			}
 		};
@@ -154,21 +150,20 @@ public class Code extends AbstractEntity implements PrettySerializer{
 
 	@Override @JsonIgnore
 	public JsonSerializer<Code> getAuditSerializer() {
-		return new JsonSerializer<Code>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(Code value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException
-			{
+					throws IOException {
 				gen.writeStartObject();
-				if(value.id != null) {
+				if (value.id != null) {
 					gen.writeStringField("id", value.id.toString());
-				}else {
+				} else {
 					gen.writeStringField("id", "");
 				}
-				gen.writeStringField("code",value.code);
-				gen.writeStringField("description",value.description);
-				gen.writeStringField("type",value.type);
-				gen.writeStringField("extraInfo",value.extraInfo);
+				gen.writeStringField("code", value.code);
+				gen.writeStringField("description", value.description);
+				gen.writeStringField("type", value.type);
+				gen.writeStringField("extraInfo", value.extraInfo);
 				gen.writeEndObject();
 			}
 		};

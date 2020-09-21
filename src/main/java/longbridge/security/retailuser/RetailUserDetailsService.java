@@ -25,12 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("retailUserDetails")
 public class RetailUserDetailsService implements UserDetailsService {
 
-    private RetailUserRepo retailUserRepo;
-    private CustomBruteForceService bruteForceService;
-    private IpAddressUtils addressUtils;
-    private FailedLoginService failedLoginService;
-    private SessionUtils sessionUtils;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final RetailUserRepo retailUserRepo;
+    private final CustomBruteForceService bruteForceService;
+    private final IpAddressUtils addressUtils;
+    private final FailedLoginService failedLoginService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
@@ -40,7 +39,6 @@ public class RetailUserDetailsService implements UserDetailsService {
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
         this.failedLoginService = failedLoginService;
-        this.sessionUtils=sessionUtils;
     }
 
     @Override

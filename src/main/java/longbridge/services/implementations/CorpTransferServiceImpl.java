@@ -43,15 +43,15 @@ import java.util.stream.StreamSupport;
 @Service
 public class CorpTransferServiceImpl implements CorpTransferService {
 
-    private NeftTransferRepo neftTransferRepo;
-    private CorpTransferRequestRepo corpTransferRequestRepo;
-    private IntegrationService integrationService;
-    private TransactionLimitServiceImpl limitService;
-    private AccountService accountService;
-    private ConfigurationService configService;
-    private DirectDebitService directDebitService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final NeftTransferRepo neftTransferRepo;
+    private final CorpTransferRequestRepo corpTransferRequestRepo;
+    private final IntegrationService integrationService;
+    private final TransactionLimitServiceImpl limitService;
+    private final AccountService accountService;
+    private final ConfigurationService configService;
+    private final DirectDebitService directDebitService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private ModelMapper modelMapper;
 
@@ -88,7 +88,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     HttpServletRequest httpServletRequest;
 
-    private SessionUtil sessionUtil;
+    private final SessionUtil sessionUtil;
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
@@ -173,10 +173,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setAuthStatus(TransferAuthorizationStatus.APPROVED);
                 return addAuthorization(transReqEntry);
             }
-        } catch (TransferAuthorizationException ex) {
+        } catch (TransferAuthorizationException | InternetBankingTransferException ex) {
             throw ex;
-        } catch (InternetBankingTransferException te) {
-            throw te;
         } catch (Exception e) {
             throw new InternetBankingTransferException(messageSource.getMessage("transfer.add.failure", null, locale), e);
         }
@@ -288,19 +286,17 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Page<CorpTransRequest> page = corpTransferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc("CORP_" + corporateUser.getId(), pageDetails);
         List<CorpTransferRequestDTO> corpTransferRequestDTOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<>(corpTransferRequestDTOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<>(corpTransferRequestDTOs, pageDetails, t);
     }
 
     @Override
     public Page<CorpTransRequest> getCompletedTransfers(String pattern, Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);
-//        List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        //        List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 //        long t = page.getTotalElements();
 //        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
-        return page;
+        return corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);
     }
 
     @Override
@@ -311,8 +307,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);
         List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -408,7 +403,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(), corporateUser.getId())).collect(Collectors.toList());
 
-        return new PageImpl<CorpTransRequest>(corpTransRequests, pageDetails, page.getTotalElements());
+        return new PageImpl<>(corpTransRequests, pageDetails, page.getTotalElements());
 
     }
     @Override
@@ -419,7 +414,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         List<CorpTransRequest> corpTransRequests = page.getContent().stream()
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
-        return new PageImpl<CorpTransferRequestDTO>(convertEntitiesToDTOs(corpTransRequests),pageDetails,page.getTotalElements());
+        return new PageImpl<>(convertEntitiesToDTOs(corpTransRequests), pageDetails, page.getTotalElements());
 
     }
 
@@ -826,8 +821,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     private CorporateUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser corporateUser = (CorporateUser) principal.getUser();
-        return corporateUser;
+        return (CorporateUser) principal.getUser();
     }
 
     private List<CorporateRole> getExistingRoles(List<CorporateRole> roles) {

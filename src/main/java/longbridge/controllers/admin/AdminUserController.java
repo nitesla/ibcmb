@@ -38,7 +38,7 @@ import java.util.Locale;
 @RequestMapping("/admin/users")
 public class  AdminUserController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private AdminUserService adminUserService;
@@ -97,13 +97,9 @@ public class  AdminUserController {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating admin user on Entrust", se);
             return "adm/admin/add";
-        } catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingException se) {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating admin user", se);
-            return "adm/admin/add";
-        } catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error creating admin user", ibe);
             return "adm/admin/add";
         }
 
@@ -123,7 +119,7 @@ public class  AdminUserController {
         } else {
             adminUsers = adminUserService.getUsers(pageable);
         }
-        DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
+        DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(adminUsers.getContent());
         out.setRecordsFiltered(adminUsers.getTotalElements());
@@ -197,12 +193,9 @@ public class  AdminUserController {
         try {
             String message = adminUserService.deleteUser(userId);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (InternetBankingSecurityException se) {
+        } catch (InternetBankingException se) {
             redirectAttributes.addFlashAttribute("failure", se.getMessage());
             logger.error("Error deleting admin user", se);
-        } catch (InternetBankingException ibe) {
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            logger.error("Error deleting admin user", ibe);
         }
         return "redirect:/admin/users";
     }

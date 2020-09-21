@@ -53,12 +53,12 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Autowired
     AccountService accountService;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    final Locale locale = LocaleContextHolder.getLocale();
 
     SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
 
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     @Verifiable(operation = "ADD_TRANS_LIMIT", description = "Adding a Global Limit")
@@ -110,16 +110,14 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public List<GlobalLimitDTO> getCorporateGlobalLimits() {
         List<GlobalLimit> limitsDTOs = globalLimitRepo.findByCustomerType(UserType.CORPORATE.toString());
-        List<GlobalLimitDTO> dtOs = convertGlobalLimitEntitiesToDTOs(limitsDTOs);
-        return dtOs;
+        return convertGlobalLimitEntitiesToDTOs(limitsDTOs);
     }
 
 
     @Override
     public List<GlobalLimitDTO> getRetailGlobalLimits() {
         List<GlobalLimit> limitsDTOs = globalLimitRepo.findByCustomerType(UserType.RETAIL.toString());
-        List<GlobalLimitDTO> dtOs = convertGlobalLimitEntitiesToDTOs(limitsDTOs);
-        return dtOs;
+        return convertGlobalLimitEntitiesToDTOs(limitsDTOs);
     }
 
 
@@ -170,15 +168,13 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public List<ClassLimitDTO> getCorporateClassLimits() {
         List<ClassLimit> limitsDTOs = classLimitRepo.findByCustomerType(UserType.CORPORATE.toString());
-        List<ClassLimitDTO> dtOs = convertClassLimitEntitiesToDTOs(limitsDTOs);
-        return dtOs;
+        return convertClassLimitEntitiesToDTOs(limitsDTOs);
     }
 
     @Override
     public List<ClassLimitDTO> getRetailClassLimits() {
         List<ClassLimit> limitsDTOs = classLimitRepo.findByCustomerType(UserType.RETAIL.toString());
-        List<ClassLimitDTO> dtOs = convertClassLimitEntitiesToDTOs(limitsDTOs);
-        return dtOs;
+        return convertClassLimitEntitiesToDTOs(limitsDTOs);
     }
 
 
@@ -229,15 +225,13 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public List<AccountLimitDTO> getCorporateAccountLimits() {
         List<AccountLimit> limitsDTOs = accountLimitRepo.findByCustomerType(UserType.CORPORATE.toString());
-        List<AccountLimitDTO> dtOs = convertAccountLimitEntitiesToDTOs(limitsDTOs);
-        return dtOs;
+        return convertAccountLimitEntitiesToDTOs(limitsDTOs);
     }
 
     @Override
     public List<AccountLimitDTO> getRetailAccountLimits() {
         List<AccountLimit> limitsDTOs = accountLimitRepo.findByCustomerType(UserType.RETAIL.toString());
-        List<AccountLimitDTO> dtOs = convertAccountLimitEntitiesToDTOs(limitsDTOs);
-        return dtOs;
+        return convertAccountLimitEntitiesToDTOs(limitsDTOs);
     }
 
     @Override
@@ -349,8 +343,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     private GlobalLimit convertGlobalLimitDTOToEntity(GlobalLimitDTO limit) {
-        GlobalLimit globalLimit = modelMapper.map(limit, GlobalLimit.class);
-        return globalLimit;
+        return modelMapper.map(limit, GlobalLimit.class);
     }
 
 
@@ -364,13 +357,11 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     private ClassLimitDTO convertClassLimitEntityToDTO(ClassLimit limit) {
-        ClassLimitDTO classLimitDTO = modelMapper.map(limit, ClassLimitDTO.class);
-        return classLimitDTO;
+        return modelMapper.map(limit, ClassLimitDTO.class);
     }
 
     private ClassLimit convertClassLimitDTOToEntity(ClassLimitDTO limit) {
-        ClassLimit classLimit = modelMapper.map(limit, ClassLimit.class);
-        return classLimit;
+        return modelMapper.map(limit, ClassLimit.class);
     }
 
 
@@ -386,13 +377,11 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     private AccountLimitDTO convertAccountLimitEntityToDTO(AccountLimit limit) {
-        AccountLimitDTO accountLimitDTO = modelMapper.map(limit, AccountLimitDTO.class);
-        return accountLimitDTO;
+        return modelMapper.map(limit, AccountLimitDTO.class);
     }
 
     private AccountLimit convertAccountLimitDTOToEntity(AccountLimitDTO limit) {
-        AccountLimit accountLimit = modelMapper.map(limit, AccountLimit.class);
-        return accountLimit;
+        return modelMapper.map(limit, AccountLimit.class);
     }
 
 
@@ -433,9 +422,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             }
 
             if (accountLimit != null) {
-                if (amount.compareTo(accountLimit.getMaxLimit()) > 0) {
-                    return true;
-                }
+                return amount.compareTo(accountLimit.getMaxLimit()) > 0;
             }
 
 
@@ -461,9 +448,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             }
 
             if (accountLimit != null) {
-                if (amount.compareTo(accountLimit.getMaxLimit()) > 0) {
-                    return true;
-                }
+                return amount.compareTo(accountLimit.getMaxLimit()) > 0;
             }
         } else if (transferType.equals(TransferType.RTGS)) {
 
@@ -486,9 +471,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             }
 
             if (accountLimit != null) {
-                if (amount.compareTo(accountLimit.getMaxLimit()) > 0) {
-                    return true;
-                }
+                return amount.compareTo(accountLimit.getMaxLimit()) > 0;
             }
         } else if (transferType.equals(TransferType.NAPS)) {
 
@@ -511,9 +494,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             }
 
             if (accountLimit != null) {
-                if (amount.compareTo(accountLimit.getMaxLimit()) > 0) {
-                    return true;
-                }
+                return amount.compareTo(accountLimit.getMaxLimit()) > 0;
             }
         }
         return false;

@@ -11,7 +11,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -27,8 +26,7 @@ import java.util.Locale;
 public class UtilityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

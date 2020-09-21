@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 public class Transfer {
-    private IntegrationService integrationService;
+    private final IntegrationService integrationService;
 
      @Autowired
     public Transfer(IntegrationService integrationService) {

@@ -27,7 +27,7 @@ public class OpAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
     @Autowired
     FailedLoginService failedLoginService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override

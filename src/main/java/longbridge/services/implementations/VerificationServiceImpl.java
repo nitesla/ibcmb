@@ -369,11 +369,7 @@ public class VerificationServiceImpl implements VerificationService {
 
         Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
                 entityId, VerificationStatus.PENDING);
-        if (pendingVerification != null) {
-            return true;
-        }
-
-        return false;
+        return pendingVerification != null;
     }
 
     @Override
@@ -403,8 +399,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findByStatusAndInitiatedByOrderByInitiatedOnDesc(VerificationStatus.PENDING, doneBy.getUserName(), pageDetails);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -414,16 +409,14 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(operation, doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<VerificationDTO>(dtOs, pageable, t);
 
     }
 
     @Override
     public long getTotalNumberPending() {
         User doneBy = getCurrentUser();
-        long totalNumberPending = verificationRepo.countByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING);
-        return totalNumberPending;
+        return verificationRepo.countByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING);
     }
 
 
@@ -451,8 +444,7 @@ public class VerificationServiceImpl implements VerificationService {
         List<String> permissions = getPermissionCodes(doneBy.getRole());
         logger.info("UserType =========== {} " , doneBy.getUserType());
         logger.info("PERMISSIONS =========== {} " , permissions);
-        Page<Verification> verifications = verificationRepo.findVerificationForUsers(doneBy.getUserName(), doneBy.getUserType(), permissions, pageable);
-        return verifications;
+        return verificationRepo.findVerificationForUsers(doneBy.getUserName(), doneBy.getUserType(), permissions, pageable);
 
     }
 
@@ -471,8 +463,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findByInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<VerificationDTO>(dtOs, pageable, t);
 
     }
 
@@ -483,8 +474,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findVerifiedOperationsForUser(verifiedBy.getUserName(), verifiedBy.getUserType(), pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<VerificationDTO>(dtOs, pageable, t);
     }
 
     private String getCurrentUserName() {

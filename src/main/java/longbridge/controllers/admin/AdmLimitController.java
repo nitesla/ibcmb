@@ -34,7 +34,7 @@ import java.util.Locale;
 public class AdmLimitController {
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CodeService codeService;
@@ -117,7 +117,7 @@ public class AdmLimitController {
     @ResponseBody
     DataTablesOutput<GlobalLimitDTO> getRetailGlobalLimits(DataTablesInput input) {
         List<GlobalLimitDTO> globalLimits = transactionLimitService.getRetailGlobalLimits();
-        DataTablesOutput<GlobalLimitDTO> out = new DataTablesOutput<GlobalLimitDTO>();
+        DataTablesOutput<GlobalLimitDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(globalLimits);
         out.setRecordsFiltered(globalLimits.size());
@@ -135,7 +135,7 @@ public class AdmLimitController {
     @ResponseBody
     DataTablesOutput<GlobalLimitDTO> getCorporateGlobalLimits(DataTablesInput input) {
         List<GlobalLimitDTO> globalLimits = transactionLimitService.getCorporateGlobalLimits();
-        DataTablesOutput<GlobalLimitDTO> out = new DataTablesOutput<GlobalLimitDTO>();
+        DataTablesOutput<GlobalLimitDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(globalLimits);
         out.setRecordsFiltered(globalLimits.size());

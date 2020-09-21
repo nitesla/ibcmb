@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OpsCustomDutyController {
     @Autowired
     private CorpCustomDutyService customDutyService;
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     @GetMapping
     public String viewCustomPaymentRequest(){
         return "ops/customduty/view";

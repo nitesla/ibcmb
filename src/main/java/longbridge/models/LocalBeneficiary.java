@@ -39,32 +39,30 @@ public class LocalBeneficiary extends Beneficiary implements PrettySerializer{
 
     @Override @JsonIgnore
     public JsonSerializer<LocalBeneficiary> getSerializer() {
-        return new JsonSerializer<LocalBeneficiary>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(LocalBeneficiary value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
             }
         };
     }
 
     @Override @JsonIgnore
     public JsonSerializer<LocalBeneficiary> getAuditSerializer() {
-        return new JsonSerializer<LocalBeneficiary>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(LocalBeneficiary value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.getId() != null) {
+                if (value.getId() != null) {
                     gen.writeStringField("id", value.getId().toString());
-                }else {
+                } else {
                     gen.writeStringField("id", null);
                 }
                 gen.writeStringField("accountName", value.getAccountName());
-                gen.writeStringField("beneficiaryBank",value.getBeneficiaryBank());
-                gen.writeStringField("accountNumber",value.getAccountNumber());
-                gen.writeStringField("preferredName",value.getPreferredName());
+                gen.writeStringField("beneficiaryBank", value.getBeneficiaryBank());
+                gen.writeStringField("accountNumber", value.getAccountNumber());
+                gen.writeStringField("preferredName", value.getPreferredName());
                 gen.writeEndObject();
             }
         };

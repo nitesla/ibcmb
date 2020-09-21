@@ -54,9 +54,8 @@ public class LoggedUserServiceImpl implements LoggedUserService {
 
         jdbcTemplate.update(
                 sql,
-                new Object[]{sessionId}
 
-        );
+                sessionId);
     }
 
     private User getCurrentUser() {

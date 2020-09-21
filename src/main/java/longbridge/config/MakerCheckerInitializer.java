@@ -3,25 +3,16 @@ package longbridge.config;
 import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
 import longbridge.utils.Verifiable;
-import org.apache.commons.lang3.AnnotationUtils;
-import org.hibernate.envers.Audited;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by chiomarose on 19/06/2017.
@@ -33,7 +24,7 @@ public class MakerCheckerInitializer implements InitializingBean {
     @Autowired
     MakerCheckerRepo makerCheckerRepo;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override

@@ -13,9 +13,8 @@ public class SessionUtil {
     String ADH_NIP_CODE;
     public  String generateSessionId() {
             System.out.println("here"+ADH_NIP_CODE);
-            String id = ADH_NIP_CODE+""+(new SimpleDateFormat("yyMMddHHmmss").format(new Date()))+ RandomStringUtils.randomNumeric(12);
 
-            return id;
+        return ADH_NIP_CODE+""+(new SimpleDateFormat("yyMMddHHmmss").format(new Date()))+ RandomStringUtils.randomNumeric(12);
 
 
 

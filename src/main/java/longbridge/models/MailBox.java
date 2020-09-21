@@ -29,7 +29,7 @@ public class MailBox extends AbstractEntity{
     }
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Message> messages = new ArrayList<Message>();
+    private List<Message> messages = new ArrayList<>();
 
 	public Long getUserId() {
 		return userId;

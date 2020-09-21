@@ -129,26 +129,26 @@
                         }
                     },
 
-                    {
-                        "targets" : 6,
-                        "data" : "DT_RowId",
-                        "render" : function(data, type,row, meta) {
-                            return '<a href="'+ data +'/receipt" target="_blank">Receipt</a>';
+                    // {
+                    //     "targets" : 6,
+                    //     "data" : "DT_RowId",
+                    //     "render" : function(data, type,row, meta) {
+                    //         return '<a href="'+ data +'/receipt" target="_blank">Receipt</a>';
+                    //     }
+                    // }]
+
+            {
+                        "targets": 6,
+                        "data": "DT_RowId",
+                        "render": function(data, type, full, meta) {
+                            if (returnedData == '00' || returnedData == '000') {
+                                return '<a href="' + data + '/downloadreceipt" target="_blank">Receipt</a>';
+                            }
+                            else
+                                return returnedData;
+
                         }
                     }]
-
-            // {
-            //             "targets": 6,
-            //             "data": "DT_RowId",
-            //             "render": function(data, type, full, meta) {
-            //                 if (returnedData == '00' || returnedData == '000') {
-            //                     return '<a href="' + data + '/downloadreceipt" target="_blank">Receipt</a>';
-            //                 }
-            //                 else
-            //                     return returnedData;
-            //
-            //             }
-            //         }]
 
 //            $("#search").on("click", function(e) {
 //                e.preventDefault();

@@ -32,10 +32,10 @@ import java.util.Locale;
 @Api(value = "Retail Transfer", description = "Retail Transfer Info")
 @RequestMapping(value = "/api/v1/transfer")
 public class MobileTransferController {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private Locale locale = LocaleContextHolder.getLocale();
-    private  ResponseData responseData = new ResponseData();
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final ResponseData responseData = new ResponseData();
     @Autowired
     TransferUtils transferUtils;
     @Autowired
@@ -89,7 +89,7 @@ public class MobileTransferController {
         }catch (InternetBankingException e){
 
             logger.info("Account currency error {} ", e);
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -103,7 +103,7 @@ public class MobileTransferController {
         }catch (InternetBankingException e){
 
             logger.info("Error getting intra bank account name {} ", e);
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -152,7 +152,7 @@ public class MobileTransferController {
 
 
     @GetMapping(value = "/{accountNo}/{bank}/interbank/nameenquiry")
-    public ResponseEntity<?> interBankNameEnquiry (@PathVariable String accountNo, String bank){
+    public ResponseEntity<?> interBankNameEnquiry(@PathVariable String accountNo, @PathVariable String bank){
 
         try{
 

@@ -27,7 +27,7 @@ import java.util.Locale;
 @Service
 public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ModelMapper modelMapper;
@@ -44,7 +44,7 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
     @Autowired
     private CorporateUserRepo corporateUserRepo;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     private void addUserContact(String username, String group, String phone, String email){

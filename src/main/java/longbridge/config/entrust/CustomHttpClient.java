@@ -29,9 +29,6 @@ import java.net.MalformedURLException;
 @Service
 public class CustomHttpClient {
     private final Logger LOGGER = LoggerFactory.getLogger(CustomHttpClient.class);
-    //    private static final int CONNECTION_TIMEOUT = Integer.parseInt(getTimeOut());
-//    private static  String FI_WSDL_URL = getServerUrl();
-    private final int CONNECTION_TIMEOUT = 20000;//in milli seconds
 
     @Value("${ENTRUST.URL}")
     private String ENTRUST_WSDL_URL ;//="http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl";
@@ -46,7 +43,7 @@ public class CustomHttpClient {
     }
 
 
-    public EntrustServiceResponse sendHttpRequest(String xmlFormatedMessage) throws IOException, MalformedURLException {
+    public EntrustServiceResponse sendHttpRequest(String xmlFormatedMessage) throws IOException {
 
         String result = null;
         CloseableHttpResponse response = null;
@@ -57,6 +54,10 @@ public class CustomHttpClient {
 
             LOGGER.trace("sending http request with EndPoint URL : " + ENTRUST_WSDL_URL);
             LOGGER.trace("sending formatted message  : \n\n" + xmlFormatedMessage);
+            //    private static final int CONNECTION_TIMEOUT = Integer.parseInt(getTimeOut());
+            //    private static  String FI_WSDL_URL = getServerUrl();
+            //in milli seconds
+            int CONNECTION_TIMEOUT = 20000;
             LOGGER.trace("Timeout for plugin-adapter : " + CONNECTION_TIMEOUT / 1000 + "s");
 
             System.setProperty("javax.net.debug", "false");

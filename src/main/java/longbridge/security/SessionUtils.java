@@ -38,7 +38,7 @@ public class SessionUtils {
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
 
@@ -89,7 +89,7 @@ public class SessionUtils {
 
                 String smsMessage = String.format(messageSource.getMessage("login.alert.message", null, locale), name, date);
 
-                String alertSubject = String.format(messageSource.getMessage(alertSub, null, locale));
+                String alertSubject = messageSource.getMessage(alertSub, null, locale);
                 logger.info("alertBen {}",alertSubject);
 
                 if ("SMS".equalsIgnoreCase(preference)) {
@@ -154,9 +154,7 @@ public class SessionUtils {
             if (user.getExpiryDate() != null) {
 
                 LocalDate date = new LocalDate(user.getExpiryDate());
-                if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
-                    return true;
-                }
+                return LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date);
             }
             return false;
     }

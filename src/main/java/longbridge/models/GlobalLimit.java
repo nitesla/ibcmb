@@ -98,41 +98,39 @@ public class GlobalLimit extends  AbstractEntity implements PrettySerializer{
 
     @Override @JsonIgnore
     public JsonSerializer<GlobalLimit> getSerializer() {
-        return new JsonSerializer<GlobalLimit>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(GlobalLimit value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Channel",value.channel);
-                gen.writeNumberField("Maximum Limit",value.maxLimit);
-                gen.writeStringField("Currency",value.currency);
-                gen.writeStringField("Frequency",value.frequency);
-                gen.writeStringField("Description",value.description);
+                gen.writeStringField("Channel", value.channel);
+                gen.writeNumberField("Maximum Limit", value.maxLimit);
+                gen.writeStringField("Currency", value.currency);
+                gen.writeStringField("Frequency", value.frequency);
+                gen.writeStringField("Description", value.description);
                 gen.writeEndObject();
             }
         };
     }
     @Override @JsonIgnore
     public JsonSerializer<GlobalLimit> getAuditSerializer() {
-        return new JsonSerializer<GlobalLimit>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(GlobalLimit value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("channel",value.channel);
-                gen.writeStringField("status",value.status);
-                gen.writeStringField("customerType",value.customerType);
-                gen.writeNumberField("maximumLimit",value.maxLimit);
-                gen.writeStringField("currency",value.currency);
-                gen.writeStringField("frequency",value.frequency);
-                gen.writeStringField("description",value.description);
+                gen.writeStringField("channel", value.channel);
+                gen.writeStringField("status", value.status);
+                gen.writeStringField("customerType", value.customerType);
+                gen.writeNumberField("maximumLimit", value.maxLimit);
+                gen.writeStringField("currency", value.currency);
+                gen.writeStringField("frequency", value.frequency);
+                gen.writeStringField("description", value.description);
                 gen.writeEndObject();
             }
         };

@@ -51,13 +51,11 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
     private IntegrationService integrationService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
-    private ModelMapper modelMapper;
 
 
     @Autowired
     public CoverageServiceImpl(CoverageRepo coverageRepository, ModelMapper modelMapper) {
         coverageRepo = coverageRepository;
-        this.modelMapper = modelMapper;
     }
 
 
@@ -114,7 +112,7 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
         Set<Long> corporateids = corporateRepo.getAllCorporateId();
         Set<Long> retailids = retailUserRepo.getAllRetailUserId();
         corporateids.removeAll(entityId_eids);
-        corporateids.stream().forEach(id -> {
+        corporateids.forEach(id -> {
                for (String codes:coverageCodes) {
                 AddCoverageDTO addCoverageDTO = new AddCoverageDTO();
                 EntityId entityId = new EntityId();

@@ -5,6 +5,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import java.util.Objects;
 
 
 /**
@@ -153,7 +154,7 @@ public class Account extends AbstractEntity {
 
         if (!accountNumber.equals(account.accountNumber)) return false;
         if (!customerId.equals(account.customerId)) return false;
-        return solId != null ? solId.equals(account.solId) : account.solId == null;
+        return Objects.equals(solId, account.solId);
     }
 
     @Override

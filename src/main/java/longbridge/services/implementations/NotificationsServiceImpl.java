@@ -29,9 +29,9 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     MessageSource messageSource;
@@ -57,8 +57,7 @@ public class NotificationsServiceImpl implements NotificationsService {
         List<NotificationsDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<NotificationsDTO> pageImpl = new PageImpl<NotificationsDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<NotificationsDTO>(dtOs, pageDetails, t);
     }
 
     @Override

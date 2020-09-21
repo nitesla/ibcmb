@@ -89,39 +89,37 @@ public class InvestmentRate extends AbstractEntity implements PrettySerializer{
 
     @Override @JsonIgnore
     public JsonSerializer<InvestmentRate> getSerializer() {
-        return new JsonSerializer<InvestmentRate>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(InvestmentRate value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("InvestmentName",value.investmentName);
-                gen.writeStringField("Value",value.value.toString());
-                gen.writeStringField("Tenor",String.valueOf(value.tenor));
-                gen.writeStringField("MaxAmount",String.valueOf(value.maxAmount));
-                gen.writeStringField("MinAmount",String.valueOf(value.minAmount));
+                gen.writeStringField("InvestmentName", value.investmentName);
+                gen.writeStringField("Value", value.value.toString());
+                gen.writeStringField("Tenor", String.valueOf(value.tenor));
+                gen.writeStringField("MaxAmount", String.valueOf(value.maxAmount));
+                gen.writeStringField("MinAmount", String.valueOf(value.minAmount));
                 gen.writeEndObject();
             }
         };
     }
     @Override @JsonIgnore
     public JsonSerializer<InvestmentRate> getAuditSerializer() {
-        return new JsonSerializer<InvestmentRate>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(InvestmentRate value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("InvestmentName",value.investmentName);
-                gen.writeStringField("Value",value.value.toString());
-                gen.writeStringField("Tenor",String.valueOf(value.tenor));
-                gen.writeStringField("MaxAmount",String.valueOf(value.maxAmount));
-                gen.writeStringField("MinAmount",String.valueOf(value.minAmount));
+                gen.writeStringField("InvestmentName", value.investmentName);
+                gen.writeStringField("Value", value.value.toString());
+                gen.writeStringField("Tenor", String.valueOf(value.tenor));
+                gen.writeStringField("MaxAmount", String.valueOf(value.maxAmount));
+                gen.writeStringField("MinAmount", String.valueOf(value.minAmount));
                 gen.writeEndObject();
             }
         };

@@ -11,7 +11,7 @@ public class ReflectionUtils {
 public static void nullifyStrings( Object o, int depth ) {
 
 	Class klass = o.getClass();
-	Set<Field> all = new HashSet<Field>();
+	Set<Field> all = new HashSet<>();
 	do{
 		List<Field> fieldsInClass = getFieldsInClass(klass);
 		all.addAll(fieldsInClass);
@@ -38,8 +38,7 @@ public static void nullifyStrings( Object o, int depth ) {
 }
 
 private static List<Field> getFieldsInClass(Class k){
-	List<Field> fields = Arrays.asList(k.getDeclaredFields());
-    return fields;
+    return Arrays.asList(k.getDeclaredFields());
 }
 
 }

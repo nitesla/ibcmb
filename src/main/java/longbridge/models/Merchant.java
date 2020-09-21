@@ -87,16 +87,15 @@ public class Merchant extends AbstractEntity implements PrettySerializer{
 
 	@Override @JsonIgnore
 	public JsonSerializer<Merchant> getSerializer() {
-		return new JsonSerializer<Merchant>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(Merchant value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException
-			{
+					throws IOException {
 				gen.writeStartObject();
-				gen.writeStringField("Name",value.name);
-				gen.writeStringField("Category",value.category);
-				gen.writeStringField("Owner Reference Name",value.ownerReferenceName);
-				gen.writeBooleanField("Enabled",value.enabled);
+				gen.writeStringField("Name", value.name);
+				gen.writeStringField("Category", value.category);
+				gen.writeStringField("Owner Reference Name", value.ownerReferenceName);
+				gen.writeBooleanField("Enabled", value.enabled);
 				gen.writeEndObject();
 			}
 		};
@@ -104,21 +103,20 @@ public class Merchant extends AbstractEntity implements PrettySerializer{
 
 	@Override @JsonIgnore
 	public JsonSerializer<Merchant> getAuditSerializer() {
-		return new JsonSerializer<Merchant>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(Merchant value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException
-			{
+					throws IOException {
 				gen.writeStartObject();
-				if(value.id != null) {
+				if (value.id != null) {
 					gen.writeStringField("id", value.id.toString());
-				}else {
+				} else {
 					gen.writeStringField("id", "");
 				}
-				gen.writeStringField("name",value.name);
-				gen.writeStringField("category",value.category);
-				gen.writeStringField("ownerReferenceName",value.ownerReferenceName);
-				gen.writeBooleanField("enabled",value.enabled);
+				gen.writeStringField("name", value.name);
+				gen.writeStringField("category", value.category);
+				gen.writeStringField("ownerReferenceName", value.ownerReferenceName);
+				gen.writeBooleanField("enabled", value.enabled);
 				gen.writeEndObject();
 			}
 		};

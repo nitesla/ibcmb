@@ -40,7 +40,7 @@ public class OpsCorporateRoleController {
     CorporateUserService corporateUserService;
     @Autowired
     MessageSource messageSource;
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 //
 //    @ModelAttribute("users")
@@ -92,7 +92,7 @@ public class OpsCorporateRoleController {
 
             return "ops/corporate/addrole";
         }
-        Set<CorporateUserDTO> usersList = new HashSet<CorporateUserDTO>();
+        Set<CorporateUserDTO> usersList = new HashSet<>();
 
         String[] userIds = request.getParameterValues("usersList");
         if (userIds != null) {
@@ -158,7 +158,7 @@ public class OpsCorporateRoleController {
         }
 
 
-        Set<CorporateUserDTO> usersList = new HashSet<CorporateUserDTO>();
+        Set<CorporateUserDTO> usersList = new HashSet<>();
 
         String[] userIds = request.getParameterValues("usersList");
         if (userIds != null) {
@@ -174,8 +174,7 @@ public class OpsCorporateRoleController {
             String message = corporateService.updateCorporateRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/corporates/" + roleDTO.getCorporateId() + "/view";
-        }
-        catch (DuplicateObjectException ibe) {
+        } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("invalid", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
@@ -184,18 +183,6 @@ public class OpsCorporateRoleController {
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
             logger.error("Error updating role",ibe);
-            return "ops/corporate/editrole";
-        }
-        catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("invalid", ibe.getMessage()));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
-            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
-            CorporateRoleDTO role = corporateService.getCorporateRole(roleDTO.getId());
-            model.addAttribute("usersInRole",role.getUsers());
-            model.addAttribute("users",users);
-            model.addAttribute("corporate",corporate);
-            logger.error("Error updating role",ibe);
-
             return "ops/corporate/editrole";
         }
     }

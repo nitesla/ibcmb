@@ -38,7 +38,7 @@ public class MakerCheckerAdvisor {
     @Autowired
     private EntityManager entityManager;
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("this(org.springframework.data.repository.Repository)")
     public void inRepositoryLayer() {

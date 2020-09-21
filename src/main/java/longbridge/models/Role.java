@@ -94,28 +94,28 @@ public class Role extends AbstractEntity implements PrettySerializer{
 	@Override
     @JsonIgnore
     public JsonSerializer<Role> getSerializer() {
-        return new JsonSerializer<Role>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Role value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
                 gen.writeStringField("name", value.name);
-                gen.writeStringField("type",value.userType.name());
+                gen.writeStringField("type", value.userType.name());
                 gen.writeStringField("email", value.email);
                 gen.writeStringField("description", value.description);
 
                 // gen.writeArrayFieldStart("permissions");
                 gen.writeObjectFieldStart("permissions");
-                for(Permission p : value.permissions){
-                   if(p.getId()!=null) {
-                       gen.writeObjectFieldStart(p.getId().toString());
-                       //gen.writeStartObject();
-                       gen.writeStringField("name", p.getName());
-                       gen.writeStringField("code", p.getCode());
-                       gen.writeStringField("description", p.getDescription());
-                       gen.writeEndObject();
-                   }
+                for (Permission p : value.permissions) {
+                    if (p.getId() != null) {
+                        gen.writeObjectFieldStart(p.getId().toString());
+                        //gen.writeStartObject();
+                        gen.writeStringField("name", p.getName());
+                        gen.writeStringField("code", p.getCode());
+                        gen.writeStringField("description", p.getDescription());
+                        gen.writeEndObject();
+                    }
                 }
                 gen.writeEndObject();
                 //gen.writeEndArray();
@@ -126,28 +126,28 @@ public class Role extends AbstractEntity implements PrettySerializer{
     @Override
     @JsonIgnore
     public JsonSerializer<Role> getAuditSerializer() {
-        return new JsonSerializer<Role>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Role value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
                 gen.writeStringField("rame", value.name);
-                gen.writeStringField("Type",value.userType.name());
+                gen.writeStringField("Type", value.userType.name());
                 gen.writeStringField("Email", value.email);
                 gen.writeStringField("Description", value.description);
 
                 // gen.writeArrayFieldStart("permissions");
                 gen.writeObjectFieldStart("Permissions");
-                for(Permission p : value.permissions){
-                   if(p.getId()!=null) {
-                       gen.writeObjectFieldStart(p.getId().toString());
-                       //gen.writeStartObject();
-                       gen.writeStringField("Name", p.getName());
-                       gen.writeStringField("Code", p.getCode());
-                       gen.writeStringField("Description", p.getDescription());
-                       gen.writeEndObject();
-                   }
+                for (Permission p : value.permissions) {
+                    if (p.getId() != null) {
+                        gen.writeObjectFieldStart(p.getId().toString());
+                        //gen.writeStartObject();
+                        gen.writeStringField("Name", p.getName());
+                        gen.writeStringField("Code", p.getCode());
+                        gen.writeStringField("Description", p.getDescription());
+                        gen.writeEndObject();
+                    }
                 }
                 gen.writeEndObject();
                 //gen.writeEndArray();
