@@ -50,6 +50,8 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     @Query("select id from RetailUser ")
     Set<Long> getAllRetailUserId();
 
+
+
 //    @Query("select r.bvn from RetailUser r where r.userName = :username")
 //    String payerBvn(@Param("username") String username);
 }

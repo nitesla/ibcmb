@@ -1485,6 +1485,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("customerMobile",billPayment.getPhoneNumber());
 		params.put("hash",EncryptionUtil.getSHA512(
 				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		logger.info("Hash is {}", EncryptionUtil.getSHA512(
+				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
 		params.put("paymentCode",billPayment.getPaymentCode().toString());
 		params.put("requestReference",billPayment.getRequestReference());
 		try {
