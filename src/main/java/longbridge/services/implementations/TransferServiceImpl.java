@@ -8,6 +8,7 @@ import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
+import longbridge.repositories.AccountRepo;
 import longbridge.repositories.NeftTransferRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.TransferRequestRepo;
@@ -74,6 +75,9 @@ public class TransferServiceImpl implements TransferService {
     private RetailUserService retailUserService;
 
     @Autowired
+    private AccountRepo accountRepo;
+
+    @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
             , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil) {
         this.transferRequestRepo = transferRequestRepo;
@@ -85,12 +89,21 @@ public class TransferServiceImpl implements TransferService {
         this.retailUserRepo = retailUserRepo;
         this.messages = messages;
         this.sessionUtil=sessionUtil;
+        this.accountRepo=accountRepo;
 
+    }
+
+    private String getUserBvn(String accountnumber){
+        Account account = accountRepo.findFirstByAccountNumber(accountnumber);
+        String customerId = account.getCustomerId();
+        RetailUser retailUser = retailUserRepo.findFirstByCustomerId(customerId);
+        return retailUser.getBvn();
     }
 
 
     private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
         NeftTransfer neftTransfer = new NeftTransfer();
+        String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
         neftTransfer.setBeneficiary(neftTransferDTO.getBeneficiaryAccountName());
@@ -101,7 +114,7 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setBVNBeneficiary("");
         neftTransfer.setBankOfFirstDepositSortCode("");
         neftTransfer.setCollectionType("");
-        neftTransfer.setBVNPayer("");
+        neftTransfer.setBVNPayer(bvn);
         neftTransfer.setInstrumentType("");
         neftTransfer.setMICRRepairInd("");
         neftTransfer.setSettlementTime("not settled");
