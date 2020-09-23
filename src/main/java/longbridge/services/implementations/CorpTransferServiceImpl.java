@@ -176,7 +176,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         } catch (TransferAuthorizationException | InternetBankingTransferException ex) {
             throw ex;
         } catch (Exception e) {
-            throw new InternetBankingTransferException(messageSource.getMessage("transfer.add.failure", null, locale), e);
         }
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
