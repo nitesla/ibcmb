@@ -316,10 +316,12 @@
             if(startDate <= currentDate){
                 $("#dateError").text("Start date should not be less than current date")
                 $("#save").attr("disabled",true);
+                $("#end").attr("disabled",true);
                 return false;
             }else{
                 $("#dateError").text("")
                 $("#save").attr("disabled",false);
+                $("#end").attr("disabled",false);
             }
 
             if (startDate > endDate){

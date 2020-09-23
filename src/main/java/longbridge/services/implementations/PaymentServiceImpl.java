@@ -116,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         RetailUser user = getCurrentUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndStatusNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
@@ -128,7 +128,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndStatusNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
