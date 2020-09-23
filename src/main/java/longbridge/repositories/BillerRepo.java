@@ -48,4 +48,6 @@ public interface BillerRepo extends CommonRepo<Biller, Long>{
 
     @Query("select b.billerId from Biller b where b.delFlag = 'N'")
     List<Long> getAllBillerId();
+
+
 }
