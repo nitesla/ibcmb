@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface PaymentItemRepo extends CommonRepo<PaymentItem, Long>{
 
+
     PaymentItem findByPaymentItemId(Long paymentItemId);
 
     PaymentItem findByPaymentCode(Long paymentCode);
