@@ -200,8 +200,10 @@ public class InterBankTransferController {
             return page + "pageii";
         }
         int a = amountLimit.intValue();
+        logger.info("User's transfer limit == [{}]", a);
         int b = userAmount.intValue();
-
+        logger.info("User's amount for transfer == [{}]", b);
+        logger.info("which is a greater number [{}] or [{}]", a, b);
         if (b > a){
             String errorMessage = "You can not transfer more than account limit";
             model.addAttribute("errorMessage", errorMessage);
