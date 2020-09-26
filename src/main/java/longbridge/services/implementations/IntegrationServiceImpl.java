@@ -53,6 +53,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
+    @Value("${neft.settlement}")
+    private String NEFTURI;
+
 	@Value("${quickteller.service.uri}")
 	private String QUICKTELLER_URI;
 
@@ -1626,7 +1629,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         String ItemCount = String.valueOf(getUnsettledNeftList.size());
 		Date date = new Date();
 		String newdate = dateFormat.format(date);
-		String uri = URI+"/api/neftOutWard/Submit";
+		String uri = NEFTURI+"/api/neftOutWard/Submit";
 		Map<String,Object> params = new HashMap<>();
 		params.put("appid",appId);
 		params.put("MsgID","5");

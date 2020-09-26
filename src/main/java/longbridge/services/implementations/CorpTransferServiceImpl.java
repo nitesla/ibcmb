@@ -135,7 +135,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
         logger.info("TRANSFER TYPE {}", transferRequestDTO.getTransferType());
 
-
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
         String userRefereneceNumber = "CORP_" + getCurrentUser().getId().toString();
         transferRequest.setUserReferenceNumber(userRefereneceNumber);
@@ -165,7 +164,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             CorpTransferAuth transferAuth = new CorpTransferAuth();
             transferAuth.setStatus("P");
             transferRequest.setTransferAuth(transferAuth);
+            logger.info("Corp-Transfer request details {}", transferRequest);
             CorpTransRequest corpTransRequest = corpTransferRequestRepo.save(transferRequest);
+            logger.info("Corp-Transfer request response {}", corpTransRequest);
             logger.info("Transfer request saved for authorization");
             if (userCanAuthorize(corpTransRequest)) {
                 CorpTransReqEntry transReqEntry = new CorpTransReqEntry();
@@ -180,6 +181,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
+
 
     private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
@@ -217,8 +219,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
 //        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
-
-
 
         if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT){
              pfDataItemStore(corpTransRequest);
