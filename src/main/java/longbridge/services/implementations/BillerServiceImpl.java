@@ -78,6 +78,7 @@ public class BillerServiceImpl implements BillerService {
 
     private void autoUpdatePaymentItems(){
         List<Long> getBillerIds = billerRepo.getAllBillerId();
+        logger.info("biller id's === {}", getBillerIds);
         getBillerIds.forEach(getBillerId -> {
             logger.info("Updating payment item for biller with ID {}", getBillerId);
             updatePaymentItems(getBillerId);
@@ -373,23 +374,31 @@ public class BillerServiceImpl implements BillerService {
 
 
     private List<PaymentItem> compareAndUpdatePaymentItems(List<PaymentItemDTO> paymentItems) {
+        logger.info("payments items ========================================= {}", paymentItems);
         List<PaymentItem> items = new ArrayList<>();
         try {
-        paymentItems.forEach(paymentItem -> {
+            for (PaymentItemDTO paymentItem : paymentItems) {
+                logger.info("paymentItemId ========== {}", paymentItem.getPaymentitemid());
                 PaymentItem getStoredItem = paymentItemRepo.findByPaymentItemId(paymentItem.getPaymentitemid());
-            if (getStoredItem == null) {
-                PaymentItem newPaymentItem = createPaymentitem(paymentItem);
-                newPaymentItem.setEnabled(true);
-                items.add(newPaymentItem);
-            } else {
-                PaymentItem newPaymentItem = createPaymentitem(paymentItem);
-                newPaymentItem.setEnabled(getStoredItem.isEnabled());
-                newPaymentItem.setReadonly(getStoredItem.getReadonly());
-                items.add(newPaymentItem);
+                logger.info("stored itms ====== {}", getStoredItem);
+                if (getStoredItem == null) {
+                    PaymentItem newPaymentItem = createPaymentitem(paymentItem);
+                    newPaymentItem.setEnabled(true);
+                    items.add(newPaymentItem);
+                } else {
 
+                    PaymentItem newPaymentItem = createPaymentitem(paymentItem);
+                    newPaymentItem.setEnabled(getStoredItem.isEnabled());
+                    newPaymentItem.setReadonly(getStoredItem.getReadonly());
+                    getStoredItem.setDelFlag("Y");
+                    paymentItemRepo.save(getStoredItem);
+                    items.add(newPaymentItem);
+
+                }
             }
-        });
-        } catch (Exception e){}
+        } catch (Exception e){
+            logger.error("error occured in updating payment items ", e);
+        }
         return paymentItemRepo.saveAll(items);
     }
 
