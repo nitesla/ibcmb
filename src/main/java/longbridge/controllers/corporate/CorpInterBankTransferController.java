@@ -186,26 +186,26 @@ public class CorpInterBankTransferController {
         String transferType = (String) request.getSession().getAttribute("NIP");
 
         String newBenName = (String) request.getSession().getAttribute("benName");
-        String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
-        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
-        BigDecimal userAmount = corpTransferRequestDTO.getAmount();
-        if (userAmount == null){
-            String amounterrorMessage = "Please supply amount";
-            model.addAttribute("amounterrorMessage", amounterrorMessage);
-            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
-            model.addAttribute("benName", newBenName);
-            return page + "pageii";
-        }
-        int a = amountLimit.intValue();
-        int b = userAmount.intValue();
-
-        if (b > a){
-            String errorMessage = "You can not transfer more than account limit";
-            model.addAttribute("errorMessage", errorMessage);
-            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
-            model.addAttribute("benName", newBenName);
-            return page + "pageii";
-        }
+//        String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
+//        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
+//        BigDecimal userAmount = corpTransferRequestDTO.getAmount();
+//        if (userAmount == null){
+//            String amounterrorMessage = "Please supply amount";
+//            model.addAttribute("amounterrorMessage", amounterrorMessage);
+//            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+//            model.addAttribute("benName", newBenName);
+//            return page + "pageii";
+//        }
+//        int a = amountLimit.intValue();
+//        int b = userAmount.intValue();
+//
+//        if (b > a){
+//            String errorMessage = "You can not transfer more than account limit";
+//            model.addAttribute("errorMessage", errorMessage);
+//            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+//            model.addAttribute("benName", newBenName);
+//            return page + "pageii";
+//        }
 
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         String benName = (String) request.getSession().getAttribute("benName");
