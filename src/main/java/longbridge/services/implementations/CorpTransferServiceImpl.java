@@ -176,6 +176,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         } catch (TransferAuthorizationException | InternetBankingTransferException ex) {
             throw ex;
         } catch (Exception e) {
+            throw new InternetBankingTransferException(messageSource.getMessage("transfer.add.failure", null, locale), e);
         }
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
@@ -349,8 +350,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         BigDecimal balance = integrationService.getAvailableBalance(corpTransferRequest.getCustomerAccountNumber());
         if (balance != null) {
             if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) > 0))) {
-                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
-
+//                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
+                throw new InternetBankingTransferException(messageSource.getMessage("transfer.balance.insufficient", null, locale));
             }
         }
 
@@ -361,6 +362,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
+        validateAccounts(dto);
         boolean limitExceeded = limitService.isAboveInternetBankingLimit(
                 dto.getTransferType(),
                 UserType.CORPORATE,
@@ -373,6 +375,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Corporate corporate = corporateRepo.findById(getCurrentUser().getCorporate().getId()).get();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(corporate.getAccounts()).spliterator(), false)
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
+
 
         if (!acctPresent) {
             throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());

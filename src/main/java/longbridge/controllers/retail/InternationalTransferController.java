@@ -178,9 +178,9 @@ public class InternationalTransferController {
 
                         redirectAttributes.addFlashAttribute("message",transferRequestDTO.getStatusDescription());
 
-                    }catch (InternetBankingTransferException e){
-                        logger.error("Error making transfer",e);
-                        String errorMessage = transferErrorService.getMessage(e);
+                    }catch (InternetBankingTransferException ex){
+                        logger.error("Error making transfer",ex);
+                        String errorMessage = transferErrorService.getMessage(ex);
 //                        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("transfer.api.international.failure", null, locale));
                         redirectAttributes.addFlashAttribute("failure", errorMessage);                    }
 
