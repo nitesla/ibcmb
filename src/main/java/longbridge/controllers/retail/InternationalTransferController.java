@@ -180,8 +180,9 @@ public class InternationalTransferController {
 
                     }catch (InternetBankingTransferException e){
                         logger.error("Error making transfer",e);
-                        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("transfer.api.international.failure", null, locale));
-                    }
+                        String errorMessage = transferErrorService.getMessage(e);
+//                        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("transfer.api.international.failure", null, locale));
+                        redirectAttributes.addFlashAttribute("failure", errorMessage);                    }
 
                 }
             }

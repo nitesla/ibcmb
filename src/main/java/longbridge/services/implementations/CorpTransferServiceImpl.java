@@ -350,6 +350,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (balance != null) {
             if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) > 0))) {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
+
             }
         }
 
@@ -360,7 +361,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
-        validateAccounts(dto);
         boolean limitExceeded = limitService.isAboveInternetBankingLimit(
                 dto.getTransferType(),
                 UserType.CORPORATE,
@@ -373,7 +373,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Corporate corporate = corporateRepo.findById(getCurrentUser().getCorporate().getId()).get();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(corporate.getAccounts()).spliterator(), false)
                 .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
-
 
         if (!acctPresent) {
             throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());
