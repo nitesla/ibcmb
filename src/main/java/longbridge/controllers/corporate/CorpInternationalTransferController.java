@@ -182,7 +182,7 @@ public class CorpInternationalTransferController {
 
                     }
 
-                    return "redirect:/corporate/transfer/requests";
+                   return "redirect:/corporate/transfer/requests";
 
                 } catch (TransferAuthorizationException ae) {
                     logger.error("Error initiating a transfer ", ae);
