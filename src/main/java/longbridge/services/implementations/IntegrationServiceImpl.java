@@ -77,6 +77,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${custom.appId}")
 	private String appId;
 
+    @Value("${quickteller.appId}")
+	private String appIdQuickteller;
+
+    @Value("${quickteller.secretKey}")
+    private String secretKeyQuickteller;
+
 	@Value("${billPayment.terminalId}")
 	private String terminalId;
 
@@ -1477,16 +1483,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String,String> params = new HashMap<>();
 		params.put("terminalId",terminalId);
 		logger.info("Terminal ID is {}", terminalId);
+        logger.info("appId is {}", appIdQuickteller);
+        logger.info("secretKey is {}", secretKeyQuickteller);
 		params.put("amount", billPayment.getAmount().toPlainString());
-		params.put("appid",appId);
+		params.put("appid",appIdQuickteller);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
 		params.put("customerEmail", billPayment.getEmailAddress());
 		params.put("customerId",billPayment.getCustomerId());
 		params.put("customerMobile",billPayment.getPhoneNumber());
 		params.put("hash",EncryptionUtil.getSHA512(
-				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+                appIdQuickteller + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKeyQuickteller, null));
 		logger.info("Hash is {}", EncryptionUtil.getSHA512(
-				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+                appIdQuickteller + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKeyQuickteller, null));
 		params.put("paymentCode",billPayment.getPaymentCode().toString());
 		params.put("requestReference",billPayment.getRequestReference());
 		try {
@@ -1524,14 +1532,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("terminalId",terminalId);
 		logger.info("Terminal ID is", terminalId);
 		params.put("amount", recurringPayment.getAmount().toPlainString());
-		params.put("appid",appId);
+		params.put("appid",appIdQuickteller);
 		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
 		params.put("customerEmail", recurringPayment.getEmailAddress());
 		params.put("customerId",recurringPayment.getCustomerId());
 		params.put("customerMobile",recurringPayment.getPhoneNumber());
 		logger.info("Payment code", recurringPayment.getPaymentCode().toString());
 		params.put("hash",EncryptionUtil.getSHA512(
-				appId + recurringPayment.getPaymentCode() + recurringPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+                appIdQuickteller + recurringPayment.getPaymentCode() + recurringPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKeyQuickteller, null));
 		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
 		params.put("requestReference",recurringPayment.getRequestReference());
 		try {
