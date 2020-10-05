@@ -350,7 +350,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         BigDecimal balance = integrationService.getAvailableBalance(corpTransferRequest.getCustomerAccountNumber());
         if (balance != null) {
             if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) > 0))) {
-                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
+//                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
+                throw new InternetBankingTransferException(messageSource.getMessage("transfer.balance.insufficient", null, locale));
             }
         }
 
