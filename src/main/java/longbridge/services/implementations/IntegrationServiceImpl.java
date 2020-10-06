@@ -98,7 +98,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
-	@Value("${bankcode}")
+	@Value("${bank.code}")
 	private String bankcode;
 
 //	@Value("${custom.access.beneficiaryAcct}")
@@ -1635,12 +1635,13 @@ public class IntegrationServiceImpl implements IntegrationService {
         List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
         logger.info("getUnsettledList == {}", getUnsettledNeftList);
         String ItemCount = String.valueOf(getUnsettledNeftList.size());
+		int MsgID = (int)(Math.random() * (9 - 1 + 1) + 1);
 		Date date = new Date();
 		String newdate = dateFormat.format(date);
 		String uri = NEFTURI+"/api/neftOutWard/Submit";
 		Map<String,Object> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("MsgID","5");
+		params.put("MsgID",MsgID);
 		params.put("TotalValue", "2.0");
 		params.put("BankCode",bankcode);
 		params.put("ItemCount", ItemCount);
