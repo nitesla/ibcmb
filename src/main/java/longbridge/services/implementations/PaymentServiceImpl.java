@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Fortune on 7/9/2018.
@@ -164,6 +165,10 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Converting Bill payment DTO to entity");
 
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
+
         BillPayment payment = new BillPayment();
         payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
 //        payment.setPaymentItemId(Long.parseLong(paymentDTO.getPaymentItemId()));
@@ -176,13 +181,17 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
         payment.setCategoryName(paymentDTO.getCategoryName());
-        payment.setRequestReference("RET_" + getCurrentUser().getId());
+        payment.setRequestReference("1194" + random);
         return payment;
     }
 
     private BillPayment convertCorpPaymentDTOToEntity(BillPaymentDTO paymentDTO){
 
         logger.debug("Converting Bill payment DTO to entity");
+
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
 
         BillPayment payment = new BillPayment();
         logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
@@ -197,7 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
         payment.setCategoryName(paymentDTO.getCategoryName());
-        payment.setRequestReference("COP_" + getCurrentCorpUser().getId());
+        payment.setRequestReference("1194" + random);
         return payment;
     }
 
