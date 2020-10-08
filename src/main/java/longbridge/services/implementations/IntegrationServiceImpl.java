@@ -1483,14 +1483,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public BillPayment billPayment(BillPayment billPayment){
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
-		String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + billPayment.getPaymentCode() + billPayment.getAmount().toPlainString() + secretKeyQuickteller, null);
+        BigDecimal d = billPayment.getAmount();
+		BigDecimal f = new BigDecimal(100);
+        String amount = d.multiply(f).toPlainString();
+        logger.info("amount in Big decimal {}", amount);
         Map<String,String> params = new HashMap<>();
-		params.put("terminalId",terminalId);
+
+        params.put("terminalId",terminalId);
 		logger.info("Terminal ID is {}", terminalId);
         logger.info("appId is {}", appIdQuickteller);
         logger.info("secretKey is {}", secretKeyQuickteller);
-		params.put("amount", billPayment.getAmount().toPlainString());
-        logger.info("amount is {}", billPayment.getAmount().toPlainString());
+		params.put("amount", amount);
+        String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + billPayment.getPaymentCode() + amount + secretKeyQuickteller, null);
 		params.put("appid",appIdQuickteller);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
 		params.put("customerEmail", billPayment.getEmailAddress());
@@ -1500,6 +1504,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		logger.info("Hash is {}", hashedCode);
 		params.put("paymentCode",billPayment.getPaymentCode().toString());
 		params.put("requestReference",billPayment.getRequestReference());
+		logger.info("Starting payment with Params: {}", params.toString());
+
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
 			logger.info("response for payment {}", payment.toString());
@@ -1531,20 +1537,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public RecurringPayment recurringPayment(RecurringPayment recurringPayment){
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
-		String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + recurringPayment.getPaymentCode() + recurringPayment.getAmount().toPlainString() + secretKeyQuickteller, null);
-        Map<String,String> params = new HashMap<>();
+		BigDecimal d = recurringPayment.getAmount();
+		BigDecimal f = new BigDecimal(100);
+		String amount = d.multiply(f).toPlainString();
+		Map<String,String> params = new HashMap<>();
+
 		params.put("terminalId",terminalId);
-		logger.info("Terminal ID is", terminalId);
-		params.put("amount", recurringPayment.getAmount().toPlainString());
+		params.put("amount", amount);
+		String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + recurringPayment.getPaymentCode() + amount + secretKeyQuickteller, null);
 		params.put("appid",appIdQuickteller);
 		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
 		params.put("customerEmail", recurringPayment.getEmailAddress());
 		params.put("customerId",recurringPayment.getCustomerId());
 		params.put("customerMobile",recurringPayment.getPhoneNumber());
-		logger.info("Payment code", recurringPayment.getPaymentCode().toString());
 		params.put("hash", hashedCode);
 		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
 		params.put("requestReference",recurringPayment.getRequestReference());
+		logger.info("Starting payment with Params: {}", params.toString());
+
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
 			logger.info("response for payment {}", payment.toString());
