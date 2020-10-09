@@ -77,6 +77,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
+    private AccountRepo accountRepo;
+
+    @Autowired
     private EntityManager entityManager;
     @Autowired
     private TransferErrorService transferErrorService;
@@ -93,7 +96,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
                                    AccountService accountService, ConfigurationService configService,
-                                   DirectDebitService directDebitService, SessionUtil sessionUtil,NeftTransferRepo neftTransferRepo) {
+                                   DirectDebitService directDebitService, SessionUtil sessionUtil,NeftTransferRepo neftTransferRepo, AccountRepo accountRepo) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -102,11 +105,25 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         this.sessionUtil = sessionUtil;
         this.directDebitService = directDebitService;
         this.neftTransferRepo = neftTransferRepo;
+        this.accountRepo = accountRepo;
+    }
+
+
+
+
+
+    private String getUserBvn(String accountnumber){
+        Account account = accountRepo.findFirstByAccountNumber(accountnumber);
+        String customerId = account.getCustomerId();
+        Corporate corporateUser = corporateRepo.findFirstByCustomerId(customerId);
+        return corporateUser.getBvn();
     }
 
 
     private NeftTransfer pfDataItemStore(CorpTransRequest neftTransferDTO){
         NeftTransfer neftTransfer = new NeftTransfer();
+        String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
+        logger.info("corporate user bvn = [{}]", bvn);
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
         neftTransfer.setBeneficiary(neftTransferDTO.getBeneficiaryAccountName());
@@ -117,15 +134,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setBVNBeneficiary("");
         neftTransfer.setBankOfFirstDepositSortCode("");
         neftTransfer.setCollectionType("");
-        neftTransfer.setBVNPayer("");
-        neftTransfer.setInstrumentType("");
+        neftTransfer.setBVNPayer(bvn);
+        neftTransfer.setInstrumentType(neftTransferDTO.getChannel());
         neftTransfer.setMICRRepairInd("");
-        neftTransfer.setCycleNo("");
         neftTransfer.setSettlementTime("not settled");
+        neftTransfer.setCycleNo("");
         neftTransfer.setNarration(neftTransferDTO.getRemarks());
         neftTransfer.setPresentingBankSortCode("");
-        neftTransfer.setSortCode("");
-        neftTransfer.setTranCode("");
+        neftTransfer.setSortCode(neftTransferDTO.getUserReferenceNumber());
+        neftTransfer.setTranCode(neftTransferDTO.getReferenceNumber());
+        neftTransfer.setSerialNo(neftTransferDTO.getId().toString());
         neftTransferRepo.save(neftTransfer);
         return neftTransfer;
     }

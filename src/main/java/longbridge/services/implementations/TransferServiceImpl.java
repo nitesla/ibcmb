@@ -115,14 +115,15 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setBankOfFirstDepositSortCode("");
         neftTransfer.setCollectionType("");
         neftTransfer.setBVNPayer(bvn);
-        neftTransfer.setInstrumentType("");
+        neftTransfer.setInstrumentType(neftTransferDTO.getChannel());
         neftTransfer.setMICRRepairInd("");
         neftTransfer.setSettlementTime("not settled");
         neftTransfer.setCycleNo("");
         neftTransfer.setNarration(neftTransferDTO.getRemarks());
         neftTransfer.setPresentingBankSortCode("");
-        neftTransfer.setSortCode("");
-        neftTransfer.setTranCode("");
+        neftTransfer.setSortCode(neftTransferDTO.getUserReferenceNumber());
+        neftTransfer.setTranCode(neftTransferDTO.getReferenceNumber());
+        neftTransfer.setSerialNo(neftTransferDTO.getId().toString());
         neftTransferRepo.save(neftTransfer);
         return neftTransfer;
     }
