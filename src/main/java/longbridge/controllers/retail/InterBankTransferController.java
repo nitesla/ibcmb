@@ -26,7 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -138,15 +137,18 @@ public class InterBankTransferController {
 
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiAb";
-        } else if ("NEFT".equalsIgnoreCase(type))
+        } else if ("NEFT".equalsIgnoreCase(type)){
             request.getSession().setAttribute("NIP", "NEFT");
-        requestDTO.setTransferType(TransferType.NEFT);
+            requestDTO.setTransferType(TransferType.NEFT);
 
-        model.addAttribute("transferRequest", requestDTO);
-        return page + "pageiAc";
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAc";
+        } else if ("QUICKTELLER".equalsIgnoreCase(type))
+            request.getSession().setAttribute("NIP", "QUICKTELLER");
+            requestDTO.setTransferType(TransferType.QUICKTELLER);
 
-
-
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAd";
     }
 
 
@@ -241,6 +243,10 @@ public class InterBankTransferController {
             } else if("NEFT".equalsIgnoreCase(type)){
                 transferRequestDTO.setTransferType(TransferType.NEFT);
                 charge = transferUtils.getFee("NEFT",String.valueOf(transferRequestDTO.getAmount()));
+                transferRequestDTO.setCharge(charge);
+            } else if("QUICKTELLER".equalsIgnoreCase(type)){
+                transferRequestDTO.setTransferType(TransferType.QUICKTELLER);
+                charge = transferUtils.getFee("QUICKTELLER",String.valueOf(transferRequestDTO.getAmount()));
                 transferRequestDTO.setCharge(charge);
             }
             // request.getSession().removeAttribute("NIP");
