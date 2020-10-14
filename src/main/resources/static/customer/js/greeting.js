@@ -191,12 +191,16 @@ function greetingUtility() {
 
     });
 
-    $("#parameter").on("change",function(){
+    $("#parameter").on("click",function(){
         var caretPos = $("#message")[0].selectionStart;
         var existingText= $("#message").val();
         var txtToAdd = $("#parameter").val();
         $("#message").val(existingText.substring(0, caretPos) + txtToAdd + existingText.substring(caretPos) );
     });
+
+    if ( $('[type="date"]').prop('type') != 'date' ) {
+        $('[type="date"]').datepicker();
+    }
 
     $("#message").on("blur",function() {
         var str = $("#message").val();
