@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
  */
 @Service
 public class IpAddressUtils {
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     @Autowired
     public IpAddressUtils(HttpServletRequest request) {

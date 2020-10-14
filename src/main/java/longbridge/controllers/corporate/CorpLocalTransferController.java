@@ -37,17 +37,14 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer/local")
 public class CorpLocalTransferController {
 
-    private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private MessageSource messages;
-    private LocaleResolver localeResolver;
-    private CorpLocalBeneficiaryService corpLocalBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
-    private TransferErrorService transferErrorService;
-    private CorporateService corporateService;
-    private TransferUtils transferUtils;
-    private String page = "corp/transfer/local/";
+    private final CorporateUserService corporateUserService;
+    private final CorpTransferService corpTransferService;
+    private final CorpLocalBeneficiaryService corpLocalBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferValidator validator;
+    private final TransferErrorService transferErrorService;
+    private final TransferUtils transferUtils;
+    private final String page = "corp/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
@@ -56,13 +53,10 @@ public class CorpLocalTransferController {
             ,CorporateService corporateService,TransferUtils transferUtils) {
         this.corporateUserService = corporateUserService;
         this.corpTransferService = corpTransferService;
-        this.messages = messages;
-        this.localeResolver = localeResolver;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
         this.transferErrorService = transferErrorService;
-        this.corporateService=corporateService;
         this.transferUtils=transferUtils;
     }
 
@@ -183,7 +177,7 @@ public class CorpLocalTransferController {
         requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("corpTransferRequest", requestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null)
-            model.addAttribute("beneficiary", (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary"));
+            model.addAttribute("beneficiary", request.getSession().getAttribute("Lbeneficiary"));
         requestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 
         return page + "pageii";

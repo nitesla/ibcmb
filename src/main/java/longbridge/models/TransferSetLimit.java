@@ -95,18 +95,17 @@ public class TransferSetLimit extends AbstractEntity implements PrettySerializer
 
     @Override @JsonIgnore
     public JsonSerializer<TransferSetLimit> getSerializer() {
-        return new JsonSerializer<TransferSetLimit>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(TransferSetLimit value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("channel",value.channel);
-                gen.writeStringField("customerType",value.customerType);
-                gen.writeStringField("description",value.description);
-                gen.writeStringField("lowerLimit",value.lowerLimit);
-                gen.writeStringField("upperLimit",value.upperLimit);
-                gen.writeStringField("delFlag",value.delFlag);
+                gen.writeStringField("channel", value.channel);
+                gen.writeStringField("customerType", value.customerType);
+                gen.writeStringField("description", value.description);
+                gen.writeStringField("lowerLimit", value.lowerLimit);
+                gen.writeStringField("upperLimit", value.upperLimit);
+                gen.writeStringField("delFlag", value.delFlag);
                 gen.writeEndObject();
             }
         };
@@ -115,23 +114,22 @@ public class TransferSetLimit extends AbstractEntity implements PrettySerializer
 
     @Override @JsonIgnore
     public JsonSerializer<TransferSetLimit> getAuditSerializer() {
-        return new JsonSerializer<TransferSetLimit>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(TransferSetLimit value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("channel",value.channel);
-                gen.writeStringField("customerType",value.customerType);
-                gen.writeStringField("description",value.description);
-                gen.writeStringField("lowerLimit",value.lowerLimit);
-                gen.writeStringField("upperLimit",value.upperLimit);
-                gen.writeStringField("delFlag",value.delFlag);
+                gen.writeStringField("channel", value.channel);
+                gen.writeStringField("customerType", value.customerType);
+                gen.writeStringField("description", value.description);
+                gen.writeStringField("lowerLimit", value.lowerLimit);
+                gen.writeStringField("upperLimit", value.upperLimit);
+                gen.writeStringField("delFlag", value.delFlag);
                 gen.writeEndObject();
             }
         };

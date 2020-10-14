@@ -36,7 +36,7 @@ public class AdminUserGeneralController {
     @Autowired
     private SecurityService securityService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @GetMapping("/password/reset")

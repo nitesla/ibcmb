@@ -5,6 +5,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class AuditConfig extends AbstractEntity
 	@Override
 	public List<String> getDefaultSearchFields()
 	{
-		return Arrays.asList("entityName");
+		return Collections.singletonList("entityName");
 	}
 
 

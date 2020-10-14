@@ -39,7 +39,7 @@ public class OperationsUserGeneralContoller {
     @Autowired
     private SecurityService securityService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     PasswordPolicyService passwordService;
@@ -53,7 +53,7 @@ public class OperationsUserGeneralContoller {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<OperationsUserDTO> operationsUsers = operationsUserService.findUsers(user, pageable);
-        DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<OperationsUserDTO>();
+        DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(operationsUsers.getContent());
         logger.info("Users found: {}", operationsUsers.getContent().toString());

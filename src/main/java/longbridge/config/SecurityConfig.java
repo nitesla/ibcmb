@@ -32,7 +32,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -68,7 +67,7 @@ public class SecurityConfig {
         private AuthenticationFailureHandler adminAuthenticationFailureHandler;
         @Autowired
         private ConfigurationService configService;
-        private Logger logger = LoggerFactory.getLogger(this.getClass());
+        private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public AdminUserConfigurationAdapter() {
             super();
@@ -93,8 +92,7 @@ public class SecurityConfig {
                 String temp = dto.getValue();
                 try {
                     String[] whitelisted = temp.split(",");
-                    Arrays.asList(whitelisted)
-                            .stream()
+                    Arrays.stream(whitelisted)
                             .filter(StringUtils::isNoneBlank)
                             .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
 
@@ -158,7 +156,7 @@ public class SecurityConfig {
         private AuthenticationFailureHandler opAuthenticationFailureHandler;
         @Autowired
         private ConfigurationService configService;
-        private Logger logger = LoggerFactory.getLogger(this.getClass());
+        private final Logger logger = LoggerFactory.getLogger(this.getClass());
         @Autowired
         private SessionRegistry sessionRegistry;
 
@@ -185,8 +183,7 @@ public class SecurityConfig {
                 String temp = dto.getValue();
                 try {
                     String[] whitelisted = temp.split(",");
-                    Arrays.asList(whitelisted)
-                            .stream()
+                    Arrays.stream(whitelisted)
                             .filter(Objects::nonNull)
                             .forEach(i -> ipRange.append(String.format(" or hasIpAddress('%s')", i)));
 

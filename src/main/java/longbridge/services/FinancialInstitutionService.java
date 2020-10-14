@@ -17,7 +17,7 @@ import java.util.List;
 public interface FinancialInstitutionService {
 
     @PreAuthorize("hasAuthority('ADD_FIN_INST')")
-    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException, DuplicateObjectException;
+    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;
 
     @PreAuthorize("hasAuthority('UPDATE_FIN_INST')")
     String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;

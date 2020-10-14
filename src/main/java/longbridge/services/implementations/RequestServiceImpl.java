@@ -8,11 +8,9 @@ import longbridge.dtos.ServiceRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.NameValue;
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +20,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +32,8 @@ import java.util.*;
 @Service
 public class RequestServiceImpl implements RequestService {
 
-    private ServiceRequestRepo serviceRequestRepo;
-    private RequestHistoryRepo requestHistoryRepo;
+    private final ServiceRequestRepo serviceRequestRepo;
+    private final RequestHistoryRepo requestHistoryRepo;
 
     @Autowired
     private ServiceReqConfigService reqConfigService;
@@ -75,9 +70,9 @@ public class RequestServiceImpl implements RequestService {
     private ServiceReqConfigRepo reqConfigRepo;
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @Autowired
@@ -94,8 +89,7 @@ public class RequestServiceImpl implements RequestService {
         } else {
             lastName = serviceRequest.getUser().getLastName();
         }
-        String name = firstName + ' ' + lastName;
-        return name;
+        return firstName + ' ' + lastName;
     }
 
     @Override
@@ -108,7 +102,7 @@ public class RequestServiceImpl implements RequestService {
 
             //***///
             ObjectMapper objectMapper = new ObjectMapper();
-            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<ArrayList<NameValue>>() {
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<>() {
             });
 
             StringBuilder messageBody = new StringBuilder();
@@ -147,7 +141,7 @@ public class RequestServiceImpl implements RequestService {
 
             //***///
             ObjectMapper objectMapper = new ObjectMapper();
-            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<ArrayList<NameValue>>() {
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<>() {
             });
 
             StringBuilder messageBody = new StringBuilder();
@@ -222,8 +216,7 @@ public class RequestServiceImpl implements RequestService {
         Page<ServiceRequest> page = serviceRequestRepo.findAllByUserOrderByDateRequestedDesc(user, pageDetails);
         List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -231,8 +224,7 @@ public class RequestServiceImpl implements RequestService {
         Page<ServiceRequest> page = serviceRequestRepo.findAllByCorporateOrderByDateRequestedDesc(corporate, pageDetails);
         List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 //    public Page<ServiceRequestDTO> getRequests(OperationsUser opsUser, Pageable pageDetails) {

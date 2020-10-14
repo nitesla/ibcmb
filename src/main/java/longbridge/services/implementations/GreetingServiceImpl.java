@@ -33,18 +33,18 @@ import java.util.stream.Stream;
 @Service
 public class GreetingServiceImpl implements GreetingService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private MessageSource messageSource;
 
-    private GreetingRepo greetingRepo;
+    private final GreetingRepo greetingRepo;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
     @Autowired
     private EntityManager entityManager;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private IntegrationService integrationService;
@@ -58,7 +58,7 @@ public class GreetingServiceImpl implements GreetingService {
     @Autowired
     private AccountService accountService;
 
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 
     @Autowired

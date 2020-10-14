@@ -48,12 +48,12 @@ public class TransferUtils {
     @Autowired
     private MessageSource messageSource;
     
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private AccountRepo accountRepo;
     @Autowired
     private CorporateRepo corporateRepo;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     public void setCodeService(CodeService codeService) {
         this.codeService = codeService;
@@ -217,7 +217,7 @@ public class TransferUtils {
                      .filter(Objects::nonNull)
                      .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
                      
-                     .forEach(i -> accountList.add(i));
+                     .forEach(accountList::add);
             
         }
         return accountList;
@@ -397,8 +397,7 @@ public class TransferUtils {
             throw new IllegalArgumentException(numOfDigits + ": Number must be equal or greater than 1");
         }
         long random = (long) Math.floor(Math.random() * 9 * (long)Math.pow(10,numOfDigits-1)) + (long)Math.pow(10,numOfDigits-1);
-        String refCode = Long.toString(random);
-        return refCode;
+        return Long.toString(random);
     }
     
 }

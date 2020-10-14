@@ -30,9 +30,9 @@ import java.util.Objects;
 @Service
 @Transactional
 public class CronJobServiceImpl implements CronJobService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 //    @Autowired
-    private IntegrationService integrationService;
+    private final IntegrationService integrationService;
     @Autowired
     private AccountRepo accountRepo;
     @Autowired
@@ -457,5 +457,29 @@ public class CronJobServiceImpl implements CronJobService {
     @Scheduled(cron = "${coverage.update}")
     public void addCoverageForNewCodes() {
 //        coverageService.addCoverageForNewCodes();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.firstwindow}")
+    public void neftSettlementFirstWindow(){
+        integrationService.submitNeftTransfer();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.secondwindow}")
+    public void neftSettlementSecondWindow() {
+        integrationService.submitNeftTransfer();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.thirdwindow}")
+    public void neftSettlementThirdWindow() {
+        integrationService.submitNeftTransfer();
+    }
+
+    @Override
+    @Scheduled(cron = "${neft.settlement.fourthwindow}")
+    public void neftSettlementFourthWindow() {
+        integrationService.submitNeftTransfer();
     }
 }

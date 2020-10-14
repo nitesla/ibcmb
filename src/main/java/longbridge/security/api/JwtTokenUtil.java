@@ -32,7 +32,7 @@ public class JwtTokenUtil implements Serializable {
     private static final String AUDIENCE_MOBILE = "mobile";
     private static final String AUDIENCE_TABLET = "tablet";
 
-    private Clock clock = DefaultClock.INSTANCE;
+    private final Clock clock = DefaultClock.INSTANCE;
 
     @Value("${jwt.secret}")
     private String secret;

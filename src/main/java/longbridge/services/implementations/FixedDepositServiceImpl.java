@@ -49,9 +49,9 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     @Autowired
     private InvestmentRateService investmentRateService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public List<FixedDepositDTO> getFixedDepositDetials(String username) {
         List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
@@ -95,7 +95,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 //            }
         }
         Long totalCount = Long.valueOf(fixedDepositDTOS.size());
-        return new PageImpl<FixedDepositDTO>(fixedDepositDTOS,pageable,totalCount);
+        return new PageImpl<>(fixedDepositDTOS, pageable, totalCount);
     }
 
     @Override
@@ -106,8 +106,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
             fixedDepositDTO.setAction(FIxedDepositActions.FULL_LIQUIDATE.toString());
         }
         sendMail(fixedDepositDTO);
-           Response response =  integrationService.liquidateFixDeposit(fixedDepositDTO);
-           return response;
+        return integrationService.liquidateFixDeposit(fixedDepositDTO);
     }
     @Override
     public Response addFund(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
@@ -119,8 +118,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     @Override
     public Response bookFixDeposit(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
         fixedDepositDTO.setAction(FIxedDepositActions.INITIATE.toString());
-           Response response =  integrationService.bookFixDeposit(fixedDepositDTO);
-           return response;
+        return integrationService.bookFixDeposit(fixedDepositDTO);
     }
 
     @Override
@@ -130,10 +128,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         BigDecimal deposit = new BigDecimal(fixedDepositDTO.getInitialDepositAmount());
         int comparator = availableBalance.compareTo(deposit);
         logger.info("the comparator {}",comparator);
-        if(comparator > 0){
-            return true;
-        }
-        return false;
+        return comparator > 0;
     }
 
     @Override
@@ -167,13 +162,12 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         if (user.getFirstName() == null) {
             firstName = user.getFirstName();
         }
-        String name = firstName + ' ' + lastName;
-        return name;
+        return firstName + ' ' + lastName;
     }
     private Context context(FixedDepositDTO fixedDepositDTO){
         Context context = new Context();
         if(fixedDepositDTO.getAction().contains("LIQUIDATE")){
-            String alertSubject = String.format(messageSource.getMessage("deposit.liquidate.subject", null, locale));
+            String alertSubject = messageSource.getMessage("deposit.liquidate.subject", null, locale);
             if(fixedDepositDTO.getLiquidateType().equalsIgnoreCase("P")) {
                 context.setVariable("liquidateType", "Part Liquidation");
             }else {
@@ -184,7 +178,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
             context.setVariable("alertSubject",alertSubject);
             context.setVariable("template","mail/liquidate.html");
         }else if(fixedDepositDTO.getAction().equalsIgnoreCase("ADD_FUND")) {
-            String alertSubject = String.format(messageSource.getMessage("deposit.add.fund.subject", null, locale));
+            String alertSubject = messageSource.getMessage("deposit.add.fund.subject", null, locale);
             context.setVariable("accountNumber", fixedDepositDTO.getAccountNumber());
             context.setVariable("amount" ,fixedDepositDTO.getInitialDepositAmount());
             context.setVariable("alertSubject",alertSubject);

@@ -44,6 +44,10 @@ public interface CronJobService {
     public void refreshPaymentBillers();
     void addCoverageForNewEntity();
     void addCoverageForNewCodes();
+    void neftSettlementFirstWindow();
+    void neftSettlementSecondWindow();
+    void neftSettlementThirdWindow();
+    void neftSettlementFourthWindow();
 
 
 }

@@ -25,7 +25,6 @@ import java.util.*;
 @Service
 public class PasswordPolicyService {
 
-    private String ruleMessage = "";
     @Autowired
     private ConfigurationService configService;
     @Autowired
@@ -45,35 +44,27 @@ public class PasswordPolicyService {
     private MessageSource messageSource;
 
     private List<String> passwordRules;
-    private SettingDTO numOfPasswordDigits;
-    private SettingDTO minLengthOfPassword;
-    private SettingDTO maxLengthOfPassword;
-    private SettingDTO noSpecialChar;
-    private SettingDTO specialChars;
-    private SettingDTO numOfChangesBeforeReuse;
 
 
     private int numOfDigits = 0;
     private int noOfSpecial = 0;
     private int minLength = 8;
-    private int maxLength = 255;
     private String specialCharacters = "@#$%&";
-    private int numOfChanges = 0;
-    private boolean initialized = false;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     private void init() {
 
         passwordRules = new ArrayList<>();
-        numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
-        noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
-        minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LENGTH");
-        maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LENGTH");
-        specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
-        numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        SettingDTO numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
+        SettingDTO noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
+        SettingDTO minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LENGTH");
+        SettingDTO maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LENGTH");
+        SettingDTO specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
 
+        String ruleMessage = "";
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
 
@@ -99,7 +90,7 @@ public class PasswordPolicyService {
 
         }
         if (maxLengthOfPassword != null && maxLengthOfPassword.isEnabled()) {
-            maxLength = NumberUtils.toInt(maxLengthOfPassword.getValue());
+            int maxLength = NumberUtils.toInt(maxLengthOfPassword.getValue());
             ruleMessage = String.format(messageSource.getMessage("password.max.len", null, locale), maxLength);
             passwordRules.add(ruleMessage);
         }
@@ -110,12 +101,12 @@ public class PasswordPolicyService {
 
         }
         if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
-            numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
             ruleMessage = String.format(messageSource.getMessage("password.reuse", null, locale), numOfChanges);
             passwordRules.add(ruleMessage);
 
         }
-        initialized = true;
+        boolean initialized = true;
 
     }
 
@@ -146,13 +137,11 @@ public class PasswordPolicyService {
             adminPassword.setUserId(adminUser.getId());
             adminPassword.setPassword(adminUser.getPassword());
             if (numOfChanges > 0) {
-                if (count < numOfChanges) {
-                    adminPasswordRepo.save(adminPassword);
-                } else {
+                if (count >= numOfChanges) {
                     AdminPassword firstPassword = adminPasswordRepo.findFirstByUserId(adminUser.getId());
                     adminPasswordRepo.delete(firstPassword);
-                    adminPasswordRepo.save(adminPassword);
                 }
+                adminPasswordRepo.save(adminPassword);
             }
         }
     }
@@ -168,13 +157,11 @@ public class PasswordPolicyService {
             opsPassword.setUserId(operationsUser.getId());
             opsPassword.setPassword(operationsUser.getPassword());
             if (numOfChanges > 0) {
-                if (count < numOfChanges) {
-                    opsPasswordRepo.save(opsPassword);
-                } else {
+                if (count >= numOfChanges) {
                     OpsPassword firstPassword = opsPasswordRepo.findFirstByUserId(operationsUser.getId());
                     opsPasswordRepo.delete(firstPassword);
-                    opsPasswordRepo.save(opsPassword);
                 }
+                opsPasswordRepo.save(opsPassword);
             }
         }
     }
@@ -190,13 +177,11 @@ public class PasswordPolicyService {
                 RetailPassword retailPassword = new RetailPassword();
                 retailPassword.setUsername(retailUser.getUserName());
                 retailPassword.setPassword(retailUser.getPassword());
-                if (count < numOfChanges) {
-                    retailPasswordRepo.save(retailPassword);
-                } else {
+                if (count >= numOfChanges) {
                     RetailPassword firstPassword = retailPasswordRepo.findFirstByUsername(retailUser.getUserName());
                     retailPasswordRepo.delete(firstPassword);
-                    retailPasswordRepo.save(retailPassword);
                 }
+                retailPasswordRepo.save(retailPassword);
             }
         }
     }
@@ -214,13 +199,11 @@ public class PasswordPolicyService {
             corporatePassword.setPassword(corporateUser.getPassword());
 
             if (numOfChanges > 0) {
-                if (count < numOfChanges) {
-                    corporatePasswordRepo.save(corporatePassword);
-                } else {
+                if (count >= numOfChanges) {
                     CorporatePassword firstPassword = corporatePasswordRepo.findFirstByUsername(corporateUser.getUserName());
                     corporatePasswordRepo.delete(firstPassword);
-                    corporatePasswordRepo.save(corporatePassword);
                 }
+                corporatePasswordRepo.save(corporatePassword);
             }
         }
     }
@@ -250,9 +233,7 @@ public class PasswordPolicyService {
             LocalDateTime dateToStartNotifying = dateToExpire.minusDays(days);
             LocalDateTime now = LocalDateTime.now();
 
-            if (now.isAfter(dateToStartNotifying) && !now.isAfter(dateToExpire)) {
-                return true;
-            }
+            return now.isAfter(dateToStartNotifying) && !now.isAfter(dateToExpire);
         }
         return false;
     }

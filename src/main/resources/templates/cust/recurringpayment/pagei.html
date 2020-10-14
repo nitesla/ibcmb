@@ -85,7 +85,7 @@
 
                         <div class="form-group">
                             <label >Amount</label>
-                            <input id="amount" th:field="*{amount}" required="required" type="number" min=0 class="form-control"  placeholder="Amount" readonly/>
+                            <input id="amount" th:field="*{amount}" required="required" type="number" min=1 class="form-control"  placeholder="Amount" readonly/>
                             <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                             <span class='req-inner'></span>
                         </div>
@@ -280,39 +280,48 @@
         function startDateError(){
             var startDate=$("#start").datepicker("getDate");
             var endDate=$("#end").datepicker("getDate");
+            //var datePieces = startDate.split("-");
+            //var preFinalDate = [datePieces[1] , datePieces[0] , datePieces[2]].join("-");
 
             var currentDate = new Date();
-            var dd = currentDate.getDate();
-            var mm = currentDate.getMonth()+1;
-            var yyyy = currentDate.getFullYear();
-            if(dd<10)
-            {
-                dd='0'+dd;
-            }
-            if(mm<10)
-            {
-                mm='0'+mm;
-            }
-
-            // currentDate = dd+'-'+mm+'-'+yyyy;
-            var date = new Date(dd+'-'+mm+'-'+yyyy);
-            var dateTimeFormat = new Intl.DateTimeFormat('en', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat.formatToParts(date);
-
-            currentDate = (`${day}-${month}-${year }`);
+            currentDate.setDate(currentDate.getDate() - 1);
+            // var dd = currentDate.getDate();
+            // var mm = currentDate.getMonth()+1;
+            // var yyyy = currentDate.getFullYear();
+            // if(dd<10)
+            // {
+            //     dd='0'+dd;
+            // }
+            // if(mm<10)
+            // {
+            //     mm='0'+mm;
+            // }
+            //
+            // // currentDate = dd+'-'+mm+'-'+yyyy;
+            // var date = new Date(dd+'-'+mm+'-'+yyyy);
+            // var dateTimeFormat = new Intl.DateTimeFormat('en', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            // const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat.formatToParts(date);
+            //
+            // currentDate = (`${day}-${month}-${year }`);
+            // // console.log(currentDate);
             // console.log(currentDate);
-            console.log(currentDate);
-            console.log(new Date(currentDate));
-            console.log(new Date(startDate));
-            console.log(startDate);
+            // console.log(new Date(currentDate));
+            // console.log(new Date(startDate));
+            // console.log(startDate);
+            console.log("StartDate is "+startDate);
+            console.log("End Date is "+endDate);
+            //console.log("PrefinalDate is "+preFinalDate);
+            console.log("Current date is "+currentDate);
 
-            if(startDate < (new Date(currentDate))){
+            if(startDate <= currentDate){
                 $("#dateError").text("Start date should not be less than current date")
                 $("#save").attr("disabled",true);
+                $("#end").attr("disabled",true);
                 return false;
             }else{
                 $("#dateError").text("")
                 $("#save").attr("disabled",false);
+                $("#end").attr("disabled",false);
             }
 
             if (startDate > endDate){

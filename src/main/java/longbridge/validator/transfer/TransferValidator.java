@@ -16,13 +16,8 @@ import org.springframework.validation.Validator;
 @Component
 public class TransferValidator implements Validator {
 
-    private AccountService accountService;
-    private IntegrationService integrationService;
-
     @Autowired
     public TransferValidator(AccountService accountService, IntegrationService integrationService) {
-        this.accountService = accountService;
-        this.integrationService = integrationService;
     }
 
     @Override

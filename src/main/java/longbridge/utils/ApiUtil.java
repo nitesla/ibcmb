@@ -50,7 +50,7 @@ public class ApiUtil {
     @Autowired
     RetailUserRepo retailUserRepo;
     private Locale locale = LocaleContextHolder.getLocale();
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     public Object validateUser(ApiUser passedUser) {
         Map<String, Object> responseMap = new HashMap();
         ApiResponse response =new ApiResponse("100", true,"Error occured ", responseMap);

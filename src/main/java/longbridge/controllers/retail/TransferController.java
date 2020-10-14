@@ -53,21 +53,19 @@ import java.util.stream.StreamSupport;
 public class TransferController {
 
 
-    private RetailUserService retailUserService;
-    private IntegrationService integrationService;
-    private TransferService transferService;
-    private AccountService accountService;
-    private MessageSource messages;
-    private LocalBeneficiaryService localBeneficiaryService;
-    private TransferErrorService transferErrorService;
-    private SecurityService securityService;
-    private ApplicationContext appContext;
-    private TransferUtils transferUtils;
+    private final RetailUserService retailUserService;
+    private final TransferService transferService;
+    private final AccountService accountService;
+    private final MessageSource messages;
+    private final LocalBeneficiaryService localBeneficiaryService;
+    private final TransferErrorService transferErrorService;
+    private final SecurityService securityService;
+    private final TransferUtils transferUtils;
     @Autowired
     private ConfigurationService configService;
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
@@ -83,14 +81,12 @@ public class TransferController {
     public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
             , ApplicationContext appContext, TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
-        this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
-        this.appContext = appContext;
         this.transferUtils = transferUtils;
     }
 
@@ -120,6 +116,9 @@ public class TransferController {
                 case OWN_ACCOUNT_TRANSFER: {
 
                     return "redirect:/retail/transfer/ownaccount";
+                }
+                case NEFT:{
+                    return "redirect:/retail/transfer/interbank";
                 }
 
                 case RTGS: {
@@ -410,7 +409,7 @@ public class TransferController {
             JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
             response.setContentType("application/x-download");
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"rpt_tran-hist.pdf\""));
+            response.setHeader("Content-Disposition", "attachment; filename=\"rpt_tran-hist.pdf\"");
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
             JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());

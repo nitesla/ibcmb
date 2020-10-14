@@ -106,10 +106,10 @@ public class CorporateUser extends User implements PrettySerializer{
 	@Override
 	@JsonIgnore
 	public JsonSerializer<CorporateUser> getSerializer() {
-		return new JsonSerializer<CorporateUser>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(CorporateUser value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+					throws IOException {
 
 				gen.writeStartObject();
 				gen.writeStringField("Corporate Name", value.corporate.getName());
@@ -118,7 +118,7 @@ public class CorporateUser extends User implements PrettySerializer{
 				gen.writeStringField("Last Name", value.lastName);
 				gen.writeStringField("Email", value.email);
 				gen.writeStringField("Phone", value.phoneNumber);
-				String status =null;
+				String status = null;
 				if ("A".equals(value.status))
 					status = "Active";
 				else if ("I".equals(value.status))
@@ -127,8 +127,8 @@ public class CorporateUser extends User implements PrettySerializer{
 					status = "Locked";
 				gen.writeStringField("Status", status);
 				gen.writeStringField("Role", value.role.getName());
-				if("MULTI".equals(corporate.getCorporateType())) {
-					if(value.corpUserType!=null) {
+				if ("MULTI".equals(corporate.getCorporateType())) {
+					if (value.corpUserType != null) {
 						gen.writeStringField("User Type", value.corpUserType.name());
 					}
 				}
@@ -142,27 +142,27 @@ public class CorporateUser extends User implements PrettySerializer{
 	@Override
 	@JsonIgnore
 	public JsonSerializer<CorporateUser> getAuditSerializer() {
-		return new JsonSerializer<CorporateUser>() {
+		return new JsonSerializer<>() {
 			@Override
 			public void serialize(CorporateUser value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
+					throws IOException {
 
 				gen.writeStartObject();
 //				gen.writeStringField("Corporate Name", value.corporate.getName());
-				if(value.id != null) {
+				if (value.id != null) {
 					gen.writeStringField("id", value.id.toString());
-				}else {
+				} else {
 					gen.writeStringField("id", "");
 				}
 				gen.writeStringField("userName", value.userName);
-				if(String.valueOf(value.admin) != null) {
+				if (String.valueOf(value.admin) != null) {
 					gen.writeStringField("admin", String.valueOf(value.admin));
-				}else {
+				} else {
 					gen.writeStringField("admin", "");
 				}
-				if(value.corpUserType != null) {
+				if (value.corpUserType != null) {
 					gen.writeStringField("corpUserType", value.corpUserType.toString());
-				}else {
+				} else {
 					gen.writeStringField("corpUserType", "");
 				}
 				gen.writeStringField("isFirstTimeLogon", value.isFirstTimeLogon);
@@ -170,7 +170,7 @@ public class CorporateUser extends User implements PrettySerializer{
 				gen.writeStringField("lastName", value.lastName);
 				gen.writeStringField("email", value.email);
 				gen.writeStringField("phoneNumber", value.phoneNumber);
-				String status =null;
+				String status = null;
 				if ("A".equals(value.status))
 					status = "Active";
 				else if ("I".equals(value.status))

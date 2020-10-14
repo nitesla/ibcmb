@@ -41,7 +41,7 @@ public class OpsAccountRestrictionController {
     private MessageSource messageSource;
 
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ModelAttribute
     public void init(Model model) {
@@ -55,8 +55,7 @@ public class OpsAccountRestrictionController {
     @GetMapping("/restrictions")
     @ResponseBody
     public Iterable<CodeDTO> getRestrictions() {
-        Iterable<CodeDTO> restrictionTypes = codeService.getCodesByType("RESTRICTION_TYPE");
-        return restrictionTypes;
+        return codeService.getCodesByType("RESTRICTION_TYPE");
     }
 
     @GetMapping("/restriction/new")
@@ -132,7 +131,7 @@ public class OpsAccountRestrictionController {
     DataTablesOutput<AccountRestrictionDTO> getAccountRestrictions(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AccountRestrictionDTO> accountRestrictions = accountConfigService.getAccountRestrictions(pageable);
-        DataTablesOutput<AccountRestrictionDTO> out = new DataTablesOutput<AccountRestrictionDTO>();
+        DataTablesOutput<AccountRestrictionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(accountRestrictions.getContent());
         out.setRecordsFiltered(accountRestrictions.getTotalElements());

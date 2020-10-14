@@ -15,7 +15,7 @@ public class ChequeServiceImpl implements ChequeService {
     @Autowired
     IntegrationService integrationService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public boolean isBalanceOk(int amount, String accountNumber) {
@@ -23,10 +23,6 @@ public class ChequeServiceImpl implements ChequeService {
         BigDecimal deposit = new BigDecimal(amount);
         int comparator = availableBalance.compareTo(deposit);
         logger.info("the comparator {}", comparator);
-        if (comparator > 0) {
-            return true;
-        }
-
-        return false;
+        return comparator > 0;
     }
 }

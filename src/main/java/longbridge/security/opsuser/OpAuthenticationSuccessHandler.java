@@ -35,7 +35,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     @Autowired
     FailedLoginService failedLoginService;
     private LocalDate today = LocalDate.now();
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
     private OperationsUserRepo operationsUserRepo;

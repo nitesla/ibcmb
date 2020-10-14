@@ -18,11 +18,12 @@ public enum TransferType {
     NAPS("NAPS Transfer"),
     RTGS("RTGS Transfer"),
     NEFT("NEFT Transfer"),
-    CUSTOM_DUTY("Custom Duty Payment");
+    CUSTOM_DUTY("Custom Duty Payment"),
+    QUICKTELLER("QUICKTELLER Transfer");
 
 
 
-    private String description;
+    private final String description;
 
     TransferType(String description){
         this.description = description;

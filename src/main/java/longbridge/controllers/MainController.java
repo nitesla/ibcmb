@@ -40,8 +40,8 @@ import java.util.*;
 @Controller
 public class MainController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private RetailUserService retailUserService;
@@ -92,7 +92,7 @@ public class MainController {
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model,HttpServletResponse response,HttpServletRequest requests,HttpSession session) {
 
-        if (request.isPresent()) request.get().getSession().invalidate();
+        request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
         //clearSession();
         SecurityContextHolder.clearContext();
         Cookie cookie = CookieUtil.getCookie(requests);
@@ -110,7 +110,7 @@ public class MainController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        if (request.isPresent()) request.get().getSession().invalidate();
+        request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
         //clearSession();
         return new ModelAndView("corppage1", "error", error);
 

@@ -2,7 +2,9 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.TransactionFeeDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.NeftTransfer;
 import longbridge.models.TransactionFee;
+import longbridge.repositories.NeftTransferRepo;
 import longbridge.repositories.TransactionFeeRepo;
 import longbridge.services.CodeService;
 import longbridge.services.TransactionService;
@@ -41,9 +43,15 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private MessageSource messageSource;
 
-    Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+     private NeftTransferRepo neftTransferRepo;
+
+
+
+    final Locale locale = LocaleContextHolder.getLocale();
+
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String addTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
@@ -105,8 +113,13 @@ public class TransactionServiceImpl implements TransactionService {
     public Page<TransactionFeeDTO> getTransactionFees(Pageable pageable){
         Iterable<TransactionFee> transactionFees = transactionFeeRepo.findAll(pageable);
         List<TransactionFeeDTO> dtos = convertEntitiesToDTOs(transactionFees);
-        return new PageImpl<TransactionFeeDTO>(dtos,pageable,dtos.size());
+        return new PageImpl<>(dtos, pageable, dtos.size());
 
+    }
+
+    @Override
+    public Page<NeftTransfer> getNeftUnsettledTransactions(Pageable pageable) {
+        return neftTransferRepo.findBySettlementTime(pageable);
     }
 
 

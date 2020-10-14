@@ -40,29 +40,29 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/retail/directdebit")
 public class DirectDebitController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private MessageSource messageSource;
-    private DirectDebitService directDebitService;
-    private LocalBeneficiaryService localBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private SecurityService securityService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final MessageSource messageSource;
+    private final DirectDebitService directDebitService;
+    private final LocalBeneficiaryService localBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final SecurityService securityService;
 
-    private AccountService accountService;
+    private final AccountService accountService;
 
-    LocalBeneficiaryRepo localBeneficia;
-    private ConfigurationService configService;
+    final LocalBeneficiaryRepo localBeneficia;
+    private final ConfigurationService configService;
 
 
-    private RetailUserService retailUserService;
+    private final RetailUserService retailUserService;
 
-    private CodeService codeService;
+    private final CodeService codeService;
     @Autowired
     private TransactionLimitService limitService;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    private String page = "cust/directdebit/";
+    private final String page = "cust/directdebit/";
     @Value("${bank.code}")
     private String bankCode;
 
@@ -302,10 +302,6 @@ public class DirectDebitController {
             String message = directDebitService.addDirectDebit(user, directDebitDTO);
             model.addAttribute("success", message);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (InternetBankingException e) {
-            logger.error("Direct debit Error", e);
-            redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "redirect:/retail/directdebit/new";
         } catch (Exception e) {
             logger.error("Direct debit Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -389,11 +385,10 @@ public class DirectDebitController {
                         logger.error("Direct debit Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/retail/directdebit";
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/retail/directdebit";
                 }
+                return "redirect:/retail/directdebit";
             } catch (InternetBankingException e) {
                 logger.error("Direct debit Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());
@@ -428,11 +423,10 @@ public class DirectDebitController {
                         logger.error("Direct debit Error", e);
                         redirectAttributes.addFlashAttribute("failure", e.getMessage());
                     }
-                    return "redirect:/retail/directdebit/payments/" + directDebit.getId();
                 } else {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/retail/directdebit/payments/" + directDebit.getId();
                 }
+                return "redirect:/retail/directdebit/payments/" + directDebit.getId();
             } catch (InternetBankingException e) {
                 logger.error("Direct debit Error", e);
                 redirectAttributes.addFlashAttribute("failure", e.getMessage());

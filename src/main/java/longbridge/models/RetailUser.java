@@ -151,10 +151,10 @@ public class RetailUser extends User implements PrettySerializer {
     @Override
     @JsonIgnore
     public JsonSerializer<User> getSerializer() {
-        return new JsonSerializer<User>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
                 gen.writeStringField("Username", value.userName);
@@ -179,10 +179,10 @@ public class RetailUser extends User implements PrettySerializer {
     @Override
     @JsonIgnore
     public JsonSerializer<User> getAuditSerializer() {
-        return new JsonSerializer<User>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
                 if (value.id != null) {

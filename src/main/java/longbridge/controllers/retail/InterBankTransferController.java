@@ -26,7 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,20 +37,18 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequestMapping(value = "/retail/transfer/interbank")
 public class InterBankTransferController {
-    private RetailUserService retailUserService;
-    private TransferService transferService;
-    private MessageSource messages;
-    private TransferUtils transferUtils;
-    private LocalBeneficiaryService localBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
-    private IntegrationService integrationService;
-    private AccountService accountService;
-    private String page = "cust/transfer/interbank/";
+    private final RetailUserService retailUserService;
+    private final MessageSource messages;
+    private final TransferUtils transferUtils;
+    private final LocalBeneficiaryService localBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferValidator validator;
+    private final AccountService accountService;
+    private final String page = "cust/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
-    private TransferErrorService transferErrorService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final TransferErrorService transferErrorService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 /*
     @Value("${geolocation.url}")
@@ -66,12 +63,10 @@ public class InterBankTransferController {
             , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService
     ) {
         this.retailUserService = retailUserService;
-        this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
-        this.integrationService = integrationService;
         this.accountService = accountService;
         this.transferUtils = transferUtils;
         this.transferErrorService = transferErrorService;
@@ -142,15 +137,18 @@ public class InterBankTransferController {
 
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiAb";
-        } else if ("NEFT".equalsIgnoreCase(type))
+        } else if ("NEFT".equalsIgnoreCase(type)){
             request.getSession().setAttribute("NIP", "NEFT");
-        requestDTO.setTransferType(TransferType.NEFT);
+            requestDTO.setTransferType(TransferType.NEFT);
 
-        model.addAttribute("transferRequest", requestDTO);
-        return page + "pageiAc";
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAc";
+        } else if ("QUICKTELLER".equalsIgnoreCase(type))
+            request.getSession().setAttribute("NIP", "QUICKTELLER");
+            requestDTO.setTransferType(TransferType.QUICKTELLER);
 
-
-
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAd";
     }
 
 
@@ -193,18 +191,29 @@ public class InterBankTransferController {
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 
         String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
-        String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
-        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
-        BigDecimal userAmount = transferRequestDTO.getAmount();
-        int a = amountLimit.intValue();
-        int b = userAmount.intValue();
-        if (b > a){
-            String errorMessage = "You can not transfer more than account limit";
-            model.addAttribute("errorMessage", errorMessage);
-            model.addAttribute("benName", newbenName);
-            model.addAttribute("transferRequest", transferRequestDTO);
-             return page + "pageii";
-        }
+//        logger.info("transaction channel == [{}]", transferRequestDTO.getChannel());
+//        String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
+//        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
+//        BigDecimal userAmount = transferRequestDTO.getAmount();
+//        if (userAmount == null){
+//            String amounterrorMessage = "Please supply amount";
+//            model.addAttribute("amounterrorMessage", amounterrorMessage);
+//            model.addAttribute("benName", newbenName);
+//            model.addAttribute("transferRequest", transferRequestDTO);
+//            return page + "pageii";
+//        }
+//        int a = amountLimit.intValue();
+//        logger.info("User's transfer limit == [{}]", a);
+//        int b = userAmount.intValue();
+//        logger.info("User's amount for transfer == [{}]", b);
+//        logger.info("which is a greater number [{}] or [{}]", a, b);
+//        if (b > a){
+//            String errorMessage = "You can not transfer more than account limit";
+//            model.addAttribute("errorMessage", errorMessage);
+//            model.addAttribute("benName", newbenName);
+//            model.addAttribute("transferRequest", transferRequestDTO);
+//             return page + "pageii";
+//        }
 
         model.addAttribute("transferRequest", transferRequestDTO);
         String charge = "NAN";
@@ -227,9 +236,17 @@ public class InterBankTransferController {
                 transferRequestDTO.setCharge(charge);
 
 
-            } else {
+            } else if ("NIP".equalsIgnoreCase(type)) {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
                 charge = transferUtils.getFee("NIP",String.valueOf(transferRequestDTO.getAmount()));
+                transferRequestDTO.setCharge(charge);
+            } else if("NEFT".equalsIgnoreCase(type)){
+                transferRequestDTO.setTransferType(TransferType.NEFT);
+                charge = transferUtils.getFee("NEFT",String.valueOf(transferRequestDTO.getAmount()));
+                transferRequestDTO.setCharge(charge);
+            } else if("QUICKTELLER".equalsIgnoreCase(type)){
+                transferRequestDTO.setTransferType(TransferType.QUICKTELLER);
+                charge = transferUtils.getFee("QUICKTELLER",String.valueOf(transferRequestDTO.getAmount()));
                 transferRequestDTO.setCharge(charge);
             }
             // request.getSession().removeAttribute("NIP");
@@ -316,7 +333,7 @@ public class InterBankTransferController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

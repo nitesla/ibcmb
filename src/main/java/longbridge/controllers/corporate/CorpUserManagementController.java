@@ -60,7 +60,7 @@ public class CorpUserManagementController {
     @Autowired
     private VerificationService verificationService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private MessageSource messageSource;
@@ -120,7 +120,7 @@ public class CorpUserManagementController {
             CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
             Pageable pageable = DataTablesUtils.getPageable(input);
             Page<CorporateUserDTO> users = corporateUserService.getUsers(corporate.getId(), pageable);
-            DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
+            DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<>();
             out.setDraw(input.getDraw());
             out.setData(users.getContent());
             out.setRecordsFiltered(users.getTotalElements());
@@ -354,12 +354,9 @@ public class CorpUserManagementController {
         try {
             String message = corporateUserService.resetCorpPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (PasswordException pe) {
+        } catch (InternetBankingException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for corporate user", pe);
-        } catch (InternetBankingException ibe) {
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            logger.error("Error resetting password for corporate user", ibe);
         }
         return "redirect:/corporate/users";
     }
@@ -374,12 +371,9 @@ public class CorpUserManagementController {
         try {
             String message = corporateUserService.unlockUser(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (PasswordException pe) {
+        } catch (InternetBankingException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error unblocking corporate user", pe);
-        } catch (InternetBankingException ibe) {
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            logger.error("Error unblocking corporate user", ibe);
         }
         return "redirect:/corporate/users";
     }
@@ -404,7 +398,7 @@ public class CorpUserManagementController {
 
             Pageable pageable = DataTablesUtils.getPageable(input);
             Page<CorpUserVerificationDTO> page = corpUserVerificationService.getRequestsByCorpId(corporateUser.getCorporate().getId(), pageable);
-            DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<CorpUserVerificationDTO>();
+            DataTablesOutput<CorpUserVerificationDTO> out = new DataTablesOutput<>();
             out.setDraw(input.getDraw());
             out.setData(page.getContent());
             out.setRecordsFiltered(page.getTotalElements());
@@ -458,12 +452,9 @@ public class CorpUserManagementController {
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
 
             }
-        } catch (VerificationException ve) {
+        } catch (InternetBankingException ve) {
             logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Error verifying the operation", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
         return "redirect:/corporate/users/approvals";
     }

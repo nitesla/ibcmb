@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Fortune on 7/9/2018.
@@ -64,6 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
 //            billPaymentRepo.save(payment1);
             logger.info("Added payment {}",billPayment);
             if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+               // billPayment.setStatus("SUCCESSFUL");
                 return messageSource.getMessage("Payment Successful",null,locale);
             }else {
                 return messageSource.getMessage("Payment Failed",null,locale);
@@ -90,6 +92,7 @@ public class PaymentServiceImpl implements PaymentService {
             billPayment = billPaymentRepo.save(billPayment);
             logger.info("Added payment {}",billPayment);
             if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
+               // billPayment.setStatus("SUCCESSFUL");
                 return messageSource.getMessage("Payment Successful",null,locale);
             }else {
                 return messageSource.getMessage("Payment Failed",null,locale);
@@ -114,11 +117,10 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         RetailUser user = getCurrentUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndStatusNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -127,11 +129,10 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndCreatedOnNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndStatusNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -143,8 +144,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
 
     }
 
@@ -156,8 +156,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findUsingPattern("COP_" + user.getId(),pattern, pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BillPaymentDTO> pageImpl = new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
-        return pageImpl;
+        return new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
 
     }
 
@@ -165,6 +164,10 @@ public class PaymentServiceImpl implements PaymentService {
     private BillPayment convertPaymentDTOToEntity(BillPaymentDTO paymentDTO){
 
         logger.debug("Converting Bill payment DTO to entity");
+
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
 
         BillPayment payment = new BillPayment();
         payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
@@ -178,13 +181,17 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
         payment.setCategoryName(paymentDTO.getCategoryName());
-        payment.setRequestReference("RET_" + getCurrentUser().getId());
+        payment.setRequestReference("1194" + random);
         return payment;
     }
 
     private BillPayment convertCorpPaymentDTOToEntity(BillPaymentDTO paymentDTO){
 
         logger.debug("Converting Bill payment DTO to entity");
+
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
 
         BillPayment payment = new BillPayment();
         logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
@@ -199,7 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
         payment.setCategoryName(paymentDTO.getCategoryName());
-        payment.setRequestReference("COP_" + getCurrentCorpUser().getId());
+        payment.setRequestReference("1194" + random);
         return payment;
     }
 
@@ -232,14 +239,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     private RetailUser getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        RetailUser retailUser = (RetailUser) principal.getUser();
-        return retailUser;
+        return (RetailUser) principal.getUser();
     }
 
     private CorporateUser getCurrentCorpUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CorporateUser corporateUser = (CorporateUser) principal.getUser();
-        return corporateUser;
+        return (CorporateUser) principal.getUser();
     }
 
 

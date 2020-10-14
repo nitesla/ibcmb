@@ -10,6 +10,8 @@ import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -21,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,30 +33,28 @@ import java.util.stream.StreamSupport;
 public class CorpInterBankTransferController {
 
 
-    private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private MessageSource messages;
-    private CorpLocalBeneficiaryService corpLocalBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
-    private TransferValidator validator;
-    private CorporateService corporateService;
-    private IntegrationService integrationService;
-    private AccountService accountService;
-    private TransferUtils transferUtils;
-    private TransferErrorService transferErrorService;
-    private String page = "corp/transfer/interbank/";
+    private final CorporateUserService corporateUserService;
+    private final MessageSource messages;
+    private final CorpLocalBeneficiaryService corpLocalBeneficiaryService;
+    private final FinancialInstitutionService financialInstitutionService;
+    private final TransferValidator validator;
+    private final IntegrationService integrationService;
+    private final AccountService accountService;
+    private final TransferUtils transferUtils;
+    private final TransferErrorService transferErrorService;
+    private final String page = "corp/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
         this.corporateUserService = corporateUserService;
-        this.corpTransferService = corpTransferService;
         this.messages = messages;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
-        this.corporateService = corporateService;
         this.integrationService = integrationService;
         this.accountService = accountService;
         this.transferUtils = transferUtils;
@@ -113,25 +112,25 @@ public class CorpInterBankTransferController {
         String type = request.getParameter("tranType");
 
         if ("NIP".equalsIgnoreCase(type)) {
-
             request.getSession().setAttribute("NIP", "NIP");
             requestDTO.setTransferType(TransferType.NIP);
-
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiA";
         } else if ("RTGS".equalsIgnoreCase(type)){
             request.getSession().setAttribute("NIP", "RTGS");
             requestDTO.setTransferType(TransferType.RTGS);
-
             model.addAttribute("transferRequest", requestDTO);
             return page + "pageiAb";
-        } else if ("NEFT".equalsIgnoreCase(type))
+        } else if ("NEFT".equalsIgnoreCase(type)){
             request.getSession().setAttribute("NIP", "NEFT");
-        requestDTO.setTransferType(TransferType.NEFT);
-
-        model.addAttribute("transferRequest", requestDTO);
-        return page + "pageiAc";
-
+            requestDTO.setTransferType(TransferType.NEFT);
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAc";
+        } else if ("QUICKTELLER".equalsIgnoreCase(type))
+            request.getSession().setAttribute("NIP", "QUICKTELLER");
+            requestDTO.setTransferType(TransferType.QUICKTELLER);
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAd";
 
     }
 
@@ -161,7 +160,8 @@ public class CorpInterBankTransferController {
     }
 
     @PostMapping("/new")
-    public String getBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+    public String getBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result,
+                                 Model model, HttpServletRequest servletRequest) throws Exception {
         model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
         if (servletRequest.getSession().getAttribute("add") != null)
             servletRequest.getSession().removeAttribute("add");
@@ -191,18 +191,26 @@ public class CorpInterBankTransferController {
         String transferType = (String) request.getSession().getAttribute("NIP");
 
         String newBenName = (String) request.getSession().getAttribute("benName");
-        String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
-        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
-        BigDecimal userAmount = corpTransferRequestDTO.getAmount();
-        int a = amountLimit.intValue();
-        int b = userAmount.intValue();
-        if (b > a){
-            String errorMessage = "You can not transfer more than account limit";
-            model.addAttribute("errorMessage", errorMessage);
-            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
-            model.addAttribute("benName", newBenName);
-            return page + "pageii";
-        }
+//        String userAmountLimit = transferUtils.getLimitForAuthorization(corpTransferRequestDTO.getCustomerAccountNumber(), transferType);
+//        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
+//        BigDecimal userAmount = corpTransferRequestDTO.getAmount();
+//        if (userAmount == null){
+//            String amounterrorMessage = "Please supply amount";
+//            model.addAttribute("amounterrorMessage", amounterrorMessage);
+//            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+//            model.addAttribute("benName", newBenName);
+//            return page + "pageii";
+//        }
+//        int a = amountLimit.intValue();
+//        int b = userAmount.intValue();
+//
+//        if (b > a){
+//            String errorMessage = "You can not transfer more than account limit";
+//            model.addAttribute("errorMessage", errorMessage);
+//            model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+//            model.addAttribute("benName", newBenName);
+//            return page + "pageii";
+//        }
 
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         String benName = (String) request.getSession().getAttribute("benName");
@@ -233,11 +241,19 @@ public class CorpInterBankTransferController {
                 corpTransferRequestDTO.setTransferType(TransferType.RTGS);
                 charge = integrationService.getFee("RTGS",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
 
-            } else {
+            } else if (type.equalsIgnoreCase("NIP")){
 
                 charge = integrationService.getFee("NIP",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
 
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+            } else if (type.equalsIgnoreCase("NEFT")){
+                logger.info("Processing transfer using NEFT");
+                charge = integrationService.getFee("NEFT",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
+                corpTransferRequestDTO.setTransferType(TransferType.NEFT);
+            } else if (type.equalsIgnoreCase("QUICKTELLER")){
+                logger.info("Processing transfer using QUICKTELLER");
+                charge = integrationService.getFee("QUICKTELLER",String.valueOf(corpTransferRequestDTO.getAmount())).getFeeValue();
+                corpTransferRequestDTO.setTransferType(TransferType.QUICKTELLER);
             }
 //            request.getSession().removeAttribute("NIP");
 
@@ -294,6 +310,9 @@ public class CorpInterBankTransferController {
         if (type.equalsIgnoreCase("RTGS")) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
 
+        } else if (type.equalsIgnoreCase("NEFT")){
+            transferRequestDTO.setTransferType(TransferType.NEFT);
+
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
 
@@ -304,13 +323,14 @@ public class CorpInterBankTransferController {
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             String benName = dto.getPreferredName()!=null?dto.getPreferredName():dto.getAccountName();
             model.addAttribute("benName", benName);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+           transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+           logger.info("DETAILS == {}", financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
-
-
         return page + "pageii";
     }
+
 
     @ModelAttribute
     public void setNairaSourceAccount(Model model, Principal principal) {
@@ -325,7 +345,7 @@ public class CorpInterBankTransferController {
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
 
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
 
 
             model.addAttribute("accountList", accountList);

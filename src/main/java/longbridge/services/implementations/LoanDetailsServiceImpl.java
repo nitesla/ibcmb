@@ -30,14 +30,14 @@ import java.util.*;
 
 @Service
 public class LoanDetailsServiceImpl implements LoanDetailsService {
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     private IntegrationService integrationService;
@@ -96,8 +96,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         JasperReport jasperReport = ReportHelper.getJasperReport("loan_pdf");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(loanDTOList));
         JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
-        DataSource attachment =  new ByteArrayDataSource(outputStream.toByteArray(), "application/pdf");
-        return attachment;
+        return new ByteArrayDataSource(outputStream.toByteArray(), "application/pdf");
             }
 
 

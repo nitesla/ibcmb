@@ -36,15 +36,15 @@ import java.util.stream.StreamSupport;
 @RequestMapping(value = "/corporate/transfer/international")
 public class CorpInternationalTransferController {
 
-    private CorporateUserService corporateUserService;
-    private CorpTransferService transferService;
-    private CodeService codeService;
-    private CorpInternationalBeneficiaryService beneficiaryService;
-    private InternationalTransferValidator validator;
-    private AccountService accountService;
-    private TransferErrorService transferErrorService;
-    private TransferUtils transferUtils;
-    private MessageSource messageSource;
+    private final CorporateUserService corporateUserService;
+    private final CorpTransferService transferService;
+    private final CodeService codeService;
+    private final CorpInternationalBeneficiaryService beneficiaryService;
+    private final InternationalTransferValidator validator;
+    private final AccountService accountService;
+    private final TransferErrorService transferErrorService;
+    private final TransferUtils transferUtils;
+    private final MessageSource messageSource;
     private final String page = "corp/transfer/international/";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -182,7 +182,7 @@ public class CorpInternationalTransferController {
 
                     }
 
-                    return "redirect:/corporate/transfer/requests";
+                   return "redirect:/corporate/transfer/requests";
 
                 } catch (TransferAuthorizationException ae) {
                     logger.error("Error initiating a transfer ", ae);
@@ -284,7 +284,7 @@ public class CorpInternationalTransferController {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
 
 

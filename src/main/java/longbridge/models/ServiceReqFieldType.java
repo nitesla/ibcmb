@@ -12,10 +12,7 @@ public enum ServiceReqFieldType {
     FIXEDLIST("FIXEDLIST");
 
 
-    private String description;
-
     ServiceReqFieldType(String description){
-        this.description = description;
     }
 
 }

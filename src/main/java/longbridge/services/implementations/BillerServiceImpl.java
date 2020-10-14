@@ -78,6 +78,7 @@ public class BillerServiceImpl implements BillerService {
 
     private void autoUpdatePaymentItems(){
         List<Long> getBillerIds = billerRepo.getAllBillerId();
+        logger.info("biller id's === {}", getBillerIds);
         getBillerIds.forEach(getBillerId -> {
             logger.info("Updating payment item for biller with ID {}", getBillerId);
             updatePaymentItems(getBillerId);
@@ -143,7 +144,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enablePaymentItems(Long id, Boolean value) {
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             paymentItemRepo.enablePaymentItem(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
@@ -159,7 +160,7 @@ public class BillerServiceImpl implements BillerService {
     @Override
     public void readOnlyAmount(Long id, Boolean value){
         logger.info("readonly value = {}",value);
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             paymentItemRepo.readOnly(id, newValue);
             logger.info("Item with id=[{}] set read-only = {}", id, newValue);
@@ -174,7 +175,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enableOrDisableCategory(Long id,Boolean value) {
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             billerCategoryRepo.enableOrDisableCategory(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
@@ -188,7 +189,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public void enableOrDisableBiller(Long id,Boolean value) {
-        if (value == false){
+        if (!value){
             Boolean newValue = true;
             billerRepo.enableOrDisableBiller(id, newValue);
             logger.info("Item with id=[{}] is enabled = {}", id, newValue);
@@ -228,8 +229,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public Page<Biller> getBillersByCategory(String category, Pageable pageDetails) {
-        Page<Biller> categoryName = billerRepo.findByCategoryName(category, pageDetails);
-        return categoryName;
+        return billerRepo.findByCategoryName(category, pageDetails);
     }
 
     @Override
@@ -340,8 +340,7 @@ public class BillerServiceImpl implements BillerService {
     @Override
     public List<PaymentItem> getPaymentItemsForBiller(Long id) {
         Biller biller = billerRepo.findOneById(id);
-        List<PaymentItem> paymentItemList = paymentItemRepo.findByBillerId(biller.getBillerId());
-        return paymentItemList;
+        return paymentItemRepo.findByBillerId(biller.getBillerId());
     }
 
 
@@ -375,23 +374,31 @@ public class BillerServiceImpl implements BillerService {
 
 
     private List<PaymentItem> compareAndUpdatePaymentItems(List<PaymentItemDTO> paymentItems) {
+        logger.info("payments items ========================================= {}", paymentItems);
         List<PaymentItem> items = new ArrayList<>();
         try {
-        paymentItems.forEach(paymentItem -> {
+            for (PaymentItemDTO paymentItem : paymentItems) {
+                logger.info("paymentItemId ========== {}", paymentItem.getPaymentitemid());
                 PaymentItem getStoredItem = paymentItemRepo.findByPaymentItemId(paymentItem.getPaymentitemid());
-            if (getStoredItem == null) {
-                PaymentItem newPaymentItem = createPaymentitem(paymentItem);
-                newPaymentItem.setEnabled(true);
-                items.add(newPaymentItem);
-            } else {
-                PaymentItem newPaymentItem = createPaymentitem(paymentItem);
-                newPaymentItem.setEnabled(getStoredItem.isEnabled());
-                newPaymentItem.setReadonly(getStoredItem.getReadonly());
-                items.add(newPaymentItem);
+                logger.info("stored itms ====== {}", getStoredItem);
+                if (getStoredItem == null) {
+                    PaymentItem newPaymentItem = createPaymentitem(paymentItem);
+                    newPaymentItem.setEnabled(true);
+                    items.add(newPaymentItem);
+                } else {
 
+                    PaymentItem newPaymentItem = createPaymentitem(paymentItem);
+                    newPaymentItem.setEnabled(getStoredItem.isEnabled());
+                    newPaymentItem.setReadonly(getStoredItem.getReadonly());
+                    getStoredItem.setDelFlag("Y");
+                    paymentItemRepo.save(getStoredItem);
+                    items.add(newPaymentItem);
+
+                }
             }
-        });
-        } catch (Exception e){}
+        } catch (Exception e){
+            logger.error("error occured in updating payment items ", e);
+        }
         return paymentItemRepo.saveAll(items);
     }
 
@@ -420,8 +427,7 @@ public class BillerServiceImpl implements BillerService {
 
     @Override
     public Page<Biller> findSearch(String categoryname, String search, Pageable pageable){
-        Page<Biller> searchDetails = billerRepo.findByBillerNameContainsIgnoreCaseAndCategoryName(search,categoryname,pageable);
-        return  searchDetails;
+        return billerRepo.findByBillerNameContainsIgnoreCaseAndCategoryName(search,categoryname,pageable);
     }
 
 }

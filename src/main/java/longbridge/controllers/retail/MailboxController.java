@@ -48,7 +48,7 @@ public class MailboxController {
     private MessageSource messageSource;
 
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/inbox")
     public String getInbox(Model model, Principal principal) {
@@ -277,8 +277,7 @@ public class MailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getAllMessages(Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> messages = messageService.getMessages(retailUser);
-        return messages;
+        return messageService.getMessages(retailUser);
     }
 
 
@@ -286,8 +285,7 @@ public class MailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getReceivedMessages(Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
-        return receivedMessages;
+        return messageService.getReceivedMessages(retailUser);
     }
 
 
@@ -295,8 +293,7 @@ public class MailboxController {
     @ResponseBody
     public Iterable<MessageDTO> getSentMessages(Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        Iterable<MessageDTO> sentMessages = messageService.getSentMessages(retailUser);
-        return sentMessages;
+        return messageService.getSentMessages(retailUser);
     }
 
 

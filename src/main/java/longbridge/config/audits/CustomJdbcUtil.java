@@ -1,12 +1,10 @@
 package longbridge.config.audits;
 
-import longbridge.config.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -20,10 +18,10 @@ import javax.sql.DataSource;
 @Service
 public class CustomJdbcUtil {
 
-    static Logger logger = LoggerFactory.getLogger(CustomJdbcUtil.class);
+    static final Logger logger = LoggerFactory.getLogger(CustomJdbcUtil.class);
 
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     @Value("${jdbc.schema.prefix:}")
     private String schema;

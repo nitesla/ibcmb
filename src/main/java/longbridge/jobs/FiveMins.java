@@ -29,9 +29,7 @@ public class FiveMins implements Job {
             cronJobService.addNewAccount();
             cronJobService.updateRunningJob();
             System.out.println("five minutes");
-        } catch (InternetBankingException e) {
-            e.printStackTrace();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

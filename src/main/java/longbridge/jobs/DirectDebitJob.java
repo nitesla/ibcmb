@@ -19,7 +19,7 @@ import java.util.Collection;
 @Component
 @DisallowConcurrentExecution
 public class DirectDebitJob implements Job {
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private DirectDebitService directDebitService;

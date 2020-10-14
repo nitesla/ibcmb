@@ -39,7 +39,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
     @Autowired
     private IntegrationService integrationService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Override
     @Transactional

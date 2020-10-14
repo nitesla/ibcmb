@@ -8,7 +8,7 @@ public enum ApprovalStatus {
     I("Initiated by another user"),
     A("Approved");
 
-    private String description;
+    private final String description;
 
     ApprovalStatus(String description){
         this.description = description;

@@ -4,19 +4,13 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.response.BillerCategoryResponse;
-import longbridge.response.BillerResponse;
-import longbridge.response.PaymentItemResponse;
-import longbridge.response.PaymentResponse;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.AntiFraudRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CoverageRepo;
+import longbridge.repositories.*;
+import longbridge.response.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -51,8 +45,8 @@ import java.util.stream.Collectors;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	private Locale locale = LocaleContextHolder.getLocale();
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Locale locale = LocaleContextHolder.getLocale();
 
 	@Value("${ebank.service.uri}")
 	private String URI;
@@ -83,6 +77,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${custom.appId}")
 	private String appId;
 
+    @Value("${quickteller.appId}")
+	private String appIdQuickteller;
+
+    @Value("${quickteller.secretKey}")
+    private String secretKeyQuickteller;
+
 	@Value("${billPayment.terminalId}")
 	private String terminalId;
 
@@ -95,27 +95,32 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${customDuty.baseUrl}")
 	private String CustomDutyUrl;
 
+	@Value("${bankcode}")
+	private String bankcode;
+
 //	@Value("${custom.access.beneficiaryAcct}")
 //	private String accessBeneficiaryAcct;
 
 	@Value("${antifraud.status.check}")
 	private String antiFraudStatusCheckUrl;
 
-	private RestTemplate template;
-	private MailService mailService;
-	private TemplateEngine templateEngine;
-	private ConfigurationService configService;
-	private TransferErrorService errorService;
-	private MessageSource messageSource;
-	private AccountRepo accountRepo;
-	private CorporateRepo corporateRepo;
-	private AntiFraudRepo antiFraudRepo;
-	private CoverageRepo coverageRepo;
+	private final RestTemplate template;
+	private final MailService mailService;
+	private final TemplateEngine templateEngine;
+	private final ConfigurationService configService;
+	private final TransferErrorService errorService;
+	private final MessageSource messageSource;
+	private final AccountRepo accountRepo;
+	private final CorporateRepo corporateRepo;
+	private final AntiFraudRepo antiFraudRepo;
+    private final NeftTransferRepo neftTransferRepo;
+
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
                                   ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo, CoverageRepo coverageRepo) {
+                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo, CoverageRepo coverageRepo,
+								  NeftTransferRepo neftTransferRepo) {
 		this.template = template;
 		this.mailService = mailService;
 		this.templateEngine = templateEngine;
@@ -125,9 +130,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		this.accountRepo = accountRepo;
 		this.corporateRepo = corporateRepo;
 		this.antiFraudRepo=antiFraudRepo;
-		this.coverageRepo = coverageRepo;
-
-			}
+        this.neftTransferRepo = neftTransferRepo;
+	}
 
 
 	@Override
@@ -162,6 +166,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		}
 	}
 
+
+
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
 												 String numOfTxn, PaginationDetails paginationDetails) {
@@ -194,6 +200,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		return statement;
 	}
+
+
 
 	@Override
 	public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,
@@ -228,6 +236,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return statement;
 	}
 
+
+
+
 	@Override
 	public AccountStatement getFullAccountStatement(String accountNo, Date fromDate, Date toDate, String tranType) {
 		AccountStatement statement = new AccountStatement();
@@ -260,6 +271,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		return statement;
 	}
+
 
 	@Override
 	public AccountStatement getTransactionHistory(String accountNo, Date fromDate, Date toDate, String tranType) {
@@ -497,8 +509,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			}
 			case INTERNATIONAL_TRANSFER: {
-				TransRequest request = sendInternationalTransferRequest(transRequest);
-				return request;
+                return sendInternationalTransferRequest(transRequest);
 			}
 
 			case OWN_ACCOUNT_TRANSFER: {
@@ -552,15 +563,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}
 
 			case RTGS: {
-				TransRequest request = sendTransfer(transRequest);
 
-				return request;
+                return sendTransfer(transRequest);
+			}
+//			case NEFT: {
+//				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
+//				return neftTransferRequest;
+//			}
+			case QUICKTELLER: {
+
+				return transRequest;
 			}
 		}
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());
 		return transRequest;
 	}
+
+
 
 	@Override
 	public TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException{
@@ -684,9 +704,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}
 
 			case RTGS: {
-				TransRequest request = sendRTGSTransferRequest(transRequest);
 
-				return request;
+                return sendRTGSTransferRequest(transRequest);
 			}
 		}
 		logger.trace("request did not match any type");
@@ -699,8 +718,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
 		String uri = URI + "/transfer/naps";
 		try {
-			TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
-			return details;
+            return template.getForObject(uri, TransferDetails.class, naps);
 		} catch (Exception e) {
 			logger.error("Error making NAPS transfer", e);
 			return new TransferDetails();
@@ -715,8 +733,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("acctNo", acctNo);
 		try {
-			AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
-			return details;
+            return template.getForObject(uri, AccountDetails.class, params);
 		} catch (Exception e) {
 			logger.error("Error getting account details for {}", acctNo,e);
 			return new AccountDetails();
@@ -817,8 +834,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("accountNumber", accNo);
 		params.put("transactionChannel", channel);
 		try {
-			String response = template.postForObject(uri, params, String.class);
-			result = (response);
+            result = (template.postForObject(uri, params, String.class));
 		} catch (Exception e) {
 			logger.error("Error occurred getting  daily account limit", e);
 		}
@@ -941,8 +957,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("transactionChannel", channel[0]);
 		params.put("tranAmount", channel[1]);
 		try {
-			Rate details = template.postForObject(uri, params, Rate.class);
-			return details;
+            return template.postForObject(uri, params, Rate.class);
 		} catch (Exception e) {
 
 			logger.error("Error occurred getting  fee", e);
@@ -1215,8 +1230,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		String uri = antiFraudStatusCheckUrl+query;
 		try {
-			TransferDetails details = template.getForObject(uri, TransferDetails.class);
-			return details;
+            return template.getForObject(uri, TransferDetails.class);
 		} catch (Exception e) {
 			logger.error("Error getting status", e);
 		}
@@ -1470,18 +1484,29 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public BillPayment billPayment(BillPayment billPayment){
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
-		Map<String,String> params = new HashMap<>();
-		params.put("terminalId",terminalId);
-		params.put("amount", billPayment.getAmount().toPlainString());
-		params.put("appid",appId);
+        BigDecimal d = billPayment.getAmount();
+		BigDecimal f = new BigDecimal(100);
+        String amount = d.multiply(f).toPlainString();
+        logger.info("amount in Big decimal {}", amount);
+        Map<String,String> params = new HashMap<>();
+
+        params.put("terminalId",terminalId);
+		logger.info("Terminal ID is {}", terminalId);
+        logger.info("appId is {}", appIdQuickteller);
+        logger.info("secretKey is {}", secretKeyQuickteller);
+		params.put("amount", amount);
+        String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + billPayment.getPaymentCode() + amount + secretKeyQuickteller, null);
+		params.put("appid",appIdQuickteller);
 		params.put("customerAccount", billPayment.getCustomerAccountNumber());
 		params.put("customerEmail", billPayment.getEmailAddress());
 		params.put("customerId",billPayment.getCustomerId());
 		params.put("customerMobile",billPayment.getPhoneNumber());
-		params.put("hash",EncryptionUtil.getSHA512(
-				appId + billPayment.getPaymentCode() + billPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		params.put("hash", hashedCode);
+		logger.info("Hash is {}", hashedCode);
 		params.put("paymentCode",billPayment.getPaymentCode().toString());
 		params.put("requestReference",billPayment.getRequestReference());
+		logger.info("Starting payment with Params: {}", params.toString());
+
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
 			logger.info("response for payment {}", payment.toString());
@@ -1491,6 +1516,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			billPayment.setResponseCode(payment.getResponseCode());
 			billPayment.setTransactionRef(payment.getTransactionRef());
 			billPayment.setApprovedAmount(payment.getApprovedAmount());
+			billPayment.setTerminalId(terminalId);
+			logger.info("Saved Terminal Id is {}", terminalId);
 			return billPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
@@ -1511,19 +1538,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public RecurringPayment recurringPayment(RecurringPayment recurringPayment){
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
+		BigDecimal d = recurringPayment.getAmount();
+		BigDecimal f = new BigDecimal(100);
+		String amount = d.multiply(f).toPlainString();
 		Map<String,String> params = new HashMap<>();
+
 		params.put("terminalId",terminalId);
-		params.put("amount", recurringPayment.getAmount().toPlainString());
-		params.put("appid",appId);
+		params.put("amount", amount);
+		String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + recurringPayment.getPaymentCode() + amount + secretKeyQuickteller, null);
+		params.put("appid",appIdQuickteller);
 		params.put("customerAccount", recurringPayment.getCustomerAccountNumber());
 		params.put("customerEmail", recurringPayment.getEmailAddress());
 		params.put("customerId",recurringPayment.getCustomerId());
 		params.put("customerMobile",recurringPayment.getPhoneNumber());
-		logger.info("Payment code", recurringPayment.getPaymentCode().toString());
-		params.put("hash",EncryptionUtil.getSHA512(
-				appId + recurringPayment.getPaymentCode() + recurringPayment.getAmount().setScale(2,BigDecimal.ROUND_HALF_UP) + secretKey, null));
+		params.put("hash", hashedCode);
 		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
 		params.put("requestReference",recurringPayment.getRequestReference());
+		logger.info("Starting payment with Params: {}", params.toString());
+
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
 			logger.info("response for payment {}", payment.toString());
@@ -1533,6 +1565,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			recurringPayment.setResponseCode(payment.getResponseCode());
 			recurringPayment.setTransactionRef(payment.getTransactionRef());
 			recurringPayment.setApprovedAmount(payment.getApprovedAmount());
+			recurringPayment.setTerminalId(terminalId);
+			logger.info("Saved Terminal Id is {}", terminalId);
 			return recurringPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
@@ -1597,9 +1631,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		ObjectMapper mapper= new ObjectMapper();
 		try {
 			coverageDetailsDTO = template.getForObject(uri,CoverageDetailsDTO.class,params);
-
 		}
-
 		catch (Exception e){
 			logger.error("Error getting coverage details",e);
 		}
@@ -1607,6 +1639,52 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 
+	@Override
+    public NeftResponse submitNeftTransfer() {
+		NeftResponse response = new NeftResponse();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
+        List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
+        logger.info("getUnsettledList == {}", getUnsettledNeftList);
+        String ItemCount = String.valueOf(getUnsettledNeftList.size());
+		Date date = new Date();
+		String newdate = dateFormat.format(date);
+		String uri = URI+"/api/neftOutWard/Submit";
+		Map<String,Object> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("MsgID","5");
+		params.put("TotalValue", "2.0");
+		params.put("BankCode",bankcode);
+		params.put("ItemCount", ItemCount);
+		params.put("Date", newdate);
+		params.put("SettlementTimeF", newdate);
+		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
+				.peek(neftTransfer -> updateNeftSettlement(newdate, neftTransfer))
+				.collect(Collectors.toList());
+		params.put("PFItemDataStores", neftTransfers);
+
+		logger.info("PARAMS ============ {}", params);
+		try{
+			if (!getUnsettledNeftList.isEmpty()){
+				response = template.postForObject(uri,params, NeftResponse.class);
+				getUnsettledNeftList.forEach(neftTransfer -> {
+					updateNeftSettlement(newdate, neftTransfer);
+					neftTransferRepo.save(neftTransfer);
+				});
+			}else {
+				logger.info("No pending requests");
+			}
+		}catch (Exception e){
+			logger.info("Error processing request ", e);
+		}
+		return response;
+    }
+
+	private void updateNeftSettlement(String newdate, NeftTransfer neftTransfer) {
+		neftTransfer.setSettlementTime(newdate);
+		neftTransfer.setPresentmentDate(newdate);
+		neftTransfer.setInstrumentDate(newdate);
+		neftTransfer.setBankOfFirstDepositDate(newdate);
+	}
 
 
 }

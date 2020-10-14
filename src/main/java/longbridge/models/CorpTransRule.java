@@ -108,38 +108,36 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
     @Override
     @JsonIgnore
     public JsonSerializer<CorpTransRule> getSerializer() {
-        return new JsonSerializer<CorpTransRule>() {
+        return new JsonSerializer<>() {
 
             @Override
             public void serialize(CorpTransRule value, JsonGenerator gen, SerializerProvider arg2)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
                 gen.writeStartObject();
                 gen.writeStringField("Corporate", value.corporate.getName());
-                gen.writeNumberField("Lower Amount",value.lowerLimitAmount);
-                if(value.unlimited){
-                    gen.writeStringField("Upper Amount","No Upper Limit");
+                gen.writeNumberField("Lower Amount", value.lowerLimitAmount);
+                if (value.unlimited) {
+                    gen.writeStringField("Upper Amount", "No Upper Limit");
 
-                }
-                else {
-                    gen.writeNumberField("Upper Amount",value.upperLimitAmount);
+                } else {
+                    gen.writeNumberField("Upper Amount", value.upperLimitAmount);
 
                 }
                 gen.writeStringField("Currency", value.currency);
-                if(value.anyCanAuthorize) {
+                if (value.anyCanAuthorize) {
                     gen.writeStringField("Authorizers Required", "ANY");
-                }
-                else {
+                } else {
                     gen.writeStringField("Authorizers Required", "ALL");
 
                 }
 
 
                 gen.writeObjectFieldStart("Authorizer Levels");
-                for(CorporateRole role : value.roles){
+                for (CorporateRole role : value.roles) {
                     gen.writeObjectFieldStart(role.getId().toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("Name",role.getName());
-                    gen.writeNumberField("Rank",role.getRank());
+                    gen.writeStringField("Name", role.getName());
+                    gen.writeNumberField("Rank", role.getRank());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
@@ -152,43 +150,41 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
     @Override
     @JsonIgnore
     public JsonSerializer<CorpTransRule> getAuditSerializer() {
-        return new JsonSerializer<CorpTransRule>() {
+        return new JsonSerializer<>() {
 
             @Override
             public void serialize(CorpTransRule value, JsonGenerator gen, SerializerProvider arg2)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
                 gen.writeStartObject();
 //                gen.writeStringField("corporate", value.corporate.getName());
-                gen.writeNumberField("lowerAmount",value.lowerLimitAmount);
-                if(value.id != null) {
+                gen.writeNumberField("lowerAmount", value.lowerLimitAmount);
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                if(value.unlimited){
-                    gen.writeStringField("upperAmount","No Upper Limit");
+                if (value.unlimited) {
+                    gen.writeStringField("upperAmount", "No Upper Limit");
 
-                }
-                else {
-                    gen.writeNumberField("upperAmount",value.upperLimitAmount);
+                } else {
+                    gen.writeNumberField("upperAmount", value.upperLimitAmount);
 
                 }
                 gen.writeStringField("currency", value.currency);
-                if(value.anyCanAuthorize) {
+                if (value.anyCanAuthorize) {
                     gen.writeStringField("authorizersRequired", "ANY");
-                }
-                else {
+                } else {
                     gen.writeStringField("authorizersRequired", "ALL");
 
                 }
 
 
                 gen.writeObjectFieldStart("authorizerLevels");
-                for(CorporateRole role : value.roles){
+                for (CorporateRole role : value.roles) {
                     gen.writeObjectFieldStart(role.getId().toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("name",role.getName());
-                    gen.writeNumberField("rank",role.getRank());
+                    gen.writeStringField("name", role.getName());
+                    gen.writeNumberField("rank", role.getRank());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();

@@ -36,7 +36,6 @@ public class AccountOfficerDetails
         this.officerName = officerName;
     }
 
-;
     @Override
     public String toString() {
         return "{\"AccountOfficerDetails\":{"

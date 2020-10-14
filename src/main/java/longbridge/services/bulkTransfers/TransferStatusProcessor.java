@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TransferStatusProcessor implements ItemProcessor<TransactionStatus,TransactionStatus>{
-private Logger logger= LoggerFactory.getLogger(getClass());
+private final Logger logger= LoggerFactory.getLogger(getClass());
 
     public TransferStatusProcessor() {
     }

@@ -78,26 +78,24 @@ public class CorpInterBen extends Beneficiary implements PrettySerializer{
     }
     @Override @JsonIgnore
     public JsonSerializer<CorpInterBen> getSerializer() {
-        return new JsonSerializer<CorpInterBen>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CorpInterBen value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
             }
         };
     }
 
     @Override @JsonIgnore
     public JsonSerializer<CorpInterBen> getAuditSerializer() {
-        return new JsonSerializer<CorpInterBen>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CorpInterBen value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.getId() != null) {
+                if (value.getId() != null) {
                     gen.writeStringField("id", value.getId().toString());
-                }else {
+                } else {
                     gen.writeStringField("id", null);
                 }
                 gen.writeStringField("swiftCode", value.swiftCode);
@@ -106,9 +104,9 @@ public class CorpInterBen extends Beneficiary implements PrettySerializer{
                 gen.writeStringField("intermediaryBankName", value.intermediaryBankName);
                 gen.writeStringField("intermediaryBankAcctNo", value.intermediaryBankAcctNo);
                 gen.writeStringField("accountName", value.getAccountName());
-                gen.writeStringField("beneficiaryBank",value.getBeneficiaryBank());
-                gen.writeStringField("accountNumber",value.getAccountNumber());
-                gen.writeStringField("preferredName",value.getPreferredName());
+                gen.writeStringField("beneficiaryBank", value.getBeneficiaryBank());
+                gen.writeStringField("accountNumber", value.getAccountNumber());
+                gen.writeStringField("preferredName", value.getPreferredName());
                 gen.writeEndObject();
             }
         };

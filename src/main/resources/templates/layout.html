@@ -73,6 +73,7 @@
                     <li sec:authorize="hasAuthority('CONTACT_GRP')"><a href="/admin/groups/">Contact Groups</a></li>
                     <li sec:authorize="hasAuthority('SERVICE_REQ')"><a href="/admin/srconfig">Service Requests</a></li>
                     <li><a th:href="@{/admin/billers}"> Billers</a></li>
+<!--
                     <!--<li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/admin/limits/corporate/global">Corporate Global Limit</a></li>-->
                     <!--<li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/admin/limits/retail/global">Retail Global Limit</a></li>-->
                 </ul>
@@ -172,6 +173,11 @@
                     <!--</li>-->
                 <!--</ul>-->
             <!--</li>-->
+            <li><a><i class="fa fa-bank"></i> Transfer Requests <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/neft/">Neft</a></li>
+                </ul>
+            </li>
 
 
             <li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Account <span class="fa fa-chevron-down"></span></a>

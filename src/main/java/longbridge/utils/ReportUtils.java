@@ -27,7 +27,7 @@ public class ReportUtils {
     private String REPORT_PATH;
     @Value("${report.temp.path}")
     private String TEMP_REPORT_PATH;
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     public static String generateFileName(){
         String reportName = "Rep_" +(new Date().getTime());
         System.out.println("the generated report name "+reportName);

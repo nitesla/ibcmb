@@ -48,8 +48,8 @@ public class CorpCompletedTransferController {
 
     @Autowired
     TransferService transferService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private CorporateUserService corporateUserService;
     @Autowired
@@ -84,7 +84,7 @@ public class CorpCompletedTransferController {
         if (StringUtils.isNoneBlank(search)) {
             transferRequests = corpTransferService.getCompletedTransfer(search.toUpperCase(), pageable);
         } else transferRequests = corpTransferService.getCompletedTransfer(pageable);
-        DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<CorpTransferRequestDTO>();
+        DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());
         out.setRecordsFiltered(transferRequests.getTotalElements());
@@ -117,7 +117,8 @@ public class CorpCompletedTransferController {
             }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
-            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+            modelMap.put("beneficiaryBank", transRequest.getBeneficiaryBank());
+//            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));
@@ -132,7 +133,7 @@ public class CorpCompletedTransferController {
             JasperReport jasperReport = ReportHelper.getJasperReport("rpt_tran-hist");
 
             response.setContentType("application/x-download");
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"tran-hist.pdf\""));
+            response.setHeader("Content-Disposition", "attachment; filename=\"tran-hist.pdf\"");
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
             JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());

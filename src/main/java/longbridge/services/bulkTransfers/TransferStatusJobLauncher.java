@@ -32,13 +32,7 @@ public class TransferStatusJobLauncher {
     private final JobLauncher jobLauncher;
 
 
-    private BulkTransferRepo bulkTransferRepo;
-    private CreditRequestRepo creditRequestRepo;
-    private CorporateRepo corporateRepo;
-
-
-
-   // private final Long checkRate = Long.parseLong(statusCheckRate);
+    // private final Long checkRate = Long.parseLong(statusCheckRate);
 
     @Autowired
     public TransferStatusJobLauncher(@Qualifier("restJob") Job job, JobLauncher jobLauncher) {
@@ -48,16 +42,13 @@ public class TransferStatusJobLauncher {
 
     @Autowired
     public void setBulkTransferRepo(BulkTransferRepo bulkTransferRepo) {
-        this.bulkTransferRepo = bulkTransferRepo;
     }
 
     @Autowired
     public void setCreditRequestRepo(CreditRequestRepo creditRequestRepo) {
-        this.creditRequestRepo = creditRequestRepo;
     }
     @Autowired
     public void setCorporateRepo(CorporateRepo corporateRepo) {
-        this.corporateRepo = corporateRepo;
     }
 
    /* @Scheduled(cron = "${naps.status.check.rate}")
@@ -86,18 +77,10 @@ public class TransferStatusJobLauncher {
                                 LOGGER.info("Job Exit status: {}",jobExecution.getExitStatus().toString());
                                 LOGGER.info("Job Execution status: {}",jobExecution.toString());
 
-                            } catch (JobExecutionAlreadyRunningException e) {
+                            } catch (JobRestartException | JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
                                 LOGGER.error("Error occurred", e);
-                            } catch (JobRestartException e) {
+                            } catch (Exception e) {
                                 LOGGER.error("Error occurred", e);
-                            } catch (JobInstanceAlreadyCompleteException e) {
-                                LOGGER.error("Error occurred", e);
-                            } catch (JobParametersInvalidException e) {
-                                LOGGER.error("Error occurred", e);
-                            }
-                            catch (Exception e){
-                                LOGGER.error("Error occurred", e);
-
                             }
 
                         }

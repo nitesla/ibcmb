@@ -77,15 +77,14 @@ public class Tax extends AbstractEntity implements PrettySerializer {
 
     @Override @JsonIgnore
     public JsonSerializer<Tax> getSerializer() {
-        return new JsonSerializer<Tax>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Tax value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Amount",value.taxAmount);
-                gen.writeStringField("Tax Code",value.taxCode);
-                gen.writeStringField("Tax Desc.",value.taxDesc);
+                gen.writeStringField("Amount", value.taxAmount);
+                gen.writeStringField("Tax Code", value.taxCode);
+                gen.writeStringField("Tax Desc.", value.taxDesc);
                 gen.writeEndObject();
             }
         };
@@ -93,20 +92,19 @@ public class Tax extends AbstractEntity implements PrettySerializer {
 
     @Override @JsonIgnore
     public JsonSerializer<Tax> getAuditSerializer() {
-        return new JsonSerializer<Tax>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Tax value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("Amount",value.taxAmount);
-                gen.writeStringField("Tax Code",value.taxCode);
-                gen.writeStringField("Tax Desc.",value.taxDesc);
+                gen.writeStringField("Amount", value.taxAmount);
+                gen.writeStringField("Tax Code", value.taxCode);
+                gen.writeStringField("Tax Desc.", value.taxDesc);
                 gen.writeEndObject();
             }
         };

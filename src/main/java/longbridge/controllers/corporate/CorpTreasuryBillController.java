@@ -42,7 +42,7 @@ import java.util.Locale;
         @Autowired
         TreasurybillService treasurybillService;
 
-        private Logger logger= LoggerFactory.getLogger(this.getClass());
+        private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
         @GetMapping("/view")

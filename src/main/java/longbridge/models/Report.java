@@ -116,45 +116,45 @@ public class Report extends AbstractEntity implements PrettySerializer {
     @Override
     @JsonIgnore
     public JsonSerializer<Report> getAuditSerializer() {
-        return new JsonSerializer<Report>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Report value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("reportName", value.reportName);
-                gen.writeStringField("createdBy",value.createdBy);
-                if(value.createdOn !=null) {
+                gen.writeStringField("createdBy", value.createdBy);
+                if (value.createdOn != null) {
                     gen.writeStringField("createdOn", value.createdOn.toString());
-                }else {
+                } else {
                     gen.writeStringField("createdOn", "");
                 }
                 gen.writeStringField("origFileName", value.origFileName);
 
                 // gen.writeArrayFieldStart("permissions");
                 gen.writeObjectFieldStart("permission");
-                    if(value.getPermission()!=null) {
-                        gen.writeObjectFieldStart(value.getPermission().getId().toString());
-                        //gen.writeStartObject();
-                        gen.writeStringField("name", value.getPermission().getName());
-                        gen.writeStringField("code", value.getPermission().getCode());
-                        gen.writeStringField("category", value.getPermission().getCategory());
-                        gen.writeStringField("description", value.getPermission().getDescription());
-                        gen.writeEndObject();
-                    }
+                if (value.getPermission() != null) {
+                    gen.writeObjectFieldStart(value.getPermission().getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("name", value.getPermission().getName());
+                    gen.writeStringField("code", value.getPermission().getCode());
+                    gen.writeStringField("category", value.getPermission().getCategory());
+                    gen.writeStringField("description", value.getPermission().getDescription());
+                    gen.writeEndObject();
+                }
                 gen.writeEndObject();
                 gen.writeObjectFieldStart("reportParameters");
-                for(ReportParameters p : value.getReportParameters()){
-                    if(p.getId()!=null) {
+                for (ReportParameters p : value.getReportParameters()) {
+                    if (p.getId() != null) {
                         gen.writeObjectFieldStart(p.getId().toString());
-                        if(p.getId() != null) {
+                        if (p.getId() != null) {
                             gen.writeStringField("id", p.getId().toString());
-                        }else {
+                        } else {
                             gen.writeStringField("id", "");
                         }
                         //gen.writeStartObject();
@@ -172,55 +172,56 @@ public class Report extends AbstractEntity implements PrettySerializer {
     }@Override
     @JsonIgnore
     public JsonSerializer<Report> getSerializer() {
-        return new JsonSerializer<Report>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(Report value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
+                    throws IOException {
 
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
                 gen.writeStringField("reportName", value.reportName);
-                gen.writeStringField("createdBy",value.createdBy);
-                if(value.createdOn !=null) {
+                gen.writeStringField("createdBy", value.createdBy);
+                if (value.createdOn != null) {
                     gen.writeStringField("createdOn", value.createdOn.toString());
-                }else {
+                } else {
                     gen.writeStringField("createdOn", "");
                 }
                 gen.writeStringField("origFileName", value.origFileName);
 
                 // gen.writeArrayFieldStart("permissions");
                 gen.writeObjectFieldStart("permission");
-                    if(value.getPermission()!=null) {
-                        gen.writeObjectFieldStart(value.getPermission().getId().toString());
-                        //gen.writeStartObject();
-                        gen.writeStringField("name", value.getPermission().getName());
-                        gen.writeStringField("code", value.getPermission().getCode());
-                        gen.writeStringField("category", value.getPermission().getCategory());
-                        gen.writeStringField("description", value.getPermission().getDescription());
-                        gen.writeEndObject();
-                    }
+                if (value.getPermission() != null) {
+                    gen.writeObjectFieldStart(value.getPermission().getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("name", value.getPermission().getName());
+                    gen.writeStringField("code", value.getPermission().getCode());
+                    gen.writeStringField("category", value.getPermission().getCategory());
+                    gen.writeStringField("description", value.getPermission().getDescription());
+                    gen.writeEndObject();
+                }
                 gen.writeEndObject();
                 gen.writeObjectFieldStart("reportParameters");
-                if(value.getReportParameters() !=null){
-                for(ReportParameters p : value.getReportParameters()){
-                    if(p.getId()!=null) {
-                        gen.writeObjectFieldStart(p.getId().toString());
-                        if(p.getId() != null) {
-                            gen.writeStringField("id", p.getId().toString());
-                        }else {
-                            gen.writeStringField("id", "");
+                if (value.getReportParameters() != null) {
+                    for (ReportParameters p : value.getReportParameters()) {
+                        if (p.getId() != null) {
+                            gen.writeObjectFieldStart(p.getId().toString());
+                            if (p.getId() != null) {
+                                gen.writeStringField("id", p.getId().toString());
+                            } else {
+                                gen.writeStringField("id", "");
+                            }
+                            //gen.writeStartObject();
+                            gen.writeStringField("datatype", p.getDatatype());
+                            gen.writeStringField("parameterName", p.getParameterName());
+                            gen.writeStringField("parameterDesc", p.getParameterDesc());
+                            gen.writeEndObject();
                         }
-                        //gen.writeStartObject();
-                        gen.writeStringField("datatype", p.getDatatype());
-                        gen.writeStringField("parameterName", p.getParameterName());
-                        gen.writeStringField("parameterDesc", p.getParameterDesc());
-                        gen.writeEndObject();
                     }
-                }}
+                }
                 gen.writeEndObject();
                 //gen.writeEndArray();
                 gen.writeEndObject();

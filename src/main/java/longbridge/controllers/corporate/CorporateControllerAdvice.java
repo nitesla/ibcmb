@@ -29,13 +29,11 @@ public class CorporateControllerAdvice {
 
     @Autowired
     HostMaster hostMaster;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private CorporateUserService corporateUserService;
-    private IntegrationService integrationService;
-    private TransferService transferService;
-    private AccountService accountService;
-    private ServiceReqConfigService reqConfigService;
-    private MessageService messageService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final CorporateUserService corporateUserService;
+    private final AccountService accountService;
+    private final ServiceReqConfigService reqConfigService;
+    private final MessageService messageService;
     @Autowired
     private ConfigurationService configurationService;
     @Autowired
@@ -48,8 +46,6 @@ public class CorporateControllerAdvice {
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
         this.corporateUserService = corporateUserService;
-        this.integrationService = integrationService;
-        this.transferService = transferService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
         this.messageService = messageService;
@@ -205,7 +201,7 @@ public class CorporateControllerAdvice {
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
-                    .forEach(i -> accountList.add(i));
+                    .forEach(accountList::add);
 
             model.addAttribute("accounts", accountList);
 
@@ -215,7 +211,7 @@ public class CorporateControllerAdvice {
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
-                    .forEach(i -> accountListStmt.add(i));
+                    .forEach(accountListStmt::add);
 
 
             model.addAttribute("accountsStmt", accountsStmt);

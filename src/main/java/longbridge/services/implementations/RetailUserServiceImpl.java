@@ -80,7 +80,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Autowired
     private FailedLoginService failedLoginService;
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     private CodeService codeService;
     private AccountService accountService;
@@ -142,20 +142,17 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public RetailUser getUserByName(String name) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
-        return retailUser;
+        return this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
     }
 
     @Override
     public RetailUser getUserByEntrustId(String entrustId) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByEntrustIdIgnoreCase(entrustId);
-        return retailUser;
+        return this.retailUserRepo.findFirstByEntrustIdIgnoreCase(entrustId);
     }
 
     @Override
     public RetailUser getUserByEmail(String email) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByEmailIgnoreCase(email);
-        return retailUser;
+        return this.retailUserRepo.findFirstByEmailIgnoreCase(email);
     }
 
     @Override
@@ -172,8 +169,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public RetailUser getUserByCustomerId(String custId) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByCustomerId(custId);
-        return retailUser;
+        return this.retailUserRepo.findFirstByCustomerId(custId);
     }
 
 
@@ -222,7 +218,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
                     retailUser.setEntrustGroup(defaultGroup);
 
-                    createEntrustUser(retailUser.getEntrustId(), retailUser.getEntrustGroup(), fullName, true);
+                    createEntrustUser(retailUser.getEntrustId(), retailUser.getEntrustGroup(), fullName);
 
                     addUserContact(retailUser.getEntrustId(), retailUser.getEntrustGroup(), phoneNo, user.getEmail());
 
@@ -256,7 +252,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void createEntrustUser(String username, String group, String fullName, boolean enableOtp) {
+    private void createEntrustUser(String username, String group, String fullName) {
         try {
             securityService.createEntrustUser(username, group, fullName, true);
         } catch (InternetBankingSecurityException e) {
@@ -700,8 +696,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUser> page = retailUserRepo.findAll(pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -736,8 +731,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern, pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -859,7 +853,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             dtOs.add(retailDTO);
         }
         long t = page.getTotalElements();
-        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
     }
 }

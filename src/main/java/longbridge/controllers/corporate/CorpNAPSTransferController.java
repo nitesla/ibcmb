@@ -68,7 +68,7 @@ import java.util.stream.StreamSupport;
 public class CorpNAPSTransferController {
 
     private static final String FILENAME = "bulk_transfer_upload_file.xls";
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     IntegrationService integrationService;
     //private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
@@ -76,13 +76,12 @@ public class CorpNAPSTransferController {
     private String SERVER_FILE_PATH;
     @Autowired
     private MessageSource messageSource;
-    private AccountService accountService;
-    private CorporateUserService corporateUserService;
-    private CorpTransferService corpTransferService;
-    private CorporateService corporateService;
-    private BulkTransferService bulkTransferService;
-    private SecurityService securityService;
-    private FinancialInstitutionService financialInstitutionService;
+    private final AccountService accountService;
+    private final CorporateUserService corporateUserService;
+    private final CorporateService corporateService;
+    private final BulkTransferService bulkTransferService;
+    private final SecurityService securityService;
+    private final FinancialInstitutionService financialInstitutionService;
     @Autowired
     private ConfigurationService configService;
     @Autowired
@@ -108,7 +107,6 @@ public class CorpNAPSTransferController {
         this.bulkTransferService = bulkTransferService;
         this.securityService = securityService;
         this.financialInstitutionService = financialInstitutionService;
-        this.corpTransferService = corpTransferService;
         this.corporateService = corporateService;
     }
 
@@ -252,7 +250,7 @@ public class CorpNAPSTransferController {
         }else {
             fis = financialInstitutionService.getFinancialInstitutionsWithSortCode(pageable);
         }
-        DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<FinancialInstitutionDTO>();
+        DataTablesOutput<FinancialInstitutionDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fis.getContent());
         out.setRecordsFiltered(fis.getTotalElements());
@@ -276,7 +274,7 @@ public class CorpNAPSTransferController {
             mimeType = "application/octet-stream";
         }
         response.setContentType(mimeType);
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+        response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
         response.setContentLength((int) file.length());
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         //Copy bytes from source to destination(outputstream in this example), closes both streams.
@@ -314,7 +312,7 @@ public class CorpNAPSTransferController {
             byte[] bytes = file.getBytes();
             InputStream inputStream = file.getInputStream();
             String filename = file.getOriginalFilename();
-            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            String extension = filename.substring(filename.lastIndexOf(".") + 1);
             // File type validation
             Workbook workbook;
             if (extension.equalsIgnoreCase("xls")) {
@@ -390,11 +388,10 @@ public class CorpNAPSTransferController {
                     NEnquiryDetails details = integrationService.doNameEnquiry(row.getCell(4).toString(), row.getCell(0).toString());
                     if (details.getAccountName() != null && !details.getAccountName().equals("")) {
                         row.getCell(5).setCellValue(details.getAccountName());
-                        logger.info("NameEnquiry" + row.getCell(5));
                     } else {
                         row.getCell(5).setCellValue(messageSource.getMessage("nameEnquiry.failed", null, locale));
-                        logger.info("NameEnquiry" + row.getCell(5));
                     }
+                    logger.info("NameEnquiry" + row.getCell(5));
 
                 } else {
                     row.getCell(5).setCellValue("Account Name");
@@ -534,7 +531,7 @@ public class CorpNAPSTransferController {
             String debitAccount = request.getParameter("debitAccount");
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<CreditRequest> requestList = mapper.readValue(requests, new TypeReference<List<CreditRequest>>() {
+            List<CreditRequest> requestList = mapper.readValue(requests, new TypeReference<>() {
             });
             BigDecimal totalTransferAmount = new BigDecimal("0.00");
             BulkTransfer bulkTransfer = new BulkTransfer();
@@ -606,7 +603,7 @@ public class CorpNAPSTransferController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<BulkTransferDTO> transfers = bulkTransferService.getBulkTransferRequests(pageable);
-        DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<BulkTransferDTO>();
+        DataTablesOutput<BulkTransferDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(transfers.getContent());
         out.setRecordsFiltered(transfers.getTotalElements());
@@ -673,7 +670,7 @@ public class CorpNAPSTransferController {
        JasperReport jasperReport = ReportHelper.getJasperReport("credit_request_receipt");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"reciept.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"reciept.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap);
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -704,7 +701,7 @@ public class CorpNAPSTransferController {
         JasperReport jasperReport = ReportHelper.getJasperReport("rpt_bulk_transfer");
 
         response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachment; filename=\"bulk_transfer.pdf\""));
+        response.setHeader("Content-Disposition", "attachment; filename=\"bulk_transfer.pdf\"");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(creditRequests));
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
@@ -746,7 +743,7 @@ public class CorpNAPSTransferController {
         exporter.exportReport();
         response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
         response.setContentType("application/vnd.ms-excel");
-        response.addHeader("Content-Disposition", String.format("inline; filename=\"" + "Bulk_transfer_report.xlsx" + "\""));
+        response.addHeader("Content-Disposition", "inline; filename=\"" + "Bulk_transfer_report.xlsx" + "\"");
         OutputStream responseOutputStream = response.getOutputStream();
         responseOutputStream.write(pdfReportStream.toByteArray());
 

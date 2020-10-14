@@ -103,9 +103,7 @@ class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
         List<CreditRequest> creditRequests = repo.findByBulkTransfer_Id(bulkTransfer.getId());
         creditRequests.stream().filter(Objects::nonNull)
                 .forEach(
-                        i -> {
-                            transferData.add(map(i));
-                        }
+                        i -> transferData.add(map(i))
 
                 );
 

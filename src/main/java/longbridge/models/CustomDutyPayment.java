@@ -325,16 +325,15 @@ public class CustomDutyPayment extends AbstractEntity implements PrettySerialize
     }
     @Override @JsonIgnore
     public JsonSerializer<CustomDutyPayment> getSerializer() {
-        return new JsonSerializer<CustomDutyPayment>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CustomDutyPayment value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Custom Duty Area",value.commandDutyArea);
-                gen.writeStringField("Approval Status Description",value.approvalStatusDesc);
-                gen.writeStringField("Payment Status",value.paymentStatus);
-                gen.writeStringField("Message",value.message);
+                gen.writeStringField("Custom Duty Area", value.commandDutyArea);
+                gen.writeStringField("Approval Status Description", value.approvalStatusDesc);
+                gen.writeStringField("Payment Status", value.paymentStatus);
+                gen.writeStringField("Message", value.message);
                 gen.writeEndObject();
             }
         };
@@ -342,16 +341,15 @@ public class CustomDutyPayment extends AbstractEntity implements PrettySerialize
 
     @Override @JsonIgnore
     public JsonSerializer<CustomDutyPayment> getAuditSerializer() {
-        return new JsonSerializer<CustomDutyPayment>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(CustomDutyPayment value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("Custom Duty Area",value.commandDutyArea);
-                gen.writeStringField("Approval Status Description",value.approvalStatusDesc);
-                gen.writeStringField("Payment Status",value.paymentStatus);
-                gen.writeStringField("Message",value.message);
+                gen.writeStringField("Custom Duty Area", value.commandDutyArea);
+                gen.writeStringField("Approval Status Description", value.approvalStatusDesc);
+                gen.writeStringField("Payment Status", value.paymentStatus);
+                gen.writeStringField("Message", value.message);
                 gen.writeEndObject();
             }
         };

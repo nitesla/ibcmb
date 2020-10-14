@@ -20,8 +20,7 @@ public class UtilityController {
 //    @ResponseBody
     public String convertAmountToWords(WebRequest webRequest) {
         String amount = webRequest.getParameter("amount");
-        String wordAmount = MoneyConversion.doubleConvert(amount);
-        return wordAmount;
+        return MoneyConversion.doubleConvert(amount);
     }
 
 

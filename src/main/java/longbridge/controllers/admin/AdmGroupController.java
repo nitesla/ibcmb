@@ -54,7 +54,7 @@ public class AdmGroupController {
     @Autowired
     private MessageSource messageSource;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
@@ -78,7 +78,7 @@ public class AdmGroupController {
             }
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<ContactDTO> contactList = mapper.readValue(contacts, new TypeReference<List<ContactDTO>>() {
+            List<ContactDTO> contactList = mapper.readValue(contacts, new TypeReference<>() {
             });
             List<OperationsUserDTO> opList = new ArrayList<>();
             Iterator<ContactDTO> iterator = contactList.iterator();
@@ -122,7 +122,7 @@ public class AdmGroupController {
     DataTablesOutput<UserGroupDTO> getGroups(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<UserGroupDTO> groups = userGroupService.getGroups(pageable);
-        DataTablesOutput<UserGroupDTO> out = new DataTablesOutput<UserGroupDTO>();
+        DataTablesOutput<UserGroupDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(groups.getContent());
         out.setRecordsFiltered(groups.getTotalElements());
@@ -135,7 +135,7 @@ public class AdmGroupController {
     public DataTablesOutput<ContactDTO> getGroups(@PathVariable Long id, DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         List<ContactDTO> groups = userGroupService.getContacts(id);
-        DataTablesOutput<ContactDTO> out = new DataTablesOutput<ContactDTO>();
+        DataTablesOutput<ContactDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(groups);
         out.setRecordsFiltered(groups.size());
@@ -165,7 +165,7 @@ public class AdmGroupController {
             int version = Integer.parseInt(request.getParameter("version"));
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<ContactDTO> contactList = mapper.readValue(contacts, new TypeReference<List<ContactDTO>>() {
+            List<ContactDTO> contactList = mapper.readValue(contacts, new TypeReference<>() {
             });
             List<OperationsUserDTO> opList = new ArrayList<>();
             Iterator<ContactDTO> iterator = contactList.iterator();

@@ -31,9 +31,9 @@ public class FaqsServiceImpl implements FaqsService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     MessageSource messageSource;
@@ -53,8 +53,7 @@ public class FaqsServiceImpl implements FaqsService {
         List<FaqsDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        Page<FaqsDTO> pageImpl = new PageImpl<FaqsDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<FaqsDTO>(dtOs, pageDetails, t);
     }
 
     @Override

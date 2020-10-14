@@ -32,27 +32,27 @@ import java.util.Locale;
 public class RoleServiceImpl implements RoleService {
 
 
-    private RoleRepo roleRepo;
+    private final RoleRepo roleRepo;
 
-    private PermissionRepo permissionRepo;
+    private final PermissionRepo permissionRepo;
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
-    private AdminUserRepo adminRepo;
+    private final AdminUserRepo adminRepo;
 
-    private RetailUserRepo retailRepo;
+    private final RetailUserRepo retailRepo;
 
-    private OperationsUserRepo opRepo;
+    private final OperationsUserRepo opRepo;
 
-    private CorporateUserRepo corpRepo;
+    private final CorporateUserRepo corpRepo;
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
 
-    private Locale locale = LocaleContextHolder.getLocale();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
@@ -100,8 +100,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getTheRole(String roleName) {
-        Role role = roleRepo.findFirstByName(roleName);
-        return role;
+        return roleRepo.findFirstByName(roleName);
     }
 
     @Override
@@ -197,8 +196,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> page = roleRepo.findAll(pageDetails);
         List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<RoleDTO> pageImpl = new PageImpl<RoleDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<RoleDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -206,8 +204,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Permission> page = permissionRepo.findAll(pageDetails);
         List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<PermissionDTO> pageImpl = new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -341,7 +338,7 @@ public class RoleServiceImpl implements RoleService {
                 Page<AdminUser> users = adminRepo.findByRole(role, pageDetails);
                 long elements = users.getTotalElements();
                 List<User> userList = (List<User>) (List<?>) users.getContent();
-                pageImpl = new PageImpl<User>(userList, pageDetails, elements);
+                pageImpl = new PageImpl<>(userList, pageDetails, elements);
             }
 
             break;
@@ -349,7 +346,7 @@ public class RoleServiceImpl implements RoleService {
                 Page<OperationsUser> users = opRepo.findByRole(role, pageDetails);
                 long elements = users.getTotalElements();
                 List<User> userList = (List<User>) (List<?>) users.getContent();
-                pageImpl = new PageImpl<User>(userList, pageDetails, elements);
+                pageImpl = new PageImpl<>(userList, pageDetails, elements);
             }
             break;
 
@@ -357,14 +354,14 @@ public class RoleServiceImpl implements RoleService {
                 Page<RetailUser> users = retailRepo.findByRole(role, pageDetails);
                 long elements = users.getTotalElements();
                 List<User> userList = (List<User>) (List<?>) users.getContent();
-                pageImpl = new PageImpl<User>(userList, pageDetails, elements);
+                pageImpl = new PageImpl<>(userList, pageDetails, elements);
             }
             break;
             case CORPORATE: {
                 Page<CorporateUser> users = corpRepo.findByRole(role, pageDetails);
                 long elements = users.getTotalElements();
                 List<User> userList = (List<User>) (List<?>) users.getContent();
-                pageImpl = new PageImpl<User>(userList, pageDetails, elements);
+                pageImpl = new PageImpl<>(userList, pageDetails, elements);
             }
             break;
         }
@@ -403,8 +400,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> page = roleRepo.findUsingPattern(pattern, pageDetails);
         List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<RoleDTO> pageImpl = new PageImpl<RoleDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<RoleDTO>(dtOs, pageDetails, t);
     }
 
 
@@ -413,8 +409,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Permission> page = permissionRepo.findUsingPattern(pattern, pageDetails);
         List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<PermissionDTO> pageImpl = new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
-        return pageImpl;
+        return new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
     }
 
     @Override

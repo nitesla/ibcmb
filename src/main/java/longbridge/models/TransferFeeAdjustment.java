@@ -106,19 +106,18 @@ public class TransferFeeAdjustment extends AbstractEntity implements PrettySeria
 
     @Override @JsonIgnore
     public JsonSerializer<TransferFeeAdjustment> getSerializer() {
-        return new JsonSerializer<TransferFeeAdjustment>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(TransferFeeAdjustment value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                gen.writeStringField("feeDescription",value.feeDescription);
-                gen.writeStringField("feeRange",value.feeRange);
-                gen.writeStringField("fixedAmount",value.fixedAmount);
-                gen.writeStringField("fixedAmountValue",value.fixedAmountValue);
-                gen.writeStringField("fixedAmountValue",value.fixedAmountValue);
-                gen.writeStringField("rate",value.rate);
-                gen.writeStringField("rateValue",value.rateValue);
+                gen.writeStringField("feeDescription", value.feeDescription);
+                gen.writeStringField("feeRange", value.feeRange);
+                gen.writeStringField("fixedAmount", value.fixedAmount);
+                gen.writeStringField("fixedAmountValue", value.fixedAmountValue);
+                gen.writeStringField("fixedAmountValue", value.fixedAmountValue);
+                gen.writeStringField("rate", value.rate);
+                gen.writeStringField("rateValue", value.rateValue);
                 gen.writeEndObject();
             }
         };
@@ -127,24 +126,23 @@ public class TransferFeeAdjustment extends AbstractEntity implements PrettySeria
 
     @Override @JsonIgnore
     public JsonSerializer<TransferFeeAdjustment> getAuditSerializer() {
-        return new JsonSerializer<TransferFeeAdjustment>() {
+        return new JsonSerializer<>() {
             @Override
             public void serialize(TransferFeeAdjustment value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException
-            {
+                    throws IOException {
                 gen.writeStartObject();
-                if(value.id != null) {
+                if (value.id != null) {
                     gen.writeStringField("id", value.id.toString());
-                }else {
+                } else {
                     gen.writeStringField("id", "");
                 }
-                gen.writeStringField("feeDescription",value.feeDescription);
-                gen.writeStringField("feeRange",value.feeRange);
-                gen.writeStringField("fixedAmount",value.fixedAmount);
-                gen.writeStringField("fixedAmountValue",value.fixedAmountValue);
-                gen.writeStringField("fixedAmountValue",value.fixedAmountValue);
-                gen.writeStringField("rate",value.rate);
-                gen.writeStringField("rateValue",value.rateValue);
+                gen.writeStringField("feeDescription", value.feeDescription);
+                gen.writeStringField("feeRange", value.feeRange);
+                gen.writeStringField("fixedAmount", value.fixedAmount);
+                gen.writeStringField("fixedAmountValue", value.fixedAmountValue);
+                gen.writeStringField("fixedAmountValue", value.fixedAmountValue);
+                gen.writeStringField("rate", value.rate);
+                gen.writeStringField("rateValue", value.rateValue);
                 gen.writeEndObject();
             }
         };

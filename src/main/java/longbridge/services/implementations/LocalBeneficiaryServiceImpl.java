@@ -50,9 +50,9 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     private MessageSource messageSource;
     @Autowired
     private ConfigurationService configService;
-    private Locale locale = LocaleContextHolder.getLocale();
-    private LocalBeneficiaryRepo localBeneficiaryRepo;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final LocalBeneficiaryRepo localBeneficiaryRepo;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${bank.code}")
     private String bankCode;
 
@@ -217,7 +217,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
                 if("mail/beneficiaryMobile.html".equals(user.getEmailTemplate()))alertSub="beneficiary.alert.subject.mobile";
 
 
-                String alertSubject = String.format(messageSource.getMessage(alertSub, null, locale));
+                String alertSubject = messageSource.getMessage(alertSub, null, locale);
                 logger.info("alertBen {}",alertSubject);
                 if ("SMS".equalsIgnoreCase(preference)) {
                     integrationService.sendSMS(smsMessage,user.getPhoneNumber(),  alertSubject);

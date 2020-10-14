@@ -10,9 +10,7 @@ import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.models.Account;
 import longbridge.models.Corporate;
-import longbridge.models.User;
 import longbridge.models.UserType;
-import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.NameValue;
@@ -26,7 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -80,7 +77,7 @@ public class OpsCorporateController {
     @Autowired
     private VerificationService verificationService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @ModelAttribute
@@ -191,7 +188,7 @@ public class OpsCorporateController {
     DataTablesOutput<CorporateUserDTO> getUsers(@PathVariable Long corpId, DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateUserDTO> users = corporateUserService.getUsers(corpId, pageable);
-        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
+        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(users.getContent());
         out.setRecordsFiltered(users.getTotalElements());
@@ -205,7 +202,7 @@ public class OpsCorporateController {
     DataTablesOutput<CorporateRoleDTO> getRoles(@PathVariable Long corpId, DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateRoleDTO> roles = corporateService.getRoles(corpId, pageable);
-        DataTablesOutput<CorporateRoleDTO> out = new DataTablesOutput<CorporateRoleDTO>();
+        DataTablesOutput<CorporateRoleDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(roles.getContent());
         out.setRecordsFiltered(roles.getTotalElements());
@@ -219,7 +216,7 @@ public class OpsCorporateController {
     DataTablesOutput<Account> getAccounts(@PathVariable Long corpId, DataTablesInput input) {
 
         List<Account> accounts = corporateService.getAccounts(corpId);
-        DataTablesOutput<Account> out = new DataTablesOutput<Account>();
+        DataTablesOutput<Account> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(accounts);
         out.setRecordsFiltered(accounts.size());
@@ -239,7 +236,7 @@ public class OpsCorporateController {
         } else {
             corps = corporateService.getCorporates(pageable);
         }
-        DataTablesOutput<CorporateDTO> out = new DataTablesOutput<CorporateDTO>();
+        DataTablesOutput<CorporateDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(corps.getContent());
         out.setRecordsFiltered(corps.getTotalElements());
@@ -386,7 +383,7 @@ public class OpsCorporateController {
 
         String[] roleIds;
         roleIds = webRequest.getParameterValues("roles");
-        List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
+        List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         CorporateRoleDTO corporateRole;
         int num = 1;
         SettingDTO setting = configService.getSettingByName("MIN_AUTHORIZER_LEVEL");
@@ -421,17 +418,12 @@ public class OpsCorporateController {
             String message = corporateService.addCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/corporates/" + transferRuleDTO.getCorporateId() + "/view";
-        } catch (TransferRuleException tre) {
+        } catch (InternetBankingException tre) {
             logger.error("Failed to create transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
             reInitializeModel(model, corporateId);
             return "/ops/corporate/addrule";
 
-        } catch (InternetBankingException ibe) {
-            logger.error("Failed to create transfer rule", ibe);
-            bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
-            reInitializeModel(model, corporateId);
-            return "/ops/corporate/addrule";
         }
     }
 
@@ -528,18 +520,12 @@ public class OpsCorporateController {
             String message = corporateService.updateCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/corporates/" + transferRuleDTO.getCorporateId() + "/view";
-        } catch (TransferRuleException tre) {
+        } catch (InternetBankingException tre) {
             logger.error("Failed to update transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
             reloadModel(model, transferRuleDTO.getId());
             return "/ops/corporate/editrule";
 
-        } catch (InternetBankingException ibe) {
-            logger.error("Failed to update transfer rule", ibe);
-            bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
-            reloadModel(model, transferRuleDTO.getId());
-
-            return "/ops/corporate/editrule";
         }
     }
 
@@ -551,7 +537,7 @@ public class OpsCorporateController {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpTransferRuleDTO> transferRules = corporateService.getCorporateRules(id, pageable);
-        DataTablesOutput<CorpTransferRuleDTO> out = new DataTablesOutput<CorpTransferRuleDTO>();
+        DataTablesOutput<CorpTransferRuleDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(transferRules.getContent());
         out.setRecordsFiltered(transferRules.getTotalElements());
@@ -641,7 +627,7 @@ public class OpsCorporateController {
 
         }
         CorporateRequestDTO corporateExistingData = (CorporateRequestDTO) session.getAttribute("corporateRequest");
-        String accounts[] = (String[]) session.getAttribute("selectedAccounts");
+        String[] accounts = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporateRequestDTO = new CorporateRequestDTO();
         corporateRequestDTO.setCustomerId(corporate.getCustomerId());
         corporateRequestDTO.setCorporateType(corporate.getCorporateType());
@@ -809,9 +795,7 @@ public class OpsCorporateController {
 
     private Set<String> getUniqueCifids(String[] cifids) {
         Set<String> selectedCifids = new HashSet<>();
-        for (String cifid : cifids) {
-            selectedCifids.add(cifid);
-        }
+        selectedCifids.addAll(Arrays.asList(cifids));
         logger.debug("Unique Customer cifids size " + selectedCifids.size());
 
         return selectedCifids;
@@ -847,7 +831,7 @@ public class OpsCorporateController {
             String authorizers = request.getParameter("authorizers");
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerLevelDTO>>() {
+            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<>() {
             });
 
             logger.info("Authorizers: {}", authorizerList.toString());
@@ -907,7 +891,7 @@ public class OpsCorporateController {
 
     @GetMapping("/back/account")
     public String addAccountUsingBack(Model model, HttpSession session) {
-        String accounts[] = (String[]) session.getAttribute("selectedAccounts");
+        String[] accounts = (String[]) session.getAttribute("selectedAccounts");
         CorporateRequestDTO corporate = (CorporateRequestDTO) session.getAttribute("corporateRequest");
         List<AccountInfo> accountInfos = accountService.getTransactionalAccounts((List<AccountInfo>) session.getAttribute("accountInfos"));
 
@@ -974,7 +958,7 @@ public class OpsCorporateController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
-            transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
+            transferRules = mapper.readValue(rules, new TypeReference<>() {
             });
             session.removeAttribute("rules");
             session.setAttribute("rules", rules);
@@ -1018,7 +1002,7 @@ public class OpsCorporateController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
-            corporateUsers = mapper.readValue(users, new TypeReference<List<CorporateUserDTO>>() {
+            corporateUsers = mapper.readValue(users, new TypeReference<>() {
             });
 
             logger.debug("Corporate users after deserialization: {}", corporateUsers.toString());
@@ -1062,12 +1046,9 @@ public class OpsCorporateController {
                     redirectAttributes.addFlashAttribute("message", message);
                 }
             }
-        } catch (DuplicateObjectException doe) {
+        } catch (InternetBankingException doe) {
             logger.error("Error creating corporate entity", doe);
             redirectAttributes.addFlashAttribute("failure", doe.getMessage());
-        } catch (InternetBankingException ibe) {
-            logger.error("Error creating corporate entity", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         } catch (Exception e) {
             logger.error("Error creating corporate entity", e);
             redirectAttributes.addFlashAttribute("failure", "Failed to create corporate entity");
@@ -1115,7 +1096,7 @@ public class OpsCorporateController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<List<AuthorizerLevelDTO>>() {
+            List<AuthorizerLevelDTO> authorizerList = mapper.readValue(authorizers, new TypeReference<>() {
             });
 
             logger.info("Authorizers: {}", authorizerList.toString());
@@ -1147,7 +1128,7 @@ public class OpsCorporateController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
-            transferRules = mapper.readValue(rules, new TypeReference<List<CorpTransferRuleDTO>>() {
+            transferRules = mapper.readValue(rules, new TypeReference<>() {
             });
             session.removeAttribute("rules");
             session.setAttribute("rules", rules);
@@ -1178,7 +1159,7 @@ public class OpsCorporateController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         try {
-            corporateUsers = mapper.readValue(users, new TypeReference<List<CorporateUserDTO>>() {
+            corporateUsers = mapper.readValue(users, new TypeReference<>() {
             });
 
             logger.debug("Corporate users: {}", corporateUsers.toString());
@@ -1435,8 +1416,7 @@ public class OpsCorporateController {
         }
 
         try {
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(cifid);
-            return accountInfos;
+            return integrationService.fetchAccounts(cifid);
 
         } catch (Exception e) {
             logger.error("Error fetching accounts", e);
@@ -1451,8 +1431,7 @@ public class OpsCorporateController {
 
 
         try {
-            List<AccountInfo> accountInfos = integrationService.fetchAccounts(cifid);
-            return accountInfos;
+            return integrationService.fetchAccounts(cifid);
 
         } catch (Exception e) {
             logger.error("Error fetching accounts", e);
@@ -1546,7 +1525,7 @@ public class OpsCorporateController {
         List<AccountPermissionDTO> accountPermissionDTOs = new ArrayList<>();
         List<NameValue> nameValues;
         try {
-            nameValues = mapper.readValue(accountPermissions, new TypeReference<List<NameValue>>() {
+            nameValues = mapper.readValue(accountPermissions, new TypeReference<>() {
             });
         } catch (IOException e) {
             logger.error("Failed to read the user account permissions", e);
@@ -1568,13 +1547,11 @@ public class OpsCorporateController {
             }
         }
 
-        if (userAccountPermissions != null) {
-            userAccountPermissions.put(userName, accountPermissionDTOs);
-        } else {
+        if (userAccountPermissions == null) {
             logger.debug("Creating new users account permissions list");
             userAccountPermissions = new HashMap<>();
-            userAccountPermissions.put(userName, accountPermissionDTOs);
         }
+        userAccountPermissions.put(userName, accountPermissionDTOs);
         logger.debug("Updated users account permissions list {}", userAccountPermissions);
         session.setAttribute("userAccountPermissions", userAccountPermissions);
 

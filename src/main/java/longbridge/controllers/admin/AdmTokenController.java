@@ -59,7 +59,7 @@ public class AdmTokenController {
     @Autowired
     TokenUtils tokenUtils;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @ModelAttribute
