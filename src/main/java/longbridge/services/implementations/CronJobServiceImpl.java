@@ -456,6 +456,6 @@ public class CronJobServiceImpl implements CronJobService {
     @Override
     @Scheduled(cron = "${coverage.update}")
     public void addCoverageForNewCodes() {
-        coverageService.addCoverageForNewCodes();
+//        coverageService.addCoverageForNewCodes();
     }
 }

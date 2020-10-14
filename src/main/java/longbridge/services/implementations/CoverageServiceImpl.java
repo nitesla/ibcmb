@@ -5,9 +5,7 @@ import longbridge.dtos.AddCoverageDTO;
 import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Coverage;
-import longbridge.models.EntityId;
-import longbridge.models.UserType;
+import longbridge.models.*;
 import longbridge.repositories.CodeRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CoverageRepo;
@@ -26,9 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CoverageServiceImpl implements CoverageAdministrationService {
@@ -142,20 +138,102 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
     }
 
     @Override
-    public void addCoverageForNewCodes() {
-        Set<String> coverageCodes = codeRepo.getCodeByType(coverage);
-        Set<Long> entityId_eids= coverageRepo.getAllEntityId_Eid();
-        entityId_eids.forEach(id->{
-           coverageCodes.removeAll(coverageRepo.getCoverageCodesForEntityId_Eid(id));
-            for (String code:coverageCodes) {
+    public void addCoverageForNewCorporate(Corporate corporate) {
+        List<Code> coverageCodes = codeRepo.findAllByType(coverage);
+        List<Coverage> coverageList = new ArrayList<>();
+        coverageCodes.forEach(codes->{
+            EntityId entityId = new EntityId();
+            entityId.setEid(corporate.getId());
+            entityId.setType(UserType.CORPORATE);
+            Coverage coverage = new Coverage();
+            coverage.setCode(codes.getCode());
+            coverage.setEnabled(true);
+            coverage.setEntityId(entityId);
+            coverage.setCodeEntity(codes);
+            coverageList.add(coverage);
+
+        });
+
+        corporate.setCoverages(coverageList);
+    }
+
+    @Override
+    public void addCoverageForNewRetail(RetailUser retailUser) {
+        List<Code> coverageCodes = codeRepo.findAllByType(coverage);
+        List<Coverage> coverageList = new ArrayList<>();
+        coverageCodes.forEach(codes->{
+            EntityId entityId = new EntityId();
+            entityId.setEid(retailUser.getId());
+            entityId.setType(UserType.RETAIL);
+            Coverage coverage = new Coverage();
+            coverage.setCode(codes.getCode());
+            coverage.setEnabled(true);
+            coverage.setEntityId(entityId);
+            coverage.setCodeEntity(codes);
+            coverageList.add(coverage);
+
+        });
+
+        retailUser.setCoverages(coverageList);
+
+    }
+
+    @Override
+    public void addCoverageForNewCodes(Code code) {
+        Set<Long> corporateids = corporateRepo.getAllCorporateId();
+        Set<Long> retailids = retailUserRepo.getAllRetailUserId();
+        List<Coverage> coverageList = new ArrayList<Coverage>();
+
+        corporateids.forEach(id -> {
+            EntityId entityId = new EntityId();
+            entityId.setEid(id);
+            entityId.setType(UserType.CORPORATE);
+            Coverage coverage = new Coverage();
+            coverage.setCode(code.getCode());
+            coverage.setEnabled(true);
+            coverage.setEntityId(entityId);
+            coverage.setCodeEntity(code);
+            coverageList.add(coverage);
+        });
+        retailids.forEach(id-> {
+            Coverage coverage= new Coverage();
+            EntityId entityId = new EntityId();
+            entityId.setEid(id);
+            entityId.setType(UserType.RETAIL);
+            coverage.setCode(code.getCode());
+            coverage.setEnabled(true);
+            coverage.setEntityId(entityId);
+            coverage.setCodeEntity(code);
+            coverageList.add(coverage);
+
+        });
+        code.setCoverages(coverageList);
+
+    }
+
+    @Override
+    public void newCodes(String code) {
+        Set<Long> corporateids = corporateRepo.getAllCorporateId();
+        Set<Long> retailids = retailUserRepo.getAllRetailUserId();
+        corporateids.stream().forEach(id -> {
                 AddCoverageDTO addCoverageDTO = new AddCoverageDTO();
-                EntityId entityId = coverageRepo.getEntityId(id);
+                EntityId entityId = new EntityId();
+                entityId.setEid(id);
+                entityId.setType(UserType.CORPORATE);
                 addCoverageDTO.setCode(code);
                 addCoverageDTO.setId(entityId);
                 addCoverage(addCoverageDTO);
 
-            }
-        });
+    });
+        retailids.forEach(id-> {
+                AddCoverageDTO addCoverageDTO = new AddCoverageDTO();
+                EntityId entityId = new EntityId();
+                entityId.setEid(id);
+                entityId.setType(UserType.RETAIL);
+                addCoverageDTO.setCode(code);
+                addCoverageDTO.setId(entityId);
+                addCoverage(addCoverageDTO);
 
-    }
+        });
+}
 }

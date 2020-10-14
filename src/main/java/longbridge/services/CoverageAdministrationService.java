@@ -5,8 +5,7 @@ import longbridge.dtos.AddCoverageDTO;
 import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Coverage;
-import longbridge.models.EntityId;
+import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +17,9 @@ public interface CoverageAdministrationService {
    void addCoverage(AddCoverageDTO addCoverageDTO);
    Coverage getCoverage(EntityId id, String code);
    void addCoverageForNewEntity();
-   void addCoverageForNewCodes();
-
+   void addCoverageForNewCorporate(Corporate corporate);
+   void addCoverageForNewRetail(RetailUser retailUser);
+   void addCoverageForNewCodes(Code code);
+   void newCodes(String code);
 
 }

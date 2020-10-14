@@ -87,6 +87,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     private SecurityService securityService;
     private RoleService roleService;
     private IntegrationService integrationService;
+    private CoverageAdministrationService coverageService;
     @Autowired
     private ConfigurationService configService;
 
@@ -103,12 +104,13 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Autowired
-    public RetailUserServiceImpl(CodeService codeService, AccountService accountService, SecurityService securityService, RoleService roleService, IntegrationService integrationService) {
+    public RetailUserServiceImpl(CodeService codeService, AccountService accountService, SecurityService securityService, RoleService roleService, IntegrationService integrationService,CoverageAdministrationService coverageService) {
         this.codeService = codeService;
         this.accountService = accountService;
         this.securityService = securityService;
         this.roleService = roleService;
         this.integrationService = integrationService;
+        this.coverageService = coverageService;
     }
 
     @Override
@@ -244,6 +246,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
             passwordPolicyService.saveRetailPassword(retailUser);
+            coverageService.addCoverageForNewRetail(retailUser);
             retailUserRepo.save(retailUser);
 
             logger.info("Retail user {} created", user.getUserName());

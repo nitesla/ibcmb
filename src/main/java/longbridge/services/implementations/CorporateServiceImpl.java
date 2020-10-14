@@ -92,6 +92,9 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private UserAccountRestrictionRepo userAccountRestrictionRepo;
 
+    @Autowired
+    private CoverageAdministrationService coverageService;
+
     @Value("${host.url}")
     private String hostUrl;
 
@@ -172,7 +175,7 @@ public class CorporateServiceImpl implements CorporateService {
         List<Account> accounts = accountService.addAccounts(corporateRequestDTO.getAccounts().stream().collect(Collectors.toList()));
         corporate.setAccounts(accounts);
 
-
+        coverageService.addCoverageForNewCorporate(corporate);
         Corporate newCorporate = corporateRepo.save(corporate);
 
 
