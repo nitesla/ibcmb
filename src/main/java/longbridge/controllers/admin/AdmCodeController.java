@@ -1,10 +1,12 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.AddCoverageDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.AdminUserService;
 import longbridge.services.CodeService;
+import longbridge.services.CoverageAdministrationService;
 import longbridge.utils.DataTablesUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -42,6 +45,9 @@ public class AdmCodeController {
 
 	@Autowired
 	MessageSource messageSource;
+
+	@Autowired
+	private CoverageAdministrationService coverageService;
 
 	@Autowired
 	private AdminUserService adminUserService;

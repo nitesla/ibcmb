@@ -9,10 +9,7 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -46,11 +43,10 @@ public class Code extends AbstractEntity implements PrettySerializer{
     private String description;
     private String extraInfo;
 
-	@OneToMany
-	@JsonIgnore
-	private List<Coverage> coverage;
+	@OneToMany(mappedBy = "codeEntity",cascade = CascadeType.ALL,orphanRemoval = true)
+	private List<Coverage> coverages;
 
-    public String getCode() {
+	public String getCode() {
         return code;
     }
 
@@ -83,12 +79,12 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		this.extraInfo = extraInfo;
 	}
 
-	public List<Coverage> getCoverage() {
-		return coverage;
+	public List<Coverage> getCoverages() {
+		return coverages;
 	}
 
-	public void setCoverage(List<Coverage> coverage) {
-		this.coverage = coverage;
+	public void setCoverages(List<Coverage> coverages) {
+		this.coverages = coverages;
 	}
 
 	@Override
