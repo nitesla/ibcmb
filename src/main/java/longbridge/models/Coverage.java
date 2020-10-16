@@ -4,9 +4,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
 @Audited(withModifiedFlag=true)
@@ -18,12 +16,26 @@ public class Coverage extends AbstractEntity  {
 
     private boolean enabled;
     private String customerId;
-
+    @Embedded
     private EntityId entityId;
-
     private String code;
 
+    @ManyToOne
+    @JoinColumn(name = "code_id",referencedColumnName = "id")
+    private Code codeEntity;
+
+
+
+
     public Coverage() {
+    }
+
+    public Code getCodeEntity() {
+        return codeEntity;
+    }
+
+    public void setCodeEntity(Code codeEntity) {
+        this.codeEntity = codeEntity;
     }
 
     public boolean isEnabled() {
@@ -47,7 +59,6 @@ public class Coverage extends AbstractEntity  {
     }
 
     public void setEntityId(EntityId entityId) {
-        this.entityId = entityId;
     }
 
     public String getCode() {
@@ -57,4 +68,6 @@ public class Coverage extends AbstractEntity  {
     public void setCode(String code) {
         this.code = code;
     }
+
+
 }

@@ -7,6 +7,7 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.services.CodeService;
+import longbridge.services.CoverageAdministrationService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -34,9 +35,12 @@ public class CodeServiceImpl implements CodeService {
 
     private final CodeRepo codeRepo;
 
-      private final ModelMapper modelMapper;
+     private final ModelMapper modelMapper;
 
     private final Locale locale = LocaleContextHolder.getLocale();
+    @Autowired
+    private CoverageAdministrationService coverageService;
+
 
     @Autowired
     private MessageSource messageSource;
@@ -54,6 +58,9 @@ public class CodeServiceImpl implements CodeService {
     public String deleteCode(Long codeId) throws InternetBankingException {
         try {
             Code code = codeRepo.findById(codeId).get();
+            if(code.getType().equals("ACCOUNT_COVERAGE")){
+
+            }
             codeRepo.delete(code);
             logger.info("Code {} has been deleted", codeId.toString());
             return messageSource.getMessage("code.delete.success", null, locale);
@@ -157,6 +164,9 @@ public class CodeServiceImpl implements CodeService {
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
+            if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
+               coverageService.addCoverageForNewCodes(code);
+            }
             codeRepo.save(code);
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);

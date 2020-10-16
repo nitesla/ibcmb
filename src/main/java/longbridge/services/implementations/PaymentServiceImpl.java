@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.BillPaymentDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.repositories.BillPaymentRepo;
 import longbridge.repositories.BillerRepo;
@@ -25,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Fortune on 7/9/2018.
@@ -42,19 +44,22 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentItemRepo paymentItemRepo;
     private final static Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private final Locale locale = LocaleContextHolder.getLocale();
+    private final TransferErrorService transferErrorService;
 
     @Autowired
-    public PaymentServiceImpl(BillPaymentRepo billPaymentRepo, MessageSource messageSource, BillerRepo billersRepo, PaymentItemRepo paymentItemRepo) {
+    public PaymentServiceImpl(BillPaymentRepo billPaymentRepo, RetailUserRepo retailUserRepo, MessageSource messageSource, BillerRepo billersRepo, PaymentItemRepo paymentItemRepo, TransferErrorService transferErrorService) {
         this.billPaymentRepo = billPaymentRepo;
+        this.retailUserRepo = retailUserRepo;
         this.messageSource = messageSource;
         this.billersRepo = billersRepo;
         this.paymentItemRepo = paymentItemRepo;
+        this.transferErrorService = transferErrorService;
     }
 
     @Override
     public String addBillPayment(BillPaymentDTO paymentDTO) {
 
-        logger.debug("Adding bill payment {} for user [{}]",paymentDTO, getCurrentUser().getUserName());
+        logger.debug("Adding bill payment {} for user [{}]", paymentDTO, getCurrentUser().getUserName());
 
         try {
             logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
@@ -62,16 +67,21 @@ public class PaymentServiceImpl implements PaymentService {
             BillPayment billPayment = integrationService.billPayment(payment1);
             billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
-            logger.info("Added payment {}",billPayment);
-            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
-               // billPayment.setStatus("SUCCESSFUL");
-                return messageSource.getMessage("Payment Successful",null,locale);
+            logger.info("Added payment {}", billPayment);
+
+            if (billPayment.getStatus().equalsIgnoreCase("94")) {
+                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
+
+
+            }else if (billPayment.getStatus().equalsIgnoreCase("90000") || billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus().equalsIgnoreCase("000")) {
+                return messageSource.getMessage("Payment Successful", null, locale);
+
             }else {
-                return messageSource.getMessage("Payment Failed",null,locale);
+
+                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
             }
 
-        }
-        catch (Exception e){
+            }catch (Exception e){
             logger.error(e.getMessage(),e);
             throw new InternetBankingException(messageSource.getMessage("Payment Failure",null,locale));
         }
@@ -90,11 +100,17 @@ public class PaymentServiceImpl implements PaymentService {
 
             billPayment = billPaymentRepo.save(billPayment);
             logger.info("Added payment {}",billPayment);
-            if(billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL")){
-               // billPayment.setStatus("SUCCESSFUL");
-                return messageSource.getMessage("Payment Successful",null,locale);
+            if (billPayment.getStatus().equalsIgnoreCase("94")) {
+                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
+
+
+            }
+            if (billPayment.getStatus().equalsIgnoreCase("90000") || billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus().equalsIgnoreCase("000")) {
+                return messageSource.getMessage("Payment Successful", null, locale);
+
             }else {
-                return messageSource.getMessage("Payment Failed",null,locale);
+
+                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
             }
         }
         catch (Exception e){
@@ -116,7 +132,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         RetailUser user = getCurrentUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndStatusNotNullOrderByCreatedOnDesc("RET_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getId().toString(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
@@ -128,7 +144,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findByRequestReferenceAndStatusNotNullOrderByCreatedOnDesc("COP_" + user.getId(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getId().toString(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
@@ -140,7 +156,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         RetailUser user = getCurrentUser();
-        Page<BillPayment> page = billPaymentRepo.findUsingPattern("RET_" + user.getId(),pattern, pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getId().toString(),pattern, pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
@@ -152,7 +168,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed CORP payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findUsingPattern("COP_" + user.getId(),pattern, pageable);
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getId().toString(),pattern, pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
@@ -163,6 +179,10 @@ public class PaymentServiceImpl implements PaymentService {
     private BillPayment convertPaymentDTOToEntity(BillPaymentDTO paymentDTO){
 
         logger.debug("Converting Bill payment DTO to entity");
+
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
 
         BillPayment payment = new BillPayment();
         payment.setCustomerAccountNumber(paymentDTO.getCustomerAccountNumber());
@@ -176,13 +196,17 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
         payment.setCategoryName(paymentDTO.getCategoryName());
-        payment.setRequestReference("RET_" + getCurrentUser().getId());
+        payment.setRequestReference("1453" + random);
         return payment;
     }
 
     private BillPayment convertCorpPaymentDTOToEntity(BillPaymentDTO paymentDTO){
 
         logger.debug("Converting Bill payment DTO to entity");
+
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
 
         BillPayment payment = new BillPayment();
         logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
@@ -197,7 +221,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
         payment.setCategoryName(paymentDTO.getCategoryName());
-        payment.setRequestReference("COP_" + getCurrentCorpUser().getId());
+        payment.setRequestReference("1453" + random);
         return payment;
     }
 

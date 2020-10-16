@@ -30,7 +30,6 @@ import org.thymeleaf.context.Context;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static longbridge.models.UserAccountRestriction.RestrictionType;
 
@@ -91,6 +90,9 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Autowired
     private UserAccountRestrictionRepo userAccountRestrictionRepo;
+
+    @Autowired
+    private CoverageAdministrationService coverageService;
 
     @Value("${host.url}")
     private String hostUrl;
@@ -170,7 +172,7 @@ public class CorporateServiceImpl implements CorporateService {
         List<Account> accounts = accountService.addAccounts(new ArrayList<>(corporateRequestDTO.getAccounts()));
         corporate.setAccounts(accounts);
 
-
+        coverageService.addCoverageForNewCorporate(corporate);
         Corporate newCorporate = corporateRepo.save(corporate);
 
 

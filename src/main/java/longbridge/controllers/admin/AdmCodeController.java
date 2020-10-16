@@ -5,6 +5,7 @@ import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.AdminUserService;
 import longbridge.services.CodeService;
+import longbridge.services.CoverageAdministrationService;
 import longbridge.utils.DataTablesUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -42,6 +43,9 @@ public class AdmCodeController {
 
 	@Autowired
 	MessageSource messageSource;
+
+	@Autowired
+	private CoverageAdministrationService coverageService;
 
 	@Autowired
 	private AdminUserService adminUserService;

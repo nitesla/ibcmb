@@ -570,6 +570,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 //				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
 //				return neftTransferRequest;
 //			}
+			case QUICKTELLER: {
+
+				return transRequest;
+			}
 		}
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());
@@ -1487,11 +1491,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
         BigDecimal d = billPayment.getAmount();
-        String amount = d.setScale(2, BigDecimal.ROUND_HALF_UP).movePointRight(2).toPlainString();
+		BigDecimal f = new BigDecimal(100);
+        String amount = d.multiply(f).toPlainString();
         logger.info("amount in Big decimal {}", amount);
         Map<String,String> params = new HashMap<>();
 
-        params.put("terminalId",terminalId);
+        params.put("TerminalId",terminalId);
 		logger.info("Terminal ID is {}", terminalId);
         logger.info("appId is {}", appIdQuickteller);
         logger.info("secretKey is {}", secretKeyQuickteller);
@@ -1506,6 +1511,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		logger.info("Hash is {}", hashedCode);
 		params.put("paymentCode",billPayment.getPaymentCode().toString());
 		params.put("requestReference",billPayment.getRequestReference());
+		logger.info("Starting payment with Params: {}", params.toString());
 
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
@@ -1518,6 +1524,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 			billPayment.setApprovedAmount(payment.getApprovedAmount());
 			billPayment.setTerminalId(terminalId);
 			logger.info("Saved Terminal Id is {}", terminalId);
+
+			if(payment.isStatusNull()){
+				billPayment.setStatus(errorService.getMessage(payment.getResponseCode()));
+				logger.info("Response code {}", billPayment.getStatus());
+			}
 			return billPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
@@ -1539,12 +1550,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
 		BigDecimal d = recurringPayment.getAmount();
-		String amount = d.setScale(2, BigDecimal.ROUND_HALF_UP).movePointRight(2).toPlainString();
-		logger.info("amount in Big decimal {}", amount);
+		BigDecimal f = new BigDecimal(100);
+		String amount = d.multiply(f).toPlainString();
 		Map<String,String> params = new HashMap<>();
 
-		params.put("terminalId",terminalId);
-		logger.info("Terminal ID is", terminalId);
+		params.put("TerminalId",terminalId);
 		params.put("amount", amount);
 		String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + recurringPayment.getPaymentCode() + amount + secretKeyQuickteller, null);
 		params.put("appid",appIdQuickteller);
@@ -1552,10 +1562,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("customerEmail", recurringPayment.getEmailAddress());
 		params.put("customerId",recurringPayment.getCustomerId());
 		params.put("customerMobile",recurringPayment.getPhoneNumber());
-		logger.info("Payment code", recurringPayment.getPaymentCode().toString());
 		params.put("hash", hashedCode);
 		params.put("paymentCode",recurringPayment.getPaymentCode().toString());
 		params.put("requestReference",recurringPayment.getRequestReference());
+		logger.info("Starting payment with Params: {}", params.toString());
 
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
@@ -1568,6 +1578,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			recurringPayment.setApprovedAmount(payment.getApprovedAmount());
 			recurringPayment.setTerminalId(terminalId);
 			logger.info("Saved Terminal Id is {}", terminalId);
+			if(payment.isStatusNull()){
+				recurringPayment.setStatus(errorService.getMessage(payment.getResponseCode()));
+				logger.info("Response code {}", recurringPayment.getStatus());
+			}
 			return recurringPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
