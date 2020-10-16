@@ -160,5 +160,8 @@ public interface AccountService {
 
     Page<Account> getLoanAccounts(List<String> accountNumbers,Pageable pageable);
     List<Account> getLoanAccounts(List<String> accountNumbers);
+    Page<Account> getFixedDepositAccounts(List<String> accountNumbers,Pageable pageable);
+    List<Account> getFixedDepositAccounts(List<String> accountNumbers);
+
 
    }

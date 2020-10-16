@@ -82,8 +82,12 @@ public class CorpCompletedTransferController {
 
         Page<CorpTransferRequestDTO> transferRequests;
         if (StringUtils.isNoneBlank(search)) {
+
             transferRequests = corpTransferService.getCompletedTransfer(search.toUpperCase(), pageable);
-        } else transferRequests = corpTransferService.getCompletedTransfer(pageable);
+        } else {
+
+            transferRequests = corpTransferService.getCompletedTransfer(pageable);
+        }
         DataTablesOutput<CorpTransferRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(transferRequests.getContent());

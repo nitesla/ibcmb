@@ -84,7 +84,7 @@ public class CorpSettingController {
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        if (corporateUser==null) {
+        if (corporateUser == null) {
             return "redirect:/login/corporate";
         }
         Long corpId = corporateUser.getCorporate().getId();
@@ -113,6 +113,9 @@ public class CorpSettingController {
                 );*/
         List<LoanDTO> loans = new ArrayList<>();
         List<String> loansAccountList = new ArrayList<>();
+
+        List<FixedDepositDTO> fixedDepositDTO = new ArrayList<>();
+        List<String> fixedDepositDTOList = new ArrayList<>();
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -121,9 +124,14 @@ public class CorpSettingController {
 
                                 if ("LAA".equalsIgnoreCase(i.getAccountType())) {
                                     loansAccountList.add(i.getAccountNumber());
-//                                    LoanDTO loan = integrationService.getLoanDetails(i.getAccountNumber());
-//                                    loans.add(loan);
+
+                                }else   if ("TDA".equalsIgnoreCase(i.getAccountType())) {
+                                    fixedDepositDTOList.add(i.getAccountNumber());
+//
                                 }
+
+
+
                             }
                     ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
                     .peek(i -> {
@@ -134,18 +142,27 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
-            List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
-            model.addAttribute("accountList", accountList);
-            model.addAttribute("corpId",corpId);
-            model.addAttribute("loanAccounts",loanAccounts);
-            model.addAttribute("mailLoanDTO",new MailLoanDTO());
-            boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
+       List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
+        List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
+        model.addAttribute("accountList", accountList);
+        model.addAttribute("corpId", corpId);
+        model.addAttribute("loanAccounts", loanAccounts);
+        model.addAttribute("mailLoanDTO", new MailLoanDTO());
+        model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
+        model.addAttribute("fixedDepositDTO", new FixedDepositDTO().getRecipientName());
+        model.addAttribute("fixedDepositDTO", new FixedDepositDTO().getRecipientEmail());
+
+        boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
+
         logger.info("EXPIRY RESULT {} ", exp);
-        if (exp){
+        if (exp) {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
         }
+
         return "corp/dashboard";
+
     }
+
 
     @GetMapping(path = "/dashboard/loans")
     public @ResponseBody DataTablesOutput<Account> getLoanAccount(DataTablesInput input) {
@@ -173,6 +190,37 @@ public class CorpSettingController {
         out.setRecordsTotal(loanAccounts.getTotalElements());
         return out;
     }
+
+    @GetMapping("/dashboard/fixdeposit")
+    public @ResponseBody DataTablesOutput<Account> getFixedDepositAccount(DataTablesInput input,String cifId,String schemeType) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        List<String> fixedDepositAccount = new ArrayList<>();
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
+
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto != null && dto.isEnabled()) {
+            for (AccountDTO acc:accountList) {
+                if ("TDA".equalsIgnoreCase(acc.getAccountType())) {
+                    fixedDepositAccount.add(acc.getAccountNumber());
+                }
+            }
+        }
+        System.out.println(fixedDepositAccount);
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+       Page<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositAccount,pageable);
+        DataTablesOutput<Account> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(fixedDepositAccounts.getContent());
+        out.setRecordsFiltered(fixedDepositAccounts.getTotalElements());
+        out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
+        return out;
+    }
+
+
+
+
 
 
     @GetMapping("/error")

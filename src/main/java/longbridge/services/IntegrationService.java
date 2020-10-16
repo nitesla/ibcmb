@@ -169,4 +169,5 @@ public interface IntegrationService {
     List<BillerCategoryDTO> getBillerCategories();
     CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
     NeftResponse submitNeftTransfer();
+
 }
