@@ -2,36 +2,52 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.FixedDepositDTO;
+import longbridge.dtos.LoanDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.UserGroupRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.FIxedDepositActions;
+import longbridge.utils.JasperReport.ReportHelper;
 import longbridge.utils.Response;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
+import javax.activation.DataSource;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by mac on 08/03/2018.
  */
 @Service
 public class FixedDepositServiceImpl implements FixedDepositService {
+
+    private final JavaMailSender mailSender;
+
     @Autowired
     private RetailUserService retailUserService;
     @Autowired
@@ -49,9 +65,26 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     @Autowired
     private InvestmentRateService investmentRateService;
 
+    @Value("${mail.from}")
+    private String sender;
+
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
+
     private final Locale locale = LocaleContextHolder.getLocale();
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    @Autowired
+    public FixedDepositServiceImpl(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+
+
+
+
     @Override
     public List<FixedDepositDTO> getFixedDepositDetials(String username) {
         List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
@@ -213,6 +246,56 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
         return investmentRateService.getRateByTenorAndAmount("FIXED-DEPOSIT",tenor,amount);
     }
+
+
+    @Override
+    public FixedDepositDTO getFixedDepositDetails(String accountNumber) {
+
+       return integrationService.getFixedDepositDetails(accountNumber);
+
+    }
+
+    @Override
+    public void sendFixedDepositDetails(String recipient, String name, String accountNumber) throws MailException {
+        FixedDepositDTO fixedDeposit = integrationService.getFixedDepositDetails(accountNumber);
+        MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);
+            messageHelper.setFrom(sender);
+            messageHelper.setTo(recipient);
+            messageHelper.setSubject(messageSource.getMessage("fixed.deposit.subject", null, locale));
+            messageHelper.setText(String.format(messageSource.getMessage("fixed.deposit.message", null, locale),name));
+            messageHelper.addAttachment("fixeddeposit_report.pdf", mailAttachmentPdf(fixedDeposit));
+        };
+        mailSender.send(messagePreparator);
+
+    }
+
+    private DataSource mailAttachmentPdf( FixedDepositDTO fixedDeposit) throws Exception {
+
+        Map<String, Object> modelMap = new HashMap<>();
+
+        modelMap.put("accountId",fixedDeposit.getAccountId());
+        modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
+        modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
+        modelMap.put("depositType",fixedDeposit.getTenor());
+        modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
+        modelMap.put("bookingDate",fixedDeposit.getBookingDate());
+        modelMap.put("valueDate",fixedDeposit.getValueDate());
+        modelMap.put("initialDepositAmount",fixedDeposit.getInitialDepositAmount());
+        modelMap.put("maturityDate",fixedDeposit.getMaturityDate());
+        modelMap.put("rate",fixedDeposit.getRate());
+        modelMap.put("tenor",fixedDeposit.getTenor());
+        modelMap.put("maturityAmount",fixedDeposit.getMaturityAmount());
+        modelMap.put("logotwo", imagePath);
+        List<FixedDepositDTO> fixedDepositDTOList = new ArrayList<>();
+        fixedDepositDTOList.add(fixedDeposit);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JasperReport jasperReport = ReportHelper.getJasperReport("fixedDeposit_pdf");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositDTOList));
+        JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
+        return new ByteArrayDataSource(outputStream.toByteArray(), "application/pdf");
+    }
+
 
 
 

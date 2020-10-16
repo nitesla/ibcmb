@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detailsreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1bbb6aee-a715-4846-823a-3c9765bb2dd9">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="112"/>
+	<parameter name="accountId" class="java.lang.String"/>
+	<parameter name="accountNumber" class="java.lang.String"/>
+	<parameter name="bookRefNo" class="java.lang.String"/>
+	<parameter name="depositNumber" class="java.lang.String"/>
+	<parameter name="fixedDepositNumber" class="java.lang.String"/>
+	<parameter name="despositStatus" class="java.lang.String"/>
+	<parameter name="bookingDate" class="java.lang.String"/>
+	<parameter name="valueDate" class="java.lang.String"/>
+	<parameter name="maturityDate" class="java.lang.String"/>
+	<parameter name="initialDepositAmount" class="java.lang.String"/>
+	<parameter name="rate" class="java.lang.String"/>
+	<parameter name="maturityAmount" class="java.lang.String"/>
+	<parameter name="logotwo" class="java.io.InputStream"/>
+	<parameter name="depositType" class="java.lang.String"/>
+	<parameter name="tenor" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="176" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="665" y="154" width="60" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="12f52c0f-cdb9-46d2-9959-11827dd02132"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Tenure]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="725" y="154" width="77" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="5d599b70-b333-4934-9862-9e3ddec9d3da"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#000033"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Maturity Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="53" y="154" width="65" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="a3c1d004-9232-492c-9f9e-6295d92dabd5"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Account Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="485" y="154" width="58" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="d5eda5e2-15ee-4057-9c37-c1ce3f6eaf8d"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Maturity Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="421" y="154" width="64" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="816e5051-5d9b-488c-9d91-cbb4e00e59b4"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Value Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="359" y="154" width="62" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="6b52486a-26cd-4457-8b65-bbf7ccc68790"/>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Booking Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="282" y="154" width="77" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="4ee1ad84-821c-4fb5-9ede-ca7180194e05"/>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Deposit Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="118" y="154" width="79" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="2fcb1b9f-9c6d-4ff4-8d31-103942cbd325"/>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Book Reference No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="543" y="154" width="66" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="692cba73-2df2-449c-ab89-a10292441739"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Initial Deposit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="609" y="154" width="56" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="76a65a7e-8ed2-4857-8ec0-3f5ac50b40c0"/>
+				<box>
+					<rightPen lineWidth="0.75" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Interest Rate ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="154" width="53" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="7f9203b5-99ce-4c14-9e01-05c829e9ff5b"/>
+				<box>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Account ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="197" y="154" width="85" height="22" forecolor="#FFFFFF" backcolor="#003057" uuid="ab0399a3-0471-4b48-9d4b-88cc11b3a8e3"/>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Deposit Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="112" width="802" height="29" forecolor="#003057" uuid="c504b2bc-d3c1-45c1-bb0a-20d465f03117"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="18"/>
+				</textElement>
+				<text><![CDATA[Fixed Deposit Details]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="0" y="0" width="118" height="20" uuid="d72c18fd-3bef-4922-99b1-d5ae5a1ec6f0"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="677" y="0" width="125" height="50" uuid="34526b98-80a6-44e1-9797-eb06b8418ffa"/>
+				<imageExpression><![CDATA[$P{logotwo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="53" height="20" uuid="6b21498c-befe-430c-921a-2b3de2eb5d58"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{accountId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="53" y="0" width="65" height="20" uuid="bf759399-3062-4e25-88db-2228baf80918"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{accountNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="118" y="0" width="79" height="20" uuid="b8e6ae2b-f3bc-4632-816d-5faee7995c5b"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{bookRefNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="0" width="85" height="20" uuid="b98da5db-62a6-43ed-ab0e-190db406ab0a"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{depositType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="282" y="0" width="77" height="20" uuid="859bc215-4841-4fa1-b8b8-990b1962308c"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{despositStatus}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="359" y="0" width="62" height="20" uuid="3249264d-0b39-4115-aceb-21d110d2067c"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{bookingDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="421" y="0" width="64" height="20" uuid="031b6fbb-a1dc-4754-a731-2eb7f81b44a8"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{valueDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="485" y="0" width="58" height="20" uuid="2163d281-e582-4229-b666-7f564ae36a7c"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{maturityDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="543" y="0" width="66" height="20" uuid="cceabeaa-ab7a-4112-a8fd-a5df71e67624"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{initialDepositAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="609" y="0" width="56" height="20" uuid="18a7507a-51b2-4a3e-af8e-81c1b6b24835"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="665" y="0" width="60" height="20" uuid="1779a156-eae6-4d4a-a926-4432a7e12767"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tenor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="725" y="0" width="77" height="20" uuid="18316ef3-62ed-4f7f-b4a9-80059b5b0255"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#333333"/>
+					<leftPen lineWidth="0.5" lineColor="#333333"/>
+					<bottomPen lineWidth="0.5" lineColor="#333333"/>
+					<rightPen lineWidth="0.5" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{maturityAmount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1333,7 +1333,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public FixedDepositDTO getFixedDepositDetails(String accountNumber){
 
 		FixedDepositDTO fixedDeposit = new FixedDepositDTO();
-		String uri = URI+"/deposit/{accountNumber}";
+		String uri = URI+"/deposit/" + accountNumber;
+		logger.info("the url : {} ", URI);
+		logger.info("the url2 : {} ", uri);
+		logger.info("the acc number : {} ", accountNumber);
 		Map<String,String> params = new HashMap<>();
 		params.put("accountNumber",accountNumber);
 
@@ -1349,7 +1352,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 
-	public TransRequest sendInternationalTransferRequest(TransRequest transRequest) {
+
+    public TransRequest sendInternationalTransferRequest(TransRequest transRequest) {
 
 		try {
 
