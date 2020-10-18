@@ -1,18 +1,11 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.AddCoverageDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Code;
-import longbridge.models.Coverage;
-import longbridge.models.EntityId;
-import longbridge.models.UserType;
 import longbridge.repositories.CodeRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CoverageRepo;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.CoverageAdministrationService;
 import longbridge.utils.Verifiable;
@@ -31,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * Created by Wunmi on 29/03/2017.

@@ -1,12 +1,10 @@
 package longbridge.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Audited(withModifiedFlag=true)

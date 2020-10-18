@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.utils.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface FixedDepositService {
      boolean isBalanceEnoughForBooking(FixedDepositDTO fixedDepositDTO) throws InternetBankingException;
      String sendMail(FixedDepositDTO fixedDepositDTO) throws InternetBankingException;
      Optional<Integer>getRateBasedOnAmountAndTenor(int amount, int tenor);
+     FixedDepositDTO getFixedDepositDetails(String accountNumber);
+     void sendFixedDepositDetails(String recipient, String name, String accountNumber) throws MailException;
 }

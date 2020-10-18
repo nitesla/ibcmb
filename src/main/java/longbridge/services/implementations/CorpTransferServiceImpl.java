@@ -283,7 +283,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public Page<CorpTransferRequestDTO> getCompletedTransfer(Pageable pageDetails) {
         CorporateUser corporateUser = getCurrentUser();
         Corporate corporate = corporateUser.getCorporate();
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc("CORP_" + corporateUser.getId(), pageDetails);
+        logger.info("id for corpUser : {}",corporateUser.getId());
+        logger.info("id for corp : {}",corporate.getId());
+      // Page<CorpTransRequest> page = corpTransferRequestRepo.findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc(corporate, pageDetails);
+        Page<CorpTransRequest> page = corpTransferRequestRepo.findRequestByCorp(corporate, pageDetails);
         List<CorpTransferRequestDTO> corpTransferRequestDTOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<>(corpTransferRequestDTOs, pageDetails, t);

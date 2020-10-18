@@ -25,6 +25,7 @@
                 <th class="text-cente">Av. Bal</th>
                 <th class="text-cente">Led. Bal.</th>
                 <th class="text-cente">&nbsp;</th>
+                </div>
                 </thead>
                 <tbody>
                 <tr th:each="list : ${accountList}" class="tt">
@@ -53,14 +54,17 @@
 
         <div  th:if="${not #lists.isEmpty(loanAccounts)}" class=" no-pad-lef table-responsive bg-white alert">
 
-            <table class="table table-hover no-pad-lef" id="loans">
+
+
+        <table class="table table-hover no-pad-lef" id="loans">
                 <caption style="font-size: large">Loan Accounts</caption>
                 <thead>
                 <tr>
                     <th>Account Name</th>
                     <th>Account Number</th>
                     <th>Account Currency</th>
-                    <th>Pdf</th>
+                   <th>View</th>
+                   <th>Pdf</th>
                     <th>Excel</th>
                     <th>Email</th>
 
@@ -73,6 +77,7 @@
                     <th>Account Name</th>
                     <th>Account Number</th>
                     <th>Account Currency</th>
+                    <th>View</th>
                     <th>Pdf</th>
                     <th>Excel</th>
                     <th>Email</th>
@@ -81,13 +86,85 @@
                 </tfoot>
             </table>
 
+            <!--<div class="form-group col-sm-1 no-pad-left">-->
+                <!--<label>&nbsp;</label>-->
+                <!--&lt;!&ndash; <span class="req visible-md visible-lg"></span> &ndash;&gt;-->
+                <!--<button type="submit" class="btn btn-default " id="btn-find">View</button>-->
+            <!--</div>-->
+
+        </div>
+
+
+        <!--<div id="coverage-div">-->
+
+
+        <!--</div>-->
+
+
+        <!--<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">-->
+            <!--<div class="btn-group" role="group" aria-label="First group">-->
+
+                <!--<a type="button" class="btn bt-select btn-default bt-link-act"-->
+                   <!--th:href="@{/corp/fixedDeposit/view}" disabled="disabled"> View</a>-->
+
+            <!--</div>-->
+        <!--</div>-->
+        <!--<br/>-->
+        <div  th:if="${not #lists.isEmpty(fixedDepositAccounts)}" class=" no-pad-lef table-responsive bg-white alert">
+
+
+            <table class="table table-hover no-pad-lef" id="fixedDepositDTO">
+
+                <caption style="font-size: large">FIXED DEPOSIT</caption>
+
+                <thead>
+                <tr>
+                    <th>Account Name</th>
+                    <th>Account Number</th>
+                    <th>Account Currency</th>
+                    <th>View</th>
+                    <th>Pdf</th>
+                    <th>Excel</th>
+                    <th>Email</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Account Name</th>
+                    <th>Account Number</th>
+                    <th>Account Currency</th>
+                    <th>View</th>
+                    <th>Pdf</th>
+                    <th>Excel</th>
+                    <th>Email</th>
+
+
+                </tr>
+                </tfoot>
+            </table>
+
+
         </div>
 
 
         <div id="coverage-div">
 
-
         </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
     </div>
@@ -123,6 +200,61 @@
             </div>
         </div>
     </div>
+
+
+    <div id="fixdepositmailModal" class="modal" >
+        <div class="modal-dialog">
+            <div class="modal-content no-bd-rad tokenBox" >
+                <form id="fixdepositmailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${FixedDepositDTO}">
+                    <div class="modal-body no-bd-rad">
+
+                        <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
+                        <div class="margin-bottom">
+                            <p style="margin-bottom:20px">Kindly enter recipient name and email you are sending Fixed Deposit details to. </p>
+                            <div id="username_div2" class="form-group">
+
+                                <input  type="hidden" required class='my-select5 tokenInput' id="accNum" name="accountNumber" th:field="*{accountNumber}"  />
+                                <input  type="text" name="recipientName" required class='my-select5 tokenInput' placeholder="Recipient Name " th:field="*{recipientName}" />
+
+                                <input  type="email" name="recipientEmail" required class='my-select5 tokenInput' placeholder="Recipient Email " th:field="*{recipientEmail}" />
+                            </div>
+                            <p style="margin-bottom:20px; color:#9F614B;" id="wait"><b>Sending Email....... </b></p>
+
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer no-bd-top ">
+                        <input type='button' class="btn btn-link less-required token-btn" id="cancelButton" value='Back'/>
+                        <input type='submit' class="btn btn-link token-btn required-step" id="sendButton"  value='Send'/>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 
@@ -188,11 +320,20 @@
                 "columns": [
                     { "data": "accountName" },
                     { "data": "accountNumber" },
-                    { "data": "currencyCode" }
-                ] ,
+                    { "data": "currencyCode" },
+                    { "data": "currencyCode", render : function (data,type,full,meta) {
+                            if(data!=null){
+                                return'<a href="/corporate/loan/pdf/' + data + '"><i class="icon-eye-open"></i>  View </a>';
+                            }
 
-                "columnDefs" : [ {
-                    "targets" : 3,
+                        }
+
+
+                    }                ] ,
+
+                "columnDefs" : [
+            {
+                    "targets" : 4,
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
 
@@ -200,7 +341,7 @@
                     }
                 },
                     {
-                        "targets" : 4,
+                        "targets" : 5,
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
@@ -208,7 +349,7 @@
                         }
                     },
                     {
-                        "targets" : 5,
+                        "targets" : 6,
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
@@ -217,11 +358,155 @@
                     }]
 
 
+        });
+
+
+            var table = $('#fixedDepositDTO').DataTable({
+                select:true,
+                responsive: true,
+                "lengthMenu" : [ [ 5, 10, 20,-1],	[ 5, 10,20, "All" ] ],
+                "pagingType" : "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "serverSide" : true,
+                "ajax": "/corporate/dashboard/fixdeposit",
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    { "data": "accountName" },
+                    { "data": "accountNumber" },
+                    { "data": "currencyCode" },
+                    { "data": "currencyCode", render : function (data,type,full,meta) {
+                        if(data!=null){
+                            return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-eye"></i>  View </a>';
+
+                        }
+
+                        }
+
+
+                    }
+                ] ,
+
+                "columnDefs" : [
+                    // {
+                    //     "targets" : 3,
+                    //     "data" : "accountNumber",
+                    //     "render" : function(data, type,full, meta) {
+                    //
+                    //         return data;
+                    //         // return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                    //
+                    //     }
+                    // },
+                    {
+                    "targets" : 4,
+                    "data" : "accountNumber",
+                    "render" : function(data, type,full, meta) {
+
+                         return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                    }
+                },
+                    {
+                        "targets" : 5,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/corporate/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                        }
+                    },
+                    {
+                        "targets" : 6,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a  onclick="fixdepositMail(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+                        }
+                    }]
+
+
             });
 
 
-
         });
+
+
+
+
+
+        //
+        // table.on('select', function () {
+        //     if (table.rows({
+        //         selected: true
+        //     }).indexes().length === 0) {
+        //         $('.bt-select').attr("disabled", true);
+        //     } else {
+        //         $('.bt-select').removeAttr("disabled");
+        //     }
+        //
+        // });
+        //
+        // table.on('deselect', function () {
+        //     if (table.rows({
+        //         selected: true
+        //     }).indexes().length === 0) {
+        //         $('.bt-select').attr("disabled", true);
+        //     } else {
+        //         $('.bt-select').removeAttr("disabled");
+        //     }
+        // });
+        //
+        //
+        // $("a.bt-link-act").on("click", function (e) {
+        //     e.preventDefault();
+        //     var link = $(e.currentTarget);
+        //     if ($(link).attr("disabled")) {
+        //         return;
+        //     }
+        //     var dt = $('#fixedDepositDTO').DataTable();
+        //     var id = $(dt.row({
+        //         selected: true
+        //     }).node()).attr("id");
+        //     var ooo = link.attr("href").replace("index", id);
+        //     window.location.assign(ooo);
+        //
+        // });
+        //
+        // $("#delete-btn").on("click", function (e) {
+        //     e.preventDefault();
+        //     var link = $(e.currentTarget);
+        //     if ($(link).attr("disabled")) {
+        //         return;
+        //     }
+        //     var dt = $('#fixedDepositDTO').DataTable();
+        //     var id = $(dt.row({
+        //         selected: true
+        //     }).node()).attr("id");
+        //     //window.location.href = link.attr("formaction") + '?id=' + id;
+        //     //replace {id} with id
+        //     var ooo = link.attr("href").replace("index", id);
+        //     warnBeforeRedirect(ooo);
+        //
+        // });
+        //
+        // function warnBeforeRedirect(ooo) {
+        //     swal({
+        //         title: "Are you sure?",
+        //         text: "Are you sure that you want to delete this code?",
+        //         type: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonColor: "#DD6B55",
+        //         confirmButtonText: "Yes, delete code!",
+        //         closeOnConfirm: false
+        //     }, function () {
+        //         // Redirect the user
+        //         window.location.assign(ooo);
+        //     });
+        // }
+        //
+
+
+
+
 
 
 
@@ -236,6 +521,12 @@
             $("#wait").hide();
 
         });
+
+        $(document).ready(function () {
+            $("#fixdepositmailModal").hide();
+            $("#wait").hide();
+
+        });
         function mailLoan(data) {
             $("#mailModal").show( function(){
                 $(".modal-body #accNum").val( data );
@@ -245,9 +536,28 @@
 
         }
 
+        function fixdepositMail(data) {
+            $("#fixdepositmailModal").show( function(){
+                $(".modal-body #accNum").val( data );
+
+
+            });
+
+        }
+
+
 
         $("#cancelButton").click(function() {
             $("#mailModal").hide();
+        });
+        $("#sendButton").click(function () {
+            $("#wait").show();
+        });
+
+
+
+        $("#cancelButton").click(function() {
+            $("#fixdepositmailModal").hide();
         });
         $("#sendButton").click(function () {
             $("#wait").show();
