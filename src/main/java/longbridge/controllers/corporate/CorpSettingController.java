@@ -79,6 +79,8 @@ public class CorpSettingController {
 
 
     private CoverageService coverageService;
+    @Autowired
+    private FixedDepositService fixedDepositService;
 
 
     @RequestMapping("/dashboard")
@@ -192,7 +194,7 @@ public class CorpSettingController {
     }
 
     @GetMapping("/dashboard/fixdeposit")
-    public @ResponseBody DataTablesOutput<Account> getFixedDepositAccount(DataTablesInput input,String cifId,String schemeType) {
+    public @ResponseBody DataTablesOutput<Account> getFixedDepositAccount(DataTablesInput input) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         List<String> fixedDepositAccount = new ArrayList<>();
@@ -217,10 +219,6 @@ public class CorpSettingController {
         out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
         return out;
     }
-
-
-
-
 
 
     @GetMapping("/error")
