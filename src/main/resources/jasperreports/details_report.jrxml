@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="detailsreport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1bbb6aee-a715-4846-823a-3c9765bb2dd9">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="112"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="131"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="accountId" class="java.lang.String"/>
 	<parameter name="accountNumber" class="java.lang.String"/>
 	<parameter name="bookRefNo" class="java.lang.String"/>
-	<parameter name="depositNumber" class="java.lang.String"/>
-	<parameter name="fixedDepositNumber" class="java.lang.String"/>
 	<parameter name="despositStatus" class="java.lang.String"/>
 	<parameter name="bookingDate" class="java.lang.String"/>
 	<parameter name="valueDate" class="java.lang.String"/>
@@ -15,7 +13,7 @@
 	<parameter name="initialDepositAmount" class="java.lang.String"/>
 	<parameter name="rate" class="java.lang.String"/>
 	<parameter name="maturityAmount" class="java.lang.String"/>
-	<parameter name="logotwo" class="java.io.InputStream"/>
+	<parameter name="logotwo" class="java.lang.String"/>
 	<parameter name="depositType" class="java.lang.String"/>
 	<parameter name="tenor" class="java.lang.String"/>
 	<background>

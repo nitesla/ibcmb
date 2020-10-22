@@ -119,6 +119,7 @@ public class SettingController {
                 );*/
 
         List<String> loansAccountList = new ArrayList<>();
+        List<String> fixedDepositDTOList = new ArrayList<>();
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -128,7 +129,10 @@ public class SettingController {
                         if ("LAA".equalsIgnoreCase(i.getAccountType())) {
                             loansAccountList.add(i.getAccountNumber());
 
-                        }
+                        }else   if ("TDA".equalsIgnoreCase(i.getAccountType())) {
+                             fixedDepositDTOList.add(i.getAccountNumber());
+
+                       }
                             }
                     ).filter(i -> ArrayUtils.contains(transactionalAccounts, i.getAccountType()))
                     .peek(i -> {
@@ -140,10 +144,15 @@ public class SettingController {
                     .collect(Collectors.toList());
         }
         List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
+        List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
         model.addAttribute("accountList", accountList);
         model.addAttribute("retId",retId);
         model.addAttribute("loanAccounts",loanAccounts);
         model.addAttribute("mailLoanDTO",new MailLoanDTO());
+        model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
+        model.addAttribute("fixedDepositDTO", new FixedDepositDTO().getRecipientName());
+        model.addAttribute("fixedDepositDTO", new FixedDepositDTO().getRecipientEmail());
+
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
@@ -180,6 +189,39 @@ public class SettingController {
         out.setRecordsTotal(loanAccounts.getTotalElements());
         return out;
     }
+
+
+    @GetMapping("/dashboard/fixdeposit")
+    public @ResponseBody DataTablesOutput<Account> getFixedDepositAccount(DataTablesInput input) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<String> fixedDepositAccount = new ArrayList<>();
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+
+        SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
+        if (dto != null && dto.isEnabled()) {
+            for (AccountDTO acc:accountList) {
+                if ("TDA".equalsIgnoreCase(acc.getAccountType())) {
+                    fixedDepositAccount.add(acc.getAccountNumber());
+                }
+            }
+        }
+        System.out.println(fixedDepositAccount);
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositAccount,pageable);
+        DataTablesOutput<Account> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(fixedDepositAccounts.getContent());
+        out.setRecordsFiltered(fixedDepositAccounts.getTotalElements());
+        out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
+        return out;
+    }
+
+
+
+
+
 
 
 
