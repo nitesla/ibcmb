@@ -379,14 +379,13 @@ public class BillerServiceImpl implements BillerService {
         try {
             for (PaymentItemDTO paymentItem : paymentItems) {
                 logger.info("paymentItemId ========== {}", paymentItem.getPaymentitemid());
-                PaymentItem getStoredItem = paymentItemRepo.findByPaymentItemId(paymentItem.getPaymentitemid());
+                PaymentItem getStoredItem = paymentItemRepo.findByPaymentCode(paymentItem.getPaymentCode());
                 logger.info("stored itms ====== {}", getStoredItem);
                 if (getStoredItem == null) {
                     PaymentItem newPaymentItem = createPaymentitem(paymentItem);
                     newPaymentItem.setEnabled(true);
                     items.add(newPaymentItem);
                 } else {
-
                     PaymentItem newPaymentItem = createPaymentitem(paymentItem);
                     newPaymentItem.setEnabled(getStoredItem.isEnabled());
                     newPaymentItem.setReadonly(getStoredItem.getReadonly());

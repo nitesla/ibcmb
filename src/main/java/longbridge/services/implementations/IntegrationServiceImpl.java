@@ -573,6 +573,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 //				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
 //				return neftTransferRequest;
 //			}
+			case QUICKTELLER: {
+
+				return transRequest;
+			}
 		}
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());

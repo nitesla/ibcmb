@@ -18,7 +18,8 @@ public enum TransferType {
     NAPS("NAPS Transfer"),
     RTGS("RTGS Transfer"),
     NEFT("NEFT Transfer"),
-    CUSTOM_DUTY("Custom Duty Payment");
+    CUSTOM_DUTY("Custom Duty Payment"),
+    QUICKTELLER("QUICKTELLER Transfer");
 
 
 

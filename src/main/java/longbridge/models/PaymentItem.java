@@ -3,15 +3,14 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table (name = "PAYMENT_ITEM")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class PaymentItem extends AbstractEntity {
+
 
 	@Column(name = "PAYMENT_ITEM_ID")
 	private Long paymentItemId;
@@ -40,6 +39,16 @@ public class PaymentItem extends AbstractEntity {
 
 //	@ManyToOne @JsonIgnore
 	private Long billerId;
+
+
+
+	public Boolean getAmountFixed() {
+		return isAmountFixed;
+	}
+
+	public void setAmountFixed(Boolean amountFixed) {
+		isAmountFixed = amountFixed;
+	}
 
 	public Long getPaymentItemId() {
 		return paymentItemId;
