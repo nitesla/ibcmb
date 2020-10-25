@@ -26,6 +26,8 @@ public class FixedDepositDTO {
 
     private Long serviceReqConfigId;
     private String requestName;
+    private String recipientName;
+    private String recipientEmail;
 
 
     public String getAccountId() {
@@ -172,6 +174,22 @@ public class FixedDepositDTO {
         this.requestName = requestName;
     }
 
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
+
+    public void setRecipientEmail(String recipientEmail) {
+        this.recipientEmail = recipientEmail;
+    }
+
     @Override
     public String toString() {
         return "FixedDepositDTO{" +
@@ -191,6 +209,10 @@ public class FixedDepositDTO {
                 ", status='" + status + '\'' +
                 ", comment='" + comment + '\'' +
                 ", action='" + action + '\'' +
+                ", serviceReqConfigId=" + serviceReqConfigId +
+                ", requestName='" + requestName + '\'' +
+                ", recipientName='" + recipientName + '\'' +
+                ", recipientEmail='" + recipientEmail + '\'' +
                 '}';
     }
 }

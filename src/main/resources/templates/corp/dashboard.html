@@ -25,6 +25,7 @@
                 <th class="text-cente">Av. Bal</th>
                 <th class="text-cente">Led. Bal.</th>
                 <th class="text-cente">&nbsp;</th>
+                </div>
                 </thead>
                 <tbody>
                 <tr th:each="list : ${accountList}" class="tt">
@@ -53,14 +54,16 @@
 
         <div  th:if="${not #lists.isEmpty(loanAccounts)}" class=" no-pad-lef table-responsive bg-white alert">
 
-            <table class="table table-hover no-pad-lef" id="loans">
+
+
+        <table class="table table-hover no-pad-lef" id="loans">
                 <caption style="font-size: large">Loan Accounts</caption>
                 <thead>
                 <tr>
                     <th>Account Name</th>
                     <th>Account Number</th>
                     <th>Account Currency</th>
-                    <th>Pdf</th>
+                     <th>Pdf</th>
                     <th>Excel</th>
                     <th>Email</th>
 
@@ -83,14 +86,90 @@
 
         </div>
 
+        <div  th:if="${not #lists.isEmpty(fixedDepositAccounts)}" class=" no-pad-lef table-responsive bg-white alert">
 
-        <div id="coverage-div">
+
+            <table class="table table-hover no-pad-lef" id="fixedDepositDTO">
+
+                <caption style="font-size: large">FIXED DEPOSIT ACCOUNTS</caption>
+
+                <thead>
+                <tr>
+                    <th>Account Name</th>
+                    <th>Account Number</th>
+                    <th>Account Currency</th>
+                    <th>Details</th>
+                    <th>Pdf</th>
+                    <th>Excel</th>
+                    <th>Email</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Account Name</th>
+                    <th>Account Number</th>
+                    <th>Account Currency</th>
+                    <th>Details</th>
+                    <th>Pdf</th>
+                    <th>Excel</th>
+                    <th>Email</th>
+
+
+                </tr>
+                </tfoot>
+            </table>
 
 
         </div>
 
 
+        <div id="coverage-div">
+
+        </div>
+
     </div>
+
+
+
+    <div id="fixmailModal" class="modal" >
+        <div class="modal-dialog">
+            <div class="modal-content no-bd-rad tokenBox" >
+                <form id="fixMailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${mailLoanDTO}">
+                    <div class="modal-body no-bd-rad">
+
+                        <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
+                        <div class="margin-bottom">
+                            <p style="margin-bottom:20px">Kindly enter recipient name and email you are sending fixed deposit details to. </p>
+                            <div id="username_div" class="form-group">
+
+                                <input  type="hidden" required class='my-select5 tokenInput' id="accNo" name="accountNumber" th:field="*{accountNumber}"  />
+                                <input  type="text" name="recipientName" required class='my-select5 tokenInput' placeholder="Recipient Name " th:field="*{recipientName}" />
+
+                                <input  type="email" name="recipientEmail" required class='my-select5 tokenInput' placeholder="Recipient Email " th:field="*{recipientEmail}" />
+                            </div>
+                            <p style="margin-bottom:20px; color:#9F614B;" id="waiting"><b>Sending Email....... </b></p>
+
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer no-bd-top ">
+                        <input type='button' class="btn btn-link less-required token-btn" id="backButton" value='Back'/>
+                        <input type='submit' class="btn btn-link token-btn required-step" id="mailButton"  value='Send'/>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <div id="mailModal" class="modal" >
         <div class="modal-dialog">
             <div class="modal-content no-bd-rad tokenBox" >
@@ -123,7 +202,24 @@
             </div>
         </div>
     </div>
+
+
+
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <th:block layout:fragment="scripts">
@@ -188,10 +284,11 @@
                 "columns": [
                     { "data": "accountName" },
                     { "data": "accountNumber" },
-                    { "data": "currencyCode" }
+                    { "data": "currencyCode" },
                 ] ,
 
-                "columnDefs" : [ {
+                "columnDefs" : [
+            {
                     "targets" : 3,
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
@@ -217,33 +314,105 @@
                     }]
 
 
-            });
-
-
-
         });
 
 
+            var table = $('#fixedDepositDTO').DataTable({
+                select:true,
+                responsive: true,
+                "lengthMenu" : [ [ 5, 10, 20,-1],	[ 5, 10,20, "All" ] ],
+                 "pagingType" : "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "serverSide" : true,
+                "ajax": "/corporate/dashboard/fixdeposit",
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    { "data": "accountName" },
+                    { "data": "accountNumber" },
+                    { "data": "currencyCode" },
+                    { "data": "accountNumber", render : function (data,type,full,meta) {
+                        if(data!=null){
+                              console.log("The Data : " + data);
+                              return'<a href="/corporate/fixdeposit/view/details/' + data + '"><i class="fa fa-eye"></i>  View </a>';
+
+                        }
+
+                        }
 
 
+                    }
+                ] ,
 
+                "columnDefs" : [
+                    {
+                    "targets" : 4,
+                    "data" : "accountNumber",
+                    "render" : function(data, type,full, meta) {
+
+                         return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                    }
+                },
+                    {
+                        "targets" : 5,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/corporate/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                        }
+                    },
+                    {
+                        "targets" : 6,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                             return'<a onclick="fixmailLoan(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+
+                        }
+                    }]
+
+
+            });
+
+
+        });
 
         /*]]>*/
     </script>
     <script th:inline="javascript">
         $(document).ready(function () {
+            $("#fixDepositMailModal").hide();
             $("#mailModal").hide();
-            $("#wait").hide();
+
+            $("#fixmailModal").hide();
+             $("#wait").hide();
+            $("#waiting").hide();
+
 
         });
+
+
         function mailLoan(data) {
             $("#mailModal").show( function(){
+                console.log("am here 2");
                 $(".modal-body #accNum").val( data );
-
 
             });
 
+
         }
+
+        function fixmailLoan(data){
+            console.log("fix mail called");
+            $("#fixmailModal").show(function() {
+                console.log("am here");
+                $(".modal-body #accNo").val( data );
+
+            });
+        }
+
+
+
 
 
         $("#cancelButton").click(function() {
@@ -252,6 +421,14 @@
         $("#sendButton").click(function () {
             $("#wait").show();
         });
+
+
+        // $("#cancelButton").click(function() {
+        //     $("#fixdepositmailModal").hide();
+        // });
+        // $("#sendButton").click(function () {
+        //     $("#wait").show();
+        // });
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/

@@ -135,7 +135,8 @@
                                     if(data == '00'||data == '000')
                                         return "Transaction Successful";
                                     if(data=="09"||data=="34" || data=="Pending"){
-                                        return "Transaction Successful";
+                                        return "Pending Authorization";
+
                                     }
                                     else
                                         return "Failed";

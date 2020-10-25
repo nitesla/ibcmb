@@ -2,7 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
@@ -59,10 +58,9 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     private List<CorpTransRule> corpTransRules;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<Coverage> coverages;
-
 
 
     @ManyToMany
@@ -71,13 +69,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JoinColumn(name = "account_id", referencedColumnName = "id") )
     private List<Account> accounts;
 
-    public List<Coverage> getCoverages() {
-        return coverages;
-    }
-
-    public void setCoverages(List<Coverage> coverages) {
-        this.coverages = coverages;
-    }
 
 
     public List<Account> getAccounts() {
@@ -230,6 +221,14 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     public void setCifids(Set<String> cifids) {
         this.cifids = cifids;
+    }
+
+    public List<Coverage> getCoverages() {
+        return coverages;
+    }
+
+    public void setCoverages(List<Coverage> coverages) {
+        this.coverages = coverages;
     }
 
     @Override

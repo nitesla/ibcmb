@@ -26,7 +26,12 @@ public interface CorpTransferRequestRepo extends CommonRepo<CorpTransRequest,Lon
 
     @Query("select ctr from CorpTransRequest ctr where ctr.corporate = :corporate and ctr.status='Pending' and ctr.tranDate is not null " +
             " order by ctr.tranDate desc ")
-    Page<CorpTransRequest> findPendingRequests(Corporate corporate, Pageable pageable);
+    Page<CorpTransRequest> findPendingRequests(@Param("corporate") Corporate corporate, Pageable pageable);
+
+    @Query("select ctr from CorpTransRequest ctr where ctr.corporate = :corporate  and ctr.tranDate is not null " +
+            " order by ctr.tranDate desc ")
+    Page<CorpTransRequest>  findRequestByCorp(@Param("corporate") Corporate corporate , Pageable pageable);
+
     Page<CorpTransRequest> findByUserReferenceNumberAndTranDateNotNullOrderByTranDateDesc(String rn, Pageable pageable);
 
     CorpTransRequest findById(long id);

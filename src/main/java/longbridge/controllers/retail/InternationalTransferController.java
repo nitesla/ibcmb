@@ -182,7 +182,8 @@ public class InternationalTransferController {
                         logger.error("Error making transfer",ex);
                         String errorMessage = transferErrorService.getMessage(ex);
 //                        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("transfer.api.international.failure", null, locale));
-                        redirectAttributes.addFlashAttribute("failure", errorMessage);                    }
+                       redirectAttributes.addFlashAttribute("failure", errorMessage);
+                    }
 
                 }
             }

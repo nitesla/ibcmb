@@ -7,89 +7,99 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentResponse {
 
-    private String responseCode;
+    private String ResponseCode;
 
-    private String responseCodeGrouping;
+    private String ResponseCodeGrouping;
 
-    private String approvedAmount;
+    private String ApprovedAmount;
 
-    private String rechargePin;
+    private String RechargePin;
 
-    private String transactionRef;
+    private String TransactionRef;
 
-    private String responseDescription;
+    private String ResponseDescription;
 
-    private String miscData;
+    private String MiscData;
+
+    private boolean statusNull=false;
 
     public PaymentResponse() {
     }
 
     public String getResponseCode() {
-        return responseCode;
+        return ResponseCode;
     }
 
     public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
+        ResponseCode = responseCode;
     }
 
     public String getResponseCodeGrouping() {
-        return responseCodeGrouping;
+        return ResponseCodeGrouping;
     }
 
     public void setResponseCodeGrouping(String responseCodeGrouping) {
-        this.responseCodeGrouping = responseCodeGrouping;
+        ResponseCodeGrouping = responseCodeGrouping;
     }
 
     public String getApprovedAmount() {
-        return approvedAmount;
+        return ApprovedAmount;
     }
 
     public void setApprovedAmount(String approvedAmount) {
-        this.approvedAmount = approvedAmount;
+        ApprovedAmount = approvedAmount;
     }
 
     public String getRechargePin() {
-        return rechargePin;
+        return RechargePin;
     }
 
     public void setRechargePin(String rechargePin) {
-        this.rechargePin = rechargePin;
+        RechargePin = rechargePin;
     }
 
     public String getTransactionRef() {
-        return transactionRef;
+        return TransactionRef;
     }
 
     public void setTransactionRef(String transactionRef) {
-        this.transactionRef = transactionRef;
+        TransactionRef = transactionRef;
     }
 
     public String getResponseDescription() {
-        return responseDescription;
+        return ResponseDescription;
     }
 
     public void setResponseDescription(String responseDescription) {
-        this.responseDescription = responseDescription;
+        ResponseDescription = responseDescription;
     }
 
     public String getMiscData() {
-        return miscData;
+        return MiscData;
     }
 
     public void setMiscData(String miscData) {
-        this.miscData = miscData;
+        MiscData = miscData;
+    }
+
+    public boolean isStatusNull() {
+        return statusNull;
+    }
+
+    public void setStatusNull(boolean statusNull) {
+        this.statusNull = statusNull;
     }
 
     @Override
     public String toString() {
         return "PaymentResponse{" +
-                "responseCode='" + responseCode + '\'' +
-                ", responseCodeGrouping='" + responseCodeGrouping + '\'' +
-                ", approvedAmount='" + approvedAmount + '\'' +
-                ", rechargePin='" + rechargePin + '\'' +
-                ", transactionRef='" + transactionRef + '\'' +
-                ", responseDescription='" + responseDescription + '\'' +
-                ", miscData='" + miscData + '\'' +
+                "ResponseCode='" + ResponseCode + '\'' +
+                ", ResponseCodeGrouping='" + ResponseCodeGrouping + '\'' +
+                ", ApprovedAmount='" + ApprovedAmount + '\'' +
+                ", RechargePin='" + RechargePin + '\'' +
+                ", TransactionRef='" + TransactionRef + '\'' +
+                ", ResponseDescription='" + ResponseDescription + '\'' +
+                ", MiscData='" + MiscData + '\'' +
                 '}';
     }
 }

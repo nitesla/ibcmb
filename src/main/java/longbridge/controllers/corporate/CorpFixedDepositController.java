@@ -1,29 +1,44 @@
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
+import longbridge.models.Account;
 import longbridge.models.CorporateUser;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
+import longbridge.utils.JasperReport.ReportHelper;
 import longbridge.utils.Response;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.security.Principal;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by mac on 06/03/2018.
@@ -54,6 +69,10 @@ public class CorpFixedDepositController {
 
     @Autowired
     CorporateUserService corporateUserService;
+
+
+    @Value("${jrxmlImage.path}")
+    private String imagePath;
 
     @GetMapping("/view")
     public String viewFixedDeposits(Principal principal,Model model) {
@@ -264,6 +283,140 @@ public class CorpFixedDepositController {
             return "";
         }
     }
+
+    @PostMapping("/email")
+    public String sendFixedDepositDetailsinMail(FixedDepositDTO fixedDepositDTO, RedirectAttributes redirectAttributes,Locale locale) {
+        String recipientEmail = fixedDepositDTO.getRecipientEmail();
+        String recipientName = fixedDepositDTO.getRecipientName();
+
+        try {
+            fixedDepositService.sendFixedDepositDetails(recipientEmail, recipientName, fixedDepositDTO.getAccountNumber());
+            logger.info("Email successfully sent to {} with subject {}", recipientEmail,messageSource.getMessage("fixed.deposit.subject", null, locale));
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.success", null, locale));
+        }
+        catch (MailException exception){
+            logger.info("Trying to send mail to {}", exception);
+            redirectAttributes.addFlashAttribute("message",  messageSource.getMessage("mail.send.failure", null, locale));
+        }
+
+        return "redirect:/corporate/dashboard";
+
+    }
+
+
+    @GetMapping("/pdf/{accountNumber}")
+    public String downloadFixedDepositPdf(@PathVariable String accountNumber, HttpServletResponse response, RedirectAttributes redirectAttributes,Locale locale) throws Exception {
+       FixedDepositDTO fixedDeposit=fixedDepositService.getFixedDepositDetails(accountNumber);
+        String success =null;
+        if(fixedDeposit!=null){
+            Map<String, Object> modelMap = new HashMap<>();
+            logger.info("this is what i got  {}", fixedDeposit);
+            logger.info("this is what i got 2  {}", fixedDeposit.getAccountNumber());
+
+            modelMap.put("accountId",fixedDeposit.getAccountId());
+            modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
+            modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
+            modelMap.put("depositType",fixedDeposit.getDepositType());
+            modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
+            modelMap.put("bookingDate",fixedDeposit.getBookingDate());
+            modelMap.put("valueDate",fixedDeposit.getValueDate());
+            modelMap.put("initialDepositAmount",fixedDeposit.getInitialDepositAmount());
+            modelMap.put("maturityDate",fixedDeposit.getMaturityDate());
+            modelMap.put("rate",fixedDeposit.getRate());
+            modelMap.put("tenor",fixedDeposit.getTenor());
+            modelMap.put("maturityAmount",fixedDeposit.getMaturityAmount());
+            modelMap.put("logotwo", imagePath);
+            List<FixedDepositDTO> fixedDepositList = new ArrayList<>();
+            fixedDepositList.add(fixedDeposit);
+            response.setContentType("application/x-download");
+            response.setHeader("Content-disposition", "attachment; filename=\"details_report.1jrxml.pdf\"");
+            OutputStream outputStream = response.getOutputStream();
+            JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
+            logger.info("JASPER REPORT{}" ,jasperReport);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositList));
+            JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
+            success ="success";
+        }
+        else if(fixedDeposit==null){
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Fixed Deposit Detail not available , Please contact the bank ", null, locale));
+            success = "redirect:/corporate/dashboard";
+        }
+        System.out.println(success);
+        return success;
+    }
+
+    @GetMapping("/excel/{accountNumber}")
+    public String downloadFixedDepositExcel(@PathVariable String accountNumber,HttpServletResponse response,RedirectAttributes redirectAttributes,Locale locale ,Pageable pageable) throws Exception {
+        FixedDepositDTO fixedDeposit=fixedDepositService.getFixedDepositDetails(accountNumber);
+
+        logger.info("get FIXED DEPOSIT",fixedDeposit.getAccountNumber());
+        String success =null;
+
+        if(fixedDeposit!=null){
+            Map<String, Object> modelMap = new HashMap<>();
+
+            modelMap.put("accountId", fixedDeposit.getAccountId());
+            modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
+            modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
+            modelMap.put("depositType",fixedDeposit.getTenor());
+            modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
+            modelMap.put("bookingDate",fixedDeposit.getBookingDate());
+            modelMap.put("valueDate",fixedDeposit.getValueDate());
+            modelMap.put("initialDepositAmount",fixedDeposit.getInitialDepositAmount());
+            modelMap.put("maturityDate",fixedDeposit.getMaturityDate());
+            modelMap.put("rate",fixedDeposit.getRate());
+            modelMap.put("tenor",fixedDeposit.getTenor());
+            modelMap.put("maturityAmount",fixedDeposit.getMaturityAmount());
+            modelMap.put("logotwo", imagePath);
+            List<FixedDepositDTO> fixedDepositList = new ArrayList<>();
+            fixedDepositList.add(fixedDeposit);
+            JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositList));
+            JRXlsxExporter exporter = new JRXlsxExporter();
+            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(baos));
+            exporter.exportReport();
+            response.setHeader("Content-Length", String.valueOf(baos.size()));
+            response.setContentType("application/vnd.ms-excel");
+            response.addHeader("Content-disposition", "attachment; filename=\"details_report.1jrxml.xlsx\"");
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(baos.toByteArray());
+            outputStream.close();
+            baos.close();
+            success ="success";
+        }
+        else if(fixedDeposit==null){
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Fixed Deposit Detail not available , Please contact the bank ", null, locale));
+            success = "redirect:/corporate/dashboard";
+        }
+        System.out.println(success);
+        return success;
+    }
+    @GetMapping("/view/details/{accountNumber}")
+    public String viewFixedDepositDetails(@PathVariable String accountNumber,Principal principal,Model model) {
+        model.addAttribute("accountNumber", accountNumber);
+        logger.info("the account number : {}",accountNumber);
+        return "corp/fixedDeposit/view1";
+    }
+
+    @GetMapping("/getViewData/{accountNumber}")
+    @ResponseBody
+    public DataTablesOutput<FixedDepositDTO> getViewData(@PathVariable String accountNumber,DataTablesInput input){
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<FixedDepositDTO> fixedDepositDTOS = null;
+         fixedDepositDTOS=fixedDepositService.getFixedDepositForView(accountNumber,pageable);
+         logger.info("VIEW INFO {}",fixedDepositDTOS );
+        DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(fixedDepositDTOS.getContent());
+        out.setRecordsFiltered(fixedDepositDTOS.getTotalElements());
+        out.setRecordsTotal(fixedDepositDTOS.getTotalElements());
+        logger.info("elem deposit {}",fixedDepositDTOS.getTotalElements());
+        return out;
+    }
+
+
 
 
 }
