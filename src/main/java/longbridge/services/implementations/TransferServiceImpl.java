@@ -108,14 +108,13 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
         neftTransfer.setBeneficiary(neftTransferDTO.getBeneficiaryAccountName());
         neftTransfer.setAmount(neftTransferDTO.getAmount());
-        neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
-        neftTransfer.setNarration(neftTransferDTO.getNarration());
+        neftTransfer.setCurrency("NGN");
         neftTransfer.setSpecialClearing(true);
         neftTransfer.setBVNBeneficiary("");
         neftTransfer.setBankOfFirstDepositSortCode("");
         neftTransfer.setCollectionType("");
         neftTransfer.setBVNPayer(bvn);
-        neftTransfer.setInstrumentType("");
+        neftTransfer.setInstrumentType(neftTransferDTO.getChannel());
         neftTransfer.setMICRRepairInd("");
         neftTransfer.setSettlementTime("not settled");
         neftTransfer.setCycleNo("");
@@ -123,6 +122,7 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setPresentingBankSortCode("");
         neftTransfer.setSortCode("");
         neftTransfer.setTranCode("");
+        neftTransfer.setSerialNo("");
         neftTransferRepo.save(neftTransfer);
         return neftTransfer;
     }
@@ -413,6 +413,8 @@ public class TransferServiceImpl implements TransferService {
             dto.setBeneficiaryBank(transRequest.getFinancialInstitution().getInstitutionName());
         return dto;
     }
+
+
     public TransferRequestDTO convertEntityToDTO2(TransRequest transRequest){
         if(transRequest.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)){
             return modelMapper.map(transRequest, InternationalTransferRequestDTO.class);

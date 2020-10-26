@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="javascript:var bread = 'home';currentBar('Fixed Deposits');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 no-mt">
+        <div class=" no-pad-lef no-pad-righ   no-mt no-bd alert">
+            <form method="post">
+
+                <div class="row">
+                    <br/>
+                    <div class="form-group col-md-12 col-sm-12 no-pad-left no-pad-right">
+                        <input type ="hidden" th:value="${accountNumber}" id="accno"/>
+
+
+                    </p>
+                    <h2>FIXED DEPOSIT DETAILS</h2>
+
+                    <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
+                        <table class="table" id="fixDepositDetails">
+                            <thead>
+                            <th>Booking Ref. No</th>
+                            <th>Deposit Number</th>
+                            <th>Deposit Type</th>
+                            <th>Deposit status</th>
+                            <th>Value Date</th>
+                            <th>Maturity Date</th>
+                            <th>Booking Date</th>
+                            <th>Initial Deposit </th>
+                            <th>Interest Rate</th>
+                            <th>Tenor (days)</th>
+                            <th>Maturity Amount</th>
+                            <th>Pdf</th>
+                            <th>Excel</th>
+                            <th>Email</th>
+                            </thead>
+
+                        </table>
+                        <!--<div class="col-md-12">-->
+                            <!--<div class="pull-right">-->
+
+                                <!--<button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next"  onclick="nextData()">next</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div> <button class="btn-primary" type="button" id="previous" onclick="previousData()">previous</button>&nbsp;<button class="btn-primary" type="button" id="next" onclick="nextData()">next</button></div>-->
+                    </div>
+
+
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+
+<th:block layout:fragment="scripts">
+
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        jQuery.download = function(url, key, data) {
+            // Build a form
+            var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+                .attr('method', 'get');
+            // Add the one key/value
+            form.append($("<input/>").attr('type', 'hidden').attr('name',
+                key).attr('value', data));
+
+            $.each(data, function(propertyName, valueOfProperty) {
+                form.append($("<input/>").attr('type', 'hidden').attr('name',
+                    propertyName).attr('value', valueOfProperty));
+            });
+
+            //send request
+            form.appendTo('body').submit().remove();
+        };
+
+        $(document).ready(function() {
+
+
+            var accountNumber = $("#accno").val();
+
+
+            $('#fixDepositDetails').DataTable({
+                responsive: true,
+
+                // "lengthMenu": [
+                //     [5, 10, 20],
+                //     [5, 10, 20]
+                // ],
+                "pagingType": "input",
+                "searching": false,
+                "paging": false,
+                "processing": false,
+                "serverSide": false,
+                "ordering": false,
+                "dom": 'T<"clear">frtlp',
+                "ajax": "/corporate/fixdeposit/getViewData/" + accountNumber,
+                "columns": [
+                    {"data": "bookRefNo"},
+                    {"data": "accountNumber"},
+                    {"data": "depositType"},
+                    {"data": "despositStatus"},
+                    {"data": "valueDate"},
+                    {"data": "maturityDate"},
+                    {"data": "bookingDate"},
+                    {"data": "initialDepositAmount"},
+                    {"data": "rate"},
+                    {"data": "tenor"},
+                    {"data": "maturityAmount"}
+                ],
+                // });
+                "columnDefs": [
+                    {
+                        "targets": 7,
+                        "data": "initialDepositAmount",
+                        "render": function (data, type, full, meta) {
+                            if (type === 'display') {
+                                if (data == null)
+                                    return data;
+                                var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                                return twoPlacedFloat;
+                            }
+                            return data;
+                        }
+                    },
+
+
+                    {
+                    "targets": 10,
+                    "data": "maturityAmount",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == null)
+                                return data;
+                            var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                            return twoPlacedFloat;
+                        }
+                        return data;
+                    }
+                },
+
+
+                    {
+                        "targets" : 11,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                        }
+                    },
+                    {
+                        "targets" :12,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a href="/corporate/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                        }
+                    },
+                    {
+                        "targets" : 13,
+                        "data" : "accountNumber",
+                        "render" : function(data, type,full, meta) {
+
+                            return'<a  onclick="fixdepositMail(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+                        }
+                    }
+
+                ],
+
+                "language": {
+                    "emptyTable": "No data available in table"
+                }
+
+            });
+        });
+
+        /*]]>*/
+    </script>
+
+</th:block>
+
+</body>
+
+</html>

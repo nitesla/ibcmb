@@ -3,6 +3,7 @@ package longbridge.dtos;
 public class PaymentItemDTO {
 
 
+    private Long id;
     private String categoryid;
     private Long billerid;
     private Boolean isAmountFixed;
@@ -17,6 +18,15 @@ public class PaymentItemDTO {
     private String pictureId;
     private Long paymentCode;
     private Boolean enabled;
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCategoryid() {
         return categoryid;

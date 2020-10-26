@@ -256,6 +256,15 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     }
 
     @Override
+    public Page<FixedDepositDTO> getFixedDepositForView(String accountNumber, Pageable pageable) throws InternetBankingException {
+        List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
+        FixedDepositDTO depositDTO = integrationService.getFixedDepositDetails(accountNumber);
+        fixedDepositDTOS.add(depositDTO);
+        Long totalCount = Long.valueOf(fixedDepositDTOS.size());
+        return new PageImpl<>(fixedDepositDTOS, pageable, totalCount);
+    }
+
+    @Override
     public void sendFixedDepositDetails(String recipient, String name, String accountNumber) throws MailException {
         FixedDepositDTO fixedDeposit = integrationService.getFixedDepositDetails(accountNumber);
         MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {
@@ -277,7 +286,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         modelMap.put("accountId",fixedDeposit.getAccountId());
         modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
         modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
-        modelMap.put("depositType",fixedDeposit.getTenor());
+        modelMap.put("depositType",fixedDeposit.getDepositType());
         modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
         modelMap.put("bookingDate",fixedDeposit.getBookingDate());
         modelMap.put("valueDate",fixedDeposit.getValueDate());
@@ -290,7 +299,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         List<FixedDepositDTO> fixedDepositDTOList = new ArrayList<>();
         fixedDepositDTOList.add(fixedDeposit);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        JasperReport jasperReport = ReportHelper.getJasperReport("fixedDeposit_pdf");
+        JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositDTOList));
         JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
         return new ByteArrayDataSource(outputStream.toByteArray(), "application/pdf");

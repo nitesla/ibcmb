@@ -26,6 +26,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -328,9 +329,10 @@ public class CorpFixedDepositController {
             List<FixedDepositDTO> fixedDepositList = new ArrayList<>();
             fixedDepositList.add(fixedDeposit);
             response.setContentType("application/x-download");
-            response.setHeader("Content-disposition", "attachment; filename=\"details_report.jrxml.pdf\"");
+            response.setHeader("Content-disposition", "attachment; filename=\"details_report.1jrxml.pdf\"");
             OutputStream outputStream = response.getOutputStream();
             JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
+            logger.info("JASPER REPORT{}" ,jasperReport);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositList));
             JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
             success ="success";
@@ -377,7 +379,7 @@ public class CorpFixedDepositController {
             exporter.exportReport();
             response.setHeader("Content-Length", String.valueOf(baos.size()));
             response.setContentType("application/vnd.ms-excel");
-            response.addHeader("Content-disposition", "attachment; filename=\"details_report.jrxml.xlsx\"");
+            response.addHeader("Content-disposition", "attachment; filename=\"details_report.1jrxml.xlsx\"");
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(baos.toByteArray());
             outputStream.close();
@@ -390,6 +392,28 @@ public class CorpFixedDepositController {
         }
         System.out.println(success);
         return success;
+    }
+    @GetMapping("/view/details/{accountNumber}")
+    public String viewFixedDepositDetails(@PathVariable String accountNumber,Principal principal,Model model) {
+        model.addAttribute("accountNumber", accountNumber);
+        logger.info("the account number : {}",accountNumber);
+        return "corp/fixedDeposit/view1";
+    }
+
+    @GetMapping("/getViewData/{accountNumber}")
+    @ResponseBody
+    public DataTablesOutput<FixedDepositDTO> getViewData(@PathVariable String accountNumber,DataTablesInput input){
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<FixedDepositDTO> fixedDepositDTOS = null;
+         fixedDepositDTOS=fixedDepositService.getFixedDepositForView(accountNumber,pageable);
+         logger.info("VIEW INFO {}",fixedDepositDTOS );
+        DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(fixedDepositDTOS.getContent());
+        out.setRecordsFiltered(fixedDepositDTOS.getTotalElements());
+        out.setRecordsTotal(fixedDepositDTOS.getTotalElements());
+        logger.info("elem deposit {}",fixedDepositDTOS.getTotalElements());
+        return out;
     }
 
 
