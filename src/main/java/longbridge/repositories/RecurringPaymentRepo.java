@@ -15,11 +15,11 @@ public interface RecurringPaymentRepo extends CommonRepo<RecurringPayment,Long> 
 
 //	List<RecurringPayment> findByNextDebitDateEquals(Date date);
 
-	Page<RecurringPayment> findByRetailUser(RetailUser user, Pageable pageable);
+	Page<RecurringPayment> findByRetailUserOrderByStartDateDesc(RetailUser user, Pageable pageable);
 
 	List<RecurringPayment> findByNextDebitDateBetween(Date start, Date end);
 
-    Page<RecurringPayment> findByCorporate(Long corporate, Pageable pageable);
+    Page<RecurringPayment> findByCorporateOrderByStartDateDesc(Long corporate, Pageable pageable);
 //    Optional<List<RecurringPayment>> findByBeneficiaryId(Long id);
 //    Optional<List<RecurringPayment>> findByCorpLocalBeneficiaryId(Long id);
 }
