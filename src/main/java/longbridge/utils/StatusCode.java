@@ -34,6 +34,11 @@ public enum StatusCode {
             return "Cancelled";
         }
     },
+    TIMEOUT("-08"){
+        public String toString(){
+            return "Pending due to timeout";
+        }
+    },
     FAILED("-09"){
         public String toString(){
             return "Failed Debit";

@@ -446,13 +446,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 						transRequest.setStatusDescription(errorService.getMessage(response.getResponseCode()));
 						logger.info("response code {}",transRequest.getStatusDescription());
-
 					}
-
 						antiFraudRepo.save(params.getAntiFraudData());
 						logger.info("AntiFraud data saved {}", params.getAntiFraudData());
-
-
 					return transRequest;
 				} catch (HttpStatusCodeException e) {
 					logger.error("HTTP Error occurred", e);

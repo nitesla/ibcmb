@@ -509,33 +509,30 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setUser(corporateUser);
 
                 if (isAuthorizationComplete(corpTransRequest)) {
-
                     CorpTransferRequestDTO corpTransferRequestDTO=convertEntityToDTO(corpTransRequest);
                     corpTransferRequestDTO.setChannel(transReqEntry.getChannel());
                     corpTransferRequestDTO.setTranLocation(transReqEntry.getTranLocation());
-
                     CorpTransferRequestDTO requestDTO = makeTransfer(corpTransferRequestDTO);
 
                     if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) {//successful transaction
-
                         transferAuth.setStatus("C");
                         transferAuth.setLastEntry(new Date());
                         transferAuth.getAuths().add(transReqEntry);// the entry is added to the list of other entries
                         transferAuthRepo.save(transferAuth);
                         return requestDTO.getStatusDescription();
-
-                    } if ("34".equals(requestDTO.getStatus())){
+                    }else if ("34".equals(requestDTO.getStatus())){
+                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
+                        return requestDTO.getStatusDescription();
+                    }else if ("09".equals(requestDTO.getStatus())){
                         requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
                         return requestDTO.getStatusDescription();
 
+                    }else if("95".equals(requestDTO.getStatus())){
+                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatusDescription()), null, locale));
+                        return requestDTO.getStatusDescription();
                     }
-                    if ("09".equals(requestDTO.getStatus())){
-                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
-                        return requestDTO.getStatusDescription();
-
-                    } else {//failed transaction
+                    else {//failed transaction
                        return messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()),null,locale);//GB
-
 //                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                     }
                 }
@@ -554,7 +551,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 transReqEntry.setUser(corporateUser);
                 transferAuth.getAuths().add(transReqEntry);
                 transferAuthRepo.save(transferAuth);
-
                 if (isAuthorizationComplete(corpTransRequest)) {
                     transferAuth.setStatus("C"); //completed
                     transferAuth.setLastEntry(new Date());
