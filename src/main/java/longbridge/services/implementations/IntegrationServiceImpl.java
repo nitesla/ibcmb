@@ -277,7 +277,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 			params.put("branchId", viewAccountDetails(accountNo).getSolId());
 
 			logger.info("Fetching last N transactions with account number {}",accountNo);
-
 			TransactionHistory[] t = template.postForObject(uri, params, TransactionHistory[].class);
 			histories.addAll(Arrays.asList(t));
 
