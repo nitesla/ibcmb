@@ -81,9 +81,9 @@ public class FixedDepositController {
     @ResponseBody
     public DataTablesOutput<FixedDepositDTO> getStatementDataByState(DataTablesInput input, Principal principal) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        RetailUser retailUser =  retailUserService.getUserByName(principal.getName());
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Page<FixedDepositDTO> fixedDepositDTOS = null;
-        fixedDepositDTOS = fixedDepositService.getFixedDepositDetials(retailUser.getCustomerId(),pageable);
+        fixedDepositDTOS = fixedDepositService.getFixedDepositDetials(retailUser.getCustomerId(), pageable);
         DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fixedDepositDTOS.getContent());
@@ -91,94 +91,41 @@ public class FixedDepositController {
         out.setRecordsTotal(fixedDepositDTOS.getTotalElements());
         return out;
     }
+
     @GetMapping("/new")
-    public String newFixedDeposits(Model model,Locale locale) {
+    public String newFixedDeposits(Model model, Locale locale) {
         FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
         Iterable<CodeDTO> tenors = codeService.getCodesByType("TENOR");
         Iterable<CodeDTO> depositType = codeService.getCodesByType("FIXED_DEPOSIT_TYPE");
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("FIXED-DEPOSIT");
 
-        model.addAttribute("fixedDepositDTO",fixedDepositDTO);
-        model.addAttribute("tenors",tenors);
-        model.addAttribute("depositTypes",depositType);
+        model.addAttribute("fixedDepositDTO", fixedDepositDTO);
+        model.addAttribute("tenors", tenors);
+        model.addAttribute("depositTypes", depositType);
         model.addAttribute("requestConfig", serviceReqConfig);
         model.addAttribute("requestDTO", new ServiceRequestDTO());
-        model.addAttribute("notice", messageSource.getMessage("deposit.notice",null,locale));
+        model.addAttribute("notice", messageSource.getMessage("deposit.notice", null, locale));
         return "cust/fixedDeposit/new1";
     }
 
-   /* @PostMapping("/new")
-    public String newFixedDeposits(RedirectAttributes redirectAttributes,Model model,@ModelAttribute("fixedDepositDTO") @Valid FixedDepositDTO fixedDepositDTO, HttpSession session, Locale locale) {
-        logger.info("the fixdeposit {}",fixedDepositDTO);
-        if(!fixedDepositService.isBalanceEnoughForBooking(fixedDepositDTO)) {
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.balance.insufficient", null, locale));
-            return "redirect:/retail/fixdeposit/view";
-        }
-        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-        if (setting != null && setting.isEnabled()) {
-            session.removeAttribute("requestDTO");
-            session.removeAttribute("redirectURL");
-            session.setAttribute("requestDTO", fixedDepositDTO);
-            session.setAttribute("redirectURL", "/retail/fixdeposit/book/process");
-            return "redirect:/retail/token/authenticate";
-        }
-
-
-        Response response = fixedDepositService.bookFixDeposit(fixedDepositDTO);
-        if(response != null){
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.book.success",null,locale));
-        }else {
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.book.failed", null, locale));
-
-        }
-        return "redirect:/retail/fixdeposit/view";
-    }
-   */
-
-  /* @GetMapping("/book/process")
-    public String bookFixedDeposits(HttpSession session,Locale locale, RedirectAttributes redirectAttributes) {
-        logger.info("the liquidate process");
-        FixedDepositDTO fixedDepositDTO = (FixedDepositDTO) session.getAttribute("requestDTO");
-        session.removeAttribute("requestDTO");
-        session.removeAttribute("redirectURL");
-        Response response = fixedDepositService.bookFixDeposit(fixedDepositDTO);
-
-        if(response != null){
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.book.success",null,locale));
-        }else {
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.book.failed", null, locale));
-
-        }
-        return "redirect:/retail/fixdeposit/view";
-    }*/
-//Gb
-    /*@PostMapping("/rate")
-    @ResponseBody
-    public String getDepositRate(WebRequest webRequest){
-        String acctNumber = webRequest.getParameter("acctNumber");
-        String amount = webRequest.getParameter("amount");
-        String tenor = webRequest.getParameter("tenor");
-        logger.info("the account number {} the amount {} and tenor {}",acctNumber,amount,tenor);
-        String rate =  integrationService.estinameDepositRate(amount,tenor,acctNumber);
-        return rate;
-    }*/
 
     @GetMapping("/liquidate/{acctNum}/{refNo}/{amount}")
-    public String newFixedDeposits(Model model,@PathVariable String acctNum,@PathVariable String refNo,@PathVariable String amount) {
+    public String newFixedDeposits(Model model, @PathVariable String acctNum, @PathVariable String refNo, @PathVariable String amount) {
 
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("FIXED-DEPOSIT");
 
-        model.addAttribute("refNo",refNo);
-        model.addAttribute("depositNo",acctNum);
-        model.addAttribute("initialAmount",amount);
+        model.addAttribute("refNo", refNo);
+        model.addAttribute("depositNo", acctNum);
+        model.addAttribute("initialAmount", amount);
 
         model.addAttribute("requestConfig", serviceReqConfig);
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         return "cust/fixedDeposit/liquidate";
     }
+
     @PostMapping("/liquidate")
     public String newFixedDeposits(Principal principal, @ModelAttribute("fixedDepositDTO") @Valid FixedDepositDTO fixedDepositDTO, HttpSession session, Model model, Locale locale, RedirectAttributes redirectAttributes) {
-        logger.info("the account to liquidate {}",fixedDepositDTO);
+        logger.info("the account to liquidate {}", fixedDepositDTO);
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
         if (setting != null && setting.isEnabled()) {
             session.removeAttribute("requestDTO");
@@ -188,27 +135,28 @@ public class FixedDepositController {
             return "redirect:/retail/token/authenticate";
         }
         Response response = fixedDepositService.liquidateDeposit(fixedDepositDTO);
-        if(response != null){
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.liquidate.success",null,locale));
+        if (response != null) {
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.liquidate.success", null, locale));
 
-        }else {
+        } else {
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.liquidate.failed", null, locale));
 
         }
         return "redirect:/retail/fixdeposit/view";
     }
+
     @GetMapping("/liquidate/process")
-    public String liquidateFixedDeposits(HttpSession session,Locale locale, RedirectAttributes redirectAttributes) {
+    public String liquidateFixedDeposits(HttpSession session, Locale locale, RedirectAttributes redirectAttributes) {
 
         FixedDepositDTO fixedDepositDTO = (FixedDepositDTO) session.getAttribute("requestDTO");
         session.removeAttribute("requestDTO");
         session.removeAttribute("redirectURL");
         Response response = fixedDepositService.liquidateDeposit(fixedDepositDTO);
-        if(response != null){
+        if (response != null) {
             logger.info("the liquidate process");
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.liquidate.success",null,locale));
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.liquidate.success", null, locale));
 
-        }else {
+        } else {
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.liquidate.failed", null, locale));
 
         }
@@ -216,15 +164,16 @@ public class FixedDepositController {
     }
 
     @GetMapping("/addfund/{acctNum}/{refNo}")
-    public String addFund(Model model,@PathVariable String acctNum,@PathVariable String refNo) {
-        logger.info("the account no {} and ref no {}",acctNum,refNo);
+    public String addFund(Model model, @PathVariable String acctNum, @PathVariable String refNo) {
+        logger.info("the account no {} and ref no {}", acctNum, refNo);
         FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
-        model.addAttribute("fixedDepositDTO",fixedDepositDTO);
+        model.addAttribute("fixedDepositDTO", fixedDepositDTO);
         return "cust/fixedDeposit/addfund";
     }
+
     @PostMapping("/fund")
-    public String addFund(RedirectAttributes redirectAttributes,Model model,@ModelAttribute("fixedDepositDTO") @Valid FixedDepositDTO fixedDepositDTO, HttpSession session, Locale locale) {
-        logger.info("the fixdeposit {}",fixedDepositDTO);
+    public String addFund(RedirectAttributes redirectAttributes, Model model, @ModelAttribute("fixedDepositDTO") @Valid FixedDepositDTO fixedDepositDTO, HttpSession session, Locale locale) {
+        logger.info("the fixdeposit {}", fixedDepositDTO);
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
         if (setting != null && setting.isEnabled()) {
             session.removeAttribute("requestDTO");
@@ -234,24 +183,25 @@ public class FixedDepositController {
             return "redirect:/retail/token/authenticate";
         }
         Response response = fixedDepositService.addFund(fixedDepositDTO);
-        if(response != null){
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.fund.success",null,locale));
-        }else {
+        if (response != null) {
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.fund.success", null, locale));
+        } else {
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.fund.failed", null, locale));
 
         }
         return "redirect:/retail/fixdeposit/view";
     }
+
     @GetMapping("/fund/process")
-    public String processAddFund(HttpSession session,Locale locale, RedirectAttributes redirectAttributes) {
+    public String processAddFund(HttpSession session, Locale locale, RedirectAttributes redirectAttributes) {
         logger.info("the liquidate process");
         FixedDepositDTO fixedDepositDTO = (FixedDepositDTO) session.getAttribute("requestDTO");
         session.removeAttribute("requestDTO");
         session.removeAttribute("redirectURL");
         Response response = fixedDepositService.addFund(fixedDepositDTO);
-        if(response != null){
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.fund.success",null,locale));
-        }else {
+        if (response != null) {
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.fund.success", null, locale));
+        } else {
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.fund.failed", null, locale));
 
         }
@@ -260,44 +210,42 @@ public class FixedDepositController {
 
     @PostMapping("/rate")
     @ResponseBody
-    public Optional<Integer> getTenorRate(WebRequest webRequest){
-        int amount=Integer.parseInt(webRequest.getParameter("amount"));
-        int tenor=Integer.parseInt(webRequest.getParameter("tenor"));
-            return fixedDepositService.getRateBasedOnAmountAndTenor(amount, tenor);
+    public Optional<Integer> getTenorRate(WebRequest webRequest) {
+        int amount = Integer.parseInt(webRequest.getParameter("amount"));
+        int tenor = Integer.parseInt(webRequest.getParameter("tenor"));
+        return fixedDepositService.getRateBasedOnAmountAndTenor(amount, tenor);
 
     }
+
     @PostMapping("/balance/check")
-   @ResponseBody
-    public String checkBalance(WebRequest webRequest,Locale locale){
-        String amount=webRequest.getParameter("amount");
-        String accountNumber=webRequest.getParameter("accountNumber");
-        FixedDepositDTO fixedDepositDTO=new FixedDepositDTO();
+    @ResponseBody
+    public String checkBalance(WebRequest webRequest, Locale locale) {
+        String amount = webRequest.getParameter("amount");
+        String accountNumber = webRequest.getParameter("accountNumber");
+        FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
         fixedDepositDTO.setInitialDepositAmount(amount);
         fixedDepositDTO.setAccountNumber(accountNumber);
-        if(!fixedDepositService.isBalanceEnoughForBooking(fixedDepositDTO)) {
-            return  messageSource.getMessage("deposit.balance.insufficient", null, locale);
+        if (!fixedDepositService.isBalanceEnoughForBooking(fixedDepositDTO)) {
+            return messageSource.getMessage("deposit.balance.insufficient", null, locale);
 
-        }else{
-        return "";
+        } else {
+            return "";
         }
     }
 
 
-
-
     @PostMapping("/email")
-    public String sendFixedDepositDetailsInMail(FixedDepositDTO fixedDepositDTO, RedirectAttributes redirectAttributes,Locale locale) {
+    public String sendFixedDepositDetailsInMail(FixedDepositDTO fixedDepositDTO, RedirectAttributes redirectAttributes, Locale locale) {
         String recipientEmail = fixedDepositDTO.getRecipientEmail();
         String recipientName = fixedDepositDTO.getRecipientName();
 
         try {
             fixedDepositService.sendFixedDepositDetails(recipientEmail, recipientName, fixedDepositDTO.getAccountNumber());
-            logger.info("Email successfully sent to {} with subject {}", recipientEmail,messageSource.getMessage("fixed.deposit.subject", null, locale));
+            logger.info("Email successfully sent to {} with subject {}", recipientEmail, messageSource.getMessage("fixed.deposit.subject", null, locale));
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.success", null, locale));
-        }
-        catch (MailException exception){
+        } catch (MailException exception) {
             logger.info("Trying to send mail to {}", exception);
-            redirectAttributes.addFlashAttribute("message",  messageSource.getMessage("mail.send.failure", null, locale));
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("mail.send.failure", null, locale));
         }
 
         return "redirect:/retail/dashboard";
@@ -307,36 +255,34 @@ public class FixedDepositController {
 
     @GetMapping("/pdf/{accountNumber}")
     public String downloadFixedDepositPdf(@PathVariable String accountNumber, HttpServletResponse response, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
-        FixedDepositDTO fixedDeposit=fixedDepositService.getFixedDepositDetails(accountNumber);
-        String success =null;
-        if(fixedDeposit!=null){
+        FixedDepositDTO fixedDeposit = fixedDepositService.getFixedDepositDetails(accountNumber);
+        String success = null;
+        if (fixedDeposit != null) {
             Map<String, Object> modelMap = new HashMap<>();
 
-            modelMap.put("accountId",fixedDeposit.getAccountId());
-            modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
-            modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
-            modelMap.put("depositType",fixedDeposit.getDepositType());
-            modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
-            modelMap.put("bookingDate",fixedDeposit.getBookingDate());
-            modelMap.put("valueDate",fixedDeposit.getValueDate());
-            modelMap.put("initialDepositAmount",fixedDeposit.getInitialDepositAmount());
-            modelMap.put("maturityDate",fixedDeposit.getMaturityDate());
-            modelMap.put("rate",fixedDeposit.getRate());
-            modelMap.put("tenor",fixedDeposit.getTenor());
-            modelMap.put("maturityAmount",fixedDeposit.getMaturityAmount());
+            modelMap.put("accountId", fixedDeposit.getAccountId());
+            modelMap.put("accountNumber", fixedDeposit.getAccountNumber());
+            modelMap.put("bookRefNo", fixedDeposit.getBookRefNo());
+            modelMap.put("depositType", fixedDeposit.getDepositType());
+            modelMap.put("despositStatus", fixedDeposit.getDespositStatus());
+            modelMap.put("bookingDate", fixedDeposit.getBookingDate());
+            modelMap.put("valueDate", fixedDeposit.getValueDate());
+            modelMap.put("initialDepositAmount", fixedDeposit.getInitialDepositAmount());
+            modelMap.put("maturityDate", fixedDeposit.getMaturityDate());
+            modelMap.put("rate", fixedDeposit.getRate());
+            modelMap.put("tenor", fixedDeposit.getTenor());
+            modelMap.put("maturityAmount", fixedDeposit.getMaturityAmount());
             modelMap.put("logotwo", imagePath);
             List<FixedDepositDTO> fixedDepositList = new ArrayList<>();
             fixedDepositList.add(fixedDeposit);
             response.setContentType("application/x-download");
             response.setHeader("Content-disposition", "attachment; filename=\"details_report.1jrxml.pdf\"");
-            OutputStream outputStream = response.getOutputStream();
             JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
-            logger.info("JASPER REPORT{}" ,jasperReport);
+            logger.info("JASPER REPORT{}", jasperReport);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositList));
-            JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
-            success ="success";
-        }
-        else if(fixedDeposit==null){
+            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+            success = "success";
+        } else if (fixedDeposit == null) {
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Fixed Deposit Detail not available , Please contact the bank ", null, locale));
             success = "redirect:/retail/dashboard";
         }
@@ -345,27 +291,27 @@ public class FixedDepositController {
     }
 
     @GetMapping("/excel/{accountNumber}")
-    public String downloadFixedDepositExcel(@PathVariable String accountNumber,HttpServletResponse response,RedirectAttributes redirectAttributes,Locale locale ,Pageable pageable) throws Exception {
-        FixedDepositDTO fixedDeposit=fixedDepositService.getFixedDepositDetails(accountNumber);
+    public String downloadFixedDepositExcel(@PathVariable String accountNumber, HttpServletResponse response, RedirectAttributes redirectAttributes, Locale locale, Pageable pageable) throws Exception {
+        FixedDepositDTO fixedDeposit = fixedDepositService.getFixedDepositDetails(accountNumber);
 
-        logger.info("get FIXED DEPOSIT",fixedDeposit.getAccountNumber());
-        String success =null;
+        logger.info("get FIXED DEPOSIT", fixedDeposit.getAccountNumber());
+        String success = null;
 
-        if(fixedDeposit!=null){
+        if (fixedDeposit != null) {
             Map<String, Object> modelMap = new HashMap<>();
 
             modelMap.put("accountId", fixedDeposit.getAccountId());
-            modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
-            modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
-            modelMap.put("depositType",fixedDeposit.getTenor());
-            modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
-            modelMap.put("bookingDate",fixedDeposit.getBookingDate());
-            modelMap.put("valueDate",fixedDeposit.getValueDate());
-            modelMap.put("initialDepositAmount",fixedDeposit.getInitialDepositAmount());
-            modelMap.put("maturityDate",fixedDeposit.getMaturityDate());
-            modelMap.put("rate",fixedDeposit.getRate());
-            modelMap.put("tenor",fixedDeposit.getTenor());
-            modelMap.put("maturityAmount",fixedDeposit.getMaturityAmount());
+            modelMap.put("accountNumber", fixedDeposit.getAccountNumber());
+            modelMap.put("bookRefNo", fixedDeposit.getBookRefNo());
+            modelMap.put("depositType", fixedDeposit.getTenor());
+            modelMap.put("despositStatus", fixedDeposit.getDespositStatus());
+            modelMap.put("bookingDate", fixedDeposit.getBookingDate());
+            modelMap.put("valueDate", fixedDeposit.getValueDate());
+            modelMap.put("initialDepositAmount", fixedDeposit.getInitialDepositAmount());
+            modelMap.put("maturityDate", fixedDeposit.getMaturityDate());
+            modelMap.put("rate", fixedDeposit.getRate());
+            modelMap.put("tenor", fixedDeposit.getTenor());
+            modelMap.put("maturityAmount", fixedDeposit.getMaturityAmount());
             modelMap.put("logotwo", imagePath);
             List<FixedDepositDTO> fixedDepositList = new ArrayList<>();
             fixedDepositList.add(fixedDeposit);
@@ -383,40 +329,36 @@ public class FixedDepositController {
             outputStream.write(baos.toByteArray());
             outputStream.close();
             baos.close();
-            success ="success";
-        }
-        else if(fixedDeposit==null){
+            success = "success";
+        } else if (fixedDeposit == null) {
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Fixed Deposit Detail not available , Please contact the bank ", null, locale));
             success = "redirect:/retail/dashboard";
         }
         System.out.println(success);
         return success;
     }
+
     @GetMapping("/view/details/{accountNumber}")
-    public String viewFixedDepositDetails(@PathVariable String accountNumber,Principal principal,Model model) {
+    public String viewFixedDepositDetails(@PathVariable String accountNumber, Principal principal, Model model) {
         model.addAttribute("accountNumber", accountNumber);
-        logger.info("the account number : {}",accountNumber);
+        logger.info("the account number : {}", accountNumber);
         return "cust/fixedDeposit/view1";
     }
 
     @GetMapping("/getViewData/{accountNumber}")
     @ResponseBody
-    public DataTablesOutput<FixedDepositDTO> getViewData(@PathVariable String accountNumber,DataTablesInput input){
+    public DataTablesOutput<FixedDepositDTO> getViewData(@PathVariable String accountNumber, DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<FixedDepositDTO> fixedDepositDTOS = null;
-        fixedDepositDTOS=fixedDepositService.getFixedDepositForView(accountNumber,pageable);
+        fixedDepositDTOS = fixedDepositService.getFixedDepositForView(accountNumber, pageable);
         DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fixedDepositDTOS.getContent());
         out.setRecordsFiltered(fixedDepositDTOS.getTotalElements());
         out.setRecordsTotal(fixedDepositDTOS.getTotalElements());
-        logger.info("elem deposit {}",fixedDepositDTOS.getTotalElements());
+        logger.info("elem deposit {}", fixedDepositDTOS.getTotalElements());
         return out;
     }
-
-
-
-
 
 
 }

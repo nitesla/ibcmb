@@ -44,11 +44,6 @@ public class AdmCodeController {
 	@Autowired
 	MessageSource messageSource;
 
-	@Autowired
-	private CoverageAdministrationService coverageService;
-
-	@Autowired
-	private AdminUserService adminUserService;
 
 	@GetMapping("/new")
 	public String addCode(CodeDTO codeDTO) {

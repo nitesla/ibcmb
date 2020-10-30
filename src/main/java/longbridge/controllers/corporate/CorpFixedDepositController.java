@@ -111,59 +111,7 @@ public class CorpFixedDepositController {
         return "corp/fixedDeposit/new1";
     }
 
-   /* @PostMapping("/new")
-    public String newFixedDeposits(RedirectAttributes redirectAttributes,Model model,@ModelAttribute("fixedDepositDTO") @Valid FixedDepositDTO fixedDepositDTO, HttpSession session, Locale locale) {
-        logger.info("the fixdeposit {}",fixedDepositDTO);
-        if(!fixedDepositService.isBalanceEnoughForBooking(fixedDepositDTO)) {
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.balance.insufficient", null, locale));
-            return "redirect:/retail/fixdeposit/view";
-        }
-        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-        if (setting != null && setting.isEnabled()) {
-            session.removeAttribute("requestDTO");
-            session.removeAttribute("redirectURL");
-            session.setAttribute("requestDTO", fixedDepositDTO);
-            session.setAttribute("redirectURL", "/retail/fixdeposit/book/process");
-            return "redirect:/retail/token/authenticate";
-        }
-        ServiceRequestDTO serviceRequestDTO=new ServiceRequestDTO();
 
-        Response response = fixedDepositService.bookFixDeposit(fixedDepositDTO);
-        if(response != null){
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.book.success",null,locale));
-        }else {
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.book.failed", null, locale));
-
-        }
-        return "redirect:/retail/fixdeposit/view";
-    }*/
-  /*  @GetMapping("/book/process")
-    public String bookFixedDeposits(HttpSession session,Locale locale, RedirectAttributes redirectAttributes) {
-        logger.info("the liquidate process");
-        FixedDepositDTO fixedDepositDTO = (FixedDepositDTO) session.getAttribute("requestDTO");
-        session.removeAttribute("requestDTO");
-        session.removeAttribute("redirectURL");
-        Response response = fixedDepositService.bookFixDeposit(fixedDepositDTO);
-
-        if(response != null){
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deposit.book.success",null,locale));
-        }else {
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("deposit.book.failed", null, locale));
-
-        }
-        return "redirect:/retail/fixdeposit/view";
-    }*/
-//Gb
-    /*@PostMapping("/rate")
-    @ResponseBody
-    public String getDepositRate(WebRequest webRequest){
-        String acctNumber = webRequest.getParameter("acctNumber");
-        String amount = webRequest.getParameter("amount");
-        String tenor = webRequest.getParameter("tenor");
-        logger.info("the account number {} the amount {} and tenor {}",acctNumber,amount,tenor);
-        String rate =  integrationService.estinameDepositRate(amount,tenor,acctNumber);
-        return rate;
-    }*/
 
     @GetMapping("/liquidate/{acctNum}/{refNo}/{amount}")
     public String newFixedDeposits(Model model,@PathVariable String acctNum,@PathVariable String refNo,@PathVariable String amount) {
@@ -178,6 +126,7 @@ public class CorpFixedDepositController {
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         return "corp/fixedDeposit/liquidate";
     }
+
     @PostMapping("/liquidate")
     public String newFixedDeposits(Principal principal, @ModelAttribute("fixedDepositDTO") @Valid FixedDepositDTO fixedDepositDTO, HttpSession session, Model model, Locale locale, RedirectAttributes redirectAttributes) {
         logger.info("the account to liquidate {}",fixedDepositDTO);
@@ -330,7 +279,6 @@ public class CorpFixedDepositController {
             fixedDepositList.add(fixedDeposit);
             response.setContentType("application/x-download");
             response.setHeader("Content-disposition", "attachment; filename=\"details_report.1jrxml.pdf\"");
-            OutputStream outputStream = response.getOutputStream();
             JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
             logger.info("JASPER REPORT{}" ,jasperReport);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositList));
