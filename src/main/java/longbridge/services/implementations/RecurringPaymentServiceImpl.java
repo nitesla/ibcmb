@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
@@ -309,7 +308,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 
 	@Override
 	public Page<RecurringPaymentDTO> getUserRecurringPaymentDTOs(RetailUser user, Pageable pageable) {
-		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByRetailUser(user,pageable);
+		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByRetailUserOrderByStartDateDesc(user,pageable);
 		List<RecurringPaymentDTO> recurringPaymentDTOS = new ArrayList<>();
 		for (RecurringPayment recurringPayment : recurringPayments) {
 			RecurringPaymentDTO directDebitDTO = modelMapper.map(recurringPayment, RecurringPaymentDTO.class);
@@ -321,7 +320,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 
 	@Override
 	public Page<RecurringPaymentDTO> getCorpUserRecurringPaymentDTOS(CorporateUser corporateUser, Pageable pageable){
-		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByCorporate(corporateUser.getCorporate().getId(),pageable);
+		Page<RecurringPayment> recurringPayments=recurringPaymentRepo.findByCorporateOrderByStartDateDesc(corporateUser.getCorporate().getId(),pageable);
 		List<RecurringPaymentDTO> recurringPaymentDTOS = new ArrayList<>();
 		for (RecurringPayment recurringPayment : recurringPayments) {
             RecurringPaymentDTO recurringPaymentDTO = modelMapper.map(recurringPayment, RecurringPaymentDTO.class);

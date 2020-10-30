@@ -359,7 +359,11 @@ public class BillerServiceImpl implements BillerService {
     private PaymentItem createPaymentitem(PaymentItemDTO paymentItemDTO){
         PaymentItem newPaymentItem = new PaymentItem();
         newPaymentItem.setBillerId(paymentItemDTO.getBillerid());
-        newPaymentItem.setAmount(paymentItemDTO.getAmount());
+
+        Double d = paymentItemDTO.getAmount();
+        Double amount = d/100;
+
+        newPaymentItem.setAmount(amount);
         newPaymentItem.setCode(paymentItemDTO.getCode());
         newPaymentItem.setPaymentItemId(paymentItemDTO.getPaymentitemid());
         newPaymentItem.setCurrencyCode(paymentItemDTO.getCurrencyCode());
