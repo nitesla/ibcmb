@@ -148,4 +148,6 @@ public interface IntegrationService {
     TransRequest makeCustomDutyPayment(TransRequest transRequest);
 
     TransferDetails antiFraudStatusCheck(String transactionType,String referenceNo);
+
+    TSQResponse nipTSQCheck(String sessionId);
 }

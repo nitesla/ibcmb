@@ -527,11 +527,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                         requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale));
                         return requestDTO.getStatusDescription();
 
-                    }else if("95".equals(requestDTO.getStatus())){
-                        requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatusDescription()), null, locale));
+                    }else if("95".equals(requestDTO.getStatus())) {
+                        TSQResponse tsqResponse = integrationService.nipTSQCheck(sessionUtil.generateSessionId());
+                        if(tsqResponse != null){
+                            requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(tsqResponse.getResponseCode()), null, locale));
+                            return tsqResponse.getResponseCode();
+                        }
                         return requestDTO.getStatusDescription();
-                    }
-                    else {//failed transaction
+                    }else {//failed transaction
                        return messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()),null,locale);//GB
 //                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                     }
@@ -563,7 +566,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 //                    CorpTransferRequestDTO requestDTO = makeTransfer(convertEntityToDTO(corpTransRequest));
                     if ("00".equals(requestDTO.getStatus()) || "000".equals(requestDTO.getStatus())) { //successful transaction
                         return requestDTO.getStatusDescription();
-                    } else {
+                    }else if("95".equals(requestDTO.getStatus())) {
+                        TSQResponse tsqResponse = integrationService.nipTSQCheck(sessionUtil.generateSessionId());
+                        if(tsqResponse != null){
+                            requestDTO.setStatusDescription(messageSource.getMessage(transferErrorService.getMessage(tsqResponse.getResponseCode()), null, locale));
+                            return tsqResponse.getResponseCode();
+                        }
+                        return requestDTO.getStatusDescription();
+                    }else {
                         throw new InternetBankingTransferException(requestDTO.getStatusDescription());
                     }
                 }
@@ -619,9 +629,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             if (anyCanAuthorize && (approvalCount >= numAuthorizers))
                 return true;
         }
-
         return approvalCount >= roles.size();
-
     }
 
     private CorporateUser getCurrentUser() {
