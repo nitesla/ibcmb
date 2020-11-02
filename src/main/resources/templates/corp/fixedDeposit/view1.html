@@ -45,15 +45,8 @@
                             </thead>
 
                         </table>
-                        <!--<div class="col-md-12">-->
-                            <!--<div class="pull-right">-->
 
-                                <!--<button class="btn btn-md" id="previous" type="button" onclick="previousData()">previous</button>&nbsp;<button class="btn btn-md" type="button" id="next"  onclick="nextData()">next</button>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div> <button class="btn-primary" type="button" id="previous" onclick="previousData()">previous</button>&nbsp;<button class="btn-primary" type="button" id="next" onclick="nextData()">next</button></div>-->
                     </div>
-
 
                 </div>
                 </div>
@@ -61,7 +54,44 @@
         </div>
     </div>
 
+
+    <div id="fixmailModal" class="modal" >
+        <div class="modal-dialog">
+            <div class="modal-content no-bd-rad tokenBox" >
+                <form id="fixMailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${fixedDepositDTO}">
+                    <div class="modal-body no-bd-rad">
+
+                        <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
+                        <div class="margin-bottom">
+                            <p style="margin-bottom:20px">Kindly enter recipient name and email you are sending fixed deposit details to. </p>
+                            <div id="username_div" class="form-group">
+
+                                <input  type="hidden" required class='my-select5 tokenInput' id="accNum" name="accountNumber" th:field="*{accountNumber}"  />
+                                <input  type="text" name="recipientName" required class='my-select5 tokenInput' placeholder="Recipient Name " th:field="*{recipientName}" />
+
+                                <input  type="email" name="recipientEmail" required class='my-select5 tokenInput' placeholder="Recipient Email " th:field="*{recipientEmail}" />
+                            </div>
+                            <p style="margin-bottom:20px; color:#9F614B;" id="waiting"><b>Sending Email....... </b></p>
+
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer no-bd-top ">
+                        <input type='button' class="btn btn-link less-required token-btn" id="backButton" value='Back'/>
+                        <input type='submit' class="btn btn-link token-btn required-step" id="mailButton"  value='Send'/>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
+
+
 
 
 
@@ -114,7 +144,7 @@
                     {"data": "bookRefNo"},
                     {"data": "accountNumber"},
                     {"data": "depositType"},
-                    {"data": "despositStatus"},
+                    {"data": "depositStatus"},
                     {"data": "valueDate"},
                     {"data": "maturityDate"},
                     {"data": "bookingDate"},
@@ -160,7 +190,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                            return'<a href="/corporate/fixdeposit/download/PDF/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
                         }
                     },
                     {
@@ -168,7 +198,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/corporate/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                            return'<a href="/corporate/fixdeposit/download/EXCEL/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
                         }
                     },
                     {
@@ -176,7 +206,9 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a  onclick="fixdepositMail(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+                            return'<a  onclick="fixmailLoan(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+
+
                         }
                     }
 
@@ -191,8 +223,34 @@
 
         /*]]>*/
     </script>
+    <script th:inline="javascript">
+        $(document).ready(function () {
 
-</th:block>
+            $("#fixmailModal").hide();
+            $("#waiting").hide();
+        });
+
+
+        function fixmailLoan(data){
+
+
+
+            $("#fixmailModal").show(function() {
+                console.log("am here");
+                $(".modal-body #accNum").val( data );
+
+            });
+        }
+
+
+        $("#backButton").click(function() {
+            $("#fixmailModal").hide();
+        });
+        $("#mailButton").click(function () {
+            $("#waiting").show();
+        });
+    </script>
+        </th:block>
 
 </body>
 

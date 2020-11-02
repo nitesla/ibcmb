@@ -138,7 +138,7 @@
     <div id="fixmailModal" class="modal" >
         <div class="modal-dialog">
             <div class="modal-content no-bd-rad tokenBox" >
-                <form id="fixMailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${mailLoanDTO}">
+                <form id="fixMailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${fixedDepositDTO}">
                     <div class="modal-body no-bd-rad">
 
                         <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
@@ -350,7 +350,8 @@
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
 
-                         return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                         // return'<a href="/corporate/download/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                           return'<a href="/corporate/fixdeposit/download/PDF/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
                     }
                 },
                     {
@@ -358,7 +359,8 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/corporate/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                            // return'<a href="/corporate/download/'  + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                              return'<a href="/corporate/fixdeposit/download/EXCEL/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
                         }
                     },
                     {
@@ -381,12 +383,10 @@
     </script>
     <script th:inline="javascript">
         $(document).ready(function () {
-            $("#fixDepositMailModal").hide();
             $("#mailModal").hide();
-
             $("#fixmailModal").hide();
              $("#wait").hide();
-            $("#waiting").hide();
+             $("#waiting").hide();
 
 
         });
@@ -413,8 +413,6 @@
 
 
 
-
-
         $("#cancelButton").click(function() {
             $("#mailModal").hide();
         });
@@ -423,12 +421,12 @@
         });
 
 
-        // $("#cancelButton").click(function() {
-        //     $("#fixdepositmailModal").hide();
-        // });
-        // $("#sendButton").click(function () {
-        //     $("#wait").show();
-        // });
+        $("#backButton").click(function() {
+            $("#fixmailModal").hide();
+        });
+        $("#mailButton").click(function () {
+            $("#waiting").show();
+        });
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/

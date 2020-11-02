@@ -125,6 +125,7 @@ public class GreetingServiceImpl implements GreetingService {
         try {
             Greeting greetingOld = greetingRepo.findOneById(dto.getId());
             entityManager.detach(greetingOld);
+
             Greeting greetingNew = modelMapper.map(dto, Greeting.class);
             greetingRepo.save(greetingNew);
             return messageSource.getMessage("greeting.update.success", null, locale);
