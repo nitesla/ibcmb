@@ -17,7 +17,7 @@ public class FixedDepositDTO {
     private String maturityAmount;
     private String depositType;
     private String bookRefNo;
-    private String despositStatus;
+    private String depositStatus;
     private String valueDate;
     private String liquidateType;
     private String status;
@@ -110,12 +110,12 @@ public class FixedDepositDTO {
         this.bookRefNo = bookRefNo;
     }
 
-    public String getDespositStatus() {
-        return despositStatus;
+    public String getDepositStatus() {
+        return depositStatus;
     }
 
-    public void setDespositStatus(String despositStatus) {
-        this.despositStatus = despositStatus;
+    public void setDepositStatus(String depositStatus) {
+        this.depositStatus = depositStatus;
     }
 
     public String getValueDate() {
@@ -203,7 +203,7 @@ public class FixedDepositDTO {
                 ", maturityAmount='" + maturityAmount + '\'' +
                 ", depositType='" + depositType + '\'' +
                 ", bookRefNo='" + bookRefNo + '\'' +
-                ", despositStatus='" + despositStatus + '\'' +
+                ", depositStatus='" + depositStatus + '\'' +
                 ", valueDate='" + valueDate + '\'' +
                 ", liquidateType='" + liquidateType + '\'' +
                 ", status='" + status + '\'' +

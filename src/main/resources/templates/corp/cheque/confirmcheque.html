@@ -60,7 +60,7 @@
                 <div class="form-group">
                     <label>Date on Cheque</label>
                     <span class="req"></span>
-                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker"  name="ChequeDate" placeholder="Date on cheque"  required/>
+                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="datepicker"  name="ChequeDate" placeholder="Date on cheque"  required/>
                 </div>
 
 
@@ -128,6 +128,29 @@
 
             })
         }
+
+        var today = new Date();
+        var pastSixMonth = new Date();
+        pastSixMonth.setMonth(pastSixMonth.getMonth()-6);
+
+        $('#datepicker').datepicker({
+            format: 'mm-dd-yyyy',
+            autoclose:true,
+            startDate:  pastSixMonth,
+            endDate: today,
+            minDate: pastSixMonth,
+           maxDate: today
+        }).on('changeDate', function (ev) {
+
+            $(this).datepicker('hide');
+        });
+
+
+        $('#datepicker').keyup(function () {
+            if (this.value.match(/[^0-9]/g)) {
+                this.value = this.value.replace(/[^0-9^-]/g, '');
+            }
+        });
 
     </script>
 </th:block>

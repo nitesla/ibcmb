@@ -165,6 +165,7 @@ public class CodeServiceImpl implements CodeService {
         try {
             Code code = convertDTOToEntity(codeDTO);
             if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
+                logger.info("am here boss {}", code.getType());
                coverageService.addCoverageForNewCodes(code);
             }
             codeRepo.save(code);
@@ -174,6 +175,9 @@ public class CodeServiceImpl implements CodeService {
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
+            logger.info("the  error here: {} ",e.getMessage());
+            logger.info("the  error here2: {} ",e.toString());
+            logger.info("the  error here3: {} ",e.getCause());
             throw new InternetBankingException(messageSource.getMessage("code.add.failure", null, locale), e);
         }
     }

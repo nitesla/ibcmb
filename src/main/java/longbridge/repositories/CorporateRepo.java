@@ -4,6 +4,7 @@ import longbridge.models.Corporate;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,8 +20,9 @@ public interface CorporateRepo extends CommonRepo<Corporate, Long> {
     boolean existsByCorporateIdIgnoreCase(String corporateId);
     Corporate findFirstByCustomerId(String customerId);
     boolean existsByCustomerId(String customerId);
-    @Query("select id from Corporate")
+    @Query("select id from Corporate ")
     Set<Long> getAllCorporateId();
+
 
 
 }

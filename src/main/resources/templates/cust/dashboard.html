@@ -149,7 +149,7 @@
     <div id="fixdepositmailModal" class="modal" >
         <div class="modal-dialog">
             <div class="modal-content no-bd-rad tokenBox" >
-                <form id="fixdepositmailForm" action="#" th:action="@{/retail/fixdeposit/email}" method="post" th:object="${mailLoanDTO}">
+                <form id="fixdepositmailForm" action="#" th:action="@{/retail/fixdeposit/email}" method="post" th:object="${fixedDepositDTO}">
                     <div class="modal-body no-bd-rad">
 
                         <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
@@ -157,12 +157,12 @@
                             <p style="margin-bottom:20px">Kindly enter recipient name and email you are sending Fixed Deposit details to. </p>
                             <div id="username_div2" class="form-group">
 
-                                <input  type="hidden" required class='my-select5 tokenInput' id="accNum" name="accountNumber" th:field="*{accountNumber}"  />
+                                <input  type="hidden" required class='my-select5 tokenInput' id="accNo" name="accountNumber" th:field="*{accountNumber}"  />
                                 <input  type="text" name="recipientName" required class='my-select5 tokenInput' placeholder="Recipient Name " th:field="*{recipientName}" />
 
                                 <input  type="email" name="recipientEmail" required class='my-select5 tokenInput' placeholder="Recipient Email " th:field="*{recipientEmail}" />
                             </div>
-                            <p style="margin-bottom:20px; color:#9F614B;" id="wait"><b>Sending Email....... </b></p>
+                            <p style="margin-bottom:20px; color:#9F614B;" id="waiting"><b>Sending Email....... </b></p>
 
 
                         </div>
@@ -170,8 +170,8 @@
 
                     </div>
                     <div class="modal-footer no-bd-top ">
-                        <input type='button' class="btn btn-link less-required token-btn" id="cancelButton" value='Back'/>
-                        <input type='submit' class="btn btn-link token-btn required-step" id="sendButton"  value='Send'/>
+                        <input type='button' class="btn btn-link less-required token-btn" id="backButton" value='Back'/>
+                        <input type='submit' class="btn btn-link token-btn required-step" id="mailButton"  value='Send'/>
                     </div>
 
                 </form>
@@ -217,40 +217,6 @@
     </div>
 
 </div>
-
-<!--<div id="fixdepositmailModal" class="modal" >-->
-    <!--<div class="modal-dialog">-->
-        <!--<div class="modal-content no-bd-rad tokenBox" >-->
-            <!--<form id="fixdepositmailForm" action="#" th:action="@{/retail/fixdeposit/email}" method="post" th:object="${fixedDepositDTO}">-->
-                <!--<div class="modal-body no-bd-rad">-->
-
-                    <!--<h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>-->
-                    <!--<div class="margin-bottom">-->
-                        <!--<p style="margin-bottom:20px">Kindly enter recipient name and email you are sending Fixed Deposit details to. </p>-->
-                        <!--<div id="username_div2" class="form-group">-->
-
-                            <!--<input  type="hidden" required class='my-select5 tokenInput' id="accNum" name="accountNumber" th:field="*{accountNumber}"  />-->
-                            <!--<input  type="text" name="recipientName" required class='my-select5 tokenInput' placeholder="Recipient Name " th:field="*{recipientName}" />-->
-
-                            <!--<input  type="email" name="recipientEmail" required class='my-select5 tokenInput' placeholder="Recipient Email " th:field="*{recipientEmail}" />-->
-                        <!--</div>-->
-                        <!--<p style="margin-bottom:20px; color:#9F614B;" id="wait"><b>Sending Email....... </b></p>-->
-
-
-                    <!--</div>-->
-
-
-                <!--</div>-->
-                <!--<div class="modal-footer no-bd-top ">-->
-                    <!--<input type='button' class="btn btn-link less-required token-btn" id="cancelButton" value='Back'/>-->
-                    <!--<input type='submit' class="btn btn-link token-btn required-step" id="sendButton"  value='Send'/>-->
-                <!--</div>-->
-
-            <!--</form>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
-
 
 
 
@@ -378,7 +344,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/retail/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                            return'<a href="/retail/fixdeposit/download/PDF/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
                         }
                     },
                     {
@@ -386,7 +352,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/retail/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+                            return'<a href="/retail/fixdeposit/download/EXCEL/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
                         }
                     },
                     {
@@ -436,7 +402,7 @@
             $("#mailModal").hide();
             $("#wait").hide();
             $("#fixdepositmailModal").hide();
-            $("#wait").hide();
+            $("#waiting").hide();
 
             });
         function mailLoan(data) {
@@ -450,7 +416,7 @@
 
         function fixdepositMail(data) {
             $("#fixdepositmailModal").show( function(){
-                $(".modal-body #accNum").val( data );
+                $(".modal-body #accNo").val( data );
 
 
             });
@@ -465,11 +431,11 @@
         $("#sendButton").click(function () {
             $("#wait").show();
             });
-        $("#cancelButton").click(function() {
+        $("#backButton").click(function() {
             $("#fixdepositmailModal").hide();
         });
-        $("#sendButton").click(function () {
-            $("#wait").show();
+        $("#mailButton").click(function () {
+            $("#waiting").show();
         });
     </script>
     <script th:inline="javascript">

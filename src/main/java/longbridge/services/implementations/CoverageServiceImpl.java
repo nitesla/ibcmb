@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 
 import longbridge.dtos.AddCoverageDTO;
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
@@ -10,6 +11,7 @@ import longbridge.repositories.CodeRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CoverageRepo;
 import longbridge.repositories.RetailUserRepo;
+import longbridge.services.CodeService;
 import longbridge.services.CoverageAdministrationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
@@ -31,6 +33,7 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
 
 
     private final String coverage = "ACCOUNT_COVERAGE";
+
     @Autowired
     private CoverageRepo coverageRepo;
     @Autowired
@@ -178,10 +181,11 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
 
     @Override
     public void addCoverageForNewCodes(Code code) {
+        logger.info("am here boss 2");
         Set<Long> corporateids = corporateRepo.getAllCorporateId();
+
         Set<Long> retailids = retailUserRepo.getAllRetailUserId();
         List<Coverage> coverageList = new ArrayList<Coverage>();
-
         corporateids.forEach(id -> {
             EntityId entityId = new EntityId();
             entityId.setEid(id);
