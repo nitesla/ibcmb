@@ -146,7 +146,7 @@
 
     </div>
 
-    <div id="fixdepositmailModal" class="modal" >
+    <div id="fixdepositMailModal" class="modal" >
         <div class="modal-dialog">
             <div class="modal-content no-bd-rad tokenBox" >
                 <form id="fixdepositmailForm" action="#" th:action="@{/retail/fixdeposit/email}" method="post" th:object="${fixedDepositDTO}">
@@ -401,7 +401,7 @@
         $(document).ready(function () {
             $("#mailModal").hide();
             $("#wait").hide();
-            $("#fixdepositmailModal").hide();
+            $("#fixdepositMailModal").hide();
             $("#waiting").hide();
 
             });
@@ -415,7 +415,7 @@
         }
 
         function fixdepositMail(data) {
-            $("#fixdepositmailModal").show( function(){
+            $("#fixdepositMailModal").show( function(){
                 $(".modal-body #accNo").val( data );
 
 
@@ -432,7 +432,7 @@
             $("#wait").show();
             });
         $("#backButton").click(function() {
-            $("#fixdepositmailModal").hide();
+            $("#fixdepositMailModal").hide();
         });
         $("#mailButton").click(function () {
             $("#waiting").show();
