@@ -182,11 +182,13 @@
         })
 
         var today = new Date();
+
         $('#datepicker').datepicker({
             format: 'mm-dd-yyyy',
             autoclose:true,
-            endDate: "today",
-            maxDate: today
+            startDate: today,
+            minDate:today
+
         }).on('changeDate', function (ev) {
             $(this).datepicker('hide');
         });

@@ -254,18 +254,17 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
     }
 
+
     @Override
     public Page<FixedDepositDTO> getFixedDepositForView(String accountNumber, Pageable pageable) throws InternetBankingException {
 
         List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
         FixedDepositDTO depositDTO = integrationService.getFixedDepositDetails(accountNumber);
-        List<Account> accounts = accountService.getAccountByCifIdAndSchemeType(accountNumber, "TDA");
-        logger.info("the size of the accounts {}",accounts.size());
-        logger.info("the size of the accounts {}",accounts);
-        accounts.forEach(i->{
-            FixedDepositDTO deposit = integrationService.getFixedDepositDetails(i.getAccountNumber());
-            fixedDepositDTOS.add(deposit);
-        });
+//        List<Account> accounts = accountService.getAccountByCifIdAndSchemeType(accountNumber, "TDA");
+//        accounts.forEach(i->{
+//            FixedDepositDTO deposit = integrationService.getFixedDepositDetails(i.getAccountNumber());
+//            fixedDepositDTOS.add(deposit);
+//        });
         fixedDepositDTOS.add(depositDTO);
         Long totalCount = Long.valueOf(fixedDepositDTOS.size());
         return new PageImpl<>(fixedDepositDTOS, pageable, totalCount);

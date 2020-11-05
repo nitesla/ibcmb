@@ -26,7 +26,7 @@
                     <h2>FIXED DEPOSIT DETAILS</h2>
 
                     <div class="table-responsive col-xs-12 no-pad-left no-pad-right" >
-                        <table class="table" id="fixDepositDetails">
+                        <table class="table table-hover no-pad-lef" id="fixDepositDetails">
                             <thead>
                             <th>Booking Ref. No</th>
                             <th>Deposit Number</th>
@@ -127,11 +127,6 @@
 
             $('#fixDepositDetails').DataTable({
                 responsive: true,
-
-                // "lengthMenu": [
-                //     [5, 10, 20],
-                //     [5, 10, 20]
-                // ],
                 "pagingType": "input",
                 "searching": false,
                 "paging": false,
@@ -249,6 +244,8 @@
         $("#mailButton").click(function () {
             $("#waiting").show();
         });
+
+
     </script>
         </th:block>
 

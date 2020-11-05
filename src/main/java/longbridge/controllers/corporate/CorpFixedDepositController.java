@@ -279,12 +279,12 @@ public class CorpFixedDepositController {
 
             JasperReport jasperReport = ReportHelper.getJasperReport("details_report");
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(fixedDepositList));
-//
+
 
             if ("PDF".equalsIgnoreCase(format)) {
                 response.setContentType("application/x-download");
                 response.setHeader("Content-disposition", "attachment; filename=\"details_report.pdf\"");
-                OutputStream outputStream = response.getOutputStream();
+//                OutputStream outputStream = response.getOutputStream();
                 if (jasperPrint != null) {
                     logger.info("generating pdf");
                     JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
@@ -316,10 +316,7 @@ public class CorpFixedDepositController {
                 throw new InternetBankingException("unsupported report format " + format);
             }
 
-
-
         }
-
 
         else if(fixedDeposit==null){
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("Fixed Deposit Detail not available , Please contact the bank ", null, locale));
@@ -328,6 +325,7 @@ public class CorpFixedDepositController {
         System.out.println(success);
         return success;
     }
+
 
 
     @GetMapping("/view/details/{accountNumber}")
