@@ -169,7 +169,7 @@ public class CorpCustomDutyController {
 
     @PostMapping("/payment")
     public void customPayment(
-            @ModelAttribute("assessmentDetail")  @Valid  CustomAssessmentDetail assessmentDetail,
+            @ModelAttribute("assessmentDetail")  @Valid CustomAssessmentDetail assessmentDetail,
             @ModelAttribute("account") String account, BindingResult result){
 
         LOGGER.debug("Assessment Details: {}",assessmentDetail);

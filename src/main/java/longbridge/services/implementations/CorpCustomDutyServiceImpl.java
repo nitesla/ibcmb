@@ -258,28 +258,11 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                     transferAuth.setStatus("C");
                     request.setTransferAuth(transferAuth);
                     request.setRemarks(customDutyPayment.getSADAssessmentNumber());
-                    try {
-                        CorpPaymentRequest transRequest  = (CorpPaymentRequest) integrationService.makeCustomDutyPayment(request);
-                        transRequest.setTransferType(TransferType.CUSTOM_DUTY);
-                        transRequest = corpPaymentRequestRepo.save(transRequest);
-                        request = transRequest;
-                    }catch (ResourceAccessException e) {
-                        throw new InternetBankingException(messageSource.getMessage("transfer.failed", null, null));
-                    }catch (Exception e){
-                        throw new InternetBankingException(messageSource.getMessage(e.getMessage(), null, null));
-                    }
-                    if (null != request.getStatus() && ("00".equals(request.getStatus()) || "000".equals(request.getStatus()))) { // Transfer successful
-                        request.setStatusDescription("Authorisation Completed");
-                        corpPaymentRequestRepo.save(request);
-                        makeCustomDutyPayment(request,principal);
-                        LOGGER.info("CorpPaymentRequest SOLE: {}",request);
-                        return request;
-                    }
-                    request.getCustomDutyPayment().setMessage(CustomDutyCode.FAILED_DEBIT.getCode());
-                    //Send email to bank
-
-                    corpPaymentRequestRepo.save(request);
-                    throw new InternetBankingTransferException(messageSource.getMessage(request.getStatusDescription(), null, null));
+                    request.setStatusDescription("Authorisation Completed");
+                    request.setTransferType(TransferType.CUSTOM_DUTY);
+                    makeCustomDutyPayment(request,principal);
+                    LOGGER.info("CorpPaymentRequest SOLE: {}",request);
+                    return request;
                 }else{
                     if (corporateService.getApplicableTransferRule(request) == null) {
                         throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
@@ -445,18 +428,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
                 transferAuth.setStatus("C");
                 transferAuth.setLastEntry(new Date());
                 transferAuthRepo.save(transferAuth);
-
-//                corpPaymentRequest = makeLocalTransferForCustomDuty(corpPaymentRequest);
-
-//                logger.info("the payment status {}",corpPaymentRequest);
-//                if ((corpPaymentRequest.getStatus().equals("00") || corpPaymentRequest.getStatus().equals("000"))) {
-                    corpPaymentRequest.setStatusDescription("Authorisation Completed");
-                    corpPaymentRequestRepo.save(corpPaymentRequest);
-                    return makeCustomDutyPayment(corpPaymentRequest,principal);
-//                }
-//                corpPaymentRequest.getCustomDutyPayment().setMessage(CustomDutyCode.getCustomDutyCodeByCode("-1"));
-//                corpPaymentRequestRepo.save(corpPaymentRequest);
-//                throw new InternetBankingException(messageSource.getMessage(corpPaymentRequest.getStatusDescription(), null, null));
+                return makeCustomDutyPayment(corpPaymentRequest,principal);
             }
          return messageSource.getMessage("payment.auth.success",null,locale);
         } catch (InternetBankingTransferException transferException) {

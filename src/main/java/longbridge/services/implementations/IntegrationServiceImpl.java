@@ -793,7 +793,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public TransRequest sendTransfer(TransRequest transRequest) {
 
 		try {
-
 			Context scontext = new Context();
 			scontext.setVariable("transRequest", transRequest);
 			String recipient = "";
