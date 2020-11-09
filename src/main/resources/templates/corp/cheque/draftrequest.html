@@ -52,7 +52,7 @@
                 <div class="form-group">
                     <label>Date</label>
                     <span class="req"></span>
-                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker"  name="Date" placeholder="Date" required />
+                    <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="datepicker" name="Date" placeholder="Date" required />
                 </div>
 
 
@@ -181,6 +181,24 @@
             })
         })
 
+        var today = new Date();
+
+        $('#datepicker').datepicker({
+            format: 'mm-dd-yyyy',
+            autoclose:true,
+            startDate: today,
+            minDate:today
+
+        }).on('changeDate', function (ev) {
+            $(this).datepicker('hide');
+        });
+
+
+        $('#datepicker').keyup(function () {
+            if (this.value.match(/[^0-9]/g)) {
+                this.value = this.value.replace(/[^0-9^-]/g, '');
+            }
+        });
 
 
 

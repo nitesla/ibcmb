@@ -6,7 +6,7 @@
 	<parameter name="accountId" class="java.lang.String"/>
 	<parameter name="accountNumber" class="java.lang.String"/>
 	<parameter name="bookRefNo" class="java.lang.String"/>
-	<parameter name="despositStatus" class="java.lang.String"/>
+	<parameter name="depositStatus" class="java.lang.String"/>
 	<parameter name="bookingDate" class="java.lang.String"/>
 	<parameter name="valueDate" class="java.lang.String"/>
 	<parameter name="maturityDate" class="java.lang.String"/>
@@ -231,7 +231,7 @@
 					<font fontName="Arial" size="5"/>
 					<paragraph leftIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{despositStatus}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{depositStatus}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="359" y="0" width="62" height="20" uuid="3249264d-0b39-4115-aceb-21d110d2067c"/>

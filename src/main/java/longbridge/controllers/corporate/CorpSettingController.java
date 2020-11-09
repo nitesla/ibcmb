@@ -95,24 +95,7 @@ public class CorpSettingController {
 
 
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-       /* if (dto!=null && dto.isEnabled()){
-            String []list= StringUtils.split(dto.getValue(),",");
-            accountList=  accountList
-                    .stream()
-                    .filter(i-> ArrayUtils.contains(list,i.getAccountType()))
-                    .collect(Collectors.toList());
 
-        }
-
-         accountList.stream().filter(Objects::nonNull)
-                .forEach(i-> {
-
-                    Code code =codeService.getByTypeAndCode("ACCOUNT_CLASS",i.getAccountType());
-                            if (code!=null && code.getDescription()!=null) {
-                                i.setAccountType(code.getDescription());
-                            }
-                        }
-                );*/
         List<LoanDTO> loans = new ArrayList<>();
         List<String> loansAccountList = new ArrayList<>();
 
@@ -151,8 +134,8 @@ public class CorpSettingController {
         model.addAttribute("loanAccounts", loanAccounts);
         model.addAttribute("mailLoanDTO", new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
-        model.addAttribute("fixedDepositDTO", new FixedDepositDTO().getRecipientName());
-        model.addAttribute("fixedDepositDTO", new FixedDepositDTO().getRecipientEmail());
+        model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
+
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
 

@@ -1,6 +1,7 @@
 "use strict";
 function setGreetings(result) {
     if(result!=""){
+        console.log("this is it : "+ result);
         createDiv(result);
     }
 }

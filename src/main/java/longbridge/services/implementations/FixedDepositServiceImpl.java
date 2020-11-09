@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.FixedDepositDTO;
-import longbridge.dtos.LoanDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.UserGroupRepo;
@@ -255,13 +254,21 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
     }
 
+
     @Override
     public Page<FixedDepositDTO> getFixedDepositForView(String accountNumber, Pageable pageable) throws InternetBankingException {
+
         List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
         FixedDepositDTO depositDTO = integrationService.getFixedDepositDetails(accountNumber);
+//        List<Account> accounts = accountService.getAccountByCifIdAndSchemeType(accountNumber, "TDA");
+//        accounts.forEach(i->{
+//            FixedDepositDTO deposit = integrationService.getFixedDepositDetails(i.getAccountNumber());
+//            fixedDepositDTOS.add(deposit);
+//        });
         fixedDepositDTOS.add(depositDTO);
         Long totalCount = Long.valueOf(fixedDepositDTOS.size());
         return new PageImpl<>(fixedDepositDTOS, pageable, totalCount);
+
     }
 
     @Override
@@ -287,7 +294,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         modelMap.put("accountNumber",fixedDeposit.getAccountNumber());
         modelMap.put("bookRefNo",fixedDeposit.getBookRefNo());
         modelMap.put("depositType",fixedDeposit.getDepositType());
-        modelMap.put( "despositStatus",fixedDeposit.getDespositStatus());
+        modelMap.put( "depositStatus",fixedDeposit.getDepositStatus());
         modelMap.put("bookingDate",fixedDeposit.getBookingDate());
         modelMap.put("valueDate",fixedDeposit.getValueDate());
         modelMap.put("initialDepositAmount",fixedDeposit.getInitialDepositAmount());

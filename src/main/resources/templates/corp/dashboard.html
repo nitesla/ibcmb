@@ -135,10 +135,10 @@
 
 
 
-    <div id="fixmailModal" class="modal" >
+    <div id="depositMailModal" class="modal" >
         <div class="modal-dialog">
             <div class="modal-content no-bd-rad tokenBox" >
-                <form id="fixMailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${mailLoanDTO}">
+                <form id="fixMailForm" action="#" th:action="@{/corporate/fixdeposit/email}" method="post" th:object="${fixedDepositDTO}">
                     <div class="modal-body no-bd-rad">
 
                         <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, </h3>
@@ -333,7 +333,7 @@
                     { "data": "currencyCode" },
                     { "data": "accountNumber", render : function (data,type,full,meta) {
                         if(data!=null){
-                              console.log("The Data : " + data);
+
                               return'<a href="/corporate/fixdeposit/view/details/' + data + '"><i class="fa fa-eye"></i>  View </a>';
 
                         }
@@ -350,7 +350,7 @@
                     "data" : "accountNumber",
                     "render" : function(data, type,full, meta) {
 
-                         return'<a href="/corporate/fixdeposit/pdf/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
+                           return'<a href="/corporate/fixdeposit/download/PDF/' + data + '"><i class="fa fa-file-pdf-o"></i>  download </a>';
                     }
                 },
                     {
@@ -358,7 +358,8 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                            return'<a href="/corporate/fixdeposit/excel/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
+
+                              return'<a href="/corporate/fixdeposit/download/EXCEL/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
                         }
                     },
                     {
@@ -366,7 +367,7 @@
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
 
-                             return'<a onclick="fixmailLoan(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
+                             return'<a onclick="depositMail(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
 
                         }
                     }]
@@ -381,12 +382,10 @@
     </script>
     <script th:inline="javascript">
         $(document).ready(function () {
-            $("#fixDepositMailModal").hide();
             $("#mailModal").hide();
-
-            $("#fixmailModal").hide();
+            $("#depositMailModal").hide();
              $("#wait").hide();
-            $("#waiting").hide();
+             $("#waiting").hide();
 
 
         });
@@ -402,16 +401,14 @@
 
         }
 
-        function fixmailLoan(data){
+        function depositMail(data){
             console.log("fix mail called");
-            $("#fixmailModal").show(function() {
+            $("#depositMailModal").show(function() {
                 console.log("am here");
                 $(".modal-body #accNo").val( data );
 
             });
         }
-
-
 
 
 
@@ -423,12 +420,12 @@
         });
 
 
-        // $("#cancelButton").click(function() {
-        //     $("#fixdepositmailModal").hide();
-        // });
-        // $("#sendButton").click(function () {
-        //     $("#wait").show();
-        // });
+        $("#backButton").click(function() {
+            $("#depositMailModal").hide();
+        });
+        $("#mailButton").click(function () {
+            $("#waiting").show();
+        });
     </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
