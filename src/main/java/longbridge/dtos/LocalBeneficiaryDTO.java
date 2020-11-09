@@ -4,15 +4,9 @@ package longbridge.dtos;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
-/**
- * Created by Fortune on 4/5/2017.
- */
-
 public class LocalBeneficiaryDTO implements Serializable{
 
-	/**
-	 * 
-	 */
+
 	private Long id;
     @NotEmpty(message = "Please enter a Beneficiary Name")
     private String accountName;
@@ -22,6 +16,8 @@ public class LocalBeneficiaryDTO implements Serializable{
     private String beneficiaryBank;
     private String preferredName;
     private String token;
+    private String lastname;
+    private String firstname;
 
 
     public String getToken() {
@@ -72,5 +68,21 @@ public class LocalBeneficiaryDTO implements Serializable{
 
     public void setPreferredName(String preferredName) {
         this.preferredName = preferredName;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 }

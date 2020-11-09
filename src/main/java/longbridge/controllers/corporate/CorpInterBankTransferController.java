@@ -159,6 +159,58 @@ public class CorpInterBankTransferController {
 
     }
 
+    @GetMapping("/alpha")
+    public String newQuickBeneficiary(@ModelAttribute("corpLocalBeneficiary") CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Model model, RedirectAttributes redirectAttributes) throws Exception {
+
+        try {
+            transferUtils.validateTransferCriteria();
+            model.addAttribute("localBanks",
+                    financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
+                            .stream()
+                            .filter(i -> !i.getInstitutionCode().equals(bankCode))
+                            .collect(Collectors.toList())
+            );
+
+            return page + "pageiC";
+        } catch (InternetBankingTransferException e) {
+            String errorMessage = transferErrorService.getMessage(e);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return "redirect:/corporate/dashboard";
+
+
+        }
+
+
+    }
+
+    @PostMapping("/alpha")
+    public String getQuickBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result,
+                                 Model model, HttpServletRequest servletRequest) throws Exception {
+        model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
+        if (servletRequest.getSession().getAttribute("add") != null)
+            servletRequest.getSession().removeAttribute("add");
+        if (result.hasErrors()) {
+            return page + "pageiB";
+        }
+
+        CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
+        corpTransferRequestDTO.setBeneficiaryAccountName(corpLocalBeneficiaryDTO.getAccountName());
+        corpTransferRequestDTO.setBeneficiaryAccountNumber(corpLocalBeneficiaryDTO.getAccountNumber());
+        corpTransferRequestDTO.setLastname(corpLocalBeneficiaryDTO.getLastname());
+        corpTransferRequestDTO.setFirstname(corpLocalBeneficiaryDTO.getFirstname());
+
+        corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(corpLocalBeneficiaryDTO.getBeneficiaryBank()));
+        model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+        model.addAttribute("benName", corpLocalBeneficiaryDTO.getPreferredName());
+
+
+
+        servletRequest.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryDTO);
+        if (servletRequest.getParameter("add") != null)
+            servletRequest.getSession().setAttribute("add", "add");
+        return page + "pageii";
+    }
+
     @PostMapping("/new")
     public String getBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result,
                                  Model model, HttpServletRequest servletRequest) throws Exception {

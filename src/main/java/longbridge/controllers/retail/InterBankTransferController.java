@@ -159,6 +159,42 @@ public class InterBankTransferController {
         return page + "pageiB";
     }
 
+    @GetMapping("/alpha")
+    public String newQuickBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
+
+        model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
+        return page + "pageiC";
+    }
+
+    @PostMapping("/alpha")
+    public String getQuickBeneficiary(@ModelAttribute("localBeneficiaryDTO") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+        model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
+        if (servletRequest.getSession().getAttribute("add") != null)
+            servletRequest.getSession().removeAttribute("add");
+        if (result.hasErrors()) {
+            return page + "pageiB";
+        }
+
+        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
+        transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());
+        transferRequestDTO.setBeneficiaryAccountNumber(localBeneficiaryDTO.getAccountNumber());
+        transferRequestDTO.setLastname(localBeneficiaryDTO.getLastname());
+        transferRequestDTO.setFirstname(localBeneficiaryDTO.getFirstname());
+
+        logger.info("Beneficiary is {}",transferRequestDTO.getBeneficiaryAccountName());
+
+        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
+        model.addAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("benName", localBeneficiaryDTO.getPreferredName());
+
+        servletRequest.getSession().setAttribute("Lbeneficiary", localBeneficiaryDTO);
+//        servletRequest.getSession().setAttribute("benName", localBeneficiaryDTO.getPreferredName());
+
+        if (servletRequest.getParameter("add") != null)
+            servletRequest.getSession().setAttribute("add", "add");
+        return page + "pageii";
+    }
+
     @PostMapping("/new")
     public String getBeneficiary(@ModelAttribute("localBeneficiaryDTO") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
@@ -266,6 +302,8 @@ public class InterBankTransferController {
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        requestDTO.setFirstname(beneficiary.getFirstname());
+        requestDTO.setLastname(beneficiary.getLastname());
         FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByCode(beneficiary.getBeneficiaryBank());
         if (institution == null) {
 

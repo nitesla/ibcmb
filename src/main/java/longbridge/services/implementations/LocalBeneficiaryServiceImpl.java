@@ -167,6 +167,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         localBeneficiaryDTO.setAccountNumber(localBeneficiary.getAccountNumber());
         localBeneficiaryDTO.setBeneficiaryBank(localBeneficiary.getBeneficiaryBank());
         localBeneficiaryDTO.setPreferredName(localBeneficiary.getPreferredName());
+        localBeneficiaryDTO.setFirstname(localBeneficiary.getFirstname());
+        localBeneficiaryDTO.setLastname(localBeneficiary.getLastname());
         return modelMapper.map(localBeneficiary, LocalBeneficiaryDTO.class);
     }
 
