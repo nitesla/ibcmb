@@ -471,6 +471,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
         transferRequestDTO.setCurrencyCode(corpTransRequest.getCurrencyCode());
+//        transferRequestDTO.setLastname(corpTransRequest.getQuickBeneficiary().getLastname());
+//        transferRequestDTO.setFirstname(corpTransRequest.getQuickBeneficiary().getOthernames());
         if (corpTransRequest.getTransferAuth() != null) {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
@@ -537,6 +539,51 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setAmount(transferRequestDTO.getAmount());
         corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
         corpTransRequest.setCurrencyCode(transferRequestDTO.getCurrencyCode());
+
+        QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
+        quickBeneficiary.setLastname(transferRequestDTO.getLastname());
+        quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
+        corpTransRequest.setQuickBeneficiary(quickBeneficiary);
+
+        QuickInitiation quickInitiation = new QuickInitiation();
+        BigDecimal a = transferRequestDTO.getAmount();
+        BigDecimal b = new BigDecimal(100);
+        BigDecimal initiationAmount = a.multiply(b);
+        quickInitiation.setAmount(initiationAmount);
+        quickInitiation.setChannel(7);
+        quickInitiation.setCurrencyCode("566");
+        quickInitiation.setPaymentMethodCode("CA");
+        corpTransRequest.setQuickInitiation(quickInitiation);
+
+        QuickSender quickSender = new QuickSender();
+        quickSender.setEmail(getCurrentUser().getEmail());
+        quickSender.setLastname(getCurrentUser().getLastName());
+        quickSender.setOthernames(getCurrentUser().getFirstName());
+        quickSender.setPhone(getCurrentUser().getPhoneNumber());
+        corpTransRequest.setQuickSender(quickSender);
+
+
+        QuickTermination quickTermination = new QuickTermination();
+
+        AccountReceivable accountReceivable = new AccountReceivable();
+        accountReceivable.setAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
+        accountReceivable.setAccountType("00");
+
+        quickTermination.setAccountReceivable(accountReceivable);
+        BigDecimal c = transferRequestDTO.getAmount();
+        BigDecimal d = new BigDecimal(100);
+        BigDecimal terminatingAmount = c.multiply(d);
+        quickTermination.setAmount(terminatingAmount);
+        quickTermination.setCountryCode("NG");
+        quickTermination.setCurrencyCode("566");
+        quickTermination.setEntityCode("");
+        quickTermination.setPaymentMethodCode("AC");
+        corpTransRequest.setQuickTermination(quickTermination);
+
+        Random rand = new Random();
+        int upperbound = 9999999;
+        int random = rand.nextInt(upperbound);
+        corpTransRequest.setTransferCode("1453" + random);
 
         Corporate corporate = corporateRepo.findOneById(Long.parseLong(transferRequestDTO.getCorporateId()));
         corpTransRequest.setCorporate(corporate);
@@ -868,5 +915,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             }
         }
         return true;
+    }
+
+    private CorporateUser getCurrentCorpUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (CorporateUser) principal.getUser();
     }
 }

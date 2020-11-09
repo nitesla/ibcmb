@@ -228,6 +228,15 @@ public class CorpTransferController {
 
     }
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiryQuickteller")
+    public
+    @ResponseBody
+    String getQuicktellerAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+
+        return transferUtils.doQuicktellerNameLookup(bank, accountNo);
+
+    }
+
 
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, HttpServletRequest request, Principal principal) throws Exception {

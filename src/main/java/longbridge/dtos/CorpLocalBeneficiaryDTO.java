@@ -17,6 +17,8 @@ public class CorpLocalBeneficiaryDTO  implements Serializable{
     private String preferredName;
     private String token;
     private String addFlag;
+    private String lastname;
+    private String firstname;
 
     public String getAddFlag() {
         return addFlag;
@@ -73,5 +75,21 @@ public class CorpLocalBeneficiaryDTO  implements Serializable{
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 }

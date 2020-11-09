@@ -33,6 +33,11 @@ public class TransferRequest implements Serializable{
     private String  responseDescription;
     private String  uniqueReferenceCode;
 
+    private QuickBeneficiary quickBeneficiary;
+    private QuickInitiation quickInitiation;
+    private QuickSender quickSender;
+    private QuickTermination quickTermination;
+
 
     public String getDebitAccountNumber() {
         return debitAccountNumber;
@@ -194,6 +199,38 @@ public class TransferRequest implements Serializable{
         this.currencyCode = currencyCode;
     }
 
+    public QuickBeneficiary getQuickBeneficiary() {
+        return quickBeneficiary;
+    }
+
+    public void setQuickBeneficiary(QuickBeneficiary quickBeneficiary) {
+        this.quickBeneficiary = quickBeneficiary;
+    }
+
+    public QuickInitiation getQuickInitiation() {
+        return quickInitiation;
+    }
+
+    public void setQuickInitiation(QuickInitiation quickInitiation) {
+        this.quickInitiation = quickInitiation;
+    }
+
+    public QuickSender getQuickSender() {
+        return quickSender;
+    }
+
+    public void setQuickSender(QuickSender quickSender) {
+        this.quickSender = quickSender;
+    }
+
+    public QuickTermination getQuickTermination() {
+        return quickTermination;
+    }
+
+    public void setQuickTermination(QuickTermination quickTermination) {
+        this.quickTermination = quickTermination;
+    }
+
     @Override
     public String toString() {
         return "TransferRequest{" +
@@ -211,11 +248,16 @@ public class TransferRequest implements Serializable{
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", amount=" + amount +
                 ", charge='" + charge + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
                 ", antiFraudData=" + antiFraudData +
                 ", statusDescription='" + statusDescription + '\'' +
                 ", responseCode='" + responseCode + '\'' +
                 ", responseDescription='" + responseDescription + '\'' +
                 ", uniqueReferenceCode='" + uniqueReferenceCode + '\'' +
+                ", quickBeneficiary=" + quickBeneficiary +
+                ", quickInitiation=" + quickInitiation +
+                ", quickSender=" + quickSender +
+                ", quickTermination=" + quickTermination +
                 '}';
     }
 }
