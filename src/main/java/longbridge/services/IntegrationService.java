@@ -122,6 +122,8 @@ public interface IntegrationService {
 
     NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber);
 
+    NEnquiryDetails doNameEnquiryQuickteller(String destinationInstitutionCode, String accountNumber);
+
     BigDecimal getAvailableBalance(String s);
     @Async
     CompletableFuture<ObjectNode>  sendSMS(String message, String contact, String subject);

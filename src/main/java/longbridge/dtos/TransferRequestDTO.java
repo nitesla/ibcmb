@@ -51,6 +51,9 @@ public class TransferRequestDTO implements Serializable {
     private String token;
     private String addBeneficiaryFlag;
     private String beneficiaryPrefferedName;
+    private String lastname;
+    private String firstname;
+    private String transferCode;
 
     //below fields are for antiFraudData
     private String countryCode;
@@ -68,7 +71,7 @@ public class TransferRequestDTO implements Serializable {
     public TransferRequestDTO() {
     }
 
-    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryBank,String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount, String statusDescription) {
+    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryBank, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, Date tranDate, String referenceNumber, String userReferenceNumber, String narration, String sessionId, String currencyCode, BigDecimal amount, String statusDescription, String charge, String token, String addBeneficiaryFlag, String beneficiaryPrefferedName, String lastname, String firstname, String transferCode, String countryCode, String deviceNumber, String headerProxyAuthorization, String headerUserAgent, String ip, String loginName, String sessionkey, String sfactorAuthIndicator, String tranLocation, String channel) {
         this.id = id;
         this.version = version;
         this.customerAccountNumber = customerAccountNumber;
@@ -79,13 +82,33 @@ public class TransferRequestDTO implements Serializable {
         this.beneficiaryAccountName = beneficiaryAccountName;
         this.remarks = remarks;
         this.status = status;
+        this.tranDate = tranDate;
         this.referenceNumber = referenceNumber;
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
         this.sessionId = sessionId;
+        this.currencyCode = currencyCode;
         this.amount = amount;
         this.statusDescription = statusDescription;
+        this.charge = charge;
+        this.token = token;
+        this.addBeneficiaryFlag = addBeneficiaryFlag;
+        this.beneficiaryPrefferedName = beneficiaryPrefferedName;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.transferCode = transferCode;
+        this.countryCode = countryCode;
+        this.deviceNumber = deviceNumber;
+        this.headerProxyAuthorization = headerProxyAuthorization;
+        this.headerUserAgent = headerUserAgent;
+        this.ip = ip;
+        this.loginName = loginName;
+        this.sessionkey = sessionkey;
+        this.sfactorAuthIndicator = sfactorAuthIndicator;
+        this.tranLocation = tranLocation;
+        this.channel = channel;
     }
+
     public String getBeneficiaryPrefferedName() {
         return beneficiaryPrefferedName;
     }
@@ -344,6 +367,30 @@ public class TransferRequestDTO implements Serializable {
         this.currencyCode = currencyCode;
     }
 
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getTransferCode() {
+        return transferCode;
+    }
+
+    public void setTransferCode(String transferCode) {
+        this.transferCode = transferCode;
+    }
+
     @Override
     public String toString() {
         return "TransferRequestDTO{" +
@@ -362,12 +409,16 @@ public class TransferRequestDTO implements Serializable {
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
                 ", sessionId='" + sessionId + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
                 ", amount=" + amount +
                 ", statusDescription='" + statusDescription + '\'' +
                 ", charge='" + charge + '\'' +
                 ", token='" + token + '\'' +
                 ", addBeneficiaryFlag='" + addBeneficiaryFlag + '\'' +
                 ", beneficiaryPrefferedName='" + beneficiaryPrefferedName + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", transferCode='" + transferCode + '\'' +
                 ", countryCode='" + countryCode + '\'' +
                 ", deviceNumber='" + deviceNumber + '\'' +
                 ", headerProxyAuthorization='" + headerProxyAuthorization + '\'' +

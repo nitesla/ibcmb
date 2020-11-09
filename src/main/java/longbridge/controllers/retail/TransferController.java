@@ -222,6 +222,16 @@ public class TransferController {
 
     }
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiryQuickteller")
+    public
+    @ResponseBody
+    String getQuicktellerAccountName(@PathVariable String accountNo, @PathVariable String bank, Principal principal) {
+
+
+        return transferUtils.doQuicktellerNameLookup(bank, accountNo);
+
+    }
+
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
         TransferRequestDTO transferRequestDTO = (TransferRequestDTO) request.getSession().getAttribute("transferRequest");

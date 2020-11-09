@@ -2,7 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
@@ -63,6 +62,8 @@ public class LocalBeneficiary extends Beneficiary implements PrettySerializer{
                 gen.writeStringField("beneficiaryBank", value.getBeneficiaryBank());
                 gen.writeStringField("accountNumber", value.getAccountNumber());
                 gen.writeStringField("preferredName", value.getPreferredName());
+                gen.writeStringField("lastname", value.getLastname());
+                gen.writeStringField("firstname", value.getFirstname());
                 gen.writeEndObject();
             }
         };

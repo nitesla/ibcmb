@@ -157,6 +157,41 @@ public class TransferUtils {
         }
         return "";
     }
+
+    public String doQuicktellerNameLookup(String bank, String accountNo) {
+
+        if (getCurrentUser() != null && !accountNo.isEmpty()) {
+
+            User user = getCurrentUser();
+            if (user.getUserType().equals(UserType.RETAIL)) {
+                LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), accountNo);
+                if (localBeneficiary != null) {
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            } else if (user.getUserType().equals(UserType.CORPORATE)) {
+                CorporateUser corporateUser = (CorporateUser) user;
+                boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), accountNo);
+                if (exists) {
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            }
+
+
+            NEnquiryDetails details = integrationService.doNameEnquiryQuickteller(bank, accountNo);
+            if (details == null) {
+                return createMessage("Service unavailable, please try again later", false);
+            }
+
+
+            if (details.getAccountName() != null) {
+                return createMessage(details.getAccountName(), true);
+            }
+
+            return createMessage("session_expired", false);
+
+        }
+        return "";
+    }
     
     
     public String getBalance(String accountNumber) {

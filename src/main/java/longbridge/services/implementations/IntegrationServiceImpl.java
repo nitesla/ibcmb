@@ -77,8 +77,17 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${billpayment.advice}")
 	private String quicktellerBillpaymentAdvice;
 
+	@Value("${quickteller.fundtransfer}")
+	private String quicktellerFundtransfer;
+
+	@Value("${quickteller.nameEnquiry}")
+	private String quicktellerNameEnquiry;
+
 	@Value("${custom.appId}")
 	private String appId;
+
+	@Value("${quick.initiatingEntityCode}")
+	private String initiatingEntityCode;
 
     @Value("${quickteller.appId}")
 	private String appIdQuickteller;
@@ -575,7 +584,57 @@ public class IntegrationServiceImpl implements IntegrationService {
 //			}
 			case QUICKTELLER: {
 
-				return transRequest;
+				QuickDetails response;
+				String uri = QUICKTELLER_URI + quicktellerFundtransfer;
+				Map<String,Object> params = new HashMap<>();
+				String hashedCode = EncryptionUtil.getSHA512(transRequest.getQuickInitiation().getAmount() +
+						transRequest.getQuickInitiation().getCurrencyCode() +
+						transRequest.getQuickInitiation().getPaymentMethodCode() +
+						transRequest.getQuickTermination().getAmount() +
+						transRequest.getQuickTermination().getCurrencyCode() +
+						transRequest.getQuickTermination().getPaymentMethodCode() +
+						transRequest.getQuickTermination().getCountryCode(), null);
+				params.put("appid", appId);
+				params.put("mac", hashedCode);
+				params.put("beneficiary", transRequest.getQuickBeneficiary());
+				params.put("initiatingEntityCode", initiatingEntityCode);
+				params.put("initiation", transRequest.getQuickInitiation());
+				params.put("sender", transRequest.getQuickSender());
+				params.put("termination", transRequest.getQuickTermination());
+				params.put("transferCode", transRequest.getTransferCode());
+
+
+				logger.info("params for transfer {}", params.toString());
+				try {
+					logger.info("Initiating Quickteller Transfer");
+					logger.debug("Transfer Params: {}", params.toString());
+
+					response = template.postForObject(uri, params, QuickDetails.class);
+					transRequest.setResponseCode(response.getResponseCode());
+					transRequest.setMac(response.getMac());
+					transRequest.setTransferCode(response.getTransferCode());
+					transRequest.setTransactionDate(response.getTransactionDate());
+					transRequest.setResponseCodeGrouping(response.getResponseCodeGrouping());
+
+					if(response.getResponseCodeGrouping().contains("SUCCESS")){
+						transRequest.setStatus("00");
+					}
+
+					return transRequest;
+
+				} catch (HttpStatusCodeException e) {
+
+					logger.error("HTTP Error occurred", e);
+					transRequest.setStatus(e.getStatusCode().toString());
+					transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+					return transRequest;
+
+				} catch (Exception e) {
+					logger.error("Error occurred making transfer", e);
+					transRequest.setStatus(StatusCode.FAILED.toString());
+					transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+					return transRequest;
+				}
 			}
 		}
 		logger.trace("request did not match any type");
@@ -853,6 +912,34 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Map<String, String> params = new HashMap<>();
 		params.put("destinationInstitutionCode", destinationInstitutionCode);
 		params.put("accountNumber", accountNumber);
+		logger.debug("Enquiry params {}", params);
+		try {
+
+			logger.info("Doing name enquiry for account number {}",accountNumber);
+
+			result = template.postForObject(uri, params, NEnquiryDetails.class);
+
+			logger.info("Completed name enquiry for account number {}",accountNumber);
+
+
+		} catch (Exception e) {
+			logger.error("Error occurred doing name enquiry", e);
+		}
+
+		return result;
+	}
+
+	@Override
+	public NEnquiryDetails doNameEnquiryQuickteller(String destinationInstitutionCode, String accountNumber) {
+		NEnquiryDetails result = new NEnquiryDetails();
+		String uri = QUICKTELLER_URI + quicktellerNameEnquiry;
+		String hashcode = EncryptionUtil.getSHA512(appIdQuickteller + accountNumber + secretKeyQuickteller, null);
+		Map<String, String> params = new HashMap<>();
+		params.put("accountId", accountNumber);
+		params.put("appid", appIdQuickteller);
+		params.put("bankCode", destinationInstitutionCode);
+		params.put("hash", hashcode);
+
 		logger.debug("Enquiry params {}", params);
 		try {
 

@@ -2,7 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
@@ -44,7 +43,28 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     private BigDecimal amount;
     private String charge;
     private String currencyCode;
+    private String responseCode;
+    private String mac;
+    private String transferCode;
+    private String responseCodeGrouping;
+    private String transactionDate;
 
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
+    private QuickBeneficiary quickBeneficiary;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
+    private QuickInitiation quickInitiation;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
+    private QuickSender quickSender;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
+    private QuickTermination quickTermination;
 
     @OneToOne(cascade = CascadeType.ALL)
     @Transient
@@ -57,7 +77,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     }
 
 
-    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String beneficiaryBank, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount,String channel) {
+    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String beneficiaryBank, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount, String charge, String currencyCode, String responseCode, String mac, String transferCode, String responseCodeGrouping, String transactionDate, QuickBeneficiary quickBeneficiary, QuickInitiation quickInitiation, QuickSender quickSender, QuickTermination quickTermination, AntiFraudData antiFraudData, String channel) {
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.tranDate = tranDate;
@@ -72,9 +92,20 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
         this.narration = narration;
         this.statusDescription = statusDescription;
         this.amount = amount;
-        this.channel=channel;
+        this.charge = charge;
+        this.currencyCode = currencyCode;
+        this.responseCode = responseCode;
+        this.mac = mac;
+        this.transferCode = transferCode;
+        this.responseCodeGrouping = responseCodeGrouping;
+        this.transactionDate = transactionDate;
+        this.quickBeneficiary = quickBeneficiary;
+        this.quickInitiation = quickInitiation;
+        this.quickSender = quickSender;
+        this.quickTermination = quickTermination;
+        this.antiFraudData = antiFraudData;
+        this.channel = channel;
     }
-
 
     public String getCharge() {
         return charge;
@@ -222,6 +253,78 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
         this.currencyCode = currencyCode;
     }
 
+    public QuickBeneficiary getQuickBeneficiary() {
+        return quickBeneficiary;
+    }
+
+    public void setQuickBeneficiary(QuickBeneficiary quickBeneficiary) {
+        this.quickBeneficiary = quickBeneficiary;
+    }
+
+    public QuickInitiation getQuickInitiation() {
+        return quickInitiation;
+    }
+
+    public void setQuickInitiation(QuickInitiation quickInitiation) {
+        this.quickInitiation = quickInitiation;
+    }
+
+    public QuickSender getQuickSender() {
+        return quickSender;
+    }
+
+    public void setQuickSender(QuickSender quickSender) {
+        this.quickSender = quickSender;
+    }
+
+    public QuickTermination getQuickTermination() {
+        return quickTermination;
+    }
+
+    public void setQuickTermination(QuickTermination quickTermination) {
+        this.quickTermination = quickTermination;
+    }
+
+    public String getTransferCode() {
+        return transferCode;
+    }
+
+    public void setTransferCode(String transferCode) {
+        this.transferCode = transferCode;
+    }
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public String getResponseCodeGrouping() {
+        return responseCodeGrouping;
+    }
+
+    public void setResponseCodeGrouping(String responseCodeGrouping) {
+        this.responseCodeGrouping = responseCodeGrouping;
+    }
+
+    public String getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
     @Override
     public String toString() {
         return "TransRequest{" +
@@ -241,6 +344,15 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 ", amount=" + amount +
                 ", charge='" + charge + '\'' +
                 ", currencyCode='" + currencyCode + '\'' +
+                ", responseCode='" + responseCode + '\'' +
+                ", mac='" + mac + '\'' +
+                ", transferCode='" + transferCode + '\'' +
+                ", responseCodeGrouping='" + responseCodeGrouping + '\'' +
+                ", transactionDate='" + transactionDate + '\'' +
+                ", quickBeneficiary=" + quickBeneficiary +
+                ", quickInitiation=" + quickInitiation +
+                ", quickSender=" + quickSender +
+                ", quickTermination=" + quickTermination +
                 ", antiFraudData=" + antiFraudData +
                 ", channel='" + channel + '\'' +
                 '}';
