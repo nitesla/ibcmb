@@ -136,10 +136,9 @@
         $('#datepicker').datepicker({
             format: 'mm-dd-yyyy',
             autoclose:true,
-            startDate:  pastSixMonth,
-            endDate: today,
-            minDate: pastSixMonth,
-           maxDate: today
+            startDate:pastSixMonth,
+            minDate:today
+
         }).on('changeDate', function (ev) {
 
             $(this).datepicker('hide');
