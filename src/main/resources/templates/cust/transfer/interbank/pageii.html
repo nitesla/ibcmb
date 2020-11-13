@@ -69,8 +69,9 @@
                                 <label class="my-label">Amount </label>
                                 <span class="alert no-bd-rad my-border bg-white">NGN</span>
 
-                                <input type="number" name="amount" step="any" min="100" placeholder="Enter an amount"
+                                <input type="number" name="amount" step="any" min="100" onchange="amountError()" placeholder="Enter an amount"
                                        th:field="*{amount}" class="form-control amount"/><span class='req-inner' id="amount"></span>
+                                <span id="amountError" style="color:red"></span>
                                 <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
                                    class="errors"></p>
                                 <div class="form-group" style="text-align: center;">
@@ -87,7 +88,7 @@
 
 
                             <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
-                            <button class="btn btn-link required-step useloader" type="submit">Submit</button>
+                            <button id="localsave" class="btn btn-link required-step useloader" type="submit">Submit</button>
                         </form>
                         <!--</div>-->
 
@@ -101,7 +102,7 @@
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
                                             <p  class="related-info coronation-blue" id="limit"><b></b></p>
-                                            <p  class="related-info coronation-blue" id="fee"><b></b></p>
+<!--                                            <p  class="related-info coronation-blue" id="fee"><b></b></p>-->
 
                                         </div>
                                     </div>
@@ -157,16 +158,28 @@
 
         function compareAmount() {
             var userLimit = document.getElementById('limit').innerHTML;
-            var newUserLimit = userLimit.replace('Limit: ','').replace('NGN','').replace(',','');
+            var newUserLimit = userLimit.replace('Limit: ','').replace('NGN','').replace(',','').replace(',','');
             var userAmount = $('#amount').val();
+
+            var acctBalance = document.getElementById('availBal').innerHTML;
+            var newBal = acctBalance.replace('Available Balance: ','').replace('NGN','').replace(',','').replace(',','');
+
             console.log("userlimit ==== " + newUserLimit);
             console.log("userAmount ==== " + userAmount);
+            console.log("acctBalance ====" + acctBalance);
 
             console.log("userAmount ==== " + parseFloat(userAmount));
             console.log("userlimit ==== " + parseFloat(newUserLimit));
+            console.log("acctBalance ===" + parseFloat(newBal));
+
             console.log(parseFloat(userAmount) > parseFloat(newUserLimit));
+            console.log(parseFloat(userAmount) > parseFloat(newBal));
+
             if(parseFloat(userAmount) > parseFloat(newUserLimit)){
                 $('#errorMessage').html("You cannot transfer more than account limit");
+                return false;
+            } else if (parseFloat(userAmount) > parseFloat(newBal)){
+                $('#errorMessage').html("You cannot transfer more than account balance");
                 return false;
             } else if (userAmount == ''){
                 $('#amounterrorMessage').html("Please supply amount");
@@ -213,7 +226,17 @@
             })
         }
 
+        function amountError() {
+            var amount = $("#amount").val();
+            if(amount < 100){
+                $("#amountError").text("Amount must be greater than or equal to 100")
+                $("#localsave").attr("disabled",true);
+            }else{
+                $("#amountError").text("")
+                $("#localsave").attr("disabled",false);
+            }
 
+        }
 
         function getDestCurrency(){
             var accountNumber = $('#source').val();

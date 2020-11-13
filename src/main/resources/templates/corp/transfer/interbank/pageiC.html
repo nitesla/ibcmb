@@ -42,7 +42,7 @@
 
                     <div class="form-group">
                         <label>Account Number</label>
-                        <input onblur="getAccountName()" type="text" class="form-control" name="accountNumber" pattern="\d{10}"
+                        <input onblur="getAccountName()" type="number" class="form-control" name="accountNumber" pattern="\d{10}"
                                th:field="*{accountNumber}"
                                id="acct_num" placeholder="10 digits only" required="required"/><span
                             class='req-inner'></span>
