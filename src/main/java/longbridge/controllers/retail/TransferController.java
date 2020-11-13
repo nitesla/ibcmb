@@ -124,6 +124,9 @@ public class TransferController {
                 case RTGS: {
                     return "redirect:/retail/transfer/interbank";
                 }
+                case QUICKTELLER: {
+                    return "redirect:/retail/transfer/interbank";
+                }
             }
             return "redirect:/retail/transfer/ownaccount";
         }
