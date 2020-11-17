@@ -50,6 +50,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Value("${ebank.service.uri}")
 	private String URI;
+
 	@Value("${CMB.ALERT.URL}")
 	private String cmbAlert;
 
