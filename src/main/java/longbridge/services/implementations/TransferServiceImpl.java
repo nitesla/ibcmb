@@ -443,50 +443,54 @@ public class TransferServiceImpl implements TransferService {
         antiFraudData.setChannel(transferRequestDTO.getChannel());
         transRequest.setAntiFraudData(antiFraudData);
 
-        QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
-        quickBeneficiary.setLastname(transferRequestDTO.getLastname());
-        quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
-        transRequest.setQuickBeneficiary(quickBeneficiary);
+        if (transferRequestDTO.getTransferType() == TransferType.QUICKTELLER){
+            logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
+            QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
+            quickBeneficiary.setLastname(transferRequestDTO.getLastname());
+            quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
+            transRequest.setQuickBeneficiary(quickBeneficiary);
 
-        QuickInitiation quickInitiation = new QuickInitiation();
-        BigDecimal a = transferRequestDTO.getAmount();
-        BigDecimal b = new BigDecimal(100);
-        BigDecimal initiationAmount = a.multiply(b);
-        quickInitiation.setAmount(initiationAmount);
-        quickInitiation.setChannel(7);
-        quickInitiation.setCurrencyCode("566");
-        quickInitiation.setPaymentMethodCode("CA");
-        transRequest.setQuickInitiation(quickInitiation);
+            QuickInitiation quickInitiation = new QuickInitiation();
+            BigDecimal a = transferRequestDTO.getAmount();
+            BigDecimal b = new BigDecimal(100);
+            BigDecimal initiationAmount = a.multiply(b);
+            quickInitiation.setAmount(initiationAmount);
+            quickInitiation.setChannel(7);
+            quickInitiation.setCurrencyCode("566");
+            quickInitiation.setPaymentMethodCode("CA");
+            transRequest.setQuickInitiation(quickInitiation);
 
-        QuickSender quickSender = new QuickSender();
-        quickSender.setEmail(getCurrentUser().getEmail());
-        quickSender.setLastname(getCurrentUser().getLastName());
-        quickSender.setOthernames(getCurrentUser().getFirstName());
-        quickSender.setPhone(getCurrentUser().getPhoneNumber());
-        transRequest.setQuickSender(quickSender);
+            QuickSender quickSender = new QuickSender();
+            quickSender.setEmail(getCurrentUser().getEmail());
+            quickSender.setLastname(getCurrentUser().getLastName());
+            quickSender.setOthernames(getCurrentUser().getFirstName());
+            quickSender.setPhone(getCurrentUser().getPhoneNumber());
+            transRequest.setQuickSender(quickSender);
 
 
-        QuickTermination quickTermination = new QuickTermination();
+            QuickTermination quickTermination = new QuickTermination();
 
-        AccountReceivable accountReceivable = new AccountReceivable();
-        accountReceivable.setAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
-        accountReceivable.setAccountType("00");
+            AccountReceivable accountReceivable = new AccountReceivable();
+            accountReceivable.setAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
+            accountReceivable.setAccountType("00");
 
-        quickTermination.setAccountReceivable(accountReceivable);
-        BigDecimal c = transferRequestDTO.getAmount();
-        BigDecimal d = new BigDecimal(100);
-        BigDecimal terminatingAmount = c.multiply(d);
-        quickTermination.setAmount(terminatingAmount);
-        quickTermination.setCountryCode("NG");
-        quickTermination.setCurrencyCode("566");
-        quickTermination.setEntityCode("");
-        quickTermination.setPaymentMethodCode("AC");
-        transRequest.setQuickTermination(quickTermination);
+            quickTermination.setAccountReceivable(accountReceivable);
+            BigDecimal c = transferRequestDTO.getAmount();
+            BigDecimal d = new BigDecimal(100);
+            BigDecimal terminatingAmount = c.multiply(d);
+            quickTermination.setAmount(terminatingAmount);
+            quickTermination.setCountryCode("NG");
+            quickTermination.setCurrencyCode("566");
+            quickTermination.setEntityCode("");
+            quickTermination.setPaymentMethodCode("AC");
+            transRequest.setQuickTermination(quickTermination);
 
-        Random rand = new Random();
-        int upperbound = 9999999;
-        int random = rand.nextInt(upperbound);
-        transRequest.setTransferCode("1453" + random);
+            Random rand = new Random();
+            int upperbound = 9999999;
+            int random = rand.nextInt(upperbound);
+            transRequest.setTransferCode("1453" + random);
+        }
+
 
         return transRequest;
 

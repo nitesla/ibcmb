@@ -62,8 +62,6 @@ public class LocalBeneficiary extends Beneficiary implements PrettySerializer{
                 gen.writeStringField("beneficiaryBank", value.getBeneficiaryBank());
                 gen.writeStringField("accountNumber", value.getAccountNumber());
                 gen.writeStringField("preferredName", value.getPreferredName());
-                gen.writeStringField("lastname", value.getLastname());
-                gen.writeStringField("firstname", value.getFirstname());
                 gen.writeEndObject();
             }
         };
