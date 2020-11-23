@@ -10,6 +10,7 @@ function setGreetings(result) {
     function createDiv(result){
         var div="";
         for(var i=0;i<result.length;i++){
+            console.log("the link : " + result[i].imageLink);
             div+="<li><a style='text-decoration:none;'><br/><span  class=" + "genGreet>" + result[i].message + "</span><br/>"
                  +"<button value=" + result[i].imageLink + "" +
                 " class=" + "\" gvalue btn btn-link token-btn\"" +
@@ -55,6 +56,7 @@ function greetingUtility() {
 
     $(".specialGreeting").on('click', '.gvalue', function getGreetingImage() {
         var imageName = $(this).val();
+
        console.log("here"+imageName);
         $(".imageVal").html("<img style=\"width:600px;height:280px\"  alt=\"Special Greeting\" src=" + " /customer/img/" + imageName + " />")
 
