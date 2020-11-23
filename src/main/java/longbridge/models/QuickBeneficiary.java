@@ -4,14 +4,26 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class QuickBeneficiary extends AbstractEntity{
+public class QuickBeneficiary extends Beneficiary{
 
+
+    @ManyToOne
+    private RetailUser user;
     private String lastname;
     private String othernames;
+
+    public RetailUser getUser() {
+        return user;
+    }
+
+    public void setUser(RetailUser user) {
+        this.user = user;
+    }
 
     public String getLastname() {
         return lastname;
@@ -32,7 +44,8 @@ public class QuickBeneficiary extends AbstractEntity{
     @Override
     public String toString() {
         return "QuickBeneficiary{" +
-                "lastname='" + lastname + '\'' +
+                "user=" + user +
+                ", lastname='" + lastname + '\'' +
                 ", othernames='" + othernames + '\'' +
                 '}';
     }
