@@ -1,19 +1,14 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.exception.DuplicateObjectException;
-import longbridge.exception.InternetBankingException;
-import longbridge.models.Email;
-import longbridge.models.LocalBeneficiary;
+import longbridge.models.QuickBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.models.User;
 import longbridge.repositories.FinancialInstitutionRepo;
-import longbridge.repositories.LocalBeneficiaryRepo;
+import longbridge.repositories.QuickBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
-import longbridge.services.LocalBeneficiaryService;
 import longbridge.services.MailService;
+import longbridge.services.QuickBeneficiaryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by Wunmi on 29/03/2017.
  */
 @Service
-public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
+public class QuickBeneficiaryServiceImpl implements QuickBeneficiaryService {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -51,18 +42,18 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Autowired
     private ConfigurationService configService;
     private final Locale locale = LocaleContextHolder.getLocale();
-    private final LocalBeneficiaryRepo localBeneficiaryRepo;
+    private final QuickBeneficiaryRepo quickBeneficiaryRepo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${bank.code}")
     private String bankCode;
 
 
     @Autowired
-    public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo) {
-        this.localBeneficiaryRepo = localBeneficiaryRepo;
+    public QuickBeneficiaryServiceImpl(QuickBeneficiaryRepo quickBeneficiaryRepo) {
+        this.quickBeneficiaryRepo = quickBeneficiaryRepo;
     }
 
-    @Override
+    /*@Override
     public String addLocalBeneficiaryMobileApi(LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
 
         try {
@@ -128,20 +119,16 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Override
     public LocalBeneficiary getLocalBeneficiary(Long id) {
         return localBeneficiaryRepo.findById(id).get();
-    }
-
-    /*@Override
-    public Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user) {
-        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIsNotNull(user);
-    }
-*/
-    @Override
-    public Iterable<LocalBeneficiary> getLocalBeneficiaries() {
-        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIsNotNull(getCurrentUser());
-    }
+    }*/
 
 
     @Override
+    public Iterable<QuickBeneficiary> getQuickBeneficiaries() {
+        return quickBeneficiaryRepo.findByUserAndBeneficiaryBankIsNotNull(getCurrentUser());
+    }
+
+
+   /* @Override
     public Iterable<LocalBeneficiary> getBankBeneficiaries() {
         return localBeneficiaryRepo.findByUserAndBeneficiaryBankIgnoreCase(getCurrentUser(),bankCode );
     }
@@ -169,8 +156,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         localBeneficiaryDTO.setAccountNumber(localBeneficiary.getAccountNumber());
         localBeneficiaryDTO.setBeneficiaryBank(localBeneficiary.getBeneficiaryBank());
         localBeneficiaryDTO.setPreferredName(localBeneficiary.getPreferredName());
-//        localBeneficiaryDTO.setFirstname(localBeneficiary.getFirstname());
-//        localBeneficiaryDTO.setLastname(localBeneficiary.getLastname());
+        localBeneficiaryDTO.setFirstname(localBeneficiary.getFirstname());
+        localBeneficiaryDTO.setLastname(localBeneficiary.getLastname());
         return modelMapper.map(localBeneficiary, LocalBeneficiaryDTO.class);
     }
 
@@ -178,7 +165,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     public LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO) {
         logger.info("Local Beneficiary: {}", localBeneficiaryDTO);
         return modelMapper.map(localBeneficiaryDTO, LocalBeneficiary.class);
-    }
+    }*/
 
    /* private void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
@@ -195,7 +182,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
       }*//*
     }
 */
-    private void validateBeneficiary(LocalBeneficiary localBeneficiary) {
+    /*private void validateBeneficiary(LocalBeneficiary localBeneficiary) {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(getCurrentUser().getId(), localBeneficiary.getAccountNumber()) != null)
             throw new DuplicateObjectException("beneficiary.exist");
 
@@ -209,9 +196,9 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
           if (details==null || details.getAccountName()==null )
               throw new InternetBankingException("transfer.beneficiary.invalid");
       }*/
-    }
+    /*}
 
-    @Async
+   /* @Async
     public  void sendAlert(User user ,String beneficiary) {
         try {
             if (true) {
@@ -258,7 +245,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
                 .build();
         mailService.sendMail(email,context);
 
-    }
+    }*/
 
 
     public RetailUser getCurrentUser(){

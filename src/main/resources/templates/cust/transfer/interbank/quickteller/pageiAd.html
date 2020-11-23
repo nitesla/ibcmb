@@ -27,8 +27,8 @@
                     <table class="table" id="mytab">
                         <thead>
                         <tr>
-                            <th>Beneficiary name</th>
-                            <th>Preferred name</th>
+                            <th>Last name</th>
+                            <th>First name</th>
                             <th>Bank</th>
                             <th>Account number</th>
                             <th>&nbsp;</th>
@@ -38,9 +38,9 @@
                         <tbody>
 
 
-                        <tr th:each="loc : ${localBen}">
-                            <td   th:text="${loc.accountName}"></td>
-                            <td th:text="${loc.preferredName}"></td>
+                        <tr th:each="loc : ${quickBen}">
+                            <td   th:text="${loc.lastname}"></td>
+                            <td th:text="${loc.firstname}"></td>
                             <td th:text="${loc.beneficiaryBank}"></td>
                             <td th:text="${loc.accountNumber}"></td>
 
