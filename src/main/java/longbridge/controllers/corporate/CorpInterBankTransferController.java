@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.dtos.QuicktellerBankCodeDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
@@ -37,6 +38,8 @@ public class CorpInterBankTransferController {
     private final MessageSource messages;
     private final CorpLocalBeneficiaryService corpLocalBeneficiaryService;
     private final FinancialInstitutionService financialInstitutionService;
+    private final CorpQuickBeneficiaryService corpQuickBeneficiaryService;
+    private final QuicktellerBankCodeService quicktellerBankCodeService;
     private final TransferValidator validator;
     private final IntegrationService integrationService;
     private final AccountService accountService;
@@ -49,11 +52,13 @@ public class CorpInterBankTransferController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
+    public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, QuicktellerBankCodeService quicktellerBankCodeService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
         this.corporateUserService = corporateUserService;
         this.messages = messages;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
+        this.quicktellerBankCodeService = quicktellerBankCodeService;
+        this.corpQuickBeneficiaryService = corpQuickBeneficiaryService;
         this.validator = validator;
         this.integrationService = integrationService;
         this.accountService = accountService;
@@ -89,27 +94,58 @@ public class CorpInterBankTransferController {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
         Corporate corporate = user.getCorporate();
-        List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries().spliterator(), false)
-                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                .collect(Collectors.toList());
-
-        beneficiaries
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(i ->
-                        {
-                            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
-
-                            if (financialInstitution != null)
-                                i.setBeneficiaryBank(financialInstitution.getInstitutionName());
-                        }
-
-                );
-
-        model.addAttribute("localBen", beneficiaries);
-
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         String type = request.getParameter("tranType");
+
+        if ("QUICKTELLER".equalsIgnoreCase(type)) {
+
+            List<CorpQuickBeneficiary> beneficiaries = StreamSupport.stream(corpQuickBeneficiaryService.getCorpQuickBeneficiaries().spliterator(), false)
+//                    .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(bankCode).getBankCode()))
+                    .collect(Collectors.toList());
+
+            beneficiaries
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .forEach(i ->
+                            {
+                                QuicktellerBankCode quicktellerBankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(i.getBeneficiaryBank());
+
+                                logger.info("Bank Code id {}", quicktellerBankCode);
+
+                                if (quicktellerBankCode != null)
+                                    i.setBeneficiaryBank(quicktellerBankCode.getBankName());
+
+
+                            }
+
+                    );
+
+            model.addAttribute("quickBen", beneficiaries);
+
+        }else {
+
+            List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries().spliterator(), false)
+                    .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                    .collect(Collectors.toList());
+
+            beneficiaries
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .forEach(i ->
+                            {
+                                FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
+
+                                if (financialInstitution != null)
+                                    i.setBeneficiaryBank(financialInstitution.getInstitutionName());
+                            }
+
+                    );
+
+            model.addAttribute("localBen", beneficiaries);
+
+        }
+
+
 
         if ("NIP".equalsIgnoreCase(type)) {
             request.getSession().setAttribute("NIP", "NIP");
@@ -130,7 +166,7 @@ public class CorpInterBankTransferController {
             request.getSession().setAttribute("NIP", "QUICKTELLER");
             requestDTO.setTransferType(TransferType.QUICKTELLER);
             model.addAttribute("transferRequest", requestDTO);
-            return page + "pageiAd";
+            return page + "quickteller/pageiAd";
 
     }
 
@@ -161,26 +197,7 @@ public class CorpInterBankTransferController {
 
     @GetMapping("/alpha")
     public String newQuickBeneficiary(@ModelAttribute("corpLocalBeneficiary") CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, Model model, RedirectAttributes redirectAttributes) throws Exception {
-
-        try {
-            transferUtils.validateTransferCriteria();
-            model.addAttribute("localBanks",
-                    financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                            .stream()
-                            .filter(i -> !i.getInstitutionCode().equals(bankCode))
-                            .collect(Collectors.toList())
-            );
-
-            return page + "pageiC";
-        } catch (InternetBankingTransferException e) {
-            String errorMessage = transferErrorService.getMessage(e);
-            redirectAttributes.addFlashAttribute("failure", errorMessage);
-            return "redirect:/corporate/dashboard";
-
-
-        }
-
-
+            return page + "quickteller/pageiC";
     }
 
     @PostMapping("/alpha")
@@ -190,7 +207,7 @@ public class CorpInterBankTransferController {
         if (servletRequest.getSession().getAttribute("add") != null)
             servletRequest.getSession().removeAttribute("add");
         if (result.hasErrors()) {
-            return page + "pageiB";
+            return page + "quickteller/pageiC";
         }
 
         CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
@@ -199,7 +216,7 @@ public class CorpInterBankTransferController {
         corpTransferRequestDTO.setLastname(corpLocalBeneficiaryDTO.getLastname());
         corpTransferRequestDTO.setFirstname(corpLocalBeneficiaryDTO.getFirstname());
 
-        corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(corpLocalBeneficiaryDTO.getBeneficiaryBank()));
+        corpTransferRequestDTO.setQuicktellerBankCode(quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(corpLocalBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         model.addAttribute("benName", corpLocalBeneficiaryDTO.getPreferredName());
 
@@ -208,7 +225,7 @@ public class CorpInterBankTransferController {
         servletRequest.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryDTO);
         if (servletRequest.getParameter("add") != null)
             servletRequest.getSession().setAttribute("add", "add");
-        return page + "pageii";
+        return page + "quickteller/pageQ";
     }
 
     @PostMapping("/new")
@@ -279,10 +296,9 @@ public class CorpInterBankTransferController {
                 model.addAttribute("newBen", "newBen");
         }
 
-        if (result.hasErrors()) {
-
-            return page + "pageii";
-        }
+//        if (result.hasErrors()) {
+//            return page + "pageii";
+//        }
 
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
@@ -342,6 +358,32 @@ public class CorpInterBankTransferController {
         return page + "pageii";
     }
 
+    @GetMapping("/input/{id}")
+    public String quickTransfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale) throws Exception {
+        CorpQuickBeneficiary beneficiary = corpQuickBeneficiaryService.getCorpQuickBeneficiary(id);
+        CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
+        requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
+        requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
+        requestDTO.setTransferType(TransferType.QUICKTELLER);
+        requestDTO.setFirstname(beneficiary.getOthernames());
+        requestDTO.setLastname(beneficiary.getLastname());
+        QuicktellerBankCode bankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(beneficiary.getBeneficiaryBank());
+        if (bankCode == null) {
+
+            model.addAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
+            return page + "quickteller/pageiAd";
+        }
+        requestDTO.setQuicktellerBankCode(bankCode);
+
+        model.addAttribute("corpTransferRequest", requestDTO);
+        model.addAttribute("beneficiary", corpQuickBeneficiaryService.convertEntityToDTO(beneficiary));
+        String benName = beneficiary.getPreferredName()!=null?beneficiary.getPreferredName():beneficiary.getAccountName();
+        model.addAttribute("benName", benName);
+        request.getSession().setAttribute("benName", benName);
+        request.getSession().setAttribute("Lbeneficiary", corpQuickBeneficiaryService.convertEntityToDTO(beneficiary));
+        return page + "quickteller/pageQ";
+    }
+
 
     @ModelAttribute
     public void getOtherBankBeneficiaries(Model model) {
@@ -353,6 +395,19 @@ public class CorpInterBankTransferController {
         model.addAttribute("banks", sortedNames);
 
 
+
+    }
+
+    @ModelAttribute
+    public void getQuicktellerBeneficiaries(Model model) {
+
+
+        List<QuicktellerBankCodeDTO> sortedNames = quicktellerBankCodeService.getOtherLocalBanks();
+//        sortedNames.sort(Comparator.comparing(QuicktellerBankCodeDTO::getBankName));
+
+        logger.info("Account Banks are: {}", sortedNames);
+
+        model.addAttribute("quickBanks", sortedNames);
 
     }
 

@@ -21,9 +21,9 @@ public interface QuicktellerBankCodeService {
 
     String deleteQuicktellerBankCode(Long id) throws InternetBankingException;
 
-    Page<QuicktellerBankCodeDTO> getQuicktellerBankCodes(Pageable pageDetails);
+    Page<QuicktellerBankCode> getQuicktellerBankCodes(Pageable pageDetails);
 
-    Page<QuicktellerBankCodeDTO> findQuicktellerBankCodes(String pattern,Pageable pageDetails);
+    Page<QuicktellerBankCode> findQuicktellerBankCodes(String pattern,Pageable pageDetails);
 
     QuicktellerBankCode getQuicktellerBankCodeByBankCode(String BankCode);
 
@@ -39,4 +39,5 @@ public interface QuicktellerBankCodeService {
 
     List<QuicktellerBankCodeDTO> convertEntitiesToDTOs(Iterable<QuicktellerBankCode> financialInstitutions);
 
+    void refreshBankCodes();
 }

@@ -105,7 +105,7 @@ public class InterBankTransferController {
         if ("QUICKTELLER".equalsIgnoreCase(type)) {
 
             List<QuickBeneficiary> beneficiaries = StreamSupport.stream(quickBeneficiaryService.getQuickBeneficiaries().spliterator(), false)
-                    .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(quicktellerBankCodeService.getQuicktellerBankCodeByBankCodeId(bankCode).getBankCodeId()))
+//                    .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(bankCode).getBankCode()))
                     .collect(Collectors.toList());
 
             beneficiaries
@@ -113,7 +113,9 @@ public class InterBankTransferController {
                     .filter(Objects::nonNull)
                     .forEach(i ->
                             {
-                                QuicktellerBankCode quicktellerBankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCodeId(i.getBeneficiaryBank());
+                                QuicktellerBankCode quicktellerBankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(i.getBeneficiaryBank());
+
+                                logger.info("Bank Code id {}", quicktellerBankCode);
 
                                 if (quicktellerBankCode != null)
                                     i.setBeneficiaryBank(quicktellerBankCode.getBankName());
@@ -210,7 +212,7 @@ public class InterBankTransferController {
 
         logger.info("Beneficiary is {}",transferRequestDTO);
 
-        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
+        transferRequestDTO.setQuicktellerBankCode(quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(localBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("benName", localBeneficiaryDTO.getPreferredName());
 
@@ -348,6 +350,32 @@ public class InterBankTransferController {
         return page + "pageii";
     }
 
+    @GetMapping("/input/{id}")
+    public String quickTransfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) throws Exception {
+        QuickBeneficiary beneficiary = quickBeneficiaryService.getQuickBeneficiary(id);
+        TransferRequestDTO requestDTO = new TransferRequestDTO();
+        requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
+        requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
+        requestDTO.setTransferType(TransferType.QUICKTELLER);
+        requestDTO.setFirstname(beneficiary.getOthernames());
+        requestDTO.setLastname(beneficiary.getLastname());
+        QuicktellerBankCode bankcode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(beneficiary.getBeneficiaryBank());
+        if (bankcode == null) {
+
+            attributes.addFlashAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
+            return "redirect:/retail/transfer/interbank/index";
+        }
+        requestDTO.setQuicktellerBankCode(bankcode);
+
+        model.addAttribute("transferRequest", requestDTO);
+        model.addAttribute("beneficiary", quickBeneficiaryService.convertEntityToDTO(beneficiary));
+        String benName = beneficiary.getPreferredName()!=null?beneficiary.getPreferredName():beneficiary.getAccountName();
+        request.getSession().setAttribute("beneficiaryName", benName);
+        model.addAttribute("benName", benName);
+        request.getSession().setAttribute("Lbeneficiary", quickBeneficiaryService.convertEntityToDTO(beneficiary));
+        return page + "quickteller/pageQ";
+    }
+
 
     @ModelAttribute
     public void getOtherBankBeneficiaries(Model model) {
@@ -357,9 +385,7 @@ public class InterBankTransferController {
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
         logger.info("Account Banks are: {}", sortedNames);
 
-        model.addAttribute("localBanks"
-                , sortedNames);
-
+        model.addAttribute("localBanks", sortedNames);
 
     }
 
@@ -368,13 +394,11 @@ public class InterBankTransferController {
 
 
         List<QuicktellerBankCodeDTO> sortedNames = quicktellerBankCodeService.getOtherLocalBanks();
-        sortedNames.sort(Comparator.comparing(QuicktellerBankCodeDTO::getBankName));
+//        sortedNames.sort(Comparator.comparing(QuicktellerBankCodeDTO::getBankName));
 
         logger.info("Account Banks are: {}", sortedNames);
 
-        model.addAttribute("quickBanks"
-                , sortedNames);
-
+        model.addAttribute("quickBanks", sortedNames);
 
     }
 

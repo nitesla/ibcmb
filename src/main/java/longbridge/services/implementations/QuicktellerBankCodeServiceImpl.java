@@ -5,6 +5,7 @@ import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.QuicktellerBankCode;
 import longbridge.repositories.QuicktellerBankCodeRepo;
+import longbridge.services.IntegrationService;
 import longbridge.services.QuicktellerBankCodeService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -13,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.
@@ -33,6 +34,9 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private IntegrationService integrationService;
 
     @Autowired
     private MessageSource messageSource;
@@ -57,17 +61,22 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
     @Override
     public QuicktellerBankCodeDTO convertEntityToDTO(QuicktellerBankCode quicktellerBankCode) {
         QuicktellerBankCodeDTO quicktellerBankCodeDTO = new QuicktellerBankCodeDTO();
-        quicktellerBankCodeDTO.setId(quicktellerBankCode.getId());
-        quicktellerBankCodeDTO.setVersion(quicktellerBankCode.getVersion());
-        quicktellerBankCode.setBankCodeId(quicktellerBankCodeDTO.getBankCodeId());
-        quicktellerBankCode.setCbnCode(quicktellerBankCodeDTO.getCbnCode());
-        quicktellerBankCode.setBankName(quicktellerBankCodeDTO.getBankName());
-        quicktellerBankCode.setBankCode(quicktellerBankCodeDTO.getBankCode());
+//        quicktellerBankCodeDTO.setId(quicktellerBankCode.getId());
+//        quicktellerBankCodeDTO.setVersion(quicktellerBankCode.getVersion());
+        quicktellerBankCodeDTO.setBankCodeId(quicktellerBankCode.getBankCodeId());
+        quicktellerBankCodeDTO.setCbnCode(quicktellerBankCode.getCbnCode());
+        quicktellerBankCodeDTO.setBankName(quicktellerBankCode.getBankName());
+        quicktellerBankCodeDTO.setBankCode(quicktellerBankCode.getBankCode());
         return quicktellerBankCodeDTO;
     }
 
     @Override
     public QuicktellerBankCode convertDTOToEntity(QuicktellerBankCodeDTO quicktellerBankCodeDTO) {
+        QuicktellerBankCode quicktellerBankCode = new QuicktellerBankCode();
+        quicktellerBankCode.setBankCode(quicktellerBankCodeDTO.getBankCode());
+        quicktellerBankCode.setCbnCode(quicktellerBankCodeDTO.getCbnCode());
+        quicktellerBankCode.setBankName(quicktellerBankCodeDTO.getBankName());
+        quicktellerBankCode.setBankCodeId(quicktellerBankCodeDTO.getBankCodeId());
         return modelMapper.map(quicktellerBankCodeDTO, QuicktellerBankCode.class);
     }
 
@@ -155,12 +164,13 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
     }
 
     @Override
-    public Page<QuicktellerBankCodeDTO> getQuicktellerBankCodes(Pageable pageDetails) {
+    public Page<QuicktellerBankCode> getQuicktellerBankCodes(Pageable pageDetails) {
         Page<QuicktellerBankCode> page = quicktellerBankCodeRepo.findAll(pageDetails);
-        List<QuicktellerBankCodeDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
+//        List<QuicktellerBankCodeDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        long t = page.getTotalElements();
 
-        return new PageImpl<QuicktellerBankCodeDTO>(dtOs, pageDetails, t);
+//        return new PageImpl<QuicktellerBankCodeDTO>(dtOs, pageDetails, t);
+        return page;
     }
 
 
@@ -181,14 +191,48 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
     }
 
     @Override
-	public Page<QuicktellerBankCodeDTO> findQuicktellerBankCodes(String pattern, Pageable pageDetails) {
-		 Page<QuicktellerBankCode> page = quicktellerBankCodeRepo.findUsingPattern(pattern,pageDetails);
-	        List<QuicktellerBankCodeDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-	        long t = page.getTotalElements();
+	public Page<QuicktellerBankCode> findQuicktellerBankCodes(String pattern, Pageable pageDetails) {
+//		 Page<QuicktellerBankCode> page = quicktellerBankCodeRepo.findUsingPattern(pattern,pageDetails);
+//	        List<QuicktellerBankCodeDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//	        long t = page.getTotalElements();
 
-	        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        return new PageImpl<QuicktellerBankCodeDTO>(dtOs, pageDetails, t);
+//	        return new PageImpl<QuicktellerBankCodeDTO>(dtOs, pageDetails, t);
+        return quicktellerBankCodeRepo.findUsingPattern(pattern,pageDetails);
 	}
+
+    @Override
+    public void refreshBankCodes() {
+        logger.info("updating bank codes!!");
+        List<QuicktellerBankCodeDTO> getBankCodes = integrationService.getBankCodes();
+        List<QuicktellerBankCode> updatedBankCodes = compareAndUpdateBankCodes(getBankCodes);
+        quicktellerBankCodeRepo.removeObsolete(updatedBankCodes.stream().map(QuicktellerBankCode::getId).collect(Collectors.toList()));
+    }
+
+    private List<QuicktellerBankCode> compareAndUpdateBankCodes(List<QuicktellerBankCodeDTO> updatedBankCodes){
+        List<QuicktellerBankCode> bankCode = new ArrayList<>();
+        updatedBankCodes.forEach(updatedBankCode -> {
+            QuicktellerBankCode storedBankCode = quicktellerBankCodeRepo.findByBankCode(updatedBankCode.getBankCode());
+            logger.info("STORED BANKCODES {}",storedBankCode);
+            if (storedBankCode == null) {
+                QuicktellerBankCode code = createBankCode(updatedBankCode);
+                bankCode.add(code);
+            } else {
+                QuicktellerBankCode code = createBankCode(updatedBankCode);
+                bankCode.add(code);
+            }
+        });
+        return quicktellerBankCodeRepo.saveAll(bankCode);
+    }
+
+    private QuicktellerBankCode createBankCode(QuicktellerBankCodeDTO code){
+        QuicktellerBankCode bankCode = new QuicktellerBankCode();
+        bankCode.setBankCodeId(code.getBankCodeId());
+        bankCode.setBankName(code.getBankName());
+        bankCode.setCbnCode(code.getCbnCode());
+        bankCode.setBankCode(code.getBankName());
+        quicktellerBankCodeRepo.save(bankCode);
+        return bankCode;
+    }
 
 
 }

@@ -2,11 +2,6 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotEmpty;
-
-/**
- * Created by Wunmi Sowunmi on 24/04/2017.
- */
 public class QuicktellerBankCodeDTO {
 
     @JsonProperty("DT_RowId")
@@ -16,10 +11,8 @@ public class QuicktellerBankCodeDTO {
 
     private String cbnCode;
 
-    @NotEmpty(message = "bankName")
     private String bankName;
 
-    @NotEmpty(message = "bankCode")
     private String bankCode;
 
     private int version;
@@ -30,6 +23,14 @@ public class QuicktellerBankCodeDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getBankCodeId() {
@@ -62,13 +63,5 @@ public class QuicktellerBankCodeDTO {
 
     public void setBankCode(String bankCode) {
         this.bankCode = bankCode;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 }

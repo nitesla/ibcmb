@@ -69,7 +69,7 @@ public class QuicktellerBankCode extends AbstractEntity{
 
     @Override
    	public List<String> getDefaultSearchFields() {
-        return Arrays.asList("cbnCode","bankName","bankCode");
+        return Arrays.asList("cbnCode","bankCodeId","bankName","bankCode");
    	}
 
 
