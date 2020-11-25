@@ -1439,7 +1439,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("accountNumber",accountNumber);
 
 		try{
+			logger.info("About to call EbankingService...EbankingService Url : {}",uri);
 			fixedDeposit = template.getForObject(uri, FixedDepositDTO.class,params);
+			logger.info("Done calling EbankingService...Result Returned : {} ",fixedDeposit);
 			return fixedDeposit;
 		}
 		catch (Exception e){
