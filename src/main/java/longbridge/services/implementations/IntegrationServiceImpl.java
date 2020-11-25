@@ -84,6 +84,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${quickteller.nameEnquiry}")
 	private String quicktellerNameEnquiry;
 
+	@Value("${quickteller.bankcodes}")
+	private String getBankCodes;
+
 	@Value("${custom.appId}")
 	private String appId;
 
@@ -1719,6 +1722,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			BillerCategoryResponse billerCategoryResponse = template.postForObject(uri,params, BillerCategoryResponse.class);
 			items = billerCategoryResponse.getCategorys();
+			return items;
+		} catch (Exception e){
+			logger.info("Error processing request");
+			logger.info("message === {} " , e.getMessage());
+		}
+		return items;
+	}
+
+	@Override
+	public List<QuicktellerBankCodeDTO> getBankCodes(){
+		List<QuicktellerBankCodeDTO> items = new ArrayList<>();
+		String uri = QUICKTELLER_URI+getBankCodes;
+		Map<String,String> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("hash",EncryptionUtil.getSHA512(appId+secretKey, null));
+		try {
+			BankCodeResponse bankCodeResponse = template.postForObject(uri,params, BankCodeResponse.class);
+			items = bankCodeResponse.getCodes();
 			return items;
 		} catch (Exception e){
 			logger.info("Error processing request");

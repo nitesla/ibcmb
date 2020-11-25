@@ -21,8 +21,8 @@
                         <label>Beneficiary Bank</label>
                         <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code"
                                 required="required">
-                            <option th:each="bank : ${banks}" th:value="${bank.sortCode}"
-                                    th:text="${bank.institutionName}"></option>
+                            <option th:each="bank : ${quickBanks}" th:value="${bank.bankCode}"
+                                    th:text="${bank.bankName}"></option>
                         </select><span class='req-inner'></span>
                         <p th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}"
                            class="errors"></p>

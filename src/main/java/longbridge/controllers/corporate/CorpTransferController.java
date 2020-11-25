@@ -63,6 +63,7 @@ public class CorpTransferController {
     private final CorpTransferService transferService;
     private final AccountService accountService;
     private final CorpLocalBeneficiaryService corpLocalBeneficiaryService;
+    private final CorpQuickBeneficiaryService corpQuickBeneficiaryService;
     private final TransferErrorService transferErrorService;
     private final SecurityService securityService;
     private final TransferUtils transferUtils;
@@ -82,7 +83,7 @@ public class CorpTransferController {
     private ApplicationContext appContext;
 
     @Autowired
-    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
+    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
         this.corporateService = corporateService;
         this.corporateUserService = corporateUserService;
         this.transferService = transferService;
@@ -91,6 +92,7 @@ public class CorpTransferController {
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
         this.transferUtils = transferUtils;
+        this.corpQuickBeneficiaryService = corpQuickBeneficiaryService;
     }
 
 
@@ -269,17 +271,30 @@ public class CorpTransferController {
             }
 
             if (request.getSession().getAttribute("add") != null) {
-                //checkbox  checked
-                if (request.getSession().getAttribute("Lbeneficiary") != null) {
-                    CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                    try {
-                        corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
-                        request.getSession().removeAttribute("Lbeneficiary");
-                    } catch (InternetBankingException de) {
-                        logger.error("Error occurred processing transfer");
+                if (TransferType.QUICKTELLER.equals(transferRequestDTO.getTransferType())) {
 
-                    } finally {
+                    if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                        CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                        try {
+                            corpQuickBeneficiaryService.addCorpQuickBeneficiary(l);
+                            request.getSession().removeAttribute("Lbeneficiary");
+                        } catch (InternetBankingException de) {
+                            logger.error("Error occurred processing transfer");
 
+                        }
+                    }
+
+                }else {
+                    //checkbox  checked
+                    if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                        CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                        try {
+                            corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
+                            request.getSession().removeAttribute("Lbeneficiary");
+                        } catch (InternetBankingException de) {
+                            logger.error("Error occurred processing transfer");
+
+                        }
                     }
                 }
             }

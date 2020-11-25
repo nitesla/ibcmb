@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.FinancialInstitution;
+import longbridge.models.QuicktellerBankCode;
 import longbridge.utils.TransferType;
 
 import java.io.Serializable;
@@ -22,6 +23,8 @@ public class TransferRequestDTO implements Serializable {
     private TransferType transferType;
 
     private FinancialInstitution financialInstitution;
+
+    private QuicktellerBankCode quicktellerBankCode;
 
     private String beneficiaryBank;
 
@@ -71,12 +74,13 @@ public class TransferRequestDTO implements Serializable {
     public TransferRequestDTO() {
     }
 
-    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryBank, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, Date tranDate, String referenceNumber, String userReferenceNumber, String narration, String sessionId, String currencyCode, BigDecimal amount, String statusDescription, String charge, String token, String addBeneficiaryFlag, String beneficiaryPrefferedName, String lastname, String firstname, String transferCode, String countryCode, String deviceNumber, String headerProxyAuthorization, String headerUserAgent, String ip, String loginName, String sessionkey, String sfactorAuthIndicator, String tranLocation, String channel) {
+    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, QuicktellerBankCode quicktellerBankCode, String beneficiaryBank, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, Date tranDate, String referenceNumber, String userReferenceNumber, String narration, String sessionId, String currencyCode, BigDecimal amount, String statusDescription, String charge, String token, String addBeneficiaryFlag, String beneficiaryPrefferedName, String lastname, String firstname, String transferCode, String countryCode, String deviceNumber, String headerProxyAuthorization, String headerUserAgent, String ip, String loginName, String sessionkey, String sfactorAuthIndicator, String tranLocation, String channel) {
         this.id = id;
         this.version = version;
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
+        this.quicktellerBankCode = quicktellerBankCode;
         this.beneficiaryBank = beneficiaryBank;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
         this.beneficiaryAccountName = beneficiaryAccountName;
@@ -391,6 +395,14 @@ public class TransferRequestDTO implements Serializable {
         this.transferCode = transferCode;
     }
 
+    public QuicktellerBankCode getQuicktellerBankCode() {
+        return quicktellerBankCode;
+    }
+
+    public void setQuicktellerBankCode(QuicktellerBankCode quicktellerBankCode) {
+        this.quicktellerBankCode = quicktellerBankCode;
+    }
+
     @Override
     public String toString() {
         return "TransferRequestDTO{" +
@@ -399,6 +411,7 @@ public class TransferRequestDTO implements Serializable {
                 ", customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", transferType=" + transferType +
                 ", financialInstitution=" + financialInstitution +
+                ", quicktellerBankCode=" + quicktellerBankCode +
                 ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
