@@ -7,10 +7,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.UserType;
 import longbridge.models.*;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.CorpLocalBeneficiaryRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.LocalBeneficiaryRepo;
+import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -51,6 +48,9 @@ public class TransferUtils {
     private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private AccountRepo accountRepo;
+
+    @Autowired
+    private NeftBeneficiaryRepo neftBeneficiaryRepo;
     @Autowired
     private CorporateRepo corporateRepo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -154,6 +154,44 @@ public class TransferUtils {
             
             return createMessage("session_expired", false);
             
+        }
+        return "";
+    }
+
+    public String doNEFTBankNameLookup(String bank, String accountNo) {
+
+        if (getCurrentUser() != null && !accountNo.isEmpty()) {
+
+            User user = getCurrentUser();
+            if (user.getUserType().equals(UserType.RETAIL)) {
+                NeftBeneficiary neftBeneficiary = neftBeneficiaryRepo.findByUser_IdAndBeneficiaryAccNo(user.getId(), accountNo);
+                if (neftBeneficiary != null) {
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            } else if (user.getUserType().equals(UserType.CORPORATE)) {
+                CorporateUser corporateUser = (CorporateUser) user;
+                boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), accountNo);
+                if (exists) {
+                    return createMessage("A beneficary with these details already exists", false);
+                }
+            }
+
+
+            NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
+            if (details == null)
+                return createMessage("Service unavailable, please try again later", false);
+
+
+            if (details.getResponseCode() != null && !details.getResponseCode().equalsIgnoreCase("00"))
+                return createMessage(details.getResponseDescription(), false);
+
+
+            if (details.getAccountName() != null && details.getResponseCode() != null && details.getResponseCode().equalsIgnoreCase("00"))
+                return createMessage(details.getAccountName(), true);
+
+
+            return createMessage("session_expired", false);
+
         }
         return "";
     }
