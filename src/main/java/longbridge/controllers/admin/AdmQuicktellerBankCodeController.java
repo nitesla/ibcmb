@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import longbridge.dtos.QuicktellerBankCodeDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.QuicktellerBankCode;
 import longbridge.services.QuicktellerBankCodeService;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,16 +47,16 @@ public class AdmQuicktellerBankCodeController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<QuicktellerBankCodeDTO> getAllQIs(DataTablesInput input, @RequestParam("csearch") String search) {
+    DataTablesOutput<QuicktellerBankCode> getAllQIs(DataTablesInput input, @RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<QuicktellerBankCodeDTO> qis = null;
+        Page<QuicktellerBankCode> qis = null;
         if (StringUtils.isNoneBlank(search)) {
         	qis = quicktellerBankCodeService.findQuicktellerBankCodes(search,pageable);
 		}else{
 			qis = quicktellerBankCodeService.getQuicktellerBankCodes(pageable);
 		}
-        DataTablesOutput<QuicktellerBankCodeDTO> out = new DataTablesOutput<>();
+        DataTablesOutput<QuicktellerBankCode> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(qis.getContent());
         out.setRecordsFiltered(qis.getTotalElements());
@@ -131,5 +132,12 @@ public class AdmQuicktellerBankCodeController {
         }
         return "redirect:/admin/quickbankcode";
 
+    }
+
+    @ResponseBody
+    @PostMapping("/refreshbankcode")
+    public String refreshBankCodes(){
+        quicktellerBankCodeService.refreshBankCodes();
+        return "Bank Codes Successfully updated";
     }
 }
