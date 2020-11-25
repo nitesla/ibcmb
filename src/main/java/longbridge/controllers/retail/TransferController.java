@@ -225,6 +225,13 @@ public class TransferController {
 
     }
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiryNeft")
+    public
+    @ResponseBody
+    String getNeftBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+        return transferUtils.doNEFTBankNameLookup(bank, accountNo);
+    }
+
     @GetMapping("/{accountNo}/{bank}/nameEnquiryQuickteller")
     public
     @ResponseBody

@@ -1,14 +1,9 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
-import longbridge.models.Account;
-import longbridge.models.FinancialInstitution;
-import longbridge.models.LocalBeneficiary;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
@@ -48,6 +43,9 @@ public class InterBankTransferController {
     @Value("${bank.code}")
     private String bankCode;
     private final TransferErrorService transferErrorService;
+    private final CodeService codeService;
+
+    private NeftBeneficiaryService neftBeneficiaryService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 /*
@@ -60,8 +58,8 @@ public class InterBankTransferController {
     @Autowired
     public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
 
-            , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService
-    ) {
+            , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService, CodeService codeService,
+                                       NeftBeneficiaryService neftBeneficiaryService) {
         this.retailUserService = retailUserService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
@@ -70,6 +68,39 @@ public class InterBankTransferController {
         this.accountService = accountService;
         this.transferUtils = transferUtils;
         this.transferErrorService = transferErrorService;
+        this.codeService = codeService;
+        this.neftBeneficiaryService = neftBeneficiaryService;
+    }
+
+
+    @ModelAttribute
+    public void getOtherBankBeneficiaries(Model model) {
+
+
+        List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
+        sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
+
+        model.addAttribute("localBanks"
+                , sortedNames);
+
+
+    }
+
+    @ModelAttribute
+    public void getNeftbanks(Model model) {
+        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_BANKS");
+        sortedNames.sort(Comparator.comparing(CodeDTO::getDescription));
+        model.addAttribute("neftBanks"
+                , sortedNames);
+
+    }
+
+    @ModelAttribute
+    public void getNeftCollectionType(Model model) {
+        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_COLLECTION_TYPE");
+        model.addAttribute("neftCollectionTypes"
+                , sortedNames);
+
     }
 
 
@@ -99,6 +130,7 @@ public class InterBankTransferController {
         }
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        logger.info("Retail user : "+ retailUser);
 
         List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries().spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode())).collect(Collectors.toList());
@@ -118,6 +150,7 @@ public class InterBankTransferController {
 
                 );
 
+        Iterable<NeftBeneficiary> neftBeneficiaries = neftBeneficiaryService.getNeftBeneficiaries();
         model.addAttribute("localBen", beneficiaries);
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
@@ -142,7 +175,8 @@ public class InterBankTransferController {
             requestDTO.setTransferType(TransferType.NEFT);
 
             model.addAttribute("transferRequest", requestDTO);
-            return page + "pageiAc";
+            model.addAttribute("neftBeneficiaries", neftBeneficiaries);
+            return page + "neft/pageiAc";
         } else if ("QUICKTELLER".equalsIgnoreCase(type))
             request.getSession().setAttribute("NIP", "QUICKTELLER");
             requestDTO.setTransferType(TransferType.QUICKTELLER);
@@ -164,6 +198,13 @@ public class InterBankTransferController {
 
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         return page + "pageiC";
+    }
+
+    @GetMapping("/neft")
+    public String newNeftBeneficiary(Model model, NeftBeneficiaryDTO neftBeneficiaryDTO) throws Exception {
+
+        model.addAttribute("neftBeneficiaryDTO", neftBeneficiaryDTO);
+        return page + "neft/pageiBN";
     }
 
     @PostMapping("/alpha")
@@ -222,34 +263,41 @@ public class InterBankTransferController {
         return page + "pageii";
     }
 
+   @PostMapping("/new/alpha")
+    public String getBeneficiary(@ModelAttribute("neftBeneficiaryDTO") @Valid NeftBeneficiaryDTO neftBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+        model.addAttribute("neftBeneficiaryDTO", neftBeneficiaryDTO);
+        if (servletRequest.getSession().getAttribute("add") != null)
+            servletRequest.getSession().removeAttribute("add");
+        if (result.hasErrors()) {
+            return page + "neft/pageiBN";
+        }
+
+        System.out.println("This is the beneficiary : " + neftBeneficiaryDTO);
+
+        NeftTransferRequestDTO transferRequestDTO = new NeftTransferRequestDTO();
+        transferRequestDTO.setBeneficiaryAccName(neftBeneficiaryDTO.getBeneficiaryAccName());
+        transferRequestDTO.setBeneficiaryAccNo(neftBeneficiaryDTO.getBeneficiaryAccNo());
+        transferRequestDTO.setBeneficiaryBVN(neftBeneficiaryDTO.getBeneficiaryBVN());
+        transferRequestDTO.setBeneficiaryBankName(neftBeneficiaryDTO.getBeneficiaryBankName());
+
+        logger.info("Beneficiary is {}",transferRequestDTO.getBeneficiaryAccName());
+
+        model.addAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("benName", neftBeneficiaryDTO.getBeneficiaryAccName());
+
+        servletRequest.getSession().setAttribute("Nbeneficiary", neftBeneficiaryDTO);
+
+        if (servletRequest.getParameter("add") != null){
+            servletRequest.getSession().setAttribute("add", "add");
+        }
+        return page + "neft/pageiN2";
+    }
+
 
     @RequestMapping(value = "/summary", method = {RequestMethod.POST , RequestMethod.GET})
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 
         String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
-//        logger.info("transaction channel == [{}]", transferRequestDTO.getChannel());
-//        String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
-//        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
-//        BigDecimal userAmount = transferRequestDTO.getAmount();
-//        if (userAmount == null){
-//            String amounterrorMessage = "Please supply amount";
-//            model.addAttribute("amounterrorMessage", amounterrorMessage);
-//            model.addAttribute("benName", newbenName);
-//            model.addAttribute("transferRequest", transferRequestDTO);
-//            return page + "pageii";
-//        }
-//        int a = amountLimit.intValue();
-//        logger.info("User's transfer limit == [{}]", a);
-//        int b = userAmount.intValue();
-//        logger.info("User's amount for transfer == [{}]", b);
-//        logger.info("which is a greater number [{}] or [{}]", a, b);
-//        if (b > a){
-//            String errorMessage = "You can not transfer more than account limit";
-//            model.addAttribute("errorMessage", errorMessage);
-//            model.addAttribute("benName", newbenName);
-//            model.addAttribute("transferRequest", transferRequestDTO);
-//             return page + "pageii";
-//        }
 
         model.addAttribute("transferRequest", transferRequestDTO);
         String charge = "NAN";
@@ -295,6 +343,34 @@ public class InterBankTransferController {
         return page + "pageiii";
     }
 
+    // Manages NEFT payment
+    @RequestMapping(value = "/summary/alpha", method = {RequestMethod.POST , RequestMethod.GET})
+    public String neftTransferSummary(@ModelAttribute("transferRequest") @Valid NeftTransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+
+        String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
+
+        model.addAttribute("transferRequest", transferRequestDTO);
+        String charge = "NAN";
+        String benName = (String) request.getSession().getAttribute("benName");
+        model.addAttribute("benName", benName);
+        if (result.hasErrors()) {
+            return page + "neft/pageiN2";
+        }
+        if (request.getSession().getAttribute("NIP") != null) {
+            String type = (String) request.getSession().getAttribute("NIP");
+            if("NEFT".equalsIgnoreCase(type)){
+                transferRequestDTO.setTransferType(TransferType.NEFT.name());
+                charge = transferUtils.getFee("NEFT",String.valueOf(transferRequestDTO.getAmount()));
+                transferRequestDTO.setCharge(charge);
+            }
+        } else {
+            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER.name());
+        }
+        request.getSession().setAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("charge", charge);
+        return page + "neft/neftsummary";
+    }
+
     @GetMapping("/{id}")
     public String transfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) throws Exception {
         LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
@@ -320,21 +396,6 @@ public class InterBankTransferController {
         request.getSession().setAttribute("Lbeneficiary", localBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageii";
     }
-
-
-    @ModelAttribute
-    public void getOtherBankBeneficiaries(Model model) {
-
-
-        List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
-        sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
-
-        model.addAttribute("localBanks"
-                , sortedNames);
-
-
-    }
-
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['transfer summary']];currentBar('inter bank transfer');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15  no-pad-right" >
+        <div class="col-xs-12 no-pad-lef alert no-bd">
+           <div class="">
+                <div class="col-sm-offset-3  col-sm-6">
+
+                      <table class="table table-hover center ">
+
+                            <tbody class="tab">
+                                <!--<tr class='text-center'>-->
+                                    <!--<td colspan='2'>Below is a summary of your last transaction</td>-->
+                                <!--</tr>-->
+
+                            <tr class="top-row">
+
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.beneficiaryAccName}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Destination account owner</th>
+                                <td th:text="${transferRequest.beneficiaryBankName}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Amount</th>
+                                <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Charge</th>
+                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+
+                                <th>Remarks</th>
+                                <td th:text="${transferRequest.narration}"></td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+
+
+                    
+
+
+
+                    <form method="post" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}" style="display:none;">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccNo}"/>
+                        <input type="hidden" th:field="*{beneficiaryBankName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{narration}"/>
+
+                    </form>
+
+
+
+
+
+
+                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccNo}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{narration}"/>
+<!--                        <input type="hidden" th:field="*{lastname}" />-->
+<!--                        <input type="hidden" th:field="*{firstname}" />-->
+
+                        <div class="form-group col-xs-12 no-pad-left">
+                            <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
+                            <button type="submit" class="btn btn-link required-step my-buttons useloader">Proceed</button>
+                            <button type="button" class="btn btn-link less-required my-buttons" onclick="cancel();">Cancel</button>
+                            <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>
+
+                        </div>
+                    </form>
+
+
+                    <form method="post" id="form_edit" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccNo}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{narration}"/>
+<!--                        <input type="hidden" th:field="*{lastname}" />-->
+<!--                        <input type="hidden" th:field="*{firstname}" />-->
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+   <script>
+    function edit(){
+        $("#form_edit").submit();
+    }
+
+    function cancel(){
+
+        window.location.href="/retail/transfer/interbank";
+
+    }
+</script>
+</th:block>
+
+</body>
+</html>

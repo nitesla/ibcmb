@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ml-15 hide-content-onl">
+        <!--Transfer to-->
+        <!--<span class="extra-link" style="font-size:16px" th:if="${benName}==''"  th:text="${transferRequest.beneficiaryAccountName}"></span>-->
+        <!--<span class="extra-link" style="font-size:16px" th:if="${benName}!=''" th:text="${benName}"></span>-->
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 no-pad-left " >
+        <div class="no-mt no-pad-lef alert no-bd">
+            <div class="">
+                <div class="form-spacin col-md-7 col-sm-7 no-pad-right">
+
+                    <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
+                    <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
+
+                    <form method="post" th:action="@{/retail/transfer/interbank/summary/alpha}"
+                          th:object="${transferRequest}" onsubmit="return compareAmount()">
+
+
+                        <div class="form-group">
+                            <label class='my-label'>Beneficiary</label>
+                            <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
+                            <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}==''"  th:name= "${transferRequest.beneficiaryAccountName}"  th:value= "${transferRequest.beneficiaryAccountName}" disabled />
+                            <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!=''"  th:name= "${benName}" th:value= "${benName}" disabled />
+                            <a th:href="@{/retail/transfer/interbank/index}"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
+                            <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="my-label">Source account</label>
+                            <span id="scurency"></span>
+                            <span class="alert no-bd-rad my-border bg-white hide-content-only" id="sourceCurrency">CCY</span>
+
+                            <select name="source" class="form-control" id="source"
+                                    th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
+                                <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
+                               class="errors"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="my-label">Collection Type</label>
+                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                            <select title="Choose collection type" name="collectionType" class="form-control" th:field="*{collectionType}" id="collection_type" required="required">
+                                <option th:each="collection: ${neftCollectionTypes}" th:attr="data-id=${collection.description}" th:value="${collection.code}" th:text="${collection.extraInfo}"></option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('collectionType')}" th:errors="*{collectionType}"
+                               class="errors">select a collection type</p>
+
+                            <input type="hidden" id="instrument_type" value="" name="instrumentType">
+                        </div>
+
+                        <input type="hidden" th:field="*{beneficiaryBVN}" />
+                        <input type="hidden" th:field="*{beneficiaryAccNo}" />
+                        <input type="hidden" th:field="*{beneficiaryAccName}" />
+<!--                        <input type="hidden" th:field="*{transferType}" />-->
+                        <!--<input type="hidden" name="tranLocation" id="tranLocation"/>-->
+                        <input type="hidden" name="channel" value="web"/>
+
+                        <div class="form-group">
+                            <div class="form-group" style="text-align: center;">
+                                <p id="errorMessage" style="color: red;"></p>
+                            </div>
+                            <label class="my-label">Amount </label>
+                            <span class="alert no-bd-rad my-border bg-white">NGN</span>
+
+                            <input type="number" name="amount" step="any" min="100" onchange="amountError()" placeholder="Enter an amount"
+                                   th:field="*{amount}" class="form-control amount"/><span class='req-inner' id="amount"></span>
+                            <span id="amountError" style="color:red"></span>
+                            <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                               class="errors"></p>
+                            <div class="form-group" style="text-align: center;">
+                                <p id="amounterrorMessage" style="color: red;"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="my-label">Remark</label>
+                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                            <input type="text" name="remarks" placeholder="" th:field="*{narration}"
+                                   class="form-control"/>
+                        </div>
+
+
+                        <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                        <button id="localsave" class="btn btn-link required-step useloader" type="submit">Submit</button>
+                    </form>
+                    <!--</div>-->
+
+                </div>
+
+                <div class="col-xs-12 col-sm-5  wel ">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <div  class="related-box">
+                        <h3 class="related-bar">Related Information</h3>
+
+                        <!--<input type="availBal" name="availBal"/>-->
+                        <p class="related-info coronation-blue" id="availBal"><b></b></p>
+                        <p  class="related-info coronation-blue" id="limit"><b></b></p>
+                        <!--                                            <p  class="related-info coronation-blue" id="fee"><b></b></p>-->
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        $(document).ready(function(){
+            getBalance();
+            getDestCurrency();
+            // ipLookUp();
+
+
+        })
+
+        let instrumentType;
+        $("#collection_type").change(function (){
+            instrumentType = $(this).find(':selected').data('id')
+            $("#instrument_type").val(instrumentType);
+        })
+
+        console.log($("#collection_type"))
+
+        function getBalance(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/balance/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log("DEBUGGING ONE!!!");
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                        $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        var  bal=numberWithCommas(message);
+                        $('#availBal').html("Available Balance: "+bal);
+                        getLimit();
+
+                    }
+                }
+            })
+        }
+
+        function compareAmount() {
+            var userLimit = document.getElementById('limit').innerHTML;
+            var newUserLimit = userLimit.replace('Limit: ','').replace('NGN','').replace(',','').replace(',','');
+            var userAmount = $('#amount').val();
+
+            var acctBalance = document.getElementById('availBal').innerHTML;
+            var newBal = acctBalance.replace('Available Balance: ','').replace('NGN','').replace(',','').replace(',','');
+
+            console.log("userlimit ==== " + newUserLimit);
+            console.log("userAmount ==== " + userAmount);
+            console.log("acctBalance ====" + acctBalance);
+
+            console.log("userAmount ==== " + parseFloat(userAmount));
+            console.log("userlimit ==== " + parseFloat(newUserLimit));
+            console.log("acctBalance ===" + parseFloat(newBal));
+
+            console.log(parseFloat(userAmount) > parseFloat(newUserLimit));
+            console.log(parseFloat(userAmount) > parseFloat(newBal));
+
+            if(parseFloat(userAmount) > parseFloat(newUserLimit)){
+                $('#errorMessage').html("You cannot transfer more than account limit");
+                return false;
+            } else if (parseFloat(userAmount) > parseFloat(newBal)){
+                $('#errorMessage').html("You cannot transfer more than account balance");
+                return false;
+            } else if (userAmount == ''){
+                $('#amounterrorMessage').html("Please supply amount");
+                return false;
+            }
+        }
+
+        function checkUserLimit() {
+            var userAmount = $("#amount").val();
+            console.log(userAmount);
+
+            var userLimit = $("#limit").val();
+            console.log(userLimit);
+            if (userAmount < userLimit){
+                alert("YOU CANNOT TRANSFER ABOVE YOUR LIMIT");
+            }else {
+                alert("SECOND STATEMENT")
+            }
+            alert("STOP");
+        }
+
+
+        function getLimit(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/limit/"+accountNumber+"/NIP",
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("mylimit").textContent="Could not get limit from server, please try again.";
+                        $("#mylimit").show();
+                    }else{
+                        var bal= numberWithCommas(message);
+                        $('#limit').html("Limit: "+bal);
+
+                    }
+                }
+            })
+        }
+
+        function amountError() {
+            var amount = $("#amount").val();
+            if(amount < 100){
+                $("#amountError").text("Amount must be greater than or equal to 100")
+                $("#localsave").attr("disabled",true);
+            }else{
+                $("#amountError").text("")
+                $("#localsave").attr("disabled",false);
+            }
+
+        }
+
+        function getDestCurrency(){
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/"+accountNumber+"/currency",
+                type: 'GET',
+                async: false,
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("sourceCurrency").textContent="NGN";
+                        // $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#sourceCurrency').text(cur);
+
+                    }
+                }
+            })
+        }
+
+        /*$("#amount").on("keyup",function () {
+            $("#amount").val($("#amount").val().replace(/[^0-9][^\.]/g,''));
+
+        })*/
+        $("#amount").on('blur',function(){
+            getFee();
+        })
+
+        function getFee(){
+            let amount=$("#amount").val();
+
+            $.ajax({
+                url: "/retail/transfer/interbank/"+amount+"/fee",
+                type: 'GET',
+                async: false,
+                success:function(result){
+                    if(result.includes('<')){
+                        result='';
+                        $("#fee").html("");
+                    }else {
+                        let fee = numberWithCommas(result);
+                        $('#fee').html("Fee applicable: " + '₦' + fee);
+                    }
+
+                }
+            })
+
+
+        }
+
+        /*var url=[[${url}]];
+        var key=[[${key}]];
+
+        function ipLookUp() {
+            $.ajax({
+                url: url+key,
+                dataType: 'jsonp',
+                success: function (response) {
+                    $('#tranLocation').val(response.city+":"+response.country_code+"goat");
+                    console.log($('#tranLocation').val());
+                },
+            });
+        }*/
+
+        /*]]>*/
+
+
+    </script>
+</th:block>
+
+</body>
+</html>
