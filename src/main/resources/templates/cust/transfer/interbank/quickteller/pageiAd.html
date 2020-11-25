@@ -27,8 +27,8 @@
                     <table class="table" id="mytab">
                         <thead>
                         <tr>
-                            <th>Beneficiary name</th>
-                            <th>Preferred name</th>
+                            <th>Beneficiary Name</th>
+                            <th>Preferred Name</th>
                             <th>Bank</th>
                             <th>Account number</th>
                             <th>&nbsp;</th>
@@ -38,8 +38,8 @@
                         <tbody>
 
 
-                        <tr th:each="loc : ${localBen}">
-                            <td   th:text="${loc.accountName}"></td>
+                        <tr th:each="loc : ${quickBen}">
+                            <td th:text="${loc.accountName}"></td>
                             <td th:text="${loc.preferredName}"></td>
                             <td th:text="${loc.beneficiaryBank}"></td>
                             <td th:text="${loc.accountNumber}"></td>
@@ -50,7 +50,7 @@
                                 <ul class="dropdown-menu">-->
 
 
-                                <a style='padding-top:0px !important;padding-bottom:0px !important' class="btn btn-link required-step" th:href="@{'/retail/transfer/interbank/' + ${loc.id} }">make a transfer</a>
+                                <a style='padding-top:0px !important;padding-bottom:0px !important' class="btn btn-link required-step" th:href="@{'/retail/transfer/interbank/input/' + ${loc.id} }">make a transfer</a>
 
                                 <!--</ul>
                                 </li>-->

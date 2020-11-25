@@ -21,7 +21,7 @@
                                     <div class="form-group">
                                         <label>Beneficiary Bank</label>
                                         <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code" required="required">
-                                            <option th:each="bank : ${localBanks}" th:value="${bank.sortCode}" th:text="${bank.institutionName}"></option>
+                                            <option th:each="bank : ${quickBanks}" th:value="${bank.bankCode}" th:text="${bank.bankName}"></option>
                                         </select><span class='req-inner'></span>
                                         <p th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}"
                                         class="errors"></p>
@@ -29,14 +29,12 @@
 
                                     <div class="form-group">
                                         <label>Beneficiary Lastname</label>
-                                        <input type="text" class="form-control" name="lastname"
-                                               placeholder="Beneficiary Lastname" th:field="*{lastname}"/>
+                                        <input type="text" class="form-control" name="lastname" th:field="*{lastname}"/>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Beneficiary Firstname</label>
-                                        <input type="text" class="form-control" name="firstname"
-                                               placeholder="Beneficiary Firstname" th:field="*{firstname}"/>
+                                        <input type="text" class="form-control" name="firstname" th:field="*{firstname}"/>
                                     </div>
 
                                     <div class="form-group">

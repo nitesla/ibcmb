@@ -1,6 +1,7 @@
 package longbridge.controllers.admin;
 
 
+import longbridge.InternetbankingApplication;
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.GreetingDTO;
@@ -11,12 +12,15 @@ import longbridge.services.CorporateUserService;
 import longbridge.services.GreetingService;
 import longbridge.services.RetailUserService;
 import longbridge.utils.DataTablesUtils;
+import org.apache.bcel.classfile.JavaClass;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -30,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,8 +64,11 @@ public class AdmGreetingController  {
     @Autowired
     CorporateUserService corporateUserService;
 
-    @Value("greetingImage.path")
+    @Value("${greetingImage.path}")
     private String GREETING_IMAGE_FOLDER;
+
+    @Value("${greetingImage.path}")
+    private Resource path;
     
     private static String INVALID="invalid";
 
@@ -96,6 +103,8 @@ public class AdmGreetingController  {
        return addGreetingPage;
     }
 
+
+
     @PostMapping
     public String addGreeting(@ModelAttribute("greetingDTO")@Valid GreetingDTO greetingDTO, BindingResult result,
                               @RequestParam("greetingImage") MultipartFile greetingImage, RedirectAttributes redirectAttributes, Locale locale) throws IOException{
@@ -118,26 +127,45 @@ public class AdmGreetingController  {
         }else {
 
             try {
-                logger.info("Here");
 
-                byte[] bytes = greetingImage.getBytes();
-//                    Path path = Paths.get(GREETING_IMAGE_FOLDER + greetingImage.getOriginalFilename());
-                String path = greetingImage.getOriginalFilename();
-                logger.info("Here {}", path);
-//                String mimeType = Files.probeContentType(path);
-                String mimeType = path.substring(path.lastIndexOf(".") + 1);
+                InputStream inputStream = null;
+                OutputStream outputStream = null;
+                String fileName = greetingImage.getOriginalFilename();
+                logger.info("GET FILE NAME{}", fileName);
+                File greetingFile  = new File(path.getURL().getPath(), fileName);
 
-                logger.info("here2 {}", mimeType);
+                String mimeType = fileName.substring(fileName.lastIndexOf(".") + 1);
+
                 if((mimeType.equalsIgnoreCase("png"))||(mimeType.equals("jpg"))) {
-//                    Files.write(path, bytes)
-                    String addStatus = greetingService.addGreeting(greetingDTO);
-                    redirectAttributes.addFlashAttribute("message", addStatus);
-                    return "redirect:/admin/greetings/";
+
+                    try {
+                        inputStream = greetingImage.getInputStream();
+                        if (!greetingFile.exists()) {
+                            greetingFile.createNewFile();
+                        }
+
+                        outputStream = new FileOutputStream(greetingFile);
+                        int read = 0;
+                        byte[] bytes = new byte[1024];
+
+                        while ((read = inputStream.read(bytes)) != -1) {
+                            outputStream.write(bytes, 0, read);
+                        }
+                        logger.info("Saved here : {}", greetingFile.getAbsolutePath());
+
+                    } catch (IOException i) {
+                        i.printStackTrace();
+                    }
+
+                        String addStatus = greetingService.addGreeting(greetingDTO);
+                        redirectAttributes.addFlashAttribute("message", addStatus);
+                        return "redirect:/admin/greetings/";
+
                 }else{
                     result.addError(new ObjectError("INVALID",messageSource.getMessage("form.fields.image.type",null,locale)));
                     return addGreetingPage;
                 }
-            } catch (InternetBankingException | IOException i) {
+            } catch (InternetBankingException i) {
                 result.addError(new ObjectError("error", i.getMessage()));
                 logger.error("Error creating greeting", i);
                 return addGreetingPage;
@@ -186,10 +214,15 @@ public class AdmGreetingController  {
             if(!greetingImage.isEmpty()){
 
                     byte[] bytes = greetingImage.getBytes();
-                    Path path = Paths.get(GREETING_IMAGE_FOLDER + greetingImage.getOriginalFilename());
-                String mimeType = Files.probeContentType(path);
-                if((mimeType.equals("image/png"))||(mimeType.equals("image/jpg"))) {
-                    Files.write(path, bytes);
+
+//                    Path path = Paths.get(GREETING_IMAGE_FOLDER + greetingImage.getOriginalFilename());
+//                String mimeType = Files.probeContentType(path);
+                String path = greetingImage.getOriginalFilename();
+                String mimeType = path.substring(path.lastIndexOf(".") + 1);
+
+
+                if((mimeType.equalsIgnoreCase("png"))||(mimeType.equalsIgnoreCase("jpg"))) {
+//                    Files.write(path, bytes);
                     String updateStatus = greetingService.updateGreeting(greetingDTO);
                     redirectAttributes.addFlashAttribute("message", updateStatus);
                     return greetingViewPage;

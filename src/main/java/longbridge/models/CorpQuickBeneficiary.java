@@ -6,23 +6,24 @@ import org.hibernate.envers.Audited;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+/**
+ * Created by SYLVESTER on 5/19/2017.
+ */
 @Entity
 @Audited(withModifiedFlag=true)
-@Where(clause ="del_Flag='N'" )
-public class QuickBeneficiary extends Beneficiary{
-
-
+@Where(clause="del_Flag='N'")
+public class CorpQuickBeneficiary extends Beneficiary{
     @ManyToOne
-    private RetailUser user;
+    private Corporate corporate;
     private String lastname;
     private String othernames;
 
-    public RetailUser getUser() {
-        return user;
+    public Corporate getCorporate() {
+        return corporate;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setCorporate(Corporate corporate) {
+        this.corporate = corporate;
     }
 
     public String getLastname() {
@@ -43,8 +44,8 @@ public class QuickBeneficiary extends Beneficiary{
 
     @Override
     public String toString() {
-        return "QuickBeneficiary{" +
-                "user=" + user +
+        return "CorpQuickBeneficiary{" +
+                "corporate=" + corporate +
                 ", lastname='" + lastname + '\'' +
                 ", othernames='" + othernames + '\'' +
                 '}';

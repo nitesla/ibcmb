@@ -169,6 +169,7 @@ public interface IntegrationService {
     BillPayment billPayment(BillPayment billPayment);
     RecurringPayment recurringPayment(RecurringPayment recurringPayment);
     List<BillerCategoryDTO> getBillerCategories();
+    List<QuicktellerBankCodeDTO> getBankCodes();
     CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
     NeftResponse submitNeftTransfer();
 

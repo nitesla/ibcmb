@@ -58,6 +58,7 @@ public class TransferController {
     private final AccountService accountService;
     private final MessageSource messages;
     private final LocalBeneficiaryService localBeneficiaryService;
+    private final QuickBeneficiaryService quickBeneficiaryService;
     private final TransferErrorService transferErrorService;
     private final SecurityService securityService;
     private final TransferUtils transferUtils;
@@ -78,7 +79,7 @@ public class TransferController {
 
 
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, QuickBeneficiaryService quickBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
             , ApplicationContext appContext, TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
@@ -88,6 +89,7 @@ public class TransferController {
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
         this.transferUtils = transferUtils;
+        this.quickBeneficiaryService = quickBeneficiaryService;
     }
 
 
@@ -280,18 +282,37 @@ public class TransferController {
 
 
             if (request.getSession().getAttribute("add") != null) {
-                //checkbox  checked
-                if (request.getSession().getAttribute("Lbeneficiary") != null) {
-                    LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                    RetailUser user = retailUserService.getUserByName(principal.getName());
-                    try {
-                        localBeneficiaryService.addLocalBeneficiary(l);
-                        request.getSession().removeAttribute("Lbeneficiary");
-                        request.getSession().removeAttribute("add");
-                        // model.addAttribute("beneficiary", l);
-                    } catch (InternetBankingException de) {
-                        logger.error("Error adding beneficiary", de);
 
+                if (TransferType.QUICKTELLER.equals(transferRequestDTO.getTransferType())) {
+
+                    if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                        LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                        RetailUser user = retailUserService.getUserByName(principal.getName());
+                        try {
+                            quickBeneficiaryService.addQuickBeneficiary(l);
+                            request.getSession().removeAttribute("Lbeneficiary");
+                            request.getSession().removeAttribute("add");
+                            // model.addAttribute("beneficiary", l);
+                        } catch (InternetBankingException de) {
+                            logger.error("Error adding beneficiary", de);
+
+                        }
+                    }
+
+                }else {
+                    //checkbox  checked
+                    if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                        LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                        RetailUser user = retailUserService.getUserByName(principal.getName());
+                        try {
+                            localBeneficiaryService.addLocalBeneficiary(l);
+                            request.getSession().removeAttribute("Lbeneficiary");
+                            request.getSession().removeAttribute("add");
+                            // model.addAttribute("beneficiary", l);
+                        } catch (InternetBankingException de) {
+                            logger.error("Error adding beneficiary", de);
+
+                        }
                     }
                 }
             }
