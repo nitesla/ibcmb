@@ -1433,7 +1433,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		FixedDepositDTO fixedDeposit = new FixedDepositDTO();
 
 
-		String uri = URI+"/deposit/{accountNumber}";
+		String uri = URI+"/deposit/"+ accountNumber;
 
 		Map<String,String> params = new HashMap<>();
 		params.put("accountNumber",accountNumber);
