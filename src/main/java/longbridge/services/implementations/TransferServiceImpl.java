@@ -407,6 +407,7 @@ public class TransferServiceImpl implements TransferService {
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
         dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
         dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
+        dto.setUserReferenceNumber(transRequest.getUserReferenceNumber());
         if(transRequest.getFinancialInstitution()!=null)
             dto.setBeneficiaryBank(transRequest.getFinancialInstitution().getInstitutionName());
         return dto;

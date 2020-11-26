@@ -526,7 +526,13 @@ public class CorpTransferController {
             }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
+
+        if (transRequest.getBeneficiaryBank() != null) {
+            modelMap.put("beneficiaryBank", transRequest.getBeneficiaryBank());
+        }else{
             modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+        }
+
             modelMap.put("refNUm", transRequest.getReferenceNumber());
             modelMap.put("tranDate", DateFormatter.format(transRequest.getTranDate()));
             modelMap.put("date", DateFormatter.format(new Date()));

@@ -84,6 +84,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     private TransferErrorService transferErrorService;
 
+    @Autowired
+    private QuicktellerBankCodeService quicktellerBankCodeService;
+
 
     @Autowired
     IpAddressUtils ipAddressUtils;
@@ -95,13 +98,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
-                                   AccountService accountService, ConfigurationService configService,
+                                   AccountService accountService, QuicktellerBankCodeService quicktellerBankCodeService, ConfigurationService configService,
                                    DirectDebitService directDebitService, SessionUtil sessionUtil,NeftTransferRepo neftTransferRepo, AccountRepo accountRepo) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
         this.accountService = accountService;
         this.configService = configService;
+        this.quicktellerBankCodeService =  quicktellerBankCodeService;
         this.sessionUtil = sessionUtil;
         this.directDebitService = directDebitService;
         this.neftTransferRepo = neftTransferRepo;
@@ -458,7 +462,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
         transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
         transferRequestDTO.setFinancialInstitution(corpTransRequest.getFinancialInstitution());
-        transferRequestDTO.setBeneficiaryBank(corpTransRequest.getFinancialInstitution()!=null?corpTransRequest.getFinancialInstitution().getInstitutionName():"");
+        if (corpTransRequest.getBeneficiaryBank() != null) {
+            transferRequestDTO.setBeneficiaryBank(corpTransRequest.getBeneficiaryBank());
+        }else{
+            transferRequestDTO.setBeneficiaryBank(corpTransRequest.getFinancialInstitution()!=null?corpTransRequest.getFinancialInstitution().getInstitutionName():"");
+
+        }
         transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getBeneficiaryAccountNumber());
         transferRequestDTO.setBeneficiaryAccountName(corpTransRequest.getBeneficiaryAccountName());
         transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
@@ -539,6 +548,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setAmount(transferRequestDTO.getAmount());
         corpTransRequest.setUserReferenceNumber(transferRequestDTO.getUserReferenceNumber());
         corpTransRequest.setCurrencyCode(transferRequestDTO.getCurrencyCode());
+        corpTransRequest.setBeneficiaryBank((transferRequestDTO.getBeneficiaryBank()));
 
         QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
         quickBeneficiary.setLastname(transferRequestDTO.getLastname());
