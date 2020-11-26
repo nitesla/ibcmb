@@ -8,7 +8,7 @@
     <div class="col-xs-12 no-pad-left no-pad-right">
         <div class="col-xs-12 ">
             <h5 class="page_header  col-sm-5 no-pad-left"> Transfers to other banks through NEFT</h5>
-            <a th:href="@{/retail/transfer/interbank/new}" class="pull-right extra-link btn btn-default ">New Beneficiary</a>
+            <a th:href="@{/retail/transfer/interbank/neft}" class="pull-right extra-link btn btn-default ">New Beneficiary</a>
         </div>
 
         <div class="col-sm-5 col-xs-12 ">
@@ -28,8 +28,8 @@
                         <thead>
                         <tr>
                             <th>Beneficiary name</th>
-                            <th>Preferred name</th>
                             <th>Bank</th>
+                            <th>Bank Sort Code</th>
                             <th>Account number</th>
                             <th>&nbsp;</th>
 
@@ -38,12 +38,11 @@
                         <tbody>
 
 
-                        <tr th:each="loc : ${localBen}">
-                            <td   th:text="${loc.accountName}"></td>
-                            <td th:text="${loc.preferredName}"></td>
-                            <td th:text="${loc.beneficiaryBank}"></td>
-                            <td th:text="${loc.accountNumber}"></td>
-
+                        <tr th:each="loc : ${neftBeneficiaries}">
+                            <td   th:text="${loc.beneficiaryAccName}"></td>
+                            <td th:text="${loc.beneficiaryBankName}"></td>
+                            <td th:text="${loc.beneficiarySortCode}"></td>
+                            <td th:text="${loc.beneficiaryAccNo}"></td>
                             <td>
                                 <!--<li class="dropdown" style="list-style: none">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
