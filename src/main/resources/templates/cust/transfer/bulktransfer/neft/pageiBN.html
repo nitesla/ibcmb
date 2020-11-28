@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['add beneficiary']];currentBar('inter bank transfer');breadCrumb(bread)">
+
+
+    <div layout:fragment="content">
+        <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+        </div>
+
+    <div class="col-xs-12" >
+        <div class="no-pad-lef table-responsive no-mt no-bd  alert">
+             <div class="form-spacig col-sm-8 no-pad-left">
+                 <form id="local" method="post" th:action="@{/retail/transfer/interbank/new/alpha}"
+                       th:object="${neftBeneficiaryDTO}">
+                     <div class="form-group">
+                         <label>Beneficiary Bank</label>
+                         <select name="beneficiaryBank" class="form-control" id="beneficiaryBank" th:field="*{beneficiaryBankName}"  required="required">
+                             <option th:each="bank : ${neftBanks}" th:value="${bank.description}" th:text="${bank.description}">
+
+                             </option>
+                         </select><span class='req-inner'></span>
+
+                         <input type="hidden" id="bankName" value="" name="beneficiaryBankName"></input>
+                     </div>
+
+                     <div class="form-group">
+                         <label>Beneficiary Branch</label>
+                         <select name="beneficiaryBranch" class="form-control" th:field="*{beneficiarySortCode}" id="bank_code" required="required">
+                             <option th:each="bank : ${neftBanks}" th:attr="data-id=${bank.description}" th:value="${bank.code}" th:text="${bank.extraInfo}">
+
+                             </option>
+                         </select><span class='req-inner'></span>
+                         <p th:if="${#fields.hasErrors('beneficiarySortCode')}" th:errors="*{beneficiarySortCode}"
+                            class="errors"></p>
+
+                     </div>
+
+
+                     <div class="form-group">
+                         <label >Account Number</label>
+
+<!--                         <input onblur="getAccountName()" type="number" class="form-control" pattern="\d{10}"  th:field="*{accountNumber}"-->
+                         <input type="number" class="form-control" pattern="\d{10}"  th:field="*{beneficiaryAccNo}"
+                                id="acct_num" placeholder="10 digits only" required="required"/><span class='req-inner'></span>
+                         <p class="errors" th:if="${#fields.hasErrors('beneficiaryAccNo')}" th:errors="*{beneficiaryAccNo}">&times;</p>
+                         <p class="acctError" style="display:none;">invalid account number or Bank details</p>
+<!--                         <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Getting Account Name. Please Wait</p>-->
+
+                     </div>
+
+                     <div class="form-group">
+                         <label >BVN Number</label>
+<!--                         <input onblur="getAccountName()" type="number" class="form-control" pattern="\d{10}"  th:field="*{accountNumber}"-->
+                         <input type="number" class="form-control" pattern="\d{10}"  th:field="*{beneficiaryBVN}"
+                                id="bnv_num" placeholder="11 digits only" required="required"/><span class='req-inner'></span>
+                         <p class="errors" th:if="${#fields.hasErrors('beneficiaryBVN')}" th:errors="*{beneficiaryBVN}">&times;</p>
+                         <p class="acctError" style="display:none;">invalid BVN number</p>
+<!--                         <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Getting Account Name. Please Wait</p>-->
+
+                     </div>
+
+                     <div class="form-group">
+                         <label >Account Name</label>
+                         <input type="text" class="form-control"  th:field="*{beneficiaryAccName}"
+                                id="acct_name" required="required" readonly/>
+                         <p class="errors" th:if="${#fields.hasErrors('beneficiaryAccName')}" th:errors="*{beneficiaryAccName}">&times;</p>
+                     </div>
+                     <div class="form-group" style="display: none" id="check">
+<!--                     <div class="form-group" id="check">-->
+                         <label style="font-weight: bold; color: black;margin-left:10px !important">
+                             <input  type="checkbox" id="add" name="add"/><span class='addNew'>Add Beneficiary</span>
+                         </label>
+                     </div>
+                     <button id="localsave" type = "submit" style="display: none;" class="btn btn-link required-step" >Next</button>
+                     <button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>
+                 </form>
+
+             </div>
+
+
+
+        </div>
+    </div>
+    </div>
+
+
+
+
+<th:block layout:fragment="scripts">
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        $('#bank_code').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
+            $('#localsave').hide();
+            $('#neq').show();
+        });
+        $('#acct_num').focus(function(){
+
+//            var bank = $('#bank_code').val();
+//            if (( bank==null || bank=='' )){
+//                alert('Please select a Bank');
+//                return false;
+//            }
+        });
+
+        $('#acct_num').blur(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
+        });
+//        sortSelect('#bank_code', 'text', 'asc');
+
+        $("#bank_code").prop("selectedIndex", -1);
+
+    });
+
+    let bank_code;
+    $("#bank_code").change(function (){
+        bank_code = $(this).find(':selected').data('id')
+        $("#bankName").val(bank_code);
+        console.log("I got filled : "+ $("#bankName").val())
+    })
+
+    function getAccountName() {
+        $('#loading-icon').show();
+        $('#localsave').hide();
+        $('#check').hide();
+        //make sure alert message is not empty
+        var acct = $('#acct_num').val();
+        // var bank = $('#bank_code').val();
+        var bank =bank_code;
+        console.log("THis is the bank id " + bank);
+
+        if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
+
+            $('#loading-icon').hide();
+            $('.acctError').show().css("color", "red");
+            $('#loading-icon').hide();
+            return false;
+        }
+        $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiryNeft', function (jd) {
+            var message = jd.message;
+            var success = jd.success;
+            console.log(message);
+            console.log(success);
+            if (success == false) {
+                if (message == "session_expired") {
+                    $('#loading-icon').hide();
+                    $('#check').hide();
+                    var error_holder = message;
+//assign the error to a variable
+
+                    $('#errorMess').html(error_holder);
+//change the content of the modal to  the error message stored in the variable created
+
+
+                    $('#myModalError').modal();
+                    return false;
+
+                }
+
+
+                $('.acctError').text(message);
+                $('.acctError').show().css("color", "red");
+                $('#loading-icon').hide();
+            } else {
+                $('#acct_name').val(message);
+                $('#localsave').show();
+                $('#check').show();
+                $('.acctError').hide()
+                document.getElementById('loading-icon').style.display = 'none';
+                $('#loading-icon').hide();
+            }
+        });
+
+    };
+
+
+
+
+
+    /*]]>*/
+</script>
+</th:block>
+
+</body>
+</html>
+
+
