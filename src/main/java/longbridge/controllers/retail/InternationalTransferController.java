@@ -271,12 +271,9 @@ public class InternationalTransferController {
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
                     .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
-
-
-
-
         }
 
     }
+
 
 }

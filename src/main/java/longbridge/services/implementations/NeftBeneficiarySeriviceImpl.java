@@ -56,7 +56,7 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
             logger.debug("Beneficiary {} has been added", localBeneficiary.toString());
             User user=getCurrentUser();
             user.setEmailTemplate("mail/beneficiaryMobile.html");
-            sendAlert(user,beneficiary.getBeneficiaryAccName());
+            sendAlert(user,beneficiary.getBeneficiaryAccountName());
             return messageSource.getMessage("beneficiary.add.success", null, locale);
         } catch (DuplicateObjectException e) {
             //throw new DuplicateObjectException("beneficiary.exist");
@@ -100,7 +100,7 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
 
     @Override
     public boolean doesBeneficiaryExist(RetailUser user, NeftBeneficiaryDTO beneficiaryDTO) {
-        return repo.existsByUser_IdAndBeneficiaryAccNo(user.getId(), beneficiaryDTO.getBeneficiaryAccNo());
+        return repo.existsByUser_IdAndBeneficiaryAccountNumber(user.getId(), beneficiaryDTO.getBeneficiaryAccountNumber());
     }
 
     @Override
@@ -124,7 +124,7 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
     }
 
     private void validateBeneficiary(NeftBeneficiary beneficiary){
-        if(repo.existsByUser_IdAndBeneficiaryAccNo(getCurrentUser().getId(), beneficiary.getBeneficiaryAccNo())){
+        if(repo.existsByUser_IdAndBeneficiaryAccountNumber(getCurrentUser().getId(), beneficiary.getBeneficiaryAccountNumber())){
             throw new DuplicateObjectException("Beneficiary already exists");
         }
     }

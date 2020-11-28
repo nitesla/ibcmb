@@ -47,7 +47,8 @@
                         <tr>
 
                             <th>Remarks</th>
-                            <td th:text="${transferRequest.remarks}"></td>
+                            <td th:if="${transferRequest.remarks != null}"  th:text="${transferRequest.remarks}"></td>
+                            <td th:if="${transferRequest.narration != null}"  th:text="${transferRequest.narration}"></td>
 
                         </tr>
                     </table>

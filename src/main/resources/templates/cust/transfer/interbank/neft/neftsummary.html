@@ -33,13 +33,13 @@
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${transferRequest.beneficiaryAccNo}"></td>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account owner</th>
-                                <td th:text="${transferRequest.beneficiaryAccName}"></td>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
 
                             </tr>
                             <tr>
@@ -69,7 +69,7 @@
 
                     <form method="post" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}" style="display:none;">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccNo}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryBankName}"/>
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
@@ -83,10 +83,16 @@
 
                     <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccNo}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccName}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                        <input type="hidden" th:field="*{beneficiaryBankName}"/>
+                        <input type="hidden" th:field="*{instrumentType}"/>
+                        <input type="hidden" th:field="*{collectionType}"/>
+                        <input type="hidden" th:field="*{beneficiaryBVN}"/>
+                        <input type="hidden" th:field="*{beneficiarySortCode}"/>
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
+                        <input type="hidden" th:field="*{transferType}"/>
 <!--                        <input type="hidden" th:field="*{lastname}" />-->
 <!--                        <input type="hidden" th:field="*{firstname}" />-->
 
@@ -100,12 +106,16 @@
                     </form>
 
 
-                    <form method="post" id="form_edit" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}">
+                    <form method="post" id="form_edit" th:action="@{/retail/transfer/interbank/neft/edit}" th:object="${transferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccNo}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccName}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                        <input type="hidden" th:field="*{beneficiaryBankName}"/>
+                        <input type="hidden" th:field="*{beneficiaryBVN}"/>
+                        <input type="hidden" th:field="*{beneficiarySortCode}"/>
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
+                        <input type="hidden" th:field="*{transferType}"/>
 <!--                        <input type="hidden" th:field="*{lastname}" />-->
 <!--                        <input type="hidden" th:field="*{firstname}" />-->
                     </form>
