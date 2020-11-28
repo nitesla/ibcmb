@@ -216,6 +216,17 @@ public class CorpInterBankTransferController {
         corpTransferRequestDTO.setLastname(corpLocalBeneficiaryDTO.getLastname());
         corpTransferRequestDTO.setFirstname(corpLocalBeneficiaryDTO.getFirstname());
 
+        QuicktellerBankCode quicktellerBankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(corpLocalBeneficiaryDTO.getBeneficiaryBank());
+
+        logger.info("Bank Code id {}", quicktellerBankCode);
+
+        if (quicktellerBankCode != null)
+
+            corpTransferRequestDTO.setBeneficiaryBank(quicktellerBankCode.getBankName());
+
+
+        logger.info("Beneficiary is {}",corpTransferRequestDTO);
+
         corpTransferRequestDTO.setQuicktellerBankCode(quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(corpLocalBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         model.addAttribute("benName", corpLocalBeneficiaryDTO.getPreferredName());
@@ -364,6 +375,10 @@ public class CorpInterBankTransferController {
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
+
+        QuicktellerBankCode quicktellerBankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(beneficiary.getBeneficiaryBank());
+        requestDTO.setBeneficiaryBank(quicktellerBankCode.getBankName());
+
         requestDTO.setTransferType(TransferType.QUICKTELLER);
         requestDTO.setFirstname(beneficiary.getOthernames());
         requestDTO.setLastname(beneficiary.getLastname());

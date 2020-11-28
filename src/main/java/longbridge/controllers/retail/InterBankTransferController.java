@@ -268,6 +268,15 @@ public class InterBankTransferController {
         transferRequestDTO.setLastname(localBeneficiaryDTO.getLastname());
         transferRequestDTO.setFirstname(localBeneficiaryDTO.getFirstname());
 
+        QuicktellerBankCode quicktellerBankCode = quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(localBeneficiaryDTO.getBeneficiaryBank());
+
+        logger.info("Bank Code id {}", quicktellerBankCode);
+
+        if (quicktellerBankCode != null)
+
+            transferRequestDTO.setBeneficiaryBank(quicktellerBankCode.getBankName());
+
+
         logger.info("Beneficiary is {}",transferRequestDTO);
 
         transferRequestDTO.setQuicktellerBankCode(quicktellerBankCodeService.getQuicktellerBankCodeByBankCode(localBeneficiaryDTO.getBeneficiaryBank()));
@@ -483,6 +492,7 @@ public class InterBankTransferController {
             return "redirect:/retail/transfer/interbank/index";
         }
         requestDTO.setQuicktellerBankCode(bankcode);
+        requestDTO.setBeneficiaryBank(bankcode.getBankName());
 
         model.addAttribute("transferRequest", requestDTO);
         model.addAttribute("beneficiary", quickBeneficiaryService.convertEntityToDTO(beneficiary));

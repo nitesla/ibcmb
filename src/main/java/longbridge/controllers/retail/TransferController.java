@@ -526,6 +526,11 @@ public class TransferController {
             }
             modelMap.put("beneficiary", transRequest.getBeneficiaryAccountName());
             modelMap.put("beneficiaryAcctNumber", transRequest.getBeneficiaryAccountNumber());
+//        if (transRequest.getBeneficiaryBank() != null) {
+//            modelMap.put("beneficiaryBank", transRequest.getBeneficiaryBank());
+//        }else{
+//            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
+//        }
 //            modelMap.put("beneficiaryBank", transRequest.getFinancialInstitution().getInstitutionName());
             modelMap.put("beneficiaryBank", transRequest.getBeneficiaryBank());
             modelMap.put("refNUm", transRequest.getReferenceNumber());
