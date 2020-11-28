@@ -91,6 +91,12 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
+    public List<CodeDTO> getCodesByTypeAndDescription(String codeType, String description) {
+        Iterable<Code> codes = this.codeRepo.findByTypeAndDescription(codeType,description);
+        return convertEntitiesToDTOs(codes);
+    }
+
+    @Override
     public Iterable<CodeDTO> getCodes() {
         Iterable<Code> codes = this.codeRepo.findAll();
         return convertEntitiesToDTOs(codes);

@@ -582,10 +582,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                 return sendTransfer(transRequest);
 			}
-//			case NEFT: {
-//				TransRequest neftTransferRequest = sendNeftTransfer(transRequest);
+			case NEFT: {
+				NeftResponse neftTransferRequest = submitNeftTransfer();
 //				return neftTransferRequest;
-//			}
+			}
 			case QUICKTELLER: {
 
 				QuickDetails response;
@@ -1772,33 +1772,35 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
     public NeftResponse submitNeftTransfer() {
 		NeftResponse response = new NeftResponse();
+		String uri = NEFTURI+"/api/neftOutWard/Submit";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
+
         List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
+        Double totalValue = getTotalValue(getUnsettledNeftList);
         logger.info("getUnsettledList == {}", getUnsettledNeftList);
         String ItemCount = String.valueOf(getUnsettledNeftList.size());
-		int MsgID = (int)(Math.random() * (9 - 1 + 1) + 1);
-		Date date = new Date();
-		String newdate = dateFormat.format(date);
-		String uri = NEFTURI+"/api/neftOutWard/Submit";
+		String newDate = dateFormat.format(new Date());
+
 		Map<String,Object> params = new HashMap<>();
 		params.put("appid",appId);
-		params.put("MsgID",MsgID);
-		params.put("TotalValue", "2.0");
+		params.put("MsgID",getMsgId());
+		params.put("TotalValue", totalValue);
 		params.put("BankCode",bankcode);
 		params.put("ItemCount", ItemCount);
-		params.put("Date", newdate);
-		params.put("SettlementTimeF", newdate);
-		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
-				.peek(neftTransfer -> updateNeftSettlement(newdate, neftTransfer))
-				.collect(Collectors.toList());
+		params.put("Date", newDate);
+		params.put("SettlementTimeF", newDate);
+//		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
+//				.peek(neftTransfer -> updateNeftSettlement(newDate, neftTransfer))
+//				.collect(Collectors.toList());
+		List<NeftTransfer> neftTransfers = updateSequenceNumber(getUnsettledNeftList, newDate);
+		logger.info("Complete PFItemDataStores ========= {}", neftTransfers);
 		params.put("PFItemDataStores", neftTransfers);
-
 		logger.info("PARAMS ============ {}", params);
 		try{
 			if (!getUnsettledNeftList.isEmpty()){
 				response = template.postForObject(uri,params, NeftResponse.class);
 				getUnsettledNeftList.forEach(neftTransfer -> {
-					updateNeftSettlement(newdate, neftTransfer);
+					updateNeftSettlement(newDate, neftTransfer);
 					neftTransferRepo.save(neftTransfer);
 				});
 			}else {
@@ -1810,12 +1812,38 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return response;
     }
 
-	private void updateNeftSettlement(String newdate, NeftTransfer neftTransfer) {
-		neftTransfer.setSettlementTime(newdate);
-		neftTransfer.setPresentmentDate(newdate);
-		neftTransfer.setInstrumentDate(newdate);
-		neftTransfer.setBankOfFirstDepositDate(newdate);
+	private void updateNeftSettlement(String newDate, NeftTransfer neftTransfer) {
+		neftTransfer.setSettlementTime(newDate);
+		neftTransfer.setPresentmentDate(newDate);
+		neftTransfer.setInstrumentDate(newDate);
+		neftTransfer.setBankOfFirstDepositDate(newDate);
 	}
 
+	private Long getMsgId(){
+		return (long) Math.floor(Math.random() * 9000000000000L) + 1000000000000L;
+	}
 
+	private Double getTotalValue(List<NeftTransfer> neftTransfers){
+		return neftTransfers
+				.stream()
+				.filter(Objects::nonNull)
+				.map(NeftTransfer::getAmount)
+				.reduce(BigDecimal.ZERO, BigDecimal::add)
+				.doubleValue();
+	}
+
+	private List<NeftTransfer> updateSequenceNumber(List<NeftTransfer> neftTransfers, String newDate){
+		List<NeftTransfer> neftTransferList = new ArrayList<>();
+		for(int i = 1; i <= neftTransfers.size(); i++){
+			NeftTransfer neftTransfer = neftTransfers.get(i);
+			neftTransfer.setItemSequenceNo(String.valueOf(i));
+			neftTransfer.setSerialNo(String.valueOf(i));
+			neftTransferList.add(neftTransfer);
+		}
+		return neftTransferList.
+				stream()
+				.peek(neftTransfer -> updateNeftSettlement(newDate, neftTransfer))
+				.collect(Collectors.toList());
+	}
+	
 }
