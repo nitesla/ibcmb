@@ -5,9 +5,9 @@ import javax.validation.constraints.NotEmpty;
 public class NeftBeneficiaryDTO {
     private Long id;
     @NotEmpty(message = "Please enter a Beneficiary Name")
-    private String beneficiaryAccName;
+    private String beneficiaryAccountName;
     @NotEmpty(message = "Please enter an Account Number")
-    private String beneficiaryAccNo;
+    private String beneficiaryAccountNumber;
     @NotEmpty(message = "Please enter a Beneficiary Bank")
     private String beneficiarySortCode;
     @NotEmpty(message = "Please enter a Beneficiary BVN Number")
@@ -25,20 +25,20 @@ public class NeftBeneficiaryDTO {
         this.id = id;
     }
 
-    public String getBeneficiaryAccName() {
-        return beneficiaryAccName;
+    public String getBeneficiaryAccountName() {
+        return beneficiaryAccountName;
     }
 
-    public void setBeneficiaryAccName(String beneficiaryAccName) {
-        this.beneficiaryAccName = beneficiaryAccName;
+    public void setBeneficiaryAccountName(String beneficiaryAccountName) {
+        this.beneficiaryAccountName = beneficiaryAccountName;
     }
 
-    public String getBeneficiaryAccNo() {
-        return beneficiaryAccNo;
+    public String getBeneficiaryAccountNumber() {
+        return beneficiaryAccountNumber;
     }
 
-    public void setBeneficiaryAccNo(String beneficiaryAccNo) {
-        this.beneficiaryAccNo = beneficiaryAccNo;
+    public void setBeneficiaryAccountNumber(String beneficiaryAccountNumber) {
+        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
     }
 
     public String getBeneficiarySortCode() {
@@ -71,8 +71,8 @@ public class NeftBeneficiaryDTO {
     public String toString() {
         return "NeftBeneficiaryDTO{" +
                 "id=" + id +
-                ", beneficiaryAccName='" + beneficiaryAccName + '\'' +
-                ", beneficiaryAccNo='" + beneficiaryAccNo + '\'' +
+                ", beneficiaryAccName='" + beneficiaryAccountName + '\'' +
+                ", beneficiaryAccNo='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiarySortCode='" + beneficiarySortCode + '\'' +
                 ", beneficiaryBVN='" + beneficiaryBVN + '\'' +
                 ", beneficiaryBankName='" + beneficiaryBankName + '\'' +

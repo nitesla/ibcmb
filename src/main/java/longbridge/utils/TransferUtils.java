@@ -164,7 +164,7 @@ public class TransferUtils {
 
             User user = getCurrentUser();
             if (user.getUserType().equals(UserType.RETAIL)) {
-                NeftBeneficiary neftBeneficiary = neftBeneficiaryRepo.findByUser_IdAndBeneficiaryAccNo(user.getId(), accountNo);
+                NeftBeneficiary neftBeneficiary = neftBeneficiaryRepo.findByUser_IdAndBeneficiaryAccountNumber(user.getId(), accountNo);
                 if (neftBeneficiary != null) {
                     return createMessage("A beneficary with these details already exists", false);
                 }

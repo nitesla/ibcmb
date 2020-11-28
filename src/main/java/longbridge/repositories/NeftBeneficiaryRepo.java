@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface NeftBeneficiaryRepo extends CommonRepo<NeftBeneficiary, Long>{
     Iterable<NeftBeneficiary> findByUser(RetailUser user);
-    NeftBeneficiary findByUser_IdAndBeneficiaryAccNo(Long id,String acctNo);
-    boolean existsByUser_IdAndBeneficiaryAccNo(Long id, String acctNo);
+    NeftBeneficiary findByUser_IdAndBeneficiaryAccountNumber(Long id, String acctNo);
+    boolean existsByUser_IdAndBeneficiaryAccountNumber(Long id, String acctNo);
 //    List<NeftBeneficiary> findByUser_IdAndBeneficiaryBankIgnoreCase(Long id, String bankCode);
 //    List<NeftBeneficiary> findByUser_IdAndBeneficiarySortCode(Long id,String bankCode);
     List<NeftBeneficiary> findByUserAndBeneficiarySortCode(RetailUser user,String bankCode);

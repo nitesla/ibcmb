@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -97,10 +98,14 @@ public class InterBankTransferController {
 
     @ModelAttribute
     public void getNeftbanks(Model model) {
-        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_BANKS");
-        sortedNames.sort(Comparator.comparing(CodeDTO::getDescription));
+        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+        Set<String> names = bankNames
+                .stream()
+                .map(CodeDTO::getDescription)
+                .collect(Collectors.toSet());
+        Collections.sort(new ArrayList<>(names));
         model.addAttribute("neftBanks"
-                , sortedNames);
+                ,names);
 
     }
 
@@ -141,7 +146,8 @@ public class InterBankTransferController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         logger.info("Retail user : "+ retailUser);
         TransferRequestDTO requestDTO = new TransferRequestDTO();
-        String type = request.getParameter("tranType");
+//        String type = request.getParameter("tranType");
+        String type = request.getParameter("transferType");
         logger.info("type {} ", type);
 
         if ("QUICKTELLER".equalsIgnoreCase(type)) {
@@ -304,7 +310,7 @@ public class InterBankTransferController {
     }
 
    @PostMapping("/new/alpha")
-    public String getBeneficiary(@ModelAttribute("neftBeneficiaryDTO") @Valid NeftBeneficiaryDTO neftBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+    public String getBeneficiary(@ModelAttribute("neftBeneficiaryDTO") @Valid NeftBeneficiaryDTO neftBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) throws Exception {
         model.addAttribute("neftBeneficiaryDTO", neftBeneficiaryDTO);
         if (servletRequest.getSession().getAttribute("add") != null)
             servletRequest.getSession().removeAttribute("add");
@@ -312,18 +318,21 @@ public class InterBankTransferController {
             return page + "neft/pageiBN";
         }
 
+
         System.out.println("This is the beneficiary : " + neftBeneficiaryDTO);
 
         NeftTransferRequestDTO transferRequestDTO = new NeftTransferRequestDTO();
-        transferRequestDTO.setBeneficiaryAccName(neftBeneficiaryDTO.getBeneficiaryAccName());
-        transferRequestDTO.setBeneficiaryAccNo(neftBeneficiaryDTO.getBeneficiaryAccNo());
+        transferRequestDTO.setBeneficiaryAccountName(neftBeneficiaryDTO.getBeneficiaryAccountName());
+        transferRequestDTO.setBeneficiaryAccountNumber(neftBeneficiaryDTO.getBeneficiaryAccountNumber());
         transferRequestDTO.setBeneficiaryBVN(neftBeneficiaryDTO.getBeneficiaryBVN());
         transferRequestDTO.setBeneficiaryBankName(neftBeneficiaryDTO.getBeneficiaryBankName());
+        transferRequestDTO.setBeneficiarySortCode(neftBeneficiaryDTO.getBeneficiarySortCode());
 
-        logger.info("Beneficiary is {}",transferRequestDTO.getBeneficiaryAccName());
+        logger.info("Beneficiary is {}",transferRequestDTO.getBeneficiaryAccountName());
+        logger.info("Neft Transfer Request is {} ", transferRequestDTO);
 
         model.addAttribute("transferRequest", transferRequestDTO);
-        model.addAttribute("benName", neftBeneficiaryDTO.getBeneficiaryAccName());
+        model.addAttribute("benName", neftBeneficiaryDTO.getBeneficiaryAccountName());
 
         servletRequest.getSession().setAttribute("Nbeneficiary", neftBeneficiaryDTO);
 
@@ -385,10 +394,11 @@ public class InterBankTransferController {
 
     // Manages NEFT payment
     @RequestMapping(value = "/summary/alpha", method = {RequestMethod.POST , RequestMethod.GET})
-    public String neftTransferSummary(@ModelAttribute("transferRequest") @Valid NeftTransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+    public String neftTransferSummary(@ModelAttribute("transferRequest") @Valid NeftTransferRequestDTO transferRequestDTO1, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 
         String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
-
+        logger.info("I GOT HERE WITH ALL DETAILS {}", transferRequestDTO1);
+        TransferRequestDTO transferRequestDTO = convertToTransferRequest(transferRequestDTO1);
         model.addAttribute("transferRequest", transferRequestDTO);
         String charge = "NAN";
         String benName = (String) request.getSession().getAttribute("benName");
@@ -399,14 +409,14 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
             if("NEFT".equalsIgnoreCase(type)){
-                transferRequestDTO.setTransferType(TransferType.NEFT.name());
+                transferRequestDTO.setTransferType(TransferType.NEFT);
                 charge = transferUtils.getFee("NEFT",String.valueOf(transferRequestDTO.getAmount()));
                 transferRequestDTO.setCharge(charge);
             }
-        } else {
-            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER.name());
         }
+
         request.getSession().setAttribute("transferRequest", transferRequestDTO);
+        logger.info("Neft Transfer Request summary {} ", transferRequestDTO);
         model.addAttribute("charge", charge);
         return page + "neft/neftsummary";
     }
@@ -435,6 +445,26 @@ public class InterBankTransferController {
         model.addAttribute("benName", benName);
         request.getSession().setAttribute("Lbeneficiary", localBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageii";
+    }
+
+    @GetMapping("neft/{id}/transfer")
+    public String neftTransfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) throws Exception {
+        NeftBeneficiary beneficiary = neftBeneficiaryService.getNeftBeneficiary(id);
+
+        TransferRequestDTO requestDTO = new TransferRequestDTO();
+        requestDTO.setBeneficiaryAccountName(beneficiary.getBeneficiaryAccountName());
+        requestDTO.setBeneficiaryAccountNumber(beneficiary.getBeneficiaryAccountNumber());
+        requestDTO.setBeneficiaryBVN(beneficiary.getBeneficiaryBVN());
+        requestDTO.setBeneficiarySortCode(beneficiary.getBeneficiarySortCode());
+        requestDTO.setBeneficiaryBankName(beneficiary.getBeneficiaryBankName());
+        requestDTO.setTransferType(TransferType.NEFT);
+//
+        model.addAttribute("transferRequest", requestDTO);
+        model.addAttribute("beneficiary", neftBeneficiaryService.convertEntityToDTO(beneficiary));
+        request.getSession().setAttribute("beneficiaryName", beneficiary.getBeneficiaryAccountName());
+        model.addAttribute("benName", beneficiary.getBeneficiaryAccountName());
+        request.getSession().setAttribute("Nbeneficiary", neftBeneficiaryService.convertEntityToDTO(beneficiary));
+        return page + "neft/pageiN2";
     }
 
     @GetMapping("/input/{id}")
@@ -513,6 +543,13 @@ public class InterBankTransferController {
         return page + "pageii";
     }
 
+    @PostMapping("neft/edit")
+    public String editNeftTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+        model.addAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("benName", transferRequestDTO.getBeneficiaryAccountName());
+        return page + "neft/pageiN2";
+    }
+
     @ModelAttribute
     public void setNairaSourceAccount(Model model, Principal principal) {
 
@@ -527,10 +564,21 @@ public class InterBankTransferController {
                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
                     .forEach(accountList::add);
             model.addAttribute("accountList", accountList);
+        }
 
+    }
 
+    @ModelAttribute
+    public void getBanksForNeft(Model model, Principal principal) {
 
-
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        if (user != null) {
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
+            List<Account> accountList = StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(account -> account.getCurrencyCode().equalsIgnoreCase("NGN") || account.getCurrencyCode().equalsIgnoreCase("USD"))
+                    .collect(Collectors.toList());
+            model.addAttribute("accounts", accountList);
         }
 
     }
@@ -548,6 +596,37 @@ public class InterBankTransferController {
         return fee;
 
     }
+
+    @ResponseBody
+    @GetMapping("neft/{bankName}/branch")
+    public List<CodeDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
+        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+    }
+
+    @ResponseBody
+    @GetMapping("user/account/{accountNumber}")
+    public AccountDetailsDTO getTransferDetails(@PathVariable("accountNumber") String accountNumber, Model model) {
+        Object obj = model.getAttribute("accounts");
+        AccountDetailsDTO dto = new AccountDetailsDTO();
+
+        if(obj != null){
+            List<Account> accountList = (List<Account>) obj;
+            Account account = accountList.stream()
+                    .filter(Objects::nonNull)
+                    .filter(account1 -> account1.getAccountNumber().equalsIgnoreCase(accountNumber))
+                    .findFirst().get();
+
+            dto.setCurrencyCode(account.getCurrencyCode());
+            if(account.getCurrencyCode().equalsIgnoreCase("NGN")){
+                dto.setCollectionType("71");
+                dto.setInstrumentType("DB");
+            }else if(account.getCurrencyCode().equalsIgnoreCase("USD")){
+                dto.setCollectionType("38");
+                dto.setInstrumentType("DB");
+            }
+        }
+        return dto;
+    }
 /*
     @ModelAttribute
     public void setLocationParams(Model model) {
@@ -555,6 +634,27 @@ public class InterBankTransferController {
         model.addAttribute("url", geolocationUrl);
 
     }*/
+
+    private TransferRequestDTO convertToTransferRequest(NeftTransferRequestDTO nft){
+        TransferRequestDTO trt = new TransferRequestDTO();
+        trt.setBeneficiaryBVN(nft.getBeneficiaryBVN());
+        trt.setBeneficiaryAccountNumber(nft.getBeneficiaryAccountNumber());
+        trt.setBeneficiaryAccountName(nft.getBeneficiaryAccountName());
+        trt.setBeneficiaryBankName(nft.getBeneficiaryBankName());
+        trt.setBeneficiarySortCode(nft.getBeneficiarySortCode());
+        trt.setInstrumentType(nft.getInstrumentType());
+        trt.setCollectionType(nft.getCollectionType());
+//        trt.setCurrency(nft.getCurrencyCode());
+        trt.setCurrencyCode(nft.getCurrencyCode());
+        trt.setCustomerAccountNumber(nft.getCustomerAccountNumber());
+        trt.setTransferType(TransferType.NEFT);
+        trt.setAmount(new BigDecimal(nft.getAmount()));
+        trt.setNarration(nft.getNarration());
+        trt.setCharge(nft.getCharge());
+        trt.setChannel(nft.getChannel());
+        return trt;
+
+    }
 
 
 }

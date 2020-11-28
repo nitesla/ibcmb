@@ -2,10 +2,9 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.InternationalTransferRequestDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferException;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
 import longbridge.repositories.AccountRepo;
@@ -22,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -73,6 +73,12 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private AccountRepo accountRepo;
 
+    @Value("${MICRRepairInd}")
+    private String micrRepairInd;
+
+    @Value("${bankSortCode}")
+    private String bankSortCode;
+
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
             , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil) {
@@ -96,30 +102,31 @@ public class TransferServiceImpl implements TransferService {
         return retailUser.getBvn();
     }
 
-
-    private NeftTransfer pfDataItemStore(TransferRequestDTO neftTransferDTO){
+    private NeftTransfer makepfDataItemStore(TransferRequestDTO neftTransferDTO){
         NeftTransfer neftTransfer = new NeftTransfer();
         String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setBeneficiaryAccountNo(neftTransferDTO.getBeneficiaryAccountNumber());
         neftTransfer.setBeneficiary(neftTransferDTO.getBeneficiaryAccountName());
         neftTransfer.setAmount(neftTransferDTO.getAmount());
-        neftTransfer.setCurrency("NGN");
-        neftTransfer.setSpecialClearing(true);
-        neftTransfer.setBVNBeneficiary("");
+        neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
+        neftTransfer.setSpecialClearing(false);
+        neftTransfer.setBVNBeneficiary(neftTransferDTO.getBeneficiaryBVN());
         neftTransfer.setBankOfFirstDepositSortCode("");
-        neftTransfer.setCollectionType("");
+        neftTransfer.setCollectionType(neftTransferDTO.getCollectionType());
         neftTransfer.setBVNPayer(bvn);
-        neftTransfer.setInstrumentType(neftTransferDTO.getChannel());
-        neftTransfer.setMICRRepairInd("");
+        neftTransfer.setPayerName(neftTransferDTO.getPayerName());
+        neftTransfer.setInstrumentType(neftTransferDTO.getInstrumentType());
+        neftTransfer.setMICRRepairInd(micrRepairInd);
         neftTransfer.setSettlementTime("not settled");
-        neftTransfer.setCycleNo("");
-        neftTransfer.setNarration(neftTransferDTO.getRemarks());
-        neftTransfer.setPresentingBankSortCode("");
-        neftTransfer.setSortCode("");
-        neftTransfer.setTranCode("");
+        neftTransfer.setCycleNo("01");
+        neftTransfer.setNarration(neftTransferDTO.getNarration());
+        neftTransfer.setPresentingBankSortCode(bankSortCode);
+        neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
+        neftTransfer.setTranCode("20");
         neftTransfer.setSerialNo("");
         neftTransferRepo.save(neftTransfer);
+        logger.info("Neft pfDataItemStore : {}", neftTransfer);
         return neftTransfer;
     }
 
@@ -132,7 +139,7 @@ public class TransferServiceImpl implements TransferService {
         validateTransfer(transferRequestDTO);
         if (transferRequestDTO.getTransferType() == TransferType.NEFT){
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
-             pfDataItemStore(transferRequestDTO);
+             makepfDataItemStore(transferRequestDTO);
         }
         
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
@@ -196,7 +203,7 @@ public class TransferServiceImpl implements TransferService {
         
         if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
 
-            logger.info("uniqueid {}",transRequest);
+            logger.info("uniqueid {}",transRequest2);
             transRequest2.setStatus("00");
             transRequest = transferRequestRepo.save(transRequest2);
 
@@ -219,6 +226,7 @@ public class TransferServiceImpl implements TransferService {
         }
         throw new InternetBankingTransferException(messages.getMessage("transfer.failed",null,locale));
     }
+
 
     @Override
     public TransRequest getTransfer(Long id) {
@@ -405,10 +413,14 @@ public class TransferServiceImpl implements TransferService {
         dto.setSfactorAuthIndicator(transRequest.getAntiFraudData().getSfactorAuthIndicator());
         dto.setChannel(transRequest.getChannel());
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
-        dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
-        dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
-        if(transRequest.getFinancialInstitution()!=null)
-            dto.setBeneficiaryBank(transRequest.getFinancialInstitution().getInstitutionName());
+        if(transRequest.getTransferType() != TransferType.NEFT){
+            dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
+            dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
+            if(transRequest.getFinancialInstitution()!=null)
+                dto.setBeneficiaryBank(transRequest.getFinancialInstitution().getInstitutionName());
+        }
+        dto.setBeneficiaryBank(transRequest.getBeneficiaryBank());
+
         return dto;
     }
 
@@ -642,6 +654,19 @@ public class TransferServiceImpl implements TransferService {
     private CorporateUser getCurrentCorpUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return (CorporateUser) principal.getUser();
+    }
+
+    private TransferRequestDTO convertNeftTransferToTransferRequest(NeftTransferRequestDTO neftTransferRequestDTO){
+        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
+        transferRequestDTO.setBeneficiaryBank(neftTransferRequestDTO.getBeneficiaryBankName());
+        transferRequestDTO.setBeneficiaryAccountName(neftTransferRequestDTO.getBeneficiaryAccountName());
+        transferRequestDTO.setBeneficiaryAccountNumber(neftTransferRequestDTO.getBeneficiaryAccountNumber());
+        transferRequestDTO.setBeneficiaryPrefferedName(neftTransferRequestDTO.getBeneficiaryAccountName());
+        transferRequestDTO.setCurrencyCode("NGN");
+        transferRequestDTO.setAmount(new BigDecimal(neftTransferRequestDTO.getAmount()));
+        transferRequestDTO.setNarration(neftTransferRequestDTO.getNarration());
+        transferRequestDTO.setCharge(neftTransferRequestDTO.getCharge());
+        return transferRequestDTO;
     }
 
 }

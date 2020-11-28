@@ -5,6 +5,7 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.QuicktellerBankCode;
 import longbridge.utils.TransferType;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -69,6 +70,18 @@ public class TransferRequestDTO implements Serializable {
     private String  sfactorAuthIndicator;
     private String tranLocation;
     private String channel;
+
+    //neft Transfer Details
+    private String beneficiaryBVN;
+    private String beneficiaryBankName;
+    private String beneficiarySortCode;
+    private String instrumentType;
+    @NotEmpty(message = "Choose a collect Type")
+    private String collectionType;
+    private String payerName;
+    private String currency;
+
+
 
 
     public TransferRequestDTO() {
@@ -403,6 +416,62 @@ public class TransferRequestDTO implements Serializable {
         this.quicktellerBankCode = quicktellerBankCode;
     }
 
+    public String getBeneficiaryBVN() {
+        return beneficiaryBVN;
+    }
+
+    public void setBeneficiaryBVN(String beneficiaryBVN) {
+        this.beneficiaryBVN = beneficiaryBVN;
+    }
+
+    public String getBeneficiaryBankName() {
+        return beneficiaryBankName;
+    }
+
+    public void setBeneficiaryBankName(String beneficiaryBankName) {
+        this.beneficiaryBankName = beneficiaryBankName;
+    }
+
+    public String getBeneficiarySortCode() {
+        return beneficiarySortCode;
+    }
+
+    public void setBeneficiarySortCode(String beneficiarySortCode) {
+        this.beneficiarySortCode = beneficiarySortCode;
+    }
+
+    public String getInstrumentType() {
+        return instrumentType;
+    }
+
+    public void setInstrumentType(String instrumentType) {
+        this.instrumentType = instrumentType;
+    }
+
+    public String getCollectionType() {
+        return collectionType;
+    }
+
+    public void setCollectionType(String collectionType) {
+        this.collectionType = collectionType;
+    }
+
+    public String getPayerName() {
+        return payerName;
+    }
+
+    public void setPayerName(String payerName) {
+        this.payerName = payerName;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Override
     public String toString() {
         return "TransferRequestDTO{" +
@@ -442,6 +511,13 @@ public class TransferRequestDTO implements Serializable {
                 ", sfactorAuthIndicator='" + sfactorAuthIndicator + '\'' +
                 ", tranLocation='" + tranLocation + '\'' +
                 ", channel='" + channel + '\'' +
+                ", beneficiaryBVN='" + beneficiaryBVN + '\'' +
+                ", beneficiaryBankName='" + beneficiaryBankName + '\'' +
+                ", beneficiarySortCode='" + beneficiarySortCode + '\'' +
+                ", instrumentType='" + instrumentType + '\'' +
+                ", collectionType='" + collectionType + '\'' +
+                ", payerName='" + payerName + '\'' +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }

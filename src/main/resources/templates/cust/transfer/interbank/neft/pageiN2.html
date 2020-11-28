@@ -23,6 +23,11 @@
                     <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                     <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
+
+                    <form method="post" id="benForm" th:action="@{/retail/transfer/interbank/index}" style="">
+                        <input type="hidden" name="transferType" th:value="${transferRequest.transferType}">
+                    </form>
+
                     <form method="post" th:action="@{/retail/transfer/interbank/summary/alpha}"
                           th:object="${transferRequest}" onsubmit="return compareAmount()">
 
@@ -32,7 +37,8 @@
                             <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
                             <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}==''"  th:name= "${transferRequest.beneficiaryAccountName}"  th:value= "${transferRequest.beneficiaryAccountName}" disabled />
                             <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!=''"  th:name= "${benName}" th:value= "${benName}" disabled />
-                            <a th:href="@{/retail/transfer/interbank/index}"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
+<!--                            <a th:href="@{/retail/transfer/interbank/index}"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>-->
+                            <button id="changeBen"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></button>
                             <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                         </div>
 
@@ -43,28 +49,31 @@
 
                             <select name="source" class="form-control" id="source"
                                     th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
-                                <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                             </select>
                             <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
                                class="errors"></p>
                         </div>
 
-                        <div class="form-group">
-                            <label class="my-label">Collection Type</label>
-                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
-                            <select title="Choose collection type" name="collectionType" class="form-control" th:field="*{collectionType}" id="collection_type" required="required">
-                                <option th:each="collection: ${neftCollectionTypes}" th:attr="data-id=${collection.description}" th:value="${collection.code}" th:text="${collection.extraInfo}"></option>
-                            </select>
-                            <p th:if="${#fields.hasErrors('collectionType')}" th:errors="*{collectionType}"
-                               class="errors">select a collection type</p>
+<!--                        <div class="form-group">-->
+<!--                            <label class="my-label">Collection Type</label>-->
+<!--                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>-->
+<!--                            <select title="Choose collection type" name="collectionType" class="form-control" th:field="*{collectionType}" id="collection_type" required="required">-->
+<!--                                <option th:each="collection: ${neftCollectionTypes}" th:attr="data-id=${collection.description}" th:value="${collection.code}" th:text="${collection.extraInfo}"></option>-->
+<!--                            </select>-->
+<!--                            <p th:if="${#fields.hasErrors('collectionType')}" th:errors="*{collectionType}"-->
+<!--                               class="errors">select a collection type</p>-->
 
-                            <input type="hidden" id="instrument_type" value="" name="instrumentType">
-                        </div>
-
+<!--                            -->
+<!--                        </div>-->
+                        <input type="hidden" id="collection_type" value="" th:field="*{collectionType}">
+                        <input type="hidden" id="instrument_type" value="" th:field="*{instrumentType}">
+                        <input type="hidden" id="currencyCode" value="" th:field="*{currencyCode}">
                         <input type="hidden" th:field="*{beneficiaryBVN}" />
-                        <input type="hidden" th:field="*{beneficiaryAccNo}" />
-                        <input type="hidden" th:field="*{beneficiaryAccName}" />
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}" />
+                        <input type="hidden" th:field="*{beneficiaryAccountName}" />
                         <input type="hidden" th:field="*{beneficiaryBankName}" />
+                        <input type="hidden" th:field="*{beneficiarySortCode}" />
                         <input type="hidden" th:field="*{transferType}" />
                         <!--<input type="hidden" name="tranLocation" id="tranLocation"/>-->
                         <input type="hidden" name="channel" value="web"/>
@@ -74,7 +83,7 @@
                                 <p id="errorMessage" style="color: red;"></p>
                             </div>
                             <label class="my-label">Amount </label>
-                            <span class="alert no-bd-rad my-border bg-white">NGN</span>
+                            <span id="currency" class="alert no-bd-rad my-border bg-white"> </span>
 
                             <input type="number" name="amount" step="any" min="100" onchange="amountError()" placeholder="Enter an amount"
                                    th:field="*{amount}" class="form-control amount"/><span class='req-inner' id="amount"></span>
@@ -131,17 +140,41 @@
             getBalance();
             getDestCurrency();
             // ipLookUp();
+            getCurrency()
 
 
         })
 
-        let instrumentType;
-        $("#collection_type").change(function (){
-            instrumentType = $(this).find(':selected').data('id')
-            $("#instrument_type").val(instrumentType);
+        let getCurrency = () => {
+            let accountNumber = $("#source").find(':selected').val()
+            $.getJSON('/retail/transfer/interbank/user/account/' + accountNumber, function (data) {
+                if(data !== undefined && data !== null){
+                    $("#collection_type").val(data.collectionType)
+                    $("#instrument_type").val(data.instrumentType)
+                    $("#currencyCode").val(data.currencyCode)
+                    $("#currency").html(data.currencyCode)
+                }
+            })
+
+        }
+
+        $("#source").change(function (){
+            let accountNumber = $(this).find(':selected').val()
+            $.getJSON('/retail/transfer/interbank/user/account/' + accountNumber, function (data) {
+                if(data !== undefined && data !== null){
+                    $("#collection_type").val(data.collectionType)
+                    $("#instrument_type").val(data.instrumentType)
+                    $("#currencyCode").val(data.currencyCode)
+                    $("#currency").html(data.currencyCode)
+                }
+            })
         })
 
-        console.log($("#collection_type"))
+        // let instrumentType;
+        // $("#collection_type").change(function (){
+        //     instrumentType = $(this).find(':selected').data('id')
+        //     $("#instrument_type").val(instrumentType);
+        // })
 
         function getBalance(){
 
@@ -280,6 +313,10 @@
         })*/
         $("#amount").on('blur',function(){
             getFee();
+        })
+
+        $("#changeBen").click(function (){
+            $("#benForm").submit();
         })
 
         function getFee(){
