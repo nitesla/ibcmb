@@ -272,6 +272,16 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     }
 
     @Override
+    public Page<FixedDepositDTO> getFixedDepositsForView(String cifId, Pageable pageable) throws InternetBankingException {
+
+        List<FixedDepositDTO> depositDTO = integrationService.getFixedDepositsDetails(cifId);
+        logger.info("Multiple FixedDeposit Fetched Successfully, HERE IS THE SIZE : {}",depositDTO.size());
+        Long totalCount = Long.valueOf(depositDTO.size());
+        return new PageImpl<>(depositDTO, pageable, totalCount);
+
+    }
+
+    @Override
     public void sendFixedDepositDetails(String recipient, String name, String accountNumber) throws MailException {
         FixedDepositDTO fixedDeposit = integrationService.getFixedDepositDetails(accountNumber);
         MimeMessagePreparator messagePreparator = (MimeMessage mimeMessage) -> {

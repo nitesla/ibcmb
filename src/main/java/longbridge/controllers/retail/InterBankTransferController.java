@@ -1,9 +1,5 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.QuicktellerBankCodeDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;

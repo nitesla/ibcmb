@@ -1,7 +1,10 @@
 package longbridge.controllers.retail;
 
 
-import longbridge.dtos.*;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.NeftBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
