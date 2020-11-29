@@ -156,6 +156,7 @@ public interface IntegrationService {
     TransferDetails antiFraudStatusCheck(String transactionType,String referenceNo);
     String estinameDepositRate(String amount,String tenor, String acctNum);
     FixedDepositDTO getFixedDepositDetails(String accountNumber);
+    List<FixedDepositDTO> getFixedDepositsDetails(String cifId);
     Response liquidateFixDeposit(FixedDepositDTO fixedDepositDTO);
     Response addFundToDeposit(FixedDepositDTO fixedDepositDTO);
     Response bookFixDeposit(FixedDepositDTO fixedDepositDTO);

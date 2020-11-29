@@ -24,5 +24,6 @@ public interface FixedDepositService {
      Optional<Integer>getRateBasedOnAmountAndTenor(int amount, int tenor);
      FixedDepositDTO getFixedDepositDetails(String accountNumber);
      Page<FixedDepositDTO> getFixedDepositForView(String accountNumber,Pageable pageable) throws InternetBankingException;
+     Page<FixedDepositDTO> getFixedDepositsForView(String cifId,Pageable pageable) throws InternetBankingException;
      void sendFixedDepositDetails(String recipient, String name, String accountNumber) throws MailException;
 }

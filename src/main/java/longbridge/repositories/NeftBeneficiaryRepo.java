@@ -1,6 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.models.LocalBeneficiary;
 import longbridge.models.NeftBeneficiary;
 import longbridge.models.RetailUser;
 import org.springframework.stereotype.Repository;

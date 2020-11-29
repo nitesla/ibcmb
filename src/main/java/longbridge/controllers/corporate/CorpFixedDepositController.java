@@ -85,8 +85,8 @@ public class CorpFixedDepositController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<FixedDepositDTO> fixedDepositDTOS = null;
         CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
-        logger.info("the so called account number : {}",corporateUser.getCorporate().getCustomerId());
-        fixedDepositDTOS=fixedDepositService.getFixedDepositForView(corporateUser.getCorporate().getCustomerId(),pageable);
+        logger.info("the cifid been used : {}",corporateUser.getCorporate().getCustomerId());
+        fixedDepositDTOS=fixedDepositService.getFixedDepositsForView(corporateUser.getCorporate().getCustomerId(),pageable);
         DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fixedDepositDTOS.getContent());
