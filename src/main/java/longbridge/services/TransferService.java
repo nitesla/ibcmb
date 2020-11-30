@@ -1,5 +1,7 @@
 package longbridge.services;
 
+import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.NeftBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
