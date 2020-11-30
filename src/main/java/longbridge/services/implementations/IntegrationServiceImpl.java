@@ -1439,9 +1439,32 @@ public class IntegrationServiceImpl implements IntegrationService {
 		params.put("accountNumber",accountNumber);
 
 		try{
-			logger.info("About to call EbankingService...EbankingService Url : {}",uri);
+
 			fixedDeposit = template.getForObject(uri, FixedDepositDTO.class,params);
-			logger.info("Done calling EbankingService...Result Returned : {} ",fixedDeposit);
+
+			return fixedDeposit;
+		}
+		catch (Exception e){
+
+			logger.error("Error getting fixed deposit details",e);
+		}
+		return fixedDeposit;
+
+	}
+
+	@Override
+	public List<FixedDepositDTO> getFixedDepositsDetails(String cifId){
+
+		List<FixedDepositDTO> fixedDeposit = new ArrayList<>();
+
+		String uri = URI+"/deposits/"+ cifId;
+
+		Map<String,String> params = new HashMap<>();
+		params.put("cifId",cifId);
+
+		try{
+			fixedDeposit =	Arrays.stream(template.getForObject(uri, FixedDepositDTO[].class, params))
+					.collect(Collectors.toList());
 			return fixedDeposit;
 		}
 		catch (Exception e){

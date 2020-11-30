@@ -170,20 +170,19 @@ public class CodeServiceImpl implements CodeService {
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
-            if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
-                logger.info("am here boss {}", code.getType());
-               coverageService.addCoverageForNewCodes(code);
-            }
             codeRepo.save(code);
+//            if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
+//                logger.info("am here boss {}", code.getType());
+//               coverageService.addCoverageForNewCodes(code);
+//            }
+
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
 
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
-            logger.info("the  error here: {} ",e.getMessage());
-            logger.info("the  error here2: {} ",e.toString());
-            logger.info("the  error here3: {} ",e.getCause());
+
             throw new InternetBankingException(messageSource.getMessage("code.add.failure", null, locale), e);
         }
     }
