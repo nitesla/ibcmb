@@ -7,10 +7,7 @@ import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.UpdateCoverageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
-import longbridge.repositories.CodeRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CoverageRepo;
-import longbridge.repositories.RetailUserRepo;
+import longbridge.repositories.*;
 import longbridge.services.CodeService;
 import longbridge.services.CoverageAdministrationService;
 import longbridge.services.IntegrationService;
@@ -48,6 +45,7 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
     private MessageSource messageSource;
     @Autowired
     private IntegrationService integrationService;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -181,7 +179,7 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
 
     @Override
     public void addCoverageForNewCodes(Code code) {
-        logger.info("am here boss 2");
+
         Set<Long> corporateids = corporateRepo.getAllCorporateId();
 
         Set<Long> retailids = retailUserRepo.getAllRetailUserId();
@@ -195,6 +193,7 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
             coverage.setEnabled(true);
             coverage.setEntityId(entityId);
             coverage.setCodeEntity(code);
+//            coverageRepo.save(coverage);
             coverageList.add(coverage);
         });
         retailids.forEach(id-> {
@@ -206,6 +205,7 @@ public class CoverageServiceImpl implements CoverageAdministrationService {
             coverage.setEnabled(true);
             coverage.setEntityId(entityId);
             coverage.setCodeEntity(code);
+//            coverageRepo.save(coverage);
             coverageList.add(coverage);
 
         });

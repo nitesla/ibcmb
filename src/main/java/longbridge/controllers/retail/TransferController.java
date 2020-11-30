@@ -420,6 +420,14 @@ public class TransferController {
                 return "cust/transfer/pendingtransferdetails";
 
             }
+            if (transferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
+//                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+                model.addAttribute("message", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
+
+                return "cust/transfer/bulktransfer/neft/pendingNeftTransfer";
+
+            }
             if (transferRequestDTO.getStatus().equalsIgnoreCase("09")) {
                 model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
                 logger.info("Transfer status..pending {}", transferRequestDTO.getStatus());
