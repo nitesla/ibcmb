@@ -1,12 +1,9 @@
 package longbridge.services;
 
-import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.NeftBeneficiaryDTO;
-import longbridge.models.LocalBeneficiary;
 import longbridge.models.NeftBeneficiary;
 import longbridge.models.RetailUser;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -42,6 +39,7 @@ public interface NeftBeneficiaryService {
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<NeftBeneficiary> getNeftBeneficiaries();
+    Iterable<NeftBeneficiary> getCorpNeftBeneficiaries();
     //    List<LocalBeneficiary> getLocalBeneficiaries();
     Iterable<NeftBeneficiary> getBankBeneficiaries();
 

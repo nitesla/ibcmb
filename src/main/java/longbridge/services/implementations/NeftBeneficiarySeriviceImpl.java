@@ -3,10 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.NeftBeneficiaryDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Email;
-import longbridge.models.NeftBeneficiary;
-import longbridge.models.RetailUser;
-import longbridge.models.User;
+import longbridge.models.*;
 import longbridge.repositories.NeftBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.IntegrationService;
@@ -97,6 +94,11 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
     }
 
     @Override
+    public Iterable<NeftBeneficiary> getCorpNeftBeneficiaries() {
+        return repo.findByUser(getCorporateUser());
+    }
+
+    @Override
     public Iterable<NeftBeneficiary> getBankBeneficiaries() {
         return null;
     }
@@ -142,6 +144,19 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
         }
 
         return (null) ;
+    }
+
+    private CorporateUser getCorporateUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
+            return (CorporateUser)userPrincipal.getUser();
+        }
+
+        return (null) ;
+
+
     }
 
     @Async
