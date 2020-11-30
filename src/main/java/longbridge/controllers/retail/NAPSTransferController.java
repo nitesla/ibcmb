@@ -47,7 +47,6 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.text.DateFormat;
@@ -99,7 +98,7 @@ public class NAPSTransferController {
 
     @GetMapping("/bulk")
     public String getBulkTransfers(Model model) {
-        return "/cust/transfer/bulktransfer/list";
+        return "/cust/transfer/bulktransfer/pagei";
     }
 
     @GetMapping("/{id}/view")

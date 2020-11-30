@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Bulk transfer','']];currentBar('bulk transfer');breadCrumb(bread)">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12">
+        <div class="no-mt no-pad-lef alert no-bd">
+            <div class="">
+
+
+                <div class="col-md-7 col-sm-7 col-xs-12 no-pad-left no-pad-right">
+
+                    <form method="post" th:action="@{/retail/transfer/bulk/index}" style="">
+                        <div class="form-group col-md- no-pad-left">
+                            <label>Transfer Type</label>
+
+                            <span id="tran"></span>
+                            <select name="tranType" class="form-control" id="tranType">
+                                <option value="naps">NAPS</option>
+                                <option value="neft">NEFT</option>
+                            </select>
+                        </div>
+
+
+                        <!--<div class="col-md-4">
+                            <br/>
+                            <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
+                            <p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:if="${rtgs.feeValue}!=null" th:text="'N'+${rtgs.feeValue}"></span></p>
+
+
+                        </div>-->
+
+                        <div class="form-group col-md-8 no-pad-left">
+                            <button class="btn btn-link" type="submit">Next</button>
+
+                    </div>
+                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                        --> 
+
+
+
+                    </form>
+                </div>
+                <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+            -->
+
+                <div class="col-md-5 col-sm-5 col-xs-12 no-pad-left no-pad-right">
+                   <!-- <div class=" related-box">
+                        <h3 class="related-bar">Related Information</h3>
+
+                        &lt;!&ndash;<input type="availBal" name="availBal"/>&ndash;&gt;
+                        <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip}!=null"
+                                                                              th:text="${nip}"></span></p>
+                        <p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:if="${rtgs}!=null"
+                                                                                              th:text="${rtgs}"></span>
+                        </p>
+
+
+                        &lt;!&ndash;<p class="related-info coronation-blue" id="availBal"><b></b></p>&ndash;&gt;
+
+                    </div>-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+    <script>
+        //datepicker
+        $(function () {
+            $("#datepicker").datepicker(
+                {dateformat: 'dd/mm/yy'}
+            );
+        });
+
+        $('#tranType').on('change', function () {
+            if ($(this).val() === "nip") {
+                $("#nip").show();
+                $("#rtgs").hide();
+
+            }
+            else if ($(this).val() === "rtgs") {
+                $("#rtgs").show();
+                $("#nip").hide();
+            }
+        });
+
+    </script>
+</th:block>
+
+</body>
+</html>

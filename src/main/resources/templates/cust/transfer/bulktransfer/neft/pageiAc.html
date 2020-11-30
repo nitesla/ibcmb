@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
+
+<body onload="currentBar('NEFT beneficiaries')">
+
+<div layout:fragment="content">
+    <div class="col-xs-12 no-pad-left no-pad-right">
+        <div class="col-xs-12 ">
+            <h5 class="page_header  col-sm-5 no-pad-left"> Bulk Transfer to other banks through NEFT</h5>
+            <a th:href="@{/retail/transfer/bulk/neft/request}" class="pull-right extra-link btn btn-default ">Neft Request</a>
+            <a th:href="@{/retail/transfer/bulk/neft}" class="pull-right extra-link btn btn-default ">New Beneficiary</a>
+        </div>
+
+        <div class="col-sm-5 col-xs-12 ">
+            <select class="form-control full-width coronation-form-contro invisible" name="beneficiaries">
+                <option value="Overveiw">Beneficiaries</option>
+            </select>
+        </div>
+
+    </div>
+
+
+    <div class="col-xs-12 " >
+        <div class="no-pad-lef no-mt alert no-bd">
+            <form method="post " >
+                <div class="table-responsive">
+                    <table class="table" id="mytab">
+                        <thead>
+                        <tr>
+                            <th>Beneficiary name</th>
+                            <th>Bank</th>
+                            <th>Bank Sort Code</th>
+                            <th>Account number</th>
+                            <th>&nbsp;</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+
+                        <tr th:each="loc : ${neftBeneficiaries}">
+                            <td   th:text="${loc.beneficiaryAccountName}"></td>
+                            <td th:text="${loc.beneficiaryBankName}"></td>
+                            <td th:text="${loc.beneficiarySortCode}"></td>
+                            <td th:text="${loc.beneficiaryAccountNumber}"></td>
+                            <td>
+                                <!--<li class="dropdown" style="list-style: none">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
+                                <ul class="dropdown-menu">-->
+
+
+                                <a style='padding-top:0px !important;padding-bottom:0px !important' class="btn btn-link required-step" th:href="@{'/retail/transfer/bulktransfer/' + ${loc.id} }">make a transfer</a>
+
+                                <!--</ul>
+                                </li>-->
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <br/>
+                <input  type="hidden" th:value="${transferRequest}"/>
+                <!-- <a th:href="@{/retail/transfer/interbank/new}" class="btn btn-link required-step">New Beneficiary</a> -->
+
+                <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+            --> </form>
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var table = $('#mytab').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20], [ 5, 10, 20 ] ],
+            "pagingType" : "input",
+            "searching": false,
+            "dom": 'T<"clear">frtlp',
+            "language": {
+                "emptyTable": "No beneficiary added"
+            }
+        });
+        /*]]>*/
+    </script>
+
+    <script>
+        //datepicker
+        $( function() {
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
+    </script>
+</th:block>
+
+</body>
+</html>
