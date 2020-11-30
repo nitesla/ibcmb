@@ -1,5 +1,9 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.QuicktellerBankCodeDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -60,7 +64,10 @@ public class InterBankTransferController {
 
     @Autowired
 //    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, QuickBeneficiaryService quickBeneficiaryService, FinancialInstitutionService financialInstitutionService, QuicktellerBankCodeService quicktellerBankCodeService, AccountService accountService, TransferValidator validator, IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService) {
-    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator, IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService, CodeService codeService, NeftBeneficiaryService neftBeneficiaryService, QuickBeneficiaryService quickBeneficiaryService, QuicktellerBankCodeService quicktellerBankCodeService) {
+    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
+
+            , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService, CodeService codeService,
+                                       NeftBeneficiaryService neftBeneficiaryService, QuickBeneficiaryService quickBeneficiaryService, QuicktellerBankCodeService quicktellerBankCodeService) {
         this.retailUserService = retailUserService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
@@ -349,29 +356,6 @@ public class InterBankTransferController {
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 
         String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
-//        logger.info("transaction channel == [{}]", transferRequestDTO.getChannel());
-//        String userAmountLimit = transferUtils.getLimitForAuthorization(transferRequestDTO.getCustomerAccountNumber(), transferRequestDTO.getChannel());
-//        BigDecimal amountLimit = new BigDecimal(userAmountLimit);
-//        BigDecimal userAmount = transferRequestDTO.getAmount();
-//        if (userAmount == null){
-//            String amounterrorMessage = "Please supply amount";
-//            model.addAttribute("amounterrorMessage", amounterrorMessage);
-//            model.addAttribute("benName", newbenName);
-//            model.addAttribute("transferRequest", transferRequestDTO);
-//            return page + "pageii";
-//        }
-//        int a = amountLimit.intValue();
-//        logger.info("User's transfer limit == [{}]", a);
-//        int b = userAmount.intValue();
-//        logger.info("User's amount for transfer == [{}]", b);
-//        logger.info("which is a greater number [{}] or [{}]", a, b);
-//        if (b > a){
-//            String errorMessage = "You can not transfer more than account limit";
-//            model.addAttribute("errorMessage", errorMessage);
-//            model.addAttribute("benName", newbenName);
-//            model.addAttribute("transferRequest", transferRequestDTO);
-//             return page + "pageii";
-//        }
 
         model.addAttribute("transferRequest", transferRequestDTO);
         String charge = "NAN";
@@ -644,11 +628,11 @@ public class InterBankTransferController {
 
             dto.setCurrencyCode(account.getCurrencyCode());
             if(account.getCurrencyCode().equalsIgnoreCase("NGN")){
-                dto.setCollectionType("71");
-                dto.setInstrumentType("DB");
+                dto.setCollectionType("30");
+                dto.setInstrumentType("CR");
             }else if(account.getCurrencyCode().equalsIgnoreCase("USD")){
-                dto.setCollectionType("38");
-                dto.setInstrumentType("DB");
+                dto.setCollectionType("37");
+                dto.setInstrumentType("CR");
             }
         }
         return dto;
@@ -667,6 +651,7 @@ public class InterBankTransferController {
         trt.setBeneficiaryAccountNumber(nft.getBeneficiaryAccountNumber());
         trt.setBeneficiaryAccountName(nft.getBeneficiaryAccountName());
         trt.setBeneficiaryBankName(nft.getBeneficiaryBankName());
+        trt.setBeneficiaryBank(nft.getBeneficiaryBankName());
         trt.setBeneficiarySortCode(nft.getBeneficiarySortCode());
         trt.setInstrumentType(nft.getInstrumentType());
         trt.setCollectionType(nft.getCollectionType());
@@ -676,6 +661,7 @@ public class InterBankTransferController {
         trt.setTransferType(TransferType.NEFT);
         trt.setAmount(new BigDecimal(nft.getAmount()));
         trt.setNarration(nft.getNarration());
+        trt.setRemarks(nft.getNarration());
         trt.setCharge(nft.getCharge());
         trt.setChannel(nft.getChannel());
         return trt;

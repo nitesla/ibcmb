@@ -1,28 +1,14 @@
-package longbridge.response;
+package longbridge.dtos.apidtos;
 
+public class NeftResponseDTO {
 
-import javax.persistence.*;
-
-@Entity
-public class NeftResponse {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
     private String appId;
     private String responseCode;
     private String responseMessage;
     private Long msgId;
     private Long itemCount;
 
-    public NeftResponse() {
-    }
-
-    public Long getId() {
-        return Id;
-    }
-
-    public void setId(Long id) {
-        Id = id;
+    public NeftResponseDTO() {
     }
 
     public String getAppId() {
@@ -67,7 +53,7 @@ public class NeftResponse {
 
     @Override
     public String toString() {
-        return "NeftResponse{" +
+        return "NeftResponseDTO{" +
                 "appId='" + appId + '\'' +
                 ", responseCode='" + responseCode + '\'' +
                 ", responseMessage='" + responseMessage + '\'' +
