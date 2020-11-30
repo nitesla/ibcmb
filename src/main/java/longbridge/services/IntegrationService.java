@@ -3,6 +3,7 @@ package longbridge.services;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.*;
+import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.*;
 import longbridge.response.NeftResponse;
@@ -172,5 +173,6 @@ public interface IntegrationService {
     List<QuicktellerBankCodeDTO> getBankCodes();
     CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
     NeftResponse submitNeftTransfer();
+    NeftResponseDTO submitInstantNeftTransfer(NeftTransfer neftTransfer);
 
 }

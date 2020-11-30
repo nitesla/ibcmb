@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.*;
+import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -87,7 +88,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${quickteller.bankcodes}")
 	private String getBankCodes;
 
-	@Value("${custom.appId}")
+	@Value("${neft.appId}")
 	private String appId;
 
 	@Value("${quick.initiatingEntityCode}")
@@ -1812,6 +1813,44 @@ public class IntegrationServiceImpl implements IntegrationService {
 		return response;
     }
 
+	@Override
+	public NeftResponseDTO submitInstantNeftTransfer(NeftTransfer neftTransfer) {
+		List<NeftTransfer> neftTransferList = Collections.singletonList(neftTransfer);
+		NeftResponseDTO response = new NeftResponseDTO();
+		String uri = NEFTURI+"/api/neftOutWard/Submit";
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ");
+
+		Double totalValue = neftTransfer.getAmount().doubleValue();
+		logger.info("Neft Transfer ======= {}", neftTransferList);
+
+		String newDate = dateFormat.format(new Date());
+
+		Map<String,Object> params = new HashMap<>();
+		params.put("appid",appId);
+		params.put("MsgID",getMsgId());
+		logger.info("Mssg Id =============== {}", getMsgId());
+		params.put("TotalVal ue", totalValue);
+		params.put("BankCode",bankcode);
+		params.put("ItemCount", String.valueOf(neftTransferList.size()));
+		params.put("Date", newDate);
+		params.put("SettlementTimeF", newDate);
+
+		List<NeftTransfer> neftTransfers = updateSequenceNumber(neftTransferList, newDate);
+		logger.info("Complete PFItemDataStores ========= {}", neftTransfers);
+		params.put("PFItemDataStores", neftTransfers);
+		logger.info("PARAMS ============ {}", params);
+		try{
+			if (!neftTransferList.isEmpty()){
+				logger.info("Making Neft Transfer : {}" , neftTransfer);
+				response = template.postForObject(uri,params, NeftResponseDTO.class);
+				neftTransfers.forEach(neftTransferRepo::save);
+			}
+		}catch (Exception e){
+			logger.info("Error processing request ", e);
+		}
+		return response;
+	}
+
 	private void updateNeftSettlement(String newDate, NeftTransfer neftTransfer) {
 		neftTransfer.setSettlementTime(newDate);
 		neftTransfer.setPresentmentDate(newDate);
@@ -1834,10 +1873,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	private List<NeftTransfer> updateSequenceNumber(List<NeftTransfer> neftTransfers, String newDate){
 		List<NeftTransfer> neftTransferList = new ArrayList<>();
-		for(int i = 1; i <= neftTransfers.size(); i++){
+		for(int i = 0; i < neftTransfers.size(); i++){
 			NeftTransfer neftTransfer = neftTransfers.get(i);
-			neftTransfer.setItemSequenceNo(String.valueOf(i));
-			neftTransfer.setSerialNo(String.valueOf(i));
+			neftTransfer.setItemSequenceNo(String.valueOf(i+1));
+			neftTransfer.setSerialNo(String.valueOf(i+1));
 			neftTransferList.add(neftTransfer);
 		}
 		return neftTransferList.

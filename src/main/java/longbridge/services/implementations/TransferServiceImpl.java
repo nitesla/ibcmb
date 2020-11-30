@@ -3,14 +3,12 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.*;
+import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferException;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.*;
-import longbridge.repositories.AccountRepo;
-import longbridge.repositories.NeftTransferRepo;
-import longbridge.repositories.RetailUserRepo;
-import longbridge.repositories.TransferRequestRepo;
+import longbridge.repositories.*;
+import longbridge.response.NeftResponse;
 import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
@@ -73,6 +71,9 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private AccountRepo accountRepo;
 
+    @Autowired
+    private NeftResponseRepo neftResponseRepo;
+
     @Value("${MICRRepairInd}")
     private String micrRepairInd;
 
@@ -112,7 +113,7 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
         neftTransfer.setSpecialClearing(false);
         neftTransfer.setBVNBeneficiary(neftTransferDTO.getBeneficiaryBVN());
-        neftTransfer.setBankOfFirstDepositSortCode("");
+        neftTransfer.setBankOfFirstDepositSortCode(bankSortCode);
         neftTransfer.setCollectionType(neftTransferDTO.getCollectionType());
         neftTransfer.setBVNPayer(bvn);
         neftTransfer.setPayerName(neftTransferDTO.getPayerName());
@@ -125,9 +126,9 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
         neftTransfer.setTranCode("20");
         neftTransfer.setSerialNo("");
-        neftTransferRepo.save(neftTransfer);
+
         logger.info("Neft pfDataItemStore : {}", neftTransfer);
-        return neftTransfer;
+        return neftTransferRepo.save(neftTransfer);
     }
 
 
@@ -137,9 +138,10 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
+        NeftTransfer neftTransfer = new NeftTransfer();
         if (transferRequestDTO.getTransferType() == TransferType.NEFT){
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
-             makepfDataItemStore(transferRequestDTO);
+             neftTransfer = makepfDataItemStore(transferRequestDTO);
         }
         
         logger.info("Initiating {} Transfer to {}", transferRequestDTO.getTransferType(), transferRequestDTO.getBeneficiaryAccountName());
@@ -206,8 +208,13 @@ public class TransferServiceImpl implements TransferService {
             logger.info("uniqueid {}",transRequest2);
             transRequest2.setStatus("00");
             transRequest = transferRequestRepo.save(transRequest2);
+            NeftResponseDTO response = integrationService.submitInstantNeftTransfer(neftTransfer);
+            NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(response));
+            neftTransfer.setNeftResponse(neftResponse);
+            neftTransferRepo.save(neftTransfer);
 
             return convertEntityToDTO(transRequest);
+
 
 
            /* if (transRequest.getStatus() != null) {
@@ -667,6 +674,16 @@ public class TransferServiceImpl implements TransferService {
         transferRequestDTO.setNarration(neftTransferRequestDTO.getNarration());
         transferRequestDTO.setCharge(neftTransferRequestDTO.getCharge());
         return transferRequestDTO;
+    }
+
+    private NeftResponse convertResponseToEntity(NeftResponseDTO neftResponseDTO){
+        NeftResponse n = new NeftResponse();
+        n.setAppId(neftResponseDTO.getAppId());
+        n.setItemCount(neftResponseDTO.getItemCount());
+        n.setMsgId(neftResponseDTO.getMsgId());
+        n.setResponseCode(neftResponseDTO.getResponseCode());
+        n.setResponseMessage(neftResponseDTO.getResponseMessage());
+        return n;
     }
 
 }
