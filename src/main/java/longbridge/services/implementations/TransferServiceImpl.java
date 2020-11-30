@@ -139,7 +139,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
-        if (transferRequestDTO.getTransferType() == TransferType.NEFT){
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT || transferRequestDTO.getTransferType() == TransferType.NEFT_BULK){
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
              makepfDataItemStore(transferRequestDTO);
         }
@@ -198,7 +198,7 @@ public class TransferServiceImpl implements TransferService {
 
         TransRequest transRequest = null;
 
-       if (transferRequestDTO.getTransferType() != TransferType.NEFT) {
+       if (transferRequestDTO.getTransferType() != TransferType.NEFT || transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
            transRequest = integrationService.makeTransfer(transRequest2);
        }
             logger.trace("Transfer Details: ", transRequest);
@@ -219,7 +219,16 @@ public class TransferServiceImpl implements TransferService {
                 throw new InternetBankingTransferException(transRequest.getStatus());
             }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());*/
-        } else if (transRequest != null){
+        } else if (transferRequestDTO.getTransferType() == TransferType.NEFT_BULK) {
+
+            logger.info("uniqueid {}", transRequest2);
+            transRequest2.setStatus("PENDING");
+            transRequest = transferRequestRepo.save(transRequest2);
+
+            return convertEntityToDTO(transRequest);
+        }
+
+        else if (transRequest != null){
             logger.info("uniqueid {}",transRequest);
             transRequest = transferRequestRepo.save(transRequest);
             return convertEntityToDTO(transRequest);
@@ -415,7 +424,8 @@ public class TransferServiceImpl implements TransferService {
         dto.setSfactorAuthIndicator(transRequest.getAntiFraudData().getSfactorAuthIndicator());
         dto.setChannel(transRequest.getChannel());
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
-        if(transRequest.getTransferType() != TransferType.NEFT){
+        dto.setNarration(transRequest.getNarration());
+        if(transRequest.getTransferType() != TransferType.NEFT && transRequest.getTransferType() != TransferType.NEFT_BULK){
             dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
             dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
             if(transRequest.getFinancialInstitution()!=null)
