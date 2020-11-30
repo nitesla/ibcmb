@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.dtos.NeftBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
@@ -30,7 +31,6 @@ public interface TransferService {
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     TransferRequestDTO makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
-
 
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     TransRequest getTransfer(Long id);

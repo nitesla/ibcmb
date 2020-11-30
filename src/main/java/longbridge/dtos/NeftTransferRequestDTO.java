@@ -4,10 +4,11 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 public class NeftTransferRequestDTO {
-    private String beneficiaryAccNo;
-    private String beneficiaryAccName;
+    private String beneficiaryAccountNumber;
+    private String beneficiaryAccountName;
     private String beneficiaryBVN;
     private String beneficiaryBankName;
+    private String beneficiarySortCode;
     private String instrumentType;
     @NotEmpty(message = "Choose a collect Type")
     private String collectionType;
@@ -15,29 +16,31 @@ public class NeftTransferRequestDTO {
     private String amount;
     private String narration;
     private String payerName;
-    private String currency;
+    private String currencyCode;
     private Date tranDate = new Date();
     private String customerAccountNumber;
     private String transferType;
     private String charge;
+    private String channel;
+
 
     public NeftTransferRequestDTO() {
     }
 
-    public String getBeneficiaryAccNo() {
-        return beneficiaryAccNo;
+    public String getBeneficiaryAccountNumber() {
+        return beneficiaryAccountNumber;
     }
 
-    public void setBeneficiaryAccNo(String beneficiaryAccNo) {
-        this.beneficiaryAccNo = beneficiaryAccNo;
+    public void setBeneficiaryAccountNumber(String beneficiaryAccountNumber) {
+        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
     }
 
-    public String getBeneficiaryAccName() {
-        return beneficiaryAccName;
+    public String getBeneficiaryAccountName() {
+        return beneficiaryAccountName;
     }
 
-    public void setBeneficiaryAccName(String beneficiaryAccName) {
-        this.beneficiaryAccName = beneficiaryAccName;
+    public void setBeneficiaryAccountName(String beneficiaryAccountName) {
+        this.beneficiaryAccountName = beneficiaryAccountName;
     }
 
     public String getBeneficiaryBVN() {
@@ -96,12 +99,12 @@ public class NeftTransferRequestDTO {
         this.payerName = payerName;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getCurrencyCode() {
+        return currencyCode;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
     public Date getTranDate() {
@@ -120,6 +123,15 @@ public class NeftTransferRequestDTO {
         this.customerAccountNumber = customerAccountNumber;
     }
 
+    public String getBeneficiarySortCode() {
+        return beneficiarySortCode;
+    }
+
+    public void setBeneficiarySortCode(String beneficiarySortCode) {
+        this.beneficiarySortCode = beneficiarySortCode;
+    }
+
+
     public String getTransferType() {
         return transferType;
     }
@@ -136,23 +148,33 @@ public class NeftTransferRequestDTO {
         this.charge = charge;
     }
 
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     @Override
     public String toString() {
         return "NeftTransferRequestDTO{" +
-                "beneficiaryAccNo='" + beneficiaryAccNo + '\'' +
-                ", beneficiaryAccName='" + beneficiaryAccName + '\'' +
+                "beneficiaryAccNo='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryAccName='" + beneficiaryAccountName + '\'' +
                 ", beneficiaryBVN='" + beneficiaryBVN + '\'' +
                 ", beneficiaryBankName='" + beneficiaryBankName + '\'' +
+                ", beneficiarySortCode='" + beneficiarySortCode + '\'' +
                 ", instrumentType='" + instrumentType + '\'' +
                 ", collectionType='" + collectionType + '\'' +
                 ", amount='" + amount + '\'' +
                 ", narration='" + narration + '\'' +
                 ", payerName='" + payerName + '\'' +
-                ", currency='" + currency + '\'' +
+                ", currency='" + currencyCode + '\'' +
                 ", tranDate=" + tranDate +
                 ", customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", transferType='" + transferType + '\'' +
                 ", charge='" + charge + '\'' +
+                ", channel='" + channel + '\'' +
                 '}';
     }
 }

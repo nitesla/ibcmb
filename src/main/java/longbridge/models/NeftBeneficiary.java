@@ -1,6 +1,5 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -17,9 +16,9 @@ import java.io.IOException;
 @Where(clause ="del_Flag='N'" )
 public class NeftBeneficiary extends AbstractEntity implements PrettySerializer {
     private String beneficiaryBVN;
-    private String beneficiaryAccName;
+    private String beneficiaryAccountName;
     private String beneficiarySortCode;
-    private String beneficiaryAccNo;
+    private String beneficiaryAccountNumber;
     private String beneficiaryBankName;
     @ManyToOne
     private RetailUser user;
@@ -27,12 +26,12 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
     public NeftBeneficiary() {
     }
 
-    public String getBeneficiaryAccName() {
-        return beneficiaryAccName;
+    public String getBeneficiaryAccountName() {
+        return beneficiaryAccountName;
     }
 
-    public void setBeneficiaryAccName(String beneficiaryAccName) {
-        this.beneficiaryAccName = beneficiaryAccName;
+    public void setBeneficiaryAccountName(String beneficiaryAccName) {
+        this.beneficiaryAccountName = beneficiaryAccName;
     }
 
     public String getBeneficiarySortCode() {
@@ -43,12 +42,12 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
         this.beneficiarySortCode = beneficiarySortCode;
     }
 
-    public String getBeneficiaryAccNo() {
-        return beneficiaryAccNo;
+    public String getBeneficiaryAccountNumber() {
+        return beneficiaryAccountNumber;
     }
 
-    public void setBeneficiaryAccNo(String beneficiaryAccNo) {
-        this.beneficiaryAccNo = beneficiaryAccNo;
+    public void setBeneficiaryAccountNumber(String beneficiaryAccNo) {
+        this.beneficiaryAccountNumber = beneficiaryAccNo;
     }
 
     public String getBeneficiaryBVN() {
@@ -97,10 +96,10 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
                 } else {
                     gen.writeStringField("id", null);
                 }
-                gen.writeStringField("beneficiaryAccountName", value.getBeneficiaryAccName());
+                gen.writeStringField("beneficiaryAccountName", value.getBeneficiaryAccountName());
                 gen.writeStringField("beneficiaryBankSortCode", value.getBeneficiarySortCode());
-                gen.writeStringField("beneficiaryAccountNumber", value.getBeneficiaryAccNo());
-                gen.writeStringField("beneficiaryAccountBVN", value.getBeneficiaryAccNo());
+                gen.writeStringField("beneficiaryAccountNumber", value.getBeneficiaryAccountNumber());
+                gen.writeStringField("beneficiaryAccountBVN", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryBankName", value.getBeneficiaryBankName());
                 gen.writeEndObject();
             }

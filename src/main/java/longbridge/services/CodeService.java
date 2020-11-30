@@ -55,6 +55,9 @@ public interface CodeService {
 	@PreAuthorize("hasAuthority('GET_CODES')")
 	List<CodeDTO> getCodesByType(String codeType);
 
+	@PreAuthorize("hasAuthority('GET_CODES')")
+	List<CodeDTO> getCodesByTypeAndDescription(String codeType, String description);
+
 	@PreAuthorize("hasAuthority('UPDATE_CODE')")
 	String updateCode(CodeDTO codeDTO) throws InternetBankingException;
 
