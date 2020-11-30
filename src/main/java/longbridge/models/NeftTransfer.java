@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import longbridge.response.NeftResponse;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -61,8 +63,8 @@ public class NeftTransfer {
     @Column(name = "cycleno")
     private String CycleNo;
 
-
-
+    @OneToOne
+    private NeftResponse neftResponse;
 
     // Getter Methods
 
@@ -267,6 +269,18 @@ public class NeftTransfer {
 
     public void setCycleNo(String CycleNo) {
         this.CycleNo = CycleNo;
+    }
+
+    public boolean isSpecialClearing() {
+        return SpecialClearing;
+    }
+
+    public NeftResponse getNeftResponse() {
+        return neftResponse;
+    }
+
+    public void setNeftResponse(NeftResponse neftResponse) {
+        this.neftResponse = neftResponse;
     }
 
     @Override
