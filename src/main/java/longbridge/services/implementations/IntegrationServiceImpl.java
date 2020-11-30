@@ -1835,7 +1835,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private List<NeftTransfer> updateSequenceNumber(List<NeftTransfer> neftTransfers, String newDate){
 		List<NeftTransfer> neftTransferList = new ArrayList<>();
 		for(int i = 1; i <= neftTransfers.size(); i++){
-			NeftTransfer neftTransfer = neftTransfers.get(i);
+			NeftTransfer neftTransfer = neftTransfers.get(i-1);
 			neftTransfer.setItemSequenceNo(String.valueOf(i));
 			neftTransfer.setSerialNo(String.valueOf(i));
 			neftTransferList.add(neftTransfer);

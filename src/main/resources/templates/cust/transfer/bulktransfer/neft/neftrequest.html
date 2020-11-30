@@ -54,6 +54,18 @@
 <th:block layout:fragment="scripts">
     <script th:inline="javascript">
         /*<![CDATA[*/
+
+        function showNotification(message , type){
+            $.notify({
+                // options
+                message: message
+            },{
+                // settings
+                type: type
+            });
+        }
+
+
         $(document).ready(function() {
             var table = $('#nefttable').DataTable({
                 select:true,

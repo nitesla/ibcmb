@@ -1,7 +1,10 @@
 package longbridge.controllers.retail;
 
 
-import longbridge.dtos.*;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.NeftBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
@@ -371,7 +374,7 @@ public class TransferController {
                         }
                     }
 
-                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType())){
+                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())){
                     if (request.getSession().getAttribute("Nbeneficiary") != null) {
                         NeftBeneficiaryDTO neftBeneficiaryDTO = (NeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
                         try {
@@ -418,6 +421,14 @@ public class TransferController {
                 logger.info("Transfer status..antifraud {}", transferRequestDTO.getStatus());
 
                 return "cust/transfer/pendingtransferdetails";
+
+            }
+            if (transferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
+//                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+                model.addAttribute("message", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
+
+                return "cust/transfer/bulktransfer/neft/pendingNeftTransfer";
 
             }
             if (transferRequestDTO.getStatus().equalsIgnoreCase("09")) {

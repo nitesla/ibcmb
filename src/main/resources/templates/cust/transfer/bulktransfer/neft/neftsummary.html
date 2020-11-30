@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['transfer summary']];currentBar('inter bank transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['NEFT Bulk Tranfer','/retail/transfer/bulk/index'],['transfer summary']];currentBar('NEFT Bulk Transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -67,7 +67,7 @@
 
 
 
-                    <form method="post" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}" style="display:none;">
+                    <form method="post" th:action="@{/retail/transfer/neft/edit}" th:object="${transferRequest}" style="display:none;">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryBankName}"/>
@@ -106,7 +106,7 @@
                     </form>
 
 
-                    <form method="post" id="form_edit" th:action="@{/retail/transfer/interbank/neft/edit}" th:object="${transferRequest}">
+                    <form method="post" id="form_edit" th:action="@{/retail/transfer/neft/edit}" th:object="${transferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -136,7 +136,7 @@
 
     function cancel(){
 
-        window.location.href="/retail/transfer/interbank";
+        window.location.href="/retail/transfer/bulk/index";
 
     }
 </script>
