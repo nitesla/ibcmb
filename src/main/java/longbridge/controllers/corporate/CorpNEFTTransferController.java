@@ -2,8 +2,8 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
 import longbridge.models.Account;
+import longbridge.models.CorpNeftBeneficiary;
 import longbridge.models.CorporateUser;
-import longbridge.models.NeftBeneficiary;
 import longbridge.models.NeftTransfer;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
@@ -39,8 +39,6 @@ public class CorpNEFTTransferController {
     private MessageSource messageSource;
 
     private final AccountService accountService;
-    private final RetailUserService retailUserService;
-    private NeftBeneficiaryService neftBeneficiaryService;
     private final String page = "corp/transfer/bulktransfer/neft/";
     private final CodeService codeService;
     @Autowired
@@ -52,13 +50,14 @@ public class CorpNEFTTransferController {
     @Autowired
     private CorporateUserService corporateUserService;
 
+    @Autowired
+    private CorpNeftBeneficiaryService corpNeftBeneficiaryService;
+
 
 
     @Autowired
-    public CorpNEFTTransferController(AccountService accountService, RetailUserService retailUserService, NeftBeneficiaryService neftBeneficiaryService, CodeService codeService) {
+    public CorpNEFTTransferController(AccountService accountService,  CodeService codeService) {
         this.accountService = accountService;
-        this.retailUserService = retailUserService;
-        this.neftBeneficiaryService = neftBeneficiaryService;
         this.codeService = codeService;
     }
 
@@ -75,12 +74,12 @@ public class CorpNEFTTransferController {
         }
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        logger.info("Retail user : "+ user);
+        logger.info("Corporate user : "+ user);
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         String type = request.getParameter("tranType");
         logger.info("type {} ", type);
 
-        Iterable<NeftBeneficiary> neftBeneficiaries = neftBeneficiaryService.getCorpNeftBeneficiaries();
+        Iterable<CorpNeftBeneficiary> corpNeftBeneficiaries = corpNeftBeneficiaryService.getCorpNeftBeneficiaries();
 
 
 
@@ -91,7 +90,7 @@ public class CorpNEFTTransferController {
             requestDTO.setTransferType(TransferType.NEFT_BULK);
 
             model.addAttribute("transferRequest", requestDTO);
-            model.addAttribute("neftBeneficiaries", neftBeneficiaries);
+            model.addAttribute("corpNeftBeneficiaries", corpNeftBeneficiaries);
             return page + "pageiAc";
 
     }
@@ -104,21 +103,21 @@ public class CorpNEFTTransferController {
                 .map(CodeDTO::getDescription)
                 .collect(Collectors.toSet());
         Collections.sort(new ArrayList<>(names));
-        model.addAttribute("neftBanks"
+        model.addAttribute("neftCorpBanks"
                 ,names);
 
     }
 
-    @ModelAttribute
-    public void getNeftCollectionType(Model model) {
-        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_COLLECTION_TYPE");
-        model.addAttribute("neftCollectionTypes"
-                , sortedNames);
-
-    }
+//    @ModelAttribute
+//    public void getNeftCollectionType(Model model) {
+//        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_COLLECTION_TYPE");
+//        model.addAttribute("neftCollectionTypes"
+//                , sortedNames);
+//
+//    }
 
     @GetMapping("/bulk/neft")
-    public String newNeftBeneficiary(Model model, NeftBeneficiaryDTO neftBeneficiaryDTO) throws Exception {
+    public String newNeftBeneficiary(Model model, CorpNeftBeneficiaryDTO neftBeneficiaryDTO) throws Exception {
 
         model.addAttribute("neftBeneficiaryDTO", neftBeneficiaryDTO);
         return page + "pageiBN";
@@ -175,7 +174,7 @@ public class CorpNEFTTransferController {
     }
 
     @PostMapping("/bulk/alpha")
-    public String getBeneficiary(@ModelAttribute("neftBeneficiaryDTO") @Valid NeftBeneficiaryDTO neftBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) throws Exception {
+    public String getBeneficiary(@ModelAttribute("neftBeneficiaryDTO") @Valid CorpNeftBeneficiaryDTO neftBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) throws Exception {
         model.addAttribute("neftBeneficiaryDTO", neftBeneficiaryDTO);
         if (servletRequest.getSession().getAttribute("add") != null)
             servletRequest.getSession().removeAttribute("add");
@@ -209,7 +208,7 @@ public class CorpNEFTTransferController {
 
     @GetMapping("bulktransfer/{id}")
     public String neftTransfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) throws Exception {
-        NeftBeneficiary beneficiary = neftBeneficiaryService.getNeftBeneficiary(id);
+        CorpNeftBeneficiary beneficiary = corpNeftBeneficiaryService.getNeftBeneficiary(id);
 
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getBeneficiaryAccountName());
@@ -220,10 +219,10 @@ public class CorpNEFTTransferController {
         requestDTO.setTransferType(TransferType.NEFT_BULK);
 //
         model.addAttribute("transferRequest", requestDTO);
-        model.addAttribute("beneficiary", neftBeneficiaryService.convertEntityToDTO(beneficiary));
+        model.addAttribute("beneficiary", corpNeftBeneficiaryService.convertEntityToDTO(beneficiary));
         request.getSession().setAttribute("beneficiaryName", beneficiary.getBeneficiaryAccountName());
         model.addAttribute("benName", beneficiary.getBeneficiaryAccountName());
-        request.getSession().setAttribute("Nbeneficiary", neftBeneficiaryService.convertEntityToDTO(beneficiary));
+        request.getSession().setAttribute("Nbeneficiary", corpNeftBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageiN2";
     }
 

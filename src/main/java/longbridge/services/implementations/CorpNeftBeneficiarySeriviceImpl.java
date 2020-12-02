@@ -1,17 +1,14 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.NeftBeneficiaryDTO;
+import longbridge.dtos.CorpNeftBeneficiaryDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Email;
-import longbridge.models.NeftBeneficiary;
-import longbridge.models.RetailUser;
-import longbridge.models.User;
-import longbridge.repositories.NeftBeneficiaryRepo;
+import longbridge.models.*;
+import longbridge.repositories.CorpNeftBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.CorpNeftBeneficiaryService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
-import longbridge.services.NeftBeneficiaryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +27,10 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
+public class CorpNeftBeneficiarySeriviceImpl implements CorpNeftBeneficiaryService {
 
     @Autowired
-    private NeftBeneficiaryRepo repo;
+    private CorpNeftBeneficiaryRepo repo;
 
     @Autowired
     private IntegrationService integrationService;
@@ -50,13 +47,15 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
     private final Locale locale = LocaleContextHolder.getLocale();
 
     @Override
-    public String addNeftBeneficiary(NeftBeneficiaryDTO beneficiary) {
+    public String addNeftBeneficiary(CorpNeftBeneficiaryDTO beneficiary) {
         try {
-            NeftBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
-            localBeneficiary.setUser(getCurrentUser());
-            validateBeneficiary(localBeneficiary);
-            repo.save(localBeneficiary);
-            logger.debug("Beneficiary {} has been added", localBeneficiary.toString());
+            CorpNeftBeneficiary corpNeftBeneficiary = convertDTOToEntity(beneficiary);
+
+            Corporate corporate= getCurrentUser().getCorporate();
+            corpNeftBeneficiary.setCorporate(corporate);
+            validateBeneficiary(corpNeftBeneficiary);
+            repo.save(corpNeftBeneficiary);
+            logger.debug("Beneficiary {} has been added", corpNeftBeneficiary.toString());
             User user=getCurrentUser();
             user.setEmailTemplate("mail/beneficiaryMobile.html");
             sendAlert(user,beneficiary.getBeneficiaryAccountName());
@@ -71,10 +70,6 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
 
     }
 
-    @Override
-    public String addNeftBeneficiaryMobileApi(NeftBeneficiaryDTO beneficiary) {
-        return null;
-    }
 
     @Override
     public String deleteNeftBeneficiary(Long beneficiaryId) {
@@ -87,61 +82,54 @@ public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
     }
 
     @Override
-    public NeftBeneficiary getNeftBeneficiary(Long id) {
-        return repo.getOne(id);
+    public CorpNeftBeneficiary getNeftBeneficiary(Long id) {
+        return repo.findById(id).get();
+    }
+
+
+
+    @Override
+    public Iterable<CorpNeftBeneficiary> getCorpNeftBeneficiaries() {
+        return repo.findByCorporate(getCurrentUser().getCorporate());
     }
 
     @Override
-    public Iterable<NeftBeneficiary> getNeftBeneficiaries() {
-        return repo.findByUser(getCurrentUser());
-    }
-
-    @Override
-    public Iterable<NeftBeneficiary> getBankBeneficiaries() {
-        return null;
-    }
-
-    @Override
-    public boolean doesBeneficiaryExist(RetailUser user, NeftBeneficiaryDTO beneficiaryDTO) {
-        return repo.existsByUser_IdAndBeneficiaryAccountNumber(user.getId(), beneficiaryDTO.getBeneficiaryAccountNumber());
-    }
-
-    @Override
-    public List<NeftBeneficiaryDTO> convertEntitiesToDTOs(Iterable<NeftBeneficiary> neftBeneficiaries) {
-        List<NeftBeneficiaryDTO> entities = new ArrayList<>();
-        for(NeftBeneficiary beneficiary: neftBeneficiaries){
-            NeftBeneficiaryDTO neftBeneficiaryDTO = convertEntityToDTO(beneficiary);
+    public List<CorpNeftBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpNeftBeneficiary> neftBeneficiaries) {
+        List<CorpNeftBeneficiaryDTO> entities = new ArrayList<>();
+        for(CorpNeftBeneficiary beneficiary: neftBeneficiaries){
+            CorpNeftBeneficiaryDTO neftBeneficiaryDTO = convertEntityToDTO(beneficiary);
             entities.add(neftBeneficiaryDTO);
         }
         return entities;
     }
 
     @Override
-    public NeftBeneficiaryDTO convertEntityToDTO(NeftBeneficiary neftBeneficiary) {
-        return modelMapper.map(neftBeneficiary, NeftBeneficiaryDTO.class);
+    public CorpNeftBeneficiaryDTO convertEntityToDTO(CorpNeftBeneficiary neftBeneficiary) {
+        return modelMapper.map(neftBeneficiary, CorpNeftBeneficiaryDTO.class);
     }
 
     @Override
-    public NeftBeneficiary convertDTOToEntity(NeftBeneficiaryDTO neftBeneficiaryDTO) {
-        return modelMapper.map(neftBeneficiaryDTO, NeftBeneficiary.class);
+    public CorpNeftBeneficiary convertDTOToEntity(CorpNeftBeneficiaryDTO neftBeneficiaryDTO) {
+        return modelMapper.map(neftBeneficiaryDTO, CorpNeftBeneficiary.class);
     }
 
-    private void validateBeneficiary(NeftBeneficiary beneficiary){
-        if(repo.existsByUser_IdAndBeneficiaryAccountNumber(getCurrentUser().getId(), beneficiary.getBeneficiaryAccountNumber())){
+    private void validateBeneficiary(CorpNeftBeneficiary beneficiary){
+        if(repo.existsByCorporate_IdAndBeneficiaryAccountNumber(getCurrentUser().getCorporate().getId(), beneficiary.getBeneficiaryAccountNumber())){
             throw new DuplicateObjectException("Beneficiary already exists");
         }
     }
 
-    public RetailUser getCurrentUser(){
+    private CorporateUser getCurrentUser(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        logger.info("auh {}",authentication);
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             CustomUserPrincipal userPrincipal =(CustomUserPrincipal) authentication.getPrincipal();
-            return (RetailUser)userPrincipal.getUser();
+            return (CorporateUser)userPrincipal.getUser();
         }
 
         return (null) ;
+
+
     }
 
     @Async

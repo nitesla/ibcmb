@@ -2,7 +2,10 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.*;
+import longbridge.dtos.InternationalTransferRequestDTO;
+import longbridge.dtos.NeftTransferRequestDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
@@ -484,7 +487,7 @@ public class TransferServiceImpl implements TransferService {
             BigDecimal b = new BigDecimal(100);
             BigDecimal initiationAmount = a.multiply(b);
             quickInitiation.setAmount(initiationAmount);
-            quickInitiation.setChannel(7);
+            quickInitiation.setChannel("7");
             quickInitiation.setCurrencyCode("566");
             quickInitiation.setPaymentMethodCode("CA");
             transRequest.setQuickInitiation(quickInitiation);

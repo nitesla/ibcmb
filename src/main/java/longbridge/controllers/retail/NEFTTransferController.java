@@ -107,13 +107,13 @@ public class NEFTTransferController {
 
     }
 
-    @ModelAttribute
-    public void getNeftCollectionType(Model model) {
-        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_COLLECTION_TYPE");
-        model.addAttribute("neftCollectionTypes"
-                , sortedNames);
-
-    }
+//    @ModelAttribute
+//    public void getNeftCollectionType(Model model) {
+//        List<CodeDTO> sortedNames = codeService.getCodesByType("NEFT_COLLECTION_TYPE");
+//        model.addAttribute("neftCollectionTypes"
+//                , sortedNames);
+//
+//    }
 
     @GetMapping("/bulk/neft")
     public String newNeftBeneficiary(Model model, NeftBeneficiaryDTO neftBeneficiaryDTO) throws Exception {

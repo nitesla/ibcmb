@@ -2,6 +2,7 @@ package longbridge.controllers.corporate;
 
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpNeftBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -77,6 +78,9 @@ public class CorpTransferController {
 
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired
+    private  CorpNeftBeneficiaryService neftBeneficiaryService;
 
 
     @Autowired
@@ -220,6 +224,14 @@ public class CorpTransferController {
         return transferUtils.doIntraBankkNameLookup(accountNo);
     }
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiryNeft")
+    public
+    @ResponseBody
+    String getNeftBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+        return transferUtils.doNEFTBankNameLookup(bank, accountNo);
+    }
+
+
 
     @GetMapping("/{accountNo}/{bank}/nameEnquiry")
     public
@@ -258,7 +270,7 @@ public class CorpTransferController {
                 try {
                     CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
                     securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
-
+                    transferRequestDTO.setPayerName(corporateUser.getFirstName() + " " + corporateUser.getLastName());
                 } catch (InternetBankingSecurityException ibse) {
                     ibse.printStackTrace();
                     model.addAttribute("failure", ibse.getMessage());
@@ -284,6 +296,18 @@ public class CorpTransferController {
                         }
                     }
 
+
+                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())){
+                    if (request.getSession().getAttribute("Nbeneficiary") != null) {
+                        CorpNeftBeneficiaryDTO neftBeneficiaryDTO = (CorpNeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
+                        try {
+                            neftBeneficiaryService.addNeftBeneficiary(neftBeneficiaryDTO);
+                            request.getSession().removeAttribute("Nbeneficiary");
+                            request.getSession().removeAttribute("add");
+                        } catch (InternetBankingException de) {
+                            logger.error("Error adding beneficiary", de);
+                        }
+                    }
                 }else {
                     //checkbox  checked
                     if (request.getSession().getAttribute("Lbeneficiary") != null) {

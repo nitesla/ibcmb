@@ -39,7 +39,6 @@ public interface NeftBeneficiaryService {
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<NeftBeneficiary> getNeftBeneficiaries();
-    Iterable<NeftBeneficiary> getCorpNeftBeneficiaries();
     //    List<LocalBeneficiary> getLocalBeneficiaries();
     Iterable<NeftBeneficiary> getBankBeneficiaries();
 
