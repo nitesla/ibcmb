@@ -9,7 +9,9 @@ import longbridge.utils.TransferType;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -50,24 +52,19 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     private String transactionDate;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Transient
+    @OneToOne
     private QuickBeneficiary quickBeneficiary;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Transient
+    @OneToOne
     private QuickInitiation quickInitiation;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Transient
+    @OneToOne
     private QuickSender quickSender;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Transient
+    @OneToOne
     private QuickTermination quickTermination;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Transient
+    @OneToOne
     private AntiFraudData antiFraudData;
 
 
