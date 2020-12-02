@@ -620,6 +620,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 					transRequest.setTransferCode(response.getTransferCode());
 					transRequest.setTransactionDate(response.getTransactionDate());
 					transRequest.setResponseCodeGrouping(response.getResponseCodeGrouping());
+					transRequest.setStatusDescription("Completed");
 
 					if(response.getResponseCodeGrouping().contains("SUCCESS")){
 						transRequest.setStatus("00");

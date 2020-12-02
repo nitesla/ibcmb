@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class QuickInitiation extends AbstractEntity{
 
     private BigDecimal amount;
-    private int channel;
+    private String channel;
     private String currencyCode;
     private String paymentMethodCode;
 
@@ -24,11 +24,11 @@ public class QuickInitiation extends AbstractEntity{
         this.amount = amount;
     }
 
-    public int getChannel() {
+    public String getChannel() {
         return channel;
     }
 
-    public void setChannel(int channel) {
+    public void setChannel(String channel) {
         this.channel = channel;
     }
 
