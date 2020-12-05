@@ -22,6 +22,8 @@ public class NeftTransferRequestDTO {
     private String transferType;
     private String charge;
     private String channel;
+    private String beneficiaryCurrencyCode;
+    private String beneficiaryType;
 
 
     public NeftTransferRequestDTO() {
@@ -156,6 +158,22 @@ public class NeftTransferRequestDTO {
         this.channel = channel;
     }
 
+    public String getBeneficiaryCurrencyCode() {
+        return beneficiaryCurrencyCode;
+    }
+
+    public void setBeneficiaryCurrencyCode(String beneficiaryCurrencyCode) {
+        this.beneficiaryCurrencyCode = beneficiaryCurrencyCode;
+    }
+
+    public String getBeneficiaryType() {
+        return beneficiaryType;
+    }
+
+    public void setBeneficiaryType(String beneficiaryType) {
+        this.beneficiaryType = beneficiaryType;
+    }
+
     @Override
     public String toString() {
         return "NeftTransferRequestDTO{" +
@@ -175,6 +193,8 @@ public class NeftTransferRequestDTO {
                 ", transferType='" + transferType + '\'' +
                 ", charge='" + charge + '\'' +
                 ", channel='" + channel + '\'' +
+                ", beneficiaryCurrencyCode='" + beneficiaryCurrencyCode + '\'' +
+                ", beneficiaryType='" + beneficiaryType + '\'' +
                 '}';
     }
 }

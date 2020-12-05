@@ -80,6 +80,8 @@ public class TransferRequestDTO implements Serializable {
     private String collectionType;
     private String payerName;
     private String currency;
+    private String beneficiaryCurrencyCode;
+    private String beneficiaryType;
 
 
 
@@ -472,6 +474,22 @@ public class TransferRequestDTO implements Serializable {
         this.currency = currency;
     }
 
+    public String getBeneficiaryCurrencyCode() {
+        return beneficiaryCurrencyCode;
+    }
+
+    public void setBeneficiaryCurrencyCode(String beneficiaryCurrencyCode) {
+        this.beneficiaryCurrencyCode = beneficiaryCurrencyCode;
+    }
+
+    public String getBeneficiaryType() {
+        return beneficiaryType;
+    }
+
+    public void setBeneficiaryType(String beneficiaryType) {
+        this.beneficiaryType = beneficiaryType;
+    }
+
     @Override
     public String toString() {
         return "TransferRequestDTO{" +
@@ -518,6 +536,8 @@ public class TransferRequestDTO implements Serializable {
                 ", collectionType='" + collectionType + '\'' +
                 ", payerName='" + payerName + '\'' +
                 ", currency='" + currency + '\'' +
+                ", beneficiaryCurrencyCode='" + beneficiaryCurrencyCode + '\'' +
+                ", beneficiaryType='" + beneficiaryType + '\'' +
                 '}';
     }
 }
