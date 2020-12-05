@@ -1,10 +1,7 @@
 package longbridge.controllers.retail;
 
 
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.NeftBeneficiaryDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
@@ -374,7 +371,7 @@ public class TransferController {
                         }
                     }
 
-                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())){
+                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType())){
                     if (request.getSession().getAttribute("Nbeneficiary") != null) {
                         NeftBeneficiaryDTO neftBeneficiaryDTO = (NeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
                         try {
@@ -448,6 +445,8 @@ public class TransferController {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
+            if (request.getSession().getAttribute("Nbeneficiary") != null)
+                request.getSession().removeAttribute("Nbeneficiary");
 //            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
             redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));
             return index(request);
@@ -455,8 +454,8 @@ public class TransferController {
         } catch (Exception e) {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
-            if (request.getSession().getAttribute("Nbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
+            if (request.getSession().getAttribute("Nbeneficiary") != null)
                 request.getSession().removeAttribute("Nbeneficiary");
             redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
             return index(request);

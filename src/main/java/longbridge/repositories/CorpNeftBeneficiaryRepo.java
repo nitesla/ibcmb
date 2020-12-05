@@ -5,8 +5,8 @@ import longbridge.models.Corporate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CorpNeftBeneficiaryRepo extends CommonRepo<CorpNeftBeneficiary, Long>{
+public interface CorpNeftBeneficiaryRepo extends CommonRepo<CorpNeftBeneficiary, Long> {
+    boolean existsByUser_IdAndBeneficiaryAccountNumber(Long id, String beneficiaryAccountNumber);
 
-    Iterable<CorpNeftBeneficiary> findByCorporate(Corporate user);
-    boolean existsByCorporate_IdAndBeneficiaryAccountNumber(Long id,String s);
+    Iterable<CorpNeftBeneficiary> findByUser(Corporate corporate);
 }

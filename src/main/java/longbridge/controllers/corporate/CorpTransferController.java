@@ -68,6 +68,7 @@ public class CorpTransferController {
     private final TransferErrorService transferErrorService;
     private final SecurityService securityService;
     private final TransferUtils transferUtils;
+    private final CorpNeftBeneficiaryService corpNeftBeneficiaryService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -79,15 +80,12 @@ public class CorpTransferController {
     @Autowired
     private ConfigurationService configService;
 
-    @Autowired
-    private  CorpNeftBeneficiaryService neftBeneficiaryService;
-
 
     @Autowired
     private ApplicationContext appContext;
 
     @Autowired
-    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
+    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils, CorpNeftBeneficiaryService corpNeftBeneficiaryService) {
         this.corporateService = corporateService;
         this.corporateUserService = corporateUserService;
         this.transferService = transferService;
@@ -97,6 +95,7 @@ public class CorpTransferController {
         this.securityService = securityService;
         this.transferUtils = transferUtils;
         this.corpQuickBeneficiaryService = corpQuickBeneficiaryService;
+        this.corpNeftBeneficiaryService = corpNeftBeneficiaryService;
     }
 
 
@@ -299,16 +298,17 @@ public class CorpTransferController {
 
                 }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())){
                     if (request.getSession().getAttribute("Nbeneficiary") != null) {
-                        CorpNeftBeneficiaryDTO neftBeneficiaryDTO = (CorpNeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
+                        CorpNeftBeneficiaryDTO l = (CorpNeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
                         try {
-                            neftBeneficiaryService.addNeftBeneficiary(neftBeneficiaryDTO);
+                            logger.info("Saving beneficiary now ======= {} ",  l);
+                            corpNeftBeneficiaryService.addCorpNeftBeneficiary(l);
                             request.getSession().removeAttribute("Nbeneficiary");
                             request.getSession().removeAttribute("add");
                         } catch (InternetBankingException de) {
-                            logger.error("Error adding beneficiary", de);
+                            logger.error("Error occurred processing transfer");
                         }
                     }
-                }else {
+                } else {
                     //checkbox  checked
                     if (request.getSession().getAttribute("Lbeneficiary") != null) {
                         CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
@@ -326,40 +326,27 @@ public class CorpTransferController {
             CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
-            if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT_BULK) {
+            Object object = transferService.addTransferRequest(corpTransferRequestDTO);
+            if (object instanceof CorpTransferRequestDTO) {
 
-                corpTransferRequestDTO = transferService.makeNeftBulkTransfer(corpTransferRequestDTO);
-                if (corpTransferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
-                    model.addAttribute("message", messageSource.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-                    logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
+                corpTransferRequestDTO = (CorpTransferRequestDTO) object;
 
-                    return "corp/transfer/bulktransfer/neft/pendingNeftTransfer";
-                }
+                logger.info("Transfer Request processed", corpTransferRequestDTO);
+                model.addAttribute("transRequest", corpTransferRequestDTO);
+                model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
+            } else if (object instanceof String) {
+                model.addAttribute("transRequest", corpTransferRequestDTO);
+                redirectAttributes.addFlashAttribute("message", object);
+                redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
+                redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
 
-            } else{
-
-                Object object = transferService.addTransferRequest(corpTransferRequestDTO);
-
-
-                    if (object instanceof CorpTransferRequestDTO) {
-
-                        corpTransferRequestDTO = (CorpTransferRequestDTO) object;
-
-                        logger.info("Transfer Request processed", corpTransferRequestDTO);
-                        model.addAttribute("transRequest", corpTransferRequestDTO);
-                        model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
-                    } else if (object instanceof String) {
-                        model.addAttribute("transRequest", corpTransferRequestDTO);
-                        redirectAttributes.addFlashAttribute("message", object);
-                        redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
-                        redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
-
-                        return "redirect:/corporate/transfer/requests";
-
-                    }
-                return "corp/transfer/transferdetails";
+                return "redirect:/corporate/transfer/requests";
 
             }
+
+            return "corp/transfer/transferdetails";
+
+
         } catch (TransferAuthorizationException ae) {
             logger.error("Error initiating a transfer ", ae);
             redirectAttributes.addFlashAttribute("failure", ae.getMessage());
@@ -382,8 +369,9 @@ public class CorpTransferController {
         } finally {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
+            if (request.getSession().getAttribute("Nbeneficiary") != null)
+                request.getSession().removeAttribute("Nbeneficiary");
         }
-        return "corp/transfer/transferdetails";
     }
 
     @GetMapping("/newbeneficiaary")

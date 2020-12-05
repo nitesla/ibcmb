@@ -42,6 +42,9 @@ public class TransferUtils {
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     @Autowired
     private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+
+    @Autowired
+    private CorpNeftBeneficiaryRepo corpNeftBeneficiaryRepo;
     @Autowired
     private MessageSource messageSource;
     
@@ -51,9 +54,6 @@ public class TransferUtils {
 
     @Autowired
     private NeftBeneficiaryRepo neftBeneficiaryRepo;
-
-    @Autowired
-    private CorpNeftBeneficiaryRepo corpNeftBeneficiaryRepo;
     @Autowired
     private CorporateRepo corporateRepo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -173,7 +173,7 @@ public class TransferUtils {
                 }
             } else if (user.getUserType().equals(UserType.CORPORATE)) {
                 CorporateUser corporateUser = (CorporateUser) user;
-                boolean exists = corpNeftBeneficiaryRepo.existsByCorporate_IdAndBeneficiaryAccountNumber(corporateUser.getCorporate().getId(), accountNo);
+                boolean exists = corpNeftBeneficiaryRepo.existsByUser_IdAndBeneficiaryAccountNumber(corporateUser.getCorporate().getId(), accountNo);
                 if (exists) {
                     return createMessage("A beneficary with these details already exists", false);
                 }

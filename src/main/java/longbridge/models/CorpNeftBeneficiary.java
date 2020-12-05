@@ -15,24 +15,35 @@ import java.io.IOException;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class CorpNeftBeneficiary extends AbstractEntity implements PrettySerializer {
+
     private String beneficiaryBVN;
     private String beneficiaryAccountName;
     private String beneficiarySortCode;
     private String beneficiaryAccountNumber;
     private String beneficiaryBankName;
+    private String beneficiaryCurrencyCode;
+    private String beneficiaryType;
 
     @ManyToOne
-    private Corporate corporate;
+    Corporate user;
 
     public CorpNeftBeneficiary() {
+    }
+
+    public String getBeneficiaryBVN() {
+        return beneficiaryBVN;
+    }
+
+    public void setBeneficiaryBVN(String beneficiaryBVN) {
+        this.beneficiaryBVN = beneficiaryBVN;
     }
 
     public String getBeneficiaryAccountName() {
         return beneficiaryAccountName;
     }
 
-    public void setBeneficiaryAccountName(String beneficiaryAccName) {
-        this.beneficiaryAccountName = beneficiaryAccName;
+    public void setBeneficiaryAccountName(String beneficiaryAccountName) {
+        this.beneficiaryAccountName = beneficiaryAccountName;
     }
 
     public String getBeneficiarySortCode() {
@@ -47,16 +58,8 @@ public class CorpNeftBeneficiary extends AbstractEntity implements PrettySeriali
         return beneficiaryAccountNumber;
     }
 
-    public void setBeneficiaryAccountNumber(String beneficiaryAccNo) {
-        this.beneficiaryAccountNumber = beneficiaryAccNo;
-    }
-
-    public String getBeneficiaryBVN() {
-        return beneficiaryBVN;
-    }
-
-    public void setBeneficiaryBVN(String beneficiaryBVN) {
-        this.beneficiaryBVN = beneficiaryBVN;
+    public void setBeneficiaryAccountNumber(String beneficiaryAccountNumber) {
+        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
     }
 
     public String getBeneficiaryBankName() {
@@ -67,12 +70,28 @@ public class CorpNeftBeneficiary extends AbstractEntity implements PrettySeriali
         this.beneficiaryBankName = beneficiaryBankName;
     }
 
-    public Corporate getCorporate() {
-        return corporate;
+    public Corporate getUser() {
+        return user;
     }
 
-    public void setCorporate(Corporate corporate) {
-        this.corporate = corporate;
+    public void setUser(Corporate user) {
+        this.user = user;
+    }
+
+    public String getBeneficiaryCurrencyCode() {
+        return beneficiaryCurrencyCode;
+    }
+
+    public void setBeneficiaryCurrencyCode(String beneficiaryCurrencyCode) {
+        this.beneficiaryCurrencyCode = beneficiaryCurrencyCode;
+    }
+
+    public String getBeneficiaryType() {
+        return beneficiaryType;
+    }
+
+    public void setBeneficiaryType(String beneficiaryType) {
+        this.beneficiaryType = beneficiaryType;
     }
 
     @Override
@@ -102,8 +121,35 @@ public class CorpNeftBeneficiary extends AbstractEntity implements PrettySeriali
                 gen.writeStringField("beneficiaryAccountNumber", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryAccountBVN", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryBankName", value.getBeneficiaryBankName());
+                gen.writeStringField("beneficiaryCurrencyCode", value.getBeneficiaryCurrencyCode());
+                gen.writeStringField("beneficiaryType", value.getBeneficiaryType());
                 gen.writeEndObject();
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return "CorpNeftBeneficiary{" +
+                "beneficiaryBVN='" + beneficiaryBVN + '\'' +
+                ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
+                ", beneficiarySortCode='" + beneficiarySortCode + '\'' +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryBankName='" + beneficiaryBankName + '\'' +
+                ", beneficiaryCurrencyCode='" + beneficiaryCurrencyCode + '\'' +
+                ", beneficiaryType='" + beneficiaryType + '\'' +
+                ", user=" + user +
+                '}';
+    }
+
+    public enum  Type{
+        CR("CR"), DB("DB");
+        private String type;
+
+        Type(String type){this.type = type;}
+
+        public String getType() {
+            return type;
+        }
     }
 }

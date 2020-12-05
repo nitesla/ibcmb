@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['NEFT'],['transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer','/corporate/transfer/interbank'],['NEFT'],['transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ml-15 hide-content-onl">
@@ -24,25 +24,25 @@
                     <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
 
-                    <form method="post" id="benForm" th:action="@{/retail/transfer/interbank/index}" style="">
-                        <input type="hidden" name="transferType" th:if="${session.beneficiaryType} == 'CR'" th:value="${transferRequest.transferType}">
-                        <input type="hidden" name="transferType" th:if="${session.beneficiaryType} == 'DB'" value="NEFT DEBIT">
+                    <form method="post" id="benForm" th:action="@{/corporate/transfer/interbank/index}" style="">
+                        <input type="hidden" name="tranType" th:if="${session.beneficiaryType} == 'CR'" th:value="${corpTransferRequest.transferType}">
+                        <input type="hidden" name="tranType" th:if="${session.beneficiaryType} == 'DB'" value="NEFT DEBIT">
                     </form>
 
-                    <form method="post" th:action="@{/retail/transfer/interbank/summary/alpha}"
-                          th:object="${transferRequest}" onsubmit="return compareAmount()">
+                    <form method="post" th:action="@{/corporate/transfer/interbank/summary/alpha}"
+                          th:object="${corpTransferRequest}" onsubmit="return compareAmount()">
 
 
                         <div class="form-group">
                             <label class='my-label' th:if="${session.beneficiaryType} == 'CR'" >Beneficiary</label>
                             <label class='my-label' th:if="${session.beneficiaryType} == 'DB'" >Source </label>
-                            <input type="hidden" id = "beneficiaryCurr" th:value="${transferRequest.beneficiaryCurrencyCode}">
-                            <span class="alert no-bd-rad my-border bg-white "  th:text="${transferRequest.beneficiaryCurrencyCode}"></span>
-                            <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}==''"  th:name= "${transferRequest.beneficiaryAccountName}"  th:value= "${transferRequest.beneficiaryAccountName}" disabled />
+                            <input type="hidden" id = "beneficiaryCurr" th:value="${corpTransferRequest.beneficiaryCurrencyCode}">
+                            <span class="alert no-bd-rad my-border bg-white " th:text="${corpTransferRequest.beneficiaryCurrencyCode}"></span>
+                            <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}==''"  th:name= "${corpTransferRequest.beneficiaryAccountName}"  th:value= "${corpTransferRequest.beneficiaryAccountName}" disabled />
                             <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!=''"  th:name= "${benName}" th:value= "${benName}" disabled />
 <!--                            <a th:href="@{/retail/transfer/interbank/index}"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>-->
-                            <button id="changeBen"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></button>
-                            <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{beneficiaryAccountName}">&times;</p>
+                            <button id="changeBenv"  class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></button>
+                            <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
                         </div>
 
                         <div class="form-group">
@@ -141,7 +141,7 @@
 
         let getCurrency = () => {
             let accountNumber = $("#source").find(':selected').val()
-            $.getJSON('/retail/transfer/interbank/user/account/' + accountNumber, function (data) {
+            $.getJSON('/corporate/transfer/interbank/user/account/' + accountNumber, function (data) {
                 if(data !== undefined && data !== null){
                     $("#collection_type").val(data.collectionType)
                     $("#instrument_type").val(data.instrumentType)
@@ -154,7 +154,7 @@
 
         $("#source").change(function (){
             let accountNumber = $(this).find(':selected').val()
-            $.getJSON('/retail/transfer/interbank/user/account/' + accountNumber, function (data) {
+            $.getJSON('/corporate/transfer/interbank/user/account/' + accountNumber, function (data) {
                 if(data !== undefined && data !== null){
                     $("#collection_type").val(data.collectionType)
                     $("#instrument_type").val(data.instrumentType)
@@ -186,7 +186,7 @@
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/balance/"+accountNumber,
+                url: "/corporate/transfer/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
                 success:function(jd){
@@ -236,16 +236,22 @@
             console.log("This is the source currency",cc)
 
             if(parseFloat(userAmount) > parseFloat(newUserLimit)){
+                $('#errorMessage').html("");
+                $('#amounterrorMessage').html("")
                 $('#errorMessage').html("You cannot transfer more than account limit");
                 return false;
             } else if (parseFloat(userAmount) > parseFloat(newBal)){
+                $('#errorMessage').html("");
+                $('#amounterrorMessage').html("")
                 $('#errorMessage').html("You cannot transfer more than account balance");
                 return false;
             } else if (userAmount == ''){
+                $('#errorMessage').html("");
                 $('#amounterrorMessage').html("Please supply amount");
                 return false;
             }
             else if(rr !== cc){
+                $('#errorMessage').html("");
                 $('#amounterrorMessage').html("Currency does not match");
                 return false;
             }
@@ -270,7 +276,7 @@
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/limit/"+accountNumber+"/NIP",
+                url: "/corporate/transfer/limit/"+accountNumber+"/NIP",
                 type: 'GET',
                 async: false,
                 success:function(jd){
@@ -293,6 +299,7 @@
         function amountError() {
             var amount = $("#amount").val();
             if(amount < 100){
+                $('#errorMessage').html("");
                 $("#amountError").text("Amount must be greater than or equal to 100")
                 $("#localsave").attr("disabled",true);
             }else{
@@ -305,14 +312,13 @@
         function getDestCurrency(){
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/"+accountNumber+"/currency",
+                url: "/corporate/transfer/"+accountNumber+"/currency",
                 type: 'GET',
                 async: false,
                 success:function(currency){
                     cur = ''+String(currency);
                     if(cur == "" ){
                         document.getElementById("sourceCurrency").textContent="NGN";
-                        $("#currency").text("NGN")
                         // $("#myspan").show();
                     }else{
 //                    $('input[name=availBal]').val(bal);
@@ -332,16 +338,20 @@
             getFee();
         })
 
-        $("#changeBen").click(function (e){
-            e.preventDefault()
+        $("#changeBenv").click(function (e){
+            e.preventDefault();
             $("#benForm").submit();
         })
+        // let submitForm = () =>{
+        //     $("#benForm").submit();
+        //     return false;
+        // }
 
         function getFee(){
             let amount=$("#amount").val();
 
             $.ajax({
-                url: "/retail/transfer/interbank/"+amount+"/fee",
+                url: "/corporate/transfer/interbank/"+amount+"/fee",
                 type: 'GET',
                 async: false,
                 success:function(result){

@@ -20,37 +20,53 @@
 
                
                     <table class="table">
-                        <tr class="top-row">
+                        <tbody th:if="${session.beneficiaryType} != 'DB'">
+                            <tr class="top-row" >
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Destination account owner</th>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Amount</th>
+                                <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Remarks</th>
+                                <td th:if="${transferRequest.remarks != null}"  th:text="${transferRequest.remarks}"></td>
+                            </tr>
+                        </tbody>
 
-                            <th>Source account</th>
-                            <td th:text="${transferRequest.customerAccountNumber}"></td>
+                        <tbody th:if="${session.beneficiaryType} == 'DB'">
+                            <tr class="top-row">
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Source account owner</th>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+                            </tr>
 
-                        </tr>
-                        <tr>
+                            <tr>
+                                <th>Amount</th>
+                                <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Remarks</th>
+                                <td th:if="${transferRequest.remarks != null}"  th:text="${transferRequest.remarks}"></td>
+                            </tr>
+                        </tbody>
 
-                            <th>Destination account</th>
-                            <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
-
-                        </tr>
-                        <tr>
-
-                            <th>Destination account owner</th>
-                            <td th:text="${transferRequest.beneficiaryAccountName}"></td>
-
-                        </tr>
-                        <tr>
-
-                            <th>Amount</th>
-                            <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
-
-                        </tr>
-                        <tr>
-
-                            <th>Remarks</th>
-                            <td th:if="${transferRequest.remarks != null}"  th:text="${transferRequest.remarks}"></td>
-                            <td th:if="${transferRequest.narration != null}"  th:text="${transferRequest.narration}"></td>
-
-                        </tr>
                     </table>
 
 

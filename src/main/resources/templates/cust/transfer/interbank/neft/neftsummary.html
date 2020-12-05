@@ -14,58 +14,66 @@
 
     <div class="col-xs-12 ml-15  no-pad-right" >
         <div class="col-xs-12 no-pad-lef alert no-bd">
-           <div class="">
+            <div class="">
                 <div class="col-sm-offset-3  col-sm-6">
 
-                      <table class="table table-hover center ">
-
-                            <tbody class="tab">
-                                <!--<tr class='text-center'>-->
-                                    <!--<td colspan='2'>Below is a summary of your last transaction</td>-->
-                                <!--</tr>-->
-
+                    <table class="table table-hover center ">
+                        <tbody class="tab" th:if="${session.beneficiaryType} == 'CR'">
                             <tr class="top-row">
-
-                                <th>Source account</th>
+                                <th >Source account</th>
                                 <td th:text="${transferRequest.customerAccountNumber}"></td>
-
                             </tr>
                             <tr>
-
-                                <th>Destination account</th>
+                                <th >Destination account</th>
                                 <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
-
                             </tr>
                             <tr>
-
-                                <th>Destination account owner</th>
+                                <th >Destination account owner</th>
                                 <td th:text="${transferRequest.beneficiaryAccountName}"></td>
-
                             </tr>
                             <tr>
-
                                 <th>Amount</th>
                                 <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
-
                             </tr>
+<!--                            <tr>-->
+<!--                                <th>Charge</th>-->
+<!--                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
                             <tr>
-
-                                <th>Charge</th>
-                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
-                            </tr>
-                            <tr>
-
                                 <th>Remarks</th>
                                 <td th:text="${transferRequest.narration}"></td>
-
                             </tr>
-                            </tbody>
-                        </table>
+                        </tbody>
 
+                        <tbody class="tab" th:if="${session.beneficiaryType} == 'DB'">
 
-                    
+                            <tr class="top-row" >
+                                <th >Source account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr >
+                                <th >Source account owner</th>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
+                            </tr>
+                            <tr >
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+                            </tr>
 
-
+                            <tr>
+                                <th>Amount</th>
+                                <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            </tr>
+<!--                            <tr>-->
+<!--                                <th>Charge</th>-->
+<!--                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
+                            <tr>
+                                <th>Remarks</th>
+                                <td th:text="${transferRequest.narration}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <form method="post" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}" style="display:none;">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
@@ -75,10 +83,6 @@
                         <input type="hidden" th:field="*{narration}"/>
 
                     </form>
-
-
-
-
 
 
                     <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
@@ -93,8 +97,9 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
                         <input type="hidden" th:field="*{transferType}"/>
-<!--                        <input type="hidden" th:field="*{lastname}" />-->
-<!--                        <input type="hidden" th:field="*{firstname}" />-->
+                        <input type="hidden" th:field="*{beneficiaryCurrencyCode}"/>
+                        <!--                        <input type="hidden" th:field="*{lastname}" />-->
+                        <!--                        <input type="hidden" th:field="*{firstname}" />-->
 
                         <div class="form-group col-xs-12 no-pad-left">
                             <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
@@ -116,8 +121,9 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
                         <input type="hidden" th:field="*{transferType}"/>
-<!--                        <input type="hidden" th:field="*{lastname}" />-->
-<!--                        <input type="hidden" th:field="*{firstname}" />-->
+                        <input type="hidden" th:field="*{beneficiaryCurrencyCode}"/>
+                        <!--                        <input type="hidden" th:field="*{lastname}" />-->
+                        <!--                        <input type="hidden" th:field="*{firstname}" />-->
                     </form>
 
                 </div>
@@ -129,17 +135,17 @@
 
 
 <th:block layout:fragment="scripts">
-   <script>
-    function edit(){
-        $("#form_edit").submit();
-    }
+    <script>
+        function edit(){
+            $("#form_edit").submit();
+        }
 
-    function cancel(){
+        function cancel(){
 
-        window.location.href="/retail/transfer/interbank";
+            window.location.href="/retail/transfer/interbank";
 
-    }
-</script>
+        }
+    </script>
 </th:block>
 
 </body>

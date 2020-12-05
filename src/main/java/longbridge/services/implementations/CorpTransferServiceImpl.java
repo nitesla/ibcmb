@@ -5,9 +5,11 @@ import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.CorpInternationalTransferRequestDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.response.NeftResponse;
 import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
@@ -20,6 +22,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -43,13 +46,15 @@ import java.util.stream.StreamSupport;
 @Service
 public class CorpTransferServiceImpl implements CorpTransferService {
 
-    private final CorpNeftTransferRepo corpNeftTransferRepo;
+    private final NeftTransferRepo neftTransferRepo;
     private final CorpTransferRequestRepo corpTransferRequestRepo;
     private final IntegrationService integrationService;
     private final TransactionLimitServiceImpl limitService;
     private final AccountService accountService;
     private final ConfigurationService configService;
     private final DirectDebitService directDebitService;
+    private final NeftResponseRepo neftResponseRepo;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
@@ -109,12 +114,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     HttpServletRequest httpServletRequest;
 
+    @Value("${MICRRepairInd}")
+    private String micrRepairInd;
+
+    @Value("${bankSortCode}")
+    private String bankSortCode;
+
     private final SessionUtil sessionUtil;
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
                                    AccountService accountService, QuicktellerBankCodeService quicktellerBankCodeService, ConfigurationService configService,
-                                   DirectDebitService directDebitService, SessionUtil sessionUtil,CorpNeftTransferRepo corpNeftTransferRepo, AccountRepo accountRepo) {
+                                   DirectDebitService directDebitService, SessionUtil sessionUtil, NeftTransferRepo neftTransferRepo, NeftResponseRepo neftResponseRepo, AccountRepo accountRepo) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -123,7 +134,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         this.quicktellerBankCodeService =  quicktellerBankCodeService;
         this.sessionUtil = sessionUtil;
         this.directDebitService = directDebitService;
-        this.corpNeftTransferRepo = corpNeftTransferRepo;
+        this.neftTransferRepo = neftTransferRepo;
+        this.neftResponseRepo = neftResponseRepo;
         this.accountRepo = accountRepo;
     }
 
@@ -139,10 +151,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    private CorpNeftTransfer pfDataItemStore(CorpTransRequest neftTransferDTO){
-        CorpNeftTransfer neftTransfer = new CorpNeftTransfer();
-        CorporateUser corporateUser = getCurrentUser();
-        Corporate corporate = corporateUser.getCorporate();
+    private NeftTransfer pfDataItemStore(CorpTransferRequestDTO neftTransferDTO){
+        NeftTransfer neftTransfer = new NeftTransfer();
         String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
         logger.info("corporate user bvn = [{}]", bvn);
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
@@ -152,38 +162,23 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
         neftTransfer.setNarration(neftTransferDTO.getNarration());
         neftTransfer.setSpecialClearing(true);
-        neftTransfer.setBVNBeneficiary("");
-        neftTransfer.setBankOfFirstDepositSortCode("");
-        neftTransfer.setCollectionType("");
+        neftTransfer.setBVNBeneficiary(neftTransferDTO.getBeneficiaryBVN());
+        neftTransfer.setBankOfFirstDepositSortCode(bankSortCode);
+        neftTransfer.setCollectionType(neftTransferDTO.getCollectionType());
         neftTransfer.setBVNPayer(bvn);
-        neftTransfer.setInstrumentType(neftTransferDTO.getChannel());
+        neftTransfer.setInstrumentType(neftTransferDTO.getInstrumentType());
         neftTransfer.setMICRRepairInd("");
         neftTransfer.setSettlementTime("not settled");
-        neftTransfer.setCycleNo("");
+        neftTransfer.setCycleNo("01");
         neftTransfer.setNarration(neftTransferDTO.getRemarks());
-        neftTransfer.setPresentingBankSortCode("");
-        neftTransfer.setSortCode(neftTransferDTO.getUserReferenceNumber());
-        neftTransfer.setTranCode(neftTransferDTO.getReferenceNumber());
-        neftTransfer.setSerialNo(neftTransferDTO.getId().toString());
-        corpNeftTransferRepo.save(neftTransfer);
-        return neftTransfer;
+        neftTransfer.setPresentingBankSortCode(bankSortCode);
+        neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
+        neftTransfer.setTranCode("20");
+        neftTransfer.setSerialNo("");
+//        neftTransferRepo.save(neftTransfer);
+        return neftTransferRepo.save(neftTransfer);
     }
 
-
-    @Override
-    public CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
-        validateTransfer(transferRequestDTO);
-        CorpNeftTransfer neftTransfer = new CorpNeftTransfer();
-        CorpTransRequest transRequest = persistTransfer(transferRequestDTO);
-        if (transferRequestDTO.getTransferType() == TransferType.NEFT || transferRequestDTO.getTransferType() == TransferType.NEFT_BULK) {
-            logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
-            pfDataItemStore(transRequest);
-        }
-        logger.info("uniqueid {}", transRequest);
-        transRequest.setStatus("PENDING");
-        return convertEntityToDTO(transRequest);
-
-    }
 
     @Override
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
@@ -239,6 +234,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
+        NeftTransfer neftTransfer = new NeftTransfer();
+
         logger.trace("Initiating {} transfer to {} by {}", corpTransferRequestDTO.getTransferType(), corpTransferRequestDTO.getBeneficiaryAccountName(), corpTransferRequestDTO.getUserReferenceNumber());
         CorpTransRequest corpTransRequest = persistTransfer(corpTransferRequestDTO);
         logger.info("the corporate transfer request {}", corpTransRequest);
@@ -274,10 +271,19 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
 //        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
-
         if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT){
-             pfDataItemStore(corpTransRequest);
-            return getCorpTransferRequestDTO(corpTransRequest);
+            neftTransfer = pfDataItemStore(corpTransferRequestDTO);
+            try {
+                NeftResponseDTO responseDTO = integrationService.submitInstantNeftTransfer(neftTransfer);
+                NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(responseDTO));
+                neftTransfer.setNeftResponse(neftResponse);
+                neftTransferRepo.save(neftTransfer);
+                getCorpTransferRequestDTO(corpTransRequest);
+            }catch (InternetBankingTransferException ex){
+                throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
+            }
+
+
         }
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
@@ -589,7 +595,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         corpTransRequest.setCurrencyCode(transferRequestDTO.getCurrencyCode());
         corpTransRequest.setBeneficiaryBank((transferRequestDTO.getBeneficiaryBank()));
 
-        QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
+        if (transferRequestDTO.getTransferType() == TransferType.QUICKTELLER) {
+            QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
         quickBeneficiary.setLastname(transferRequestDTO.getLastname());
         quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
         quickBeneficiaryRepo.save(quickBeneficiary);
@@ -638,6 +645,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         int random = rand.nextInt(upperbound);
         corpTransRequest.setTransferCode("1453" + random);
 
+        }
         Corporate corporate = corporateRepo.findOneById(Long.parseLong(transferRequestDTO.getCorporateId()));
         corpTransRequest.setCorporate(corporate);
         if (transferRequestDTO.getTransAuthId() != null) {
@@ -955,6 +963,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
         return existingRoles;
 
+    }
+
+    private NeftResponse convertResponseToEntity(NeftResponseDTO neftResponseDTO){
+        NeftResponse n = new NeftResponse();
+        n.setAppId(neftResponseDTO.getAppId());
+        n.setItemCount(neftResponseDTO.getItemCount());
+        n.setMsgId(neftResponseDTO.getMsgId());
+        n.setResponseCode(neftResponseDTO.getResponseCode());
+        n.setResponseMessage(neftResponseDTO.getResponseMessage());
+        return n;
     }
 
     @Override

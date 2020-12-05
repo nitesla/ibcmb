@@ -2,10 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.InternationalTransferRequestDTO;
-import longbridge.dtos.NeftTransferRequestDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
@@ -219,6 +216,8 @@ public class TransferServiceImpl implements TransferService {
 
         TransRequest transRequest = null;
 
+        System.out.println("This is the transfer Id : "+ transferRequestDTO.getTransferType());
+
        if (transferRequestDTO.getTransferType() != TransferType.NEFT && transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
            transRequest = integrationService.makeTransfer(transRequest2);
            logger.info("Transfer Details: ", transRequest);
@@ -228,12 +227,13 @@ public class TransferServiceImpl implements TransferService {
         if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
 
             logger.info("uniqueid {}",transRequest2);
-            transRequest2.setStatus("00");
-            transRequest = transferRequestRepo.save(transRequest2);
             NeftResponseDTO response = integrationService.submitInstantNeftTransfer(neftTransfer);
             NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(response));
             neftTransfer.setNeftResponse(neftResponse);
             neftTransferRepo.save(neftTransfer);
+            transRequest2.setStatus("00");
+            transRequest = transferRequestRepo.save(transRequest2);
+
 
             return convertEntityToDTO(transRequest);
 
