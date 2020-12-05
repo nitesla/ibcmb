@@ -339,6 +339,7 @@ public class InterBankTransferController {
             return page + "neft/pageiBN";
         }
 
+
         System.out.println("This is the beneficiary : " + neftBeneficiaryDTO);
 
         NeftTransferRequestDTO transferRequestDTO = new NeftTransferRequestDTO();
@@ -358,9 +359,6 @@ public class InterBankTransferController {
         model.addAttribute("benName", neftBeneficiaryDTO.getBeneficiaryAccountName());
 
         servletRequest.getSession().setAttribute("Nbeneficiary", neftBeneficiaryDTO);
-//        }
-
-
 
         if (servletRequest.getParameter("add") != null){
             servletRequest.getSession().setAttribute("add", "add");

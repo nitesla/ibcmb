@@ -487,7 +487,7 @@ public class TransferServiceImpl implements TransferService {
             BigDecimal b = new BigDecimal(100);
             BigDecimal initiationAmount = a.multiply(b);
             quickInitiation.setAmount(initiationAmount);
-            quickInitiation.setChannel(7);
+            quickInitiation.setChannel("7");
             quickInitiation.setCurrencyCode("566");
             quickInitiation.setPaymentMethodCode("CA");
             transRequest.setQuickInitiation(quickInitiation);

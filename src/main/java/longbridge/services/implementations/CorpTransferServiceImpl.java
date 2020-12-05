@@ -67,6 +67,21 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorpTransferAuthRepo transferAuthRepo;
 
     @Autowired
+    private QuickBeneficiaryRepo quickBeneficiaryRepo;
+
+    @Autowired
+    private QuickSenderRepo quickSenderRepo;
+
+    @Autowired
+    private QuickInitiationRepo quickInitiationRepo;
+
+    @Autowired
+    private QuickTerminationRepo quickTerminationRepo;
+
+    @Autowired
+    private AntiFraudRepo antiFraudRepo;
+
+    @Autowired
     private CorporateService corporateService;
 
     @Autowired
@@ -250,6 +265,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         antiFraudData.setTranLocation("");
         antiFraudData.setChannel("INTERNET");
         corpTransRequest.setChannel("INTERNET");
+        antiFraudRepo.save(antiFraudData);
 
         corpTransRequest.setAntiFraudData(antiFraudData);
 
@@ -269,7 +285,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
         }
-
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(), corpTransRequestNew.getUserReferenceNumber());
@@ -504,8 +519,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
         transferRequestDTO.setCurrencyCode(corpTransRequest.getCurrencyCode());
-//        transferRequestDTO.setLastname(corpTransRequest.getQuickBeneficiary().getLastname());
-//        transferRequestDTO.setFirstname(corpTransRequest.getQuickBeneficiary().getOthernames());
+
+
+        if (corpTransRequest.getQuickBeneficiary() != null) {
+            transferRequestDTO.setLastname(corpTransRequest.getQuickBeneficiary().getLastname());
+            transferRequestDTO.setFirstname(corpTransRequest.getQuickBeneficiary().getOthernames());
+//        transferRequestDTO.setAmount(corpTransRequest.getQuickInitiation().getAmount());
+//            transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getQuickBeneficiary().getAccountNumber());
+        }
         if (corpTransRequest.getTransferAuth() != null) {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
@@ -585,7 +606,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             BigDecimal b = new BigDecimal(100);
             BigDecimal initiationAmount = a.multiply(b);
             quickInitiation.setAmount(initiationAmount);
-            quickInitiation.setChannel(7);
+            quickInitiation.setChannel("7");
             quickInitiation.setCurrencyCode("566");
             quickInitiation.setPaymentMethodCode("CA");
             corpTransRequest.setQuickInitiation(quickInitiation);

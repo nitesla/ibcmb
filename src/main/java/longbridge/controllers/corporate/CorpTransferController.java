@@ -223,6 +223,14 @@ public class CorpTransferController {
         return transferUtils.doIntraBankkNameLookup(accountNo);
     }
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiryNeft")
+    public
+    @ResponseBody
+    String getNeftBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+        return transferUtils.doNEFTBankNameLookup(bank, accountNo);
+    }
+
+
 
     @GetMapping("/{accountNo}/{bank}/nameEnquiry")
     public
@@ -242,14 +250,6 @@ public class CorpTransferController {
 
     }
 
-    @GetMapping("/{accountNo}/{bank}/nameEnquiryNeft")
-    public
-    @ResponseBody
-    String getNeftAccountName(@PathVariable String accountNo, @PathVariable String bank) {
-
-        return transferUtils.doNEFTBankNameLookup(bank, accountNo);
-
-    }
 
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, HttpServletRequest request, Principal principal) throws Exception {
@@ -269,7 +269,7 @@ public class CorpTransferController {
                 try {
                     CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
                     securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
-
+                    transferRequestDTO.setPayerName(corporateUser.getFirstName() + " " + corporateUser.getLastName());
                 } catch (InternetBankingSecurityException ibse) {
                     ibse.printStackTrace();
                     model.addAttribute("failure", ibse.getMessage());
@@ -277,7 +277,6 @@ public class CorpTransferController {
                 }
                 request.getSession().removeAttribute("auth-needed");
             }
-            System.out.println("This is the transfer Request : "+ transferRequestDTO.getTransferType());
             if (transferRequestDTO.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)) {
                 return "redirect:/corporate/transfer/international/process";
             }

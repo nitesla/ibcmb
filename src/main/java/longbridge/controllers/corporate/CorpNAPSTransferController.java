@@ -110,12 +110,17 @@ public class CorpNAPSTransferController {
         this.corporateService = corporateService;
     }
 
+//    @GetMapping("/bulk")
+//    public String getBulkTransfers(Model model, HttpSession session) {
+//        if (session.getAttribute("workbook") != null) {
+//            session.removeAttribute("workbook");
+//        }
+//        return "/corp/transfer/bulktransfer/list";
+//    }
+
     @GetMapping("/bulk")
-    public String getBulkTransfers(Model model, HttpSession session) {
-        if (session.getAttribute("workbook") != null) {
-            session.removeAttribute("workbook");
-        }
-        return "/corp/transfer/bulktransfer/list";
+    public String getBulkTransfers(Model model) {
+        return "/corp/transfer/bulktransfer/pagei";
     }
 
     @GetMapping("/upload")

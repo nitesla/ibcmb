@@ -10,6 +10,16 @@ public class CorpTransferRequestDTO extends TransferRequestDTO {
 
     private String transAuthId;
 
+    private String paymentMethodCode;
+
+    public String getPaymentMethodCode() {
+        return paymentMethodCode;
+    }
+
+    public void setPaymentMethodCode(String paymentMethodCode) {
+        this.paymentMethodCode = paymentMethodCode;
+    }
+
     public String getTransAuthId() {
         return transAuthId;
     }
