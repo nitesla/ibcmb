@@ -278,7 +278,7 @@ public class CorpTransferController {
                 }
                 request.getSession().removeAttribute("auth-needed");
             }
-            if (transferRequestDTO.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)) {
+            if (TransferType.INTERNATIONAL_TRANSFER.equals(transferRequestDTO.getTransferType())) {
                 return "redirect:/corporate/transfer/international/process";
             }
 
@@ -326,27 +326,40 @@ public class CorpTransferController {
             CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
-            Object object = transferService.addTransferRequest(corpTransferRequestDTO);
-            if (object instanceof CorpTransferRequestDTO) {
+            if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT_BULK) {
 
-                corpTransferRequestDTO = (CorpTransferRequestDTO) object;
+                corpTransferRequestDTO = transferService.makeNeftBulkTransfer(corpTransferRequestDTO);
+                if (corpTransferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
+                    model.addAttribute("message", messageSource.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                    logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
 
-                logger.info("Transfer Request processed", corpTransferRequestDTO);
-                model.addAttribute("transRequest", corpTransferRequestDTO);
-                model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
-            } else if (object instanceof String) {
-                model.addAttribute("transRequest", corpTransferRequestDTO);
-                redirectAttributes.addFlashAttribute("message", object);
-                redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
-                redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
+                    return "corp/transfer/bulktransfer/neft/pendingNeftTransfer";
+                }
 
-                return "redirect:/corporate/transfer/requests";
+            } else{
+
+                Object object = transferService.addTransferRequest(corpTransferRequestDTO);
+
+
+                    if (object instanceof CorpTransferRequestDTO) {
+
+                        corpTransferRequestDTO = (CorpTransferRequestDTO) object;
+
+                        logger.info("Transfer Request processed", corpTransferRequestDTO);
+                        model.addAttribute("transRequest", corpTransferRequestDTO);
+                        model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
+                    } else if (object instanceof String) {
+                        model.addAttribute("transRequest", corpTransferRequestDTO);
+                        redirectAttributes.addFlashAttribute("message", object);
+                        redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
+                        redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
+
+                        return "redirect:/corporate/transfer/requests";
+
+                    }
+                return "corp/transfer/transferdetails";
 
             }
-
-            return "corp/transfer/transferdetails";
-
-
         } catch (TransferAuthorizationException ae) {
             logger.error("Error initiating a transfer ", ae);
             redirectAttributes.addFlashAttribute("failure", ae.getMessage());
@@ -370,6 +383,7 @@ public class CorpTransferController {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
         }
+        return "corp/transfer/transferdetails";
     }
 
     @GetMapping("/newbeneficiaary")

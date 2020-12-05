@@ -210,7 +210,7 @@ public class CorpNEFTTransferController {
     public String neftTransfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) throws Exception {
         CorpNeftBeneficiary beneficiary = corpNeftBeneficiaryService.getNeftBeneficiary(id);
 
-        CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
+        TransferRequestDTO requestDTO = new TransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getBeneficiaryAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getBeneficiaryAccountNumber());
         requestDTO.setBeneficiaryBVN(beneficiary.getBeneficiaryBVN());
@@ -232,7 +232,7 @@ public class CorpNEFTTransferController {
         String newbenName = (String) request.getSession().getAttribute("beneficiaryName");
         logger.info("I GOT HERE WITH ALL DETAILS {}", transferRequestDTO1);
         CorpTransferRequestDTO transferRequestDTO = convertToTransferRequest(transferRequestDTO1);
-        model.addAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("corpTransferRequest", transferRequestDTO);
         String charge = "NAN";
         String benName = (String) request.getSession().getAttribute("benName");
         model.addAttribute("benName", benName);
@@ -248,7 +248,7 @@ public class CorpNEFTTransferController {
             }
         }
 
-        request.getSession().setAttribute("transferRequest", transferRequestDTO);
+        request.getSession().setAttribute("corpTransferRequest", transferRequestDTO);
         logger.info("Neft Transfer Request summary {} ", transferRequestDTO);
         model.addAttribute("charge", charge);
         return page + "neftsummary";
@@ -276,7 +276,7 @@ public class CorpNEFTTransferController {
     }
 
     @PostMapping("/neft/edit")
-    public String editNeftTransfer(@ModelAttribute("transferRequest") CorpTransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+    public String editNeftTransfer(@ModelAttribute("corpTransferRequest") CorpTransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("benName", transferRequestDTO.getBeneficiaryAccountName());
         return page + "pageiN2";

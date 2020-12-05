@@ -43,7 +43,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class CorpTransferServiceImpl implements CorpTransferService {
 
-    private final NeftTransferRepo neftTransferRepo;
+    private final CorpNeftTransferRepo corpNeftTransferRepo;
     private final CorpTransferRequestRepo corpTransferRequestRepo;
     private final IntegrationService integrationService;
     private final TransactionLimitServiceImpl limitService;
@@ -114,7 +114,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
                                    AccountService accountService, QuicktellerBankCodeService quicktellerBankCodeService, ConfigurationService configService,
-                                   DirectDebitService directDebitService, SessionUtil sessionUtil,NeftTransferRepo neftTransferRepo, AccountRepo accountRepo) {
+                                   DirectDebitService directDebitService, SessionUtil sessionUtil,CorpNeftTransferRepo corpNeftTransferRepo, AccountRepo accountRepo) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -123,7 +123,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         this.quicktellerBankCodeService =  quicktellerBankCodeService;
         this.sessionUtil = sessionUtil;
         this.directDebitService = directDebitService;
-        this.neftTransferRepo = neftTransferRepo;
+        this.corpNeftTransferRepo = corpNeftTransferRepo;
         this.accountRepo = accountRepo;
     }
 
@@ -139,8 +139,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    private NeftTransfer pfDataItemStore(CorpTransRequest neftTransferDTO){
-        NeftTransfer neftTransfer = new NeftTransfer();
+    private CorpNeftTransfer pfDataItemStore(CorpTransRequest neftTransferDTO){
+        CorpNeftTransfer neftTransfer = new CorpNeftTransfer();
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
         String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
         logger.info("corporate user bvn = [{}]", bvn);
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
@@ -163,10 +165,25 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setSortCode(neftTransferDTO.getUserReferenceNumber());
         neftTransfer.setTranCode(neftTransferDTO.getReferenceNumber());
         neftTransfer.setSerialNo(neftTransferDTO.getId().toString());
-        neftTransferRepo.save(neftTransfer);
+        corpNeftTransferRepo.save(neftTransfer);
         return neftTransfer;
     }
 
+
+    @Override
+    public CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+        validateTransfer(transferRequestDTO);
+        CorpNeftTransfer neftTransfer = new CorpNeftTransfer();
+        CorpTransRequest transRequest = persistTransfer(transferRequestDTO);
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT || transferRequestDTO.getTransferType() == TransferType.NEFT_BULK) {
+            logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
+            pfDataItemStore(transRequest);
+        }
+        logger.info("uniqueid {}", transRequest);
+        transRequest.setStatus("PENDING");
+        return convertEntityToDTO(transRequest);
+
+    }
 
     @Override
     public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {

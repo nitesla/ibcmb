@@ -3,9 +3,11 @@ package longbridge.services.implementations;
 import longbridge.dtos.TransactionFeeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.NeftTransfer;
+import longbridge.models.RetailUser;
 import longbridge.models.TransactionFee;
 import longbridge.repositories.NeftTransferRepo;
 import longbridge.repositories.TransactionFeeRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.CodeService;
 import longbridge.services.TransactionService;
 import org.modelmapper.ModelMapper;
@@ -17,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -140,6 +143,11 @@ public class TransactionServiceImpl implements TransactionService {
             transactionFeeList.add(transactionFeeDTO);
         }
         return transactionFeeList;
+    }
+
+    private RetailUser getCurrentUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (RetailUser) principal.getUser();
     }
 }
 

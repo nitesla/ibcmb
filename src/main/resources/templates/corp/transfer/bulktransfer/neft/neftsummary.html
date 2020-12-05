@@ -67,7 +67,7 @@
 
 
 
-                    <form method="post" th:action="@{/corporate/transfer/neft/edit}" th:object="${transferRequest}" style="display:none;">
+                    <form method="post" th:action="@{/corporate/transfer/neft/edit}" th:object="${corpTransferRequest}" style="display:none;">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryBankName}"/>
@@ -81,7 +81,7 @@
 
 
 
-                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${transferRequest}">
+                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -106,7 +106,7 @@
                     </form>
 
 
-                    <form method="post" id="form_edit" th:action="@{/corporate/transfer/neft/edit}" th:object="${transferRequest}">
+                    <form method="post" id="form_edit" th:action="@{/corporate/transfer/neft/edit}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
