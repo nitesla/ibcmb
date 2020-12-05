@@ -2,7 +2,10 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.*;
+import longbridge.dtos.InternationalTransferRequestDTO;
+import longbridge.dtos.NeftTransferRequestDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
@@ -72,6 +75,21 @@ public class TransferServiceImpl implements TransferService {
     private AccountRepo accountRepo;
 
     @Autowired
+    private QuickBeneficiaryRepo quickBeneficiaryRepo;
+
+    @Autowired
+    private QuickTerminationRepo quickTerminationRepo;
+
+    @Autowired
+    private QuickInitiationRepo quickInitiationRepo;
+
+    @Autowired
+    private QuickSenderRepo quickSenderRepo;
+
+    @Autowired
+    private AntiFraudRepo antiFraudRepo;
+
+    @Autowired
     private NeftResponseRepo neftResponseRepo;
 
     @Value("${MICRRepairInd}")
@@ -104,6 +122,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     private NeftTransfer makepfDataItemStore(TransferRequestDTO neftTransferDTO){
+        RetailUser user = getCurrentUser();
         NeftTransfer neftTransfer = new NeftTransfer();
         String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
         neftTransfer.setAccountNo(neftTransferDTO.getCustomerAccountNumber());
@@ -126,6 +145,7 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
         neftTransfer.setTranCode("20");
         neftTransfer.setSerialNo("");
+        neftTransfer.setUser(user);
 
         logger.info("Neft pfDataItemStore : {}", neftTransfer);
         return neftTransferRepo.save(neftTransfer);
@@ -139,7 +159,7 @@ public class TransferServiceImpl implements TransferService {
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
         NeftTransfer neftTransfer = new NeftTransfer();
-        if (transferRequestDTO.getTransferType() == TransferType.NEFT){
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT || transferRequestDTO.getTransferType() == TransferType.NEFT_BULK){
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
              neftTransfer = makepfDataItemStore(transferRequestDTO);
         }
@@ -177,6 +197,7 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation("");
             transRequest1.setChannel("INTERNET");
+            antiFraudRepo.save(antiFraudData);
             transRequest1.setAntiFraudData(antiFraudData);
 
             logger.info("country code {}", antiFraudData.getCountryCode());
@@ -202,6 +223,7 @@ public class TransferServiceImpl implements TransferService {
 
        if (transferRequestDTO.getTransferType() != TransferType.NEFT && transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
            transRequest = integrationService.makeTransfer(transRequest2);
+           logger.info("Transfer Details: ", transRequest);
        }
             logger.trace("Transfer Details: ", transRequest);
         
@@ -473,6 +495,7 @@ public class TransferServiceImpl implements TransferService {
         antiFraudData.setSessionkey(transferRequestDTO.getSessionkey());
         antiFraudData.setTranLocation(transferRequestDTO.getTranLocation());
         antiFraudData.setChannel(transferRequestDTO.getChannel());
+        antiFraudRepo.save(antiFraudData);
         transRequest.setAntiFraudData(antiFraudData);
 
         if (transferRequestDTO.getTransferType() == TransferType.QUICKTELLER){
@@ -480,6 +503,7 @@ public class TransferServiceImpl implements TransferService {
             QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
             quickBeneficiary.setLastname(transferRequestDTO.getLastname());
             quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
+            quickBeneficiaryRepo.save(quickBeneficiary);
             transRequest.setQuickBeneficiary(quickBeneficiary);
 
             QuickInitiation quickInitiation = new QuickInitiation();
@@ -490,6 +514,7 @@ public class TransferServiceImpl implements TransferService {
             quickInitiation.setChannel("7");
             quickInitiation.setCurrencyCode("566");
             quickInitiation.setPaymentMethodCode("CA");
+            quickInitiationRepo.save(quickInitiation);
             transRequest.setQuickInitiation(quickInitiation);
 
             QuickSender quickSender = new QuickSender();
@@ -497,6 +522,7 @@ public class TransferServiceImpl implements TransferService {
             quickSender.setLastname(getCurrentUser().getLastName());
             quickSender.setOthernames(getCurrentUser().getFirstName());
             quickSender.setPhone(getCurrentUser().getPhoneNumber());
+            quickSenderRepo.save(quickSender);
             transRequest.setQuickSender(quickSender);
 
 
@@ -505,6 +531,7 @@ public class TransferServiceImpl implements TransferService {
             AccountReceivable accountReceivable = new AccountReceivable();
             accountReceivable.setAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
             accountReceivable.setAccountType("00");
+
 
             quickTermination.setAccountReceivable(accountReceivable);
             BigDecimal c = transferRequestDTO.getAmount();
@@ -515,6 +542,7 @@ public class TransferServiceImpl implements TransferService {
             quickTermination.setCurrencyCode("566");
             quickTermination.setEntityCode("");
             quickTermination.setPaymentMethodCode("AC");
+            quickTerminationRepo.save(quickTermination);
             transRequest.setQuickTermination(quickTermination);
 
             Random rand = new Random();

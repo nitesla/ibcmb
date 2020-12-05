@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.*;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.Account;
 import longbridge.models.NeftBeneficiary;
 import longbridge.models.NeftTransfer;
@@ -125,8 +126,17 @@ public class NEFTTransferController {
     @PostMapping("/settle")
     @ResponseBody
     public String settleTransactions(){
-        integrationService.submitNeftTransfer();
-        return "successful";
+        try {
+            integrationService.submitNeftTransfer();
+            return "successful";
+        } catch (InternetBankingTransferException e) {
+            logger.error("Error making transfer", e);
+            return "failed";
+
+        } catch (Exception e) {
+            logger.error("Error making transfer", e);
+           return "failed";
+        }
     }
 
 

@@ -277,7 +277,7 @@ public class CorpTransferController {
                 }
                 request.getSession().removeAttribute("auth-needed");
             }
-            if (transferRequestDTO.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)) {
+            if (TransferType.INTERNATIONAL_TRANSFER.equals(transferRequestDTO.getTransferType())) {
                 return "redirect:/corporate/transfer/international/process";
             }
 
@@ -295,7 +295,8 @@ public class CorpTransferController {
                         }
                     }
 
-                }else if(TransferType.NEFT .equals(transferRequestDTO.getTransferType())){
+
+                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())){
                     if (request.getSession().getAttribute("Nbeneficiary") != null) {
                         CorpNeftBeneficiaryDTO l = (CorpNeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
                         try {

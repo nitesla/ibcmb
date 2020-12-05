@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class NeftTransfer {
+public class CorpNeftTransfer {
 
 
     @Id
@@ -64,7 +64,7 @@ public class NeftTransfer {
     private String CycleNo;
 
     @ManyToOne
-    private RetailUser user;
+    private Corporate corporate;
 
     @OneToOne
     private NeftResponse neftResponse;
@@ -286,17 +286,17 @@ public class NeftTransfer {
         this.neftResponse = neftResponse;
     }
 
-    public RetailUser getUser() {
-        return user;
+    public Corporate getCorporate() {
+        return corporate;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setCorporate(Corporate corporate) {
+        this.corporate = corporate;
     }
 
     @Override
     public String toString() {
-        return "NeftTransfer{" +
+        return "CorpNeftTransfer{" +
                 "Id=" + Id +
                 ", ItemSequenceNo='" + ItemSequenceNo + '\'' +
                 ", SerialNo='" + SerialNo + '\'' +
@@ -322,7 +322,7 @@ public class NeftTransfer {
                 ", MICRRepairInd='" + MICRRepairInd + '\'' +
                 ", SettlementTime='" + SettlementTime + '\'' +
                 ", CycleNo='" + CycleNo + '\'' +
-                ", user=" + user +
+                ", corporate=" + corporate +
                 ", neftResponse=" + neftResponse +
                 '}';
     }
