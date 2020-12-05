@@ -626,6 +626,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 						transRequest.setStatus("00");
 					}
 
+					logger.info("I'm here {}", transRequest);
+
 					return transRequest;
 
 				} catch (HttpStatusCodeException e) {
@@ -1824,6 +1826,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try{
 			if (!getUnsettledNeftList.isEmpty()){
 				response = template.postForObject(uri,params, NeftResponse.class);
+				logger.info("Neft Response {}", response);
 				getUnsettledNeftList.forEach(neftTransfer -> {
 					updateNeftSettlement(newDate, neftTransfer);
 					neftTransferRepo.save(neftTransfer);
@@ -1831,6 +1834,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 			}else {
 				logger.info("No pending requests");
 			}
+		}catch (HttpStatusCodeException e) {
+
+			logger.error("HTTP Error occurred", e);
+
 		}catch (Exception e){
 			logger.info("Error processing request ", e);
 		}
