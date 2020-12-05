@@ -583,10 +583,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                 return sendTransfer(transRequest);
 			}
-			case NEFT: {
-				NeftResponse neftTransferRequest = submitNeftTransfer();
-//				return neftTransferRequest;
-			}
+//			case NEFT: {
+//				NeftResponse neftTransferRequest = submitNeftTransfer();
+////				return neftTransferRequest;
+//			}
 			case QUICKTELLER: {
 
 				QuickDetails response;

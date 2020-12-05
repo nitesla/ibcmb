@@ -2,7 +2,8 @@ package longbridge.dtos;
 
 import javax.validation.constraints.NotEmpty;
 
-public class NeftBeneficiaryDTO {
+public class CorpNeftBeneficiaryDTO {
+
     private Long id;
     @NotEmpty(message = "Please enter a Beneficiary Name")
     private String beneficiaryAccountName;
@@ -16,7 +17,7 @@ public class NeftBeneficiaryDTO {
     private String beneficiaryCurrencyCode;
     private String BeneficiaryType;
 
-    public NeftBeneficiaryDTO() {
+    public CorpNeftBeneficiaryDTO() {
     }
 
     public Long getId() {
@@ -50,7 +51,6 @@ public class NeftBeneficiaryDTO {
     public void setBeneficiarySortCode(String beneficiarySortCode) {
         this.beneficiarySortCode = beneficiarySortCode;
     }
-
 
     public String getBeneficiaryBVN() {
         return beneficiaryBVN;
@@ -86,7 +86,7 @@ public class NeftBeneficiaryDTO {
 
     @Override
     public String toString() {
-        return "NeftBeneficiaryDTO{" +
+        return "CorpNeftBeneficiaryDTO{" +
                 "id=" + id +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +

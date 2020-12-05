@@ -2,6 +2,7 @@ package longbridge.controllers.corporate;
 
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpNeftBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -67,6 +68,7 @@ public class CorpTransferController {
     private final TransferErrorService transferErrorService;
     private final SecurityService securityService;
     private final TransferUtils transferUtils;
+    private final CorpNeftBeneficiaryService corpNeftBeneficiaryService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -83,7 +85,7 @@ public class CorpTransferController {
     private ApplicationContext appContext;
 
     @Autowired
-    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
+    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils, CorpNeftBeneficiaryService corpNeftBeneficiaryService) {
         this.corporateService = corporateService;
         this.corporateUserService = corporateUserService;
         this.transferService = transferService;
@@ -93,6 +95,7 @@ public class CorpTransferController {
         this.securityService = securityService;
         this.transferUtils = transferUtils;
         this.corpQuickBeneficiaryService = corpQuickBeneficiaryService;
+        this.corpNeftBeneficiaryService = corpNeftBeneficiaryService;
     }
 
 
@@ -239,6 +242,14 @@ public class CorpTransferController {
 
     }
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiryNeft")
+    public
+    @ResponseBody
+    String getNeftAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+
+        return transferUtils.doNEFTBankNameLookup(bank, accountNo);
+
+    }
 
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, HttpServletRequest request, Principal principal) throws Exception {
@@ -266,6 +277,7 @@ public class CorpTransferController {
                 }
                 request.getSession().removeAttribute("auth-needed");
             }
+            System.out.println("This is the transfer Request : "+ transferRequestDTO.getTransferType());
             if (transferRequestDTO.getTransferType().equals(TransferType.INTERNATIONAL_TRANSFER)) {
                 return "redirect:/corporate/transfer/international/process";
             }
@@ -284,7 +296,19 @@ public class CorpTransferController {
                         }
                     }
 
-                }else {
+                }else if(TransferType.NEFT .equals(transferRequestDTO.getTransferType())){
+                    if (request.getSession().getAttribute("Nbeneficiary") != null) {
+                        CorpNeftBeneficiaryDTO l = (CorpNeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
+                        try {
+                            logger.info("Saving beneficiary now ======= {} ",  l);
+                            corpNeftBeneficiaryService.addCorpNeftBeneficiary(l);
+                            request.getSession().removeAttribute("Nbeneficiary");
+                            request.getSession().removeAttribute("add");
+                        } catch (InternetBankingException de) {
+                            logger.error("Error occurred processing transfer");
+                        }
+                    }
+                } else {
                     //checkbox  checked
                     if (request.getSession().getAttribute("Lbeneficiary") != null) {
                         CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
@@ -345,6 +369,8 @@ public class CorpTransferController {
         } finally {
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
+            if (request.getSession().getAttribute("Nbeneficiary") != null)
+                request.getSession().removeAttribute("Nbeneficiary");
         }
     }
 

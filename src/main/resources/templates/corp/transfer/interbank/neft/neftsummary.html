@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['NEFT Bulk Tranfer','/retail/transfer/bulk/index'],['NEFT'],['transfer summary']];currentBar('NEFT Bulk Transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['inter bank transfer','/corporate/transfer/interbank'],['NEFT'],['transfer']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -18,70 +18,63 @@
                 <div class="col-sm-offset-3  col-sm-6">
 
                       <table class="table table-hover center ">
-
-                            <tbody class="tab">
-                                <!--<tr class='text-center'>-->
-                                    <!--<td colspan='2'>Below is a summary of your last transaction</td>-->
-                                <!--</tr>-->
-
+                            <tbody class="tab" th:if="${session.beneficiaryType} == 'CR'">
                             <tr class="top-row">
-
-                                <th >Source account</th>
-                                <td th:text="${transferRequest.customerAccountNumber}"></td>
-
+                                <th>Source account</th>
+                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
                             </tr>
                             <tr>
-
-                                <th >Destination account</th>
-                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
-
+                                <th>Destination account</th>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
                             </tr>
                             <tr>
-
                                 <th>Destination account owner</th>
-                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
-
+                                <td th:text="${corpTransferRequest.beneficiaryAccountName}"></td>
                             </tr>
                             <tr>
-
                                 <th>Amount</th>
-                                <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
-
+                                <td th:text="${#numbers.formatDecimal(corpTransferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
                             </tr>
+<!--                            <tr>-->
+<!--                                <th>Charge</th>-->
+<!--                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
                             <tr>
-
-                                <th>Charge</th>
-                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
-                            </tr>
-                            <tr>
-
                                 <th>Remarks</th>
-                                <td th:text="${transferRequest.narration}"></td>
+                                <td th:text="${corpTransferRequest.narration}"></td>
+                            </tr>
+                            </tbody>
 
+                          <tbody class="tab" th:if="${session.beneficiaryType} == 'DB'">
+                            <tr class="top-row">
+                                <th>Source account</th>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Source account owner</th>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Destination account</th>
+                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
+                            </tr>
+
+                            <tr>
+                                <th>Amount</th>
+                                <td th:text="${#numbers.formatDecimal(corpTransferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            </tr>
+<!--                            <tr>-->
+<!--                                <th>Charge</th>-->
+<!--                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>-->
+<!--                            </tr>-->
+                            <tr>
+                                <th>Remarks</th>
+                                <td th:text="${corpTransferRequest.narration}"></td>
                             </tr>
                             </tbody>
                         </table>
 
-
-                    
-
-
-
-                    <form method="post" th:action="@{/retail/transfer/neft/edit}" th:object="${transferRequest}" style="display:none;">
-                        <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryBankName}"/>
-                        <input type="hidden" th:field="*{amount}"/>
-                        <input type="hidden" th:field="*{narration}"/>
-
-                    </form>
-
-
-
-
-
-
-                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -106,7 +99,7 @@
                     </form>
 
 
-                    <form method="post" id="form_edit" th:action="@{/retail/transfer/neft/edit}" th:object="${transferRequest}">
+                    <form method="post" id="form_edit" th:action="@{/corporate/transfer/interbank/neft/edit}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -116,6 +109,7 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
                         <input type="hidden" th:field="*{transferType}"/>
+                        <input type="hidden" th:field="*{beneficiaryCurrencyCode}"/>
 <!--                        <input type="hidden" th:field="*{lastname}" />-->
 <!--                        <input type="hidden" th:field="*{firstname}" />-->
                     </form>
@@ -136,7 +130,7 @@
 
     function cancel(){
 
-        window.location.href="/retail/transfer/bulk/index";
+        window.location.href="/corporate/transfer/interbank";
 
     }
 </script>

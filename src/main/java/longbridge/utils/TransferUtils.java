@@ -42,6 +42,9 @@ public class TransferUtils {
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     @Autowired
     private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+
+    @Autowired
+    private CorpNeftBeneficiaryRepo corpNeftBeneficiaryRepo;
     @Autowired
     private MessageSource messageSource;
     
@@ -170,7 +173,7 @@ public class TransferUtils {
                 }
             } else if (user.getUserType().equals(UserType.CORPORATE)) {
                 CorporateUser corporateUser = (CorporateUser) user;
-                boolean exists = corpLocalBeneficiaryRepo.existsByCorporate_IdAndAccountNumber(corporateUser.getCorporate().getId(), accountNo);
+                boolean exists = corpNeftBeneficiaryRepo.existsByUser_IdAndBeneficiaryAccountNumber(corporateUser.getCorporate().getId(), accountNo);
                 if (exists) {
                     return createMessage("A beneficary with these details already exists", false);
                 }

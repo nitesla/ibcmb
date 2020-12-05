@@ -14,7 +14,8 @@ import java.io.IOException;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class NeftBeneficiary extends AbstractEntity implements PrettySerializer {
+public class CorpNeftBeneficiary extends AbstractEntity implements PrettySerializer {
+
     private String beneficiaryBVN;
     private String beneficiaryAccountName;
     private String beneficiarySortCode;
@@ -24,17 +25,25 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
     private String beneficiaryType;
 
     @ManyToOne
-    private RetailUser user;
+    Corporate user;
 
-    public NeftBeneficiary() {
+    public CorpNeftBeneficiary() {
+    }
+
+    public String getBeneficiaryBVN() {
+        return beneficiaryBVN;
+    }
+
+    public void setBeneficiaryBVN(String beneficiaryBVN) {
+        this.beneficiaryBVN = beneficiaryBVN;
     }
 
     public String getBeneficiaryAccountName() {
         return beneficiaryAccountName;
     }
 
-    public void setBeneficiaryAccountName(String beneficiaryAccName) {
-        this.beneficiaryAccountName = beneficiaryAccName;
+    public void setBeneficiaryAccountName(String beneficiaryAccountName) {
+        this.beneficiaryAccountName = beneficiaryAccountName;
     }
 
     public String getBeneficiarySortCode() {
@@ -49,24 +58,8 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
         return beneficiaryAccountNumber;
     }
 
-    public void setBeneficiaryAccountNumber(String beneficiaryAccNo) {
-        this.beneficiaryAccountNumber = beneficiaryAccNo;
-    }
-
-    public String getBeneficiaryBVN() {
-        return beneficiaryBVN;
-    }
-
-    public void setBeneficiaryBVN(String beneficiaryBVN) {
-        this.beneficiaryBVN = beneficiaryBVN;
-    }
-
-    public RetailUser getUser() {
-        return user;
-    }
-
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setBeneficiaryAccountNumber(String beneficiaryAccountNumber) {
+        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
     }
 
     public String getBeneficiaryBankName() {
@@ -75,6 +68,14 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
 
     public void setBeneficiaryBankName(String beneficiaryBankName) {
         this.beneficiaryBankName = beneficiaryBankName;
+    }
+
+    public Corporate getUser() {
+        return user;
+    }
+
+    public void setUser(Corporate user) {
+        this.user = user;
     }
 
     public String getBeneficiaryCurrencyCode() {
@@ -94,20 +95,20 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
     }
 
     @Override
-    public JsonSerializer<NeftBeneficiary> getSerializer() {
+    public JsonSerializer<CorpNeftBeneficiary> getSerializer() {
         return new JsonSerializer<>() {
             @Override
-            public void serialize(NeftBeneficiary value, JsonGenerator gen, SerializerProvider serializers)
+            public void serialize(CorpNeftBeneficiary value, JsonGenerator gen, SerializerProvider serializers)
                     throws IOException {
             }
         };
     }
 
     @Override
-    public JsonSerializer<NeftBeneficiary> getAuditSerializer() {
+    public JsonSerializer<CorpNeftBeneficiary> getAuditSerializer() {
         return new JsonSerializer<>() {
             @Override
-            public void serialize(NeftBeneficiary value, JsonGenerator gen, SerializerProvider serializers)
+            public void serialize(CorpNeftBeneficiary value, JsonGenerator gen, SerializerProvider serializers)
                     throws IOException {
                 gen.writeStartObject();
                 if (value.getId() != null) {
@@ -120,11 +121,25 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
                 gen.writeStringField("beneficiaryAccountNumber", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryAccountBVN", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryBankName", value.getBeneficiaryBankName());
-                gen.writeStringField("currencyCode", value.getBeneficiaryCurrencyCode());
-                gen.writeStringField("type", value.getBeneficiaryType());
+                gen.writeStringField("beneficiaryCurrencyCode", value.getBeneficiaryCurrencyCode());
+                gen.writeStringField("beneficiaryType", value.getBeneficiaryType());
                 gen.writeEndObject();
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return "CorpNeftBeneficiary{" +
+                "beneficiaryBVN='" + beneficiaryBVN + '\'' +
+                ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
+                ", beneficiarySortCode='" + beneficiarySortCode + '\'' +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryBankName='" + beneficiaryBankName + '\'' +
+                ", beneficiaryCurrencyCode='" + beneficiaryCurrencyCode + '\'' +
+                ", beneficiaryType='" + beneficiaryType + '\'' +
+                ", user=" + user +
+                '}';
     }
 
     public enum  Type{

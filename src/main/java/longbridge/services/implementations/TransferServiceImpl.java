@@ -198,7 +198,9 @@ public class TransferServiceImpl implements TransferService {
 
         TransRequest transRequest = null;
 
-       if (transferRequestDTO.getTransferType() != TransferType.NEFT || transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
+        System.out.println("This is the transfer Id : "+ transferRequestDTO.getTransferType());
+
+       if (transferRequestDTO.getTransferType() != TransferType.NEFT && transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
            transRequest = integrationService.makeTransfer(transRequest2);
        }
             logger.trace("Transfer Details: ", transRequest);
@@ -206,12 +208,13 @@ public class TransferServiceImpl implements TransferService {
         if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
 
             logger.info("uniqueid {}",transRequest2);
-            transRequest2.setStatus("00");
-            transRequest = transferRequestRepo.save(transRequest2);
             NeftResponseDTO response = integrationService.submitInstantNeftTransfer(neftTransfer);
             NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(response));
             neftTransfer.setNeftResponse(neftResponse);
             neftTransferRepo.save(neftTransfer);
+            transRequest2.setStatus("00");
+            transRequest = transferRequestRepo.save(transRequest2);
+
 
             return convertEntityToDTO(transRequest);
 
@@ -430,7 +433,7 @@ public class TransferServiceImpl implements TransferService {
         dto.setChannel(transRequest.getChannel());
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
         dto.setNarration(transRequest.getNarration());
-        if(transRequest.getTransferType() != TransferType.NEFT && transRequest.getTransferType() != TransferType.NEFT_BULK){
+        if(transRequest.getTransferType() == TransferType.QUICKTELLER){
             dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
             dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
             if(transRequest.getFinancialInstitution()!=null)

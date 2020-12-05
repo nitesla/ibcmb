@@ -16,6 +16,7 @@
         <div class=" col-sm-offset-3 col-sm-6 no-pad-lef  no-mt no-bd alert">
 
                         <table class="table table-hover ">
+                            <tbody th:if="${session.beneficiaryType} != 'DB'">
                             <tr class='top-row'>
 
                                 <th>Source account</th>
@@ -40,6 +41,26 @@
 
 
                             </tr>
+                            </tbody>
+                            <tbody class="tab" th:if="${session.beneficiaryType} == 'DB'">
+                            <tr class="top-row">
+                                <th>Source account</th>
+
+                                <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Destination account</th>
+                                <td th:text="${transRequest.customerAccountNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Amount</th>
+                                <td th:text="${#numbers.formatDecimal(transRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Remarks</th>
+                                <td th:text="${transRequest.remarks}"></td>
+                            </tr>
+                            </tbody>
                         </table>
 
             <!--<form method="post" th:action="@{/corporate/transfer/receipt}"-->

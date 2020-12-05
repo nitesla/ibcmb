@@ -445,6 +445,8 @@ public class TransferController {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
+            if (request.getSession().getAttribute("Nbeneficiary") != null)
+                request.getSession().removeAttribute("Nbeneficiary");
 //            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
             redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));
             return index(request);
@@ -452,8 +454,8 @@ public class TransferController {
         } catch (Exception e) {
             logger.error("Error making transfer", e);
             if (request.getSession().getAttribute("Lbeneficiary") != null)
-            if (request.getSession().getAttribute("Nbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
+            if (request.getSession().getAttribute("Nbeneficiary") != null)
                 request.getSession().removeAttribute("Nbeneficiary");
             redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
             return index(request);

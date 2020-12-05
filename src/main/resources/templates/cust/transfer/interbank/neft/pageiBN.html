@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['add beneficiary']];currentBar('inter bank transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['NEFT'],['add beneficiary']];currentBar('inter bank transfer');breadCrumb(bread)">
 
 
     <div layout:fragment="content">
@@ -18,12 +18,14 @@
              <div class="form-spacig col-sm-8 no-pad-left">
                  <form id="local" method="post" th:action="@{/retail/transfer/interbank/new/alpha}"
                        th:object="${neftBeneficiaryDTO}">
+                     <input type="hidden" th:field="*{beneficiaryType}">
                      <div class="form-group">
-                         <label>Beneficiary Bank</label>
+                         <label th:if="${session.beneficiaryType} == 'CR'">Beneficiary Bank</label>
+                         <label th:if="${session.beneficiaryType} == 'DB'">Source Bank</label>
                          <select title=">Select Beneficiary Bank" name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBankName}" id="bank_code" required="required">
-                             <option value="" selected>Select Beneficiary Bank </option>
+                             <option value="" selected th:if="${session.beneficiaryType} == 'CR'">Select Beneficiary Bank </option>
+                             <option value="" selected th:if="${session.beneficiaryType} == 'DB'">Select Source Bank </option>
                              <option th:each="bank : ${neftBanks}" th:attr="data-id=${bank}" th:value="${bank}" th:text="${bank}">
-
                              </option>
                          </select><span class='req-inner'></span>
                          <p th:if="${#fields.hasErrors('beneficiaryBankName')}" th:errors="*{beneficiaryBankName}"
@@ -42,14 +44,23 @@
                      </div>
                      <div class="form-group">
                          <label >Account Number</label>
-
-<!--                         <input onblur="getAccountName()" type="number" class="form-control" pattern="\d{10}"  th:field="*{accountNumber}"-->
                          <input type="number" class="form-control" pattern="\d{10}"  th:field="*{beneficiaryAccountNumber}"
                                 id="acct_num" placeholder="10 digits only" required="required"/><span class='req-inner'></span>
                          <p class="errors" th:if="${#fields.hasErrors('beneficiaryAccountNumber')}" th:errors="*{beneficiaryAccountNumber}">&times;</p>
                          <p class="acctError" style="display:none;">invalid account number or Bank details</p>
-<!--                         <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Getting Account Name. Please Wait</p>-->
+                     </div>
 
+                     <div class="form-group">
+                         <label>Currency Type</label>
+                         <select title=">Select Currency Type" name="beneficiaryCurrencyCode" class="form-control" th:field="*{beneficiaryCurrencyCode}" id="bank_code" required="required">
+                             <option value="" selected>Currency Type </option>
+                             <option value="NGN">Naira</option>
+                             <option value="USD">Dollar</option>
+                         </select><span class='req-inner'></span>
+                         <p th:if="${#fields.hasErrors('beneficiaryCurrencyCode')}" th:errors="*{beneficiaryCurrencyCode}"
+                            class="errors"></p>
+
+                         <!--                         <input type="hidden" id="bankName" value="" name="beneficiaryBankName"></input>-->
                      </div>
 
                      <div class="form-group">
@@ -72,7 +83,9 @@
                      <div class="form-group" style="display: none" id="check">
 <!--                     <div class="form-group" id="check">-->
                          <label style="font-weight: bold; color: black;margin-left:10px !important">
-                             <input  type="checkbox" id="add" name="add"/><span class='addNew'>Add Beneficiary</span>
+                             <input  type="checkbox" id="add" name="add"/>
+                                <span class='addNew' th:if="${session.beneficiaryType} == 'CR'">Add Beneficiary</span>
+                                <span class='addNew' th:if="${session.beneficiaryType} == 'CR'">Add Source</span>
                          </label>
                      </div>
                      <button id="localsave" type = "submit" style="display: none;" class="btn btn-link required-step" >Next</button>
@@ -175,7 +188,6 @@
                     return false;
 
                 }
-
 
                 $('.acctError').text(message);
                 $('.acctError').show().css("color", "red");
