@@ -31,7 +31,7 @@ public interface CorpTransferService {
 
     Object addTransferRequest(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
 
-    CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
+//    CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
 
 
     Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);
