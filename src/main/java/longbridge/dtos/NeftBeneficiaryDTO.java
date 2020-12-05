@@ -13,6 +13,8 @@ public class NeftBeneficiaryDTO {
     @NotEmpty(message = "Please enter a Beneficiary BVN Number")
     private String beneficiaryBVN;
     private String beneficiaryBankName;
+    private String beneficiaryCurrencyCode;
+    private String BeneficiaryType;
 
     public NeftBeneficiaryDTO() {
     }
@@ -66,16 +68,33 @@ public class NeftBeneficiaryDTO {
         this.beneficiaryBankName = beneficiaryBankName;
     }
 
+    public String getBeneficiaryCurrencyCode() {
+        return beneficiaryCurrencyCode;
+    }
+
+    public void setBeneficiaryCurrencyCode(String beneficiaryCurrencyCode) {
+        this.beneficiaryCurrencyCode = beneficiaryCurrencyCode;
+    }
+
+    public String getBeneficiaryType() {
+        return BeneficiaryType;
+    }
+
+    public void setBeneficiaryType(String beneficiaryType) {
+        BeneficiaryType = beneficiaryType;
+    }
 
     @Override
     public String toString() {
         return "NeftBeneficiaryDTO{" +
                 "id=" + id +
-                ", beneficiaryAccName='" + beneficiaryAccountName + '\'' +
-                ", beneficiaryAccNo='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiarySortCode='" + beneficiarySortCode + '\'' +
                 ", beneficiaryBVN='" + beneficiaryBVN + '\'' +
                 ", beneficiaryBankName='" + beneficiaryBankName + '\'' +
+                ", beneficiaryCurrencyCode='" + beneficiaryCurrencyCode + '\'' +
+                ", BeneficiaryType='" + BeneficiaryType + '\'' +
                 '}';
     }
 }

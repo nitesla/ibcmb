@@ -20,6 +20,9 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
     private String beneficiarySortCode;
     private String beneficiaryAccountNumber;
     private String beneficiaryBankName;
+    private String beneficiaryCurrencyCode;
+    private String beneficiaryType;
+
     @ManyToOne
     private RetailUser user;
 
@@ -74,6 +77,22 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
         this.beneficiaryBankName = beneficiaryBankName;
     }
 
+    public String getBeneficiaryCurrencyCode() {
+        return beneficiaryCurrencyCode;
+    }
+
+    public void setBeneficiaryCurrencyCode(String beneficiaryCurrencyCode) {
+        this.beneficiaryCurrencyCode = beneficiaryCurrencyCode;
+    }
+
+    public String getBeneficiaryType() {
+        return beneficiaryType;
+    }
+
+    public void setBeneficiaryType(String beneficiaryType) {
+        this.beneficiaryType = beneficiaryType;
+    }
+
     @Override
     public JsonSerializer<NeftBeneficiary> getSerializer() {
         return new JsonSerializer<>() {
@@ -101,8 +120,21 @@ public class NeftBeneficiary extends AbstractEntity implements PrettySerializer 
                 gen.writeStringField("beneficiaryAccountNumber", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryAccountBVN", value.getBeneficiaryAccountNumber());
                 gen.writeStringField("beneficiaryBankName", value.getBeneficiaryBankName());
+                gen.writeStringField("currencyCode", value.getBeneficiaryCurrencyCode());
+                gen.writeStringField("type", value.getBeneficiaryType());
                 gen.writeEndObject();
             }
         };
+    }
+
+    public enum  Type{
+        CR("CR"), DB("DB");
+        private String type;
+
+        Type(String type){this.type = type;}
+
+        public String getType() {
+            return type;
+        }
     }
 }

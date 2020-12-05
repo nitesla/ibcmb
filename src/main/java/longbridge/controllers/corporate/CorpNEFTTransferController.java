@@ -54,7 +54,6 @@ public class CorpNEFTTransferController {
     private CorpNeftBeneficiaryService corpNeftBeneficiaryService;
 
 
-
     @Autowired
     public CorpNEFTTransferController(AccountService accountService,  CodeService codeService) {
         this.accountService = accountService;
@@ -208,7 +207,7 @@ public class CorpNEFTTransferController {
 
     @GetMapping("bulktransfer/{id}")
     public String neftTransfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale, RedirectAttributes attributes) throws Exception {
-        CorpNeftBeneficiary beneficiary = corpNeftBeneficiaryService.getNeftBeneficiary(id);
+        CorpNeftBeneficiary beneficiary = corpNeftBeneficiaryService.getCorpNeftBeneficiary(id);
 
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getBeneficiaryAccountName());
