@@ -296,11 +296,11 @@ public class CorpTransferController {
                     }
 
 
-                }else if(TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())){
+                } else if (TransferType.NEFT.equals(transferRequestDTO.getTransferType()) || TransferType.NEFT_BULK.equals(transferRequestDTO.getTransferType())) {
                     if (request.getSession().getAttribute("Nbeneficiary") != null) {
                         CorpNeftBeneficiaryDTO l = (CorpNeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
                         try {
-                            logger.info("Saving beneficiary now ======= {} ",  l);
+                            logger.info("Saving beneficiary now ======= {} ", l);
                             corpNeftBeneficiaryService.addCorpNeftBeneficiary(l);
                             request.getSession().removeAttribute("Nbeneficiary");
                             request.getSession().removeAttribute("add");
@@ -326,25 +326,43 @@ public class CorpTransferController {
             CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
             String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
             corpTransferRequestDTO.setCorporateId(corporateId);
-            Object object = transferService.addTransferRequest(corpTransferRequestDTO);
-            if (object instanceof CorpTransferRequestDTO) {
 
-                corpTransferRequestDTO = (CorpTransferRequestDTO) object;
+            if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT_BULK) {
 
-                logger.info("Transfer Request processed", corpTransferRequestDTO);
-                model.addAttribute("transRequest", corpTransferRequestDTO);
-                model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
-            } else if (object instanceof String) {
-                model.addAttribute("transRequest", corpTransferRequestDTO);
-                redirectAttributes.addFlashAttribute("message", object);
-                redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
-                redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
+            corpTransferRequestDTO = transferService.makeNeftBulkTransfer(corpTransferRequestDTO);
 
-                return "redirect:/corporate/transfer/requests";
+                if (corpTransferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
+//                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
+                    model.addAttribute("message", messageSource.getMessage(transferErrorService.getMessage(corpTransferRequestDTO.getStatus()), null, locale));
+                    logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
 
+                    return "corp/transfer/bulktransfer/neft/pendingNeftTransfer";
+
+                }
+
+            }else {
+                Object object = transferService.addTransferRequest(corpTransferRequestDTO);
+                if (object instanceof CorpTransferRequestDTO) {
+
+                    corpTransferRequestDTO = (CorpTransferRequestDTO) object;
+
+                    logger.info("Transfer Request processed", corpTransferRequestDTO);
+                    model.addAttribute("transRequest", corpTransferRequestDTO);
+                    model.addAttribute("message", corpTransferRequestDTO.getStatusDescription());
+                } else if (object instanceof String) {
+                    model.addAttribute("transRequest", corpTransferRequestDTO);
+                    redirectAttributes.addFlashAttribute("message", object);
+                    redirectAttributes.addFlashAttribute("refNumber", corpTransferRequestDTO.getReferenceNumber());
+                    redirectAttributes.addFlashAttribute("transferType", corpTransferRequestDTO.getTransferType());
+
+                    return "redirect:/corporate/transfer/requests";
+
+                }
             }
 
             return "corp/transfer/transferdetails";
+
+
 
 
         } catch (TransferAuthorizationException ae) {

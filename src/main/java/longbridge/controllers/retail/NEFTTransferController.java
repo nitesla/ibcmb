@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Controller
@@ -269,6 +270,7 @@ public class NEFTTransferController {
         trt.setBeneficiaryAccountNumber(nft.getBeneficiaryAccountNumber());
         trt.setBeneficiaryAccountName(nft.getBeneficiaryAccountName());
         trt.setBeneficiaryBankName(nft.getBeneficiaryBankName());
+        trt.setBeneficiaryBank(nft.getBeneficiaryBankName());
         trt.setBeneficiarySortCode(nft.getBeneficiarySortCode());
         trt.setInstrumentType(nft.getInstrumentType());
         trt.setCollectionType(nft.getCollectionType());
@@ -278,8 +280,10 @@ public class NEFTTransferController {
         trt.setTransferType(TransferType.NEFT_BULK);
         trt.setAmount(new BigDecimal(nft.getAmount()));
         trt.setNarration(nft.getNarration());
+        trt.setRemarks(nft.getNarration());
         trt.setCharge(nft.getCharge());
         trt.setChannel(nft.getChannel());
+        trt.setBeneficiaryCurrencyCode(nft.getBeneficiaryCurrencyCode());
         return trt;
 
     }
@@ -289,6 +293,24 @@ public class NEFTTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("benName", transferRequestDTO.getBeneficiaryAccountName());
         return page + "pageiN2";
+    }
+
+    @ModelAttribute
+    public void setNairaSourceAccount(Model model, Principal principal) {
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        if (user != null) {
+            List<Account> accountList = new ArrayList<>();
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+                    .forEach(accountList::add);
+            model.addAttribute("accountList", accountList);
+        }
+
     }
 
 }

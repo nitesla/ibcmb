@@ -5,6 +5,7 @@ import longbridge.models.Account;
 import longbridge.models.CorpNeftBeneficiary;
 import longbridge.models.CorporateUser;
 import longbridge.models.NeftTransfer;
+import longbridge.repositories.NeftTransferRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.TransferType;
@@ -29,6 +30,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Controller
@@ -49,6 +51,8 @@ public class CorpNEFTTransferController {
     private TransferUtils transferUtils;
     @Autowired
     private CorporateUserService corporateUserService;
+    @Autowired
+    private NeftTransferRepo neftTransferRepo;
 
     @Autowired
     private CorpNeftBeneficiaryService corpNeftBeneficiaryService;
@@ -125,6 +129,7 @@ public class CorpNEFTTransferController {
     @PostMapping("/settle")
     @ResponseBody
     public String settleTransactions(){
+        List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
         integrationService.submitNeftTransfer();
         return "successful";
     }
@@ -259,6 +264,7 @@ public class CorpNEFTTransferController {
         trt.setBeneficiaryAccountNumber(nft.getBeneficiaryAccountNumber());
         trt.setBeneficiaryAccountName(nft.getBeneficiaryAccountName());
         trt.setBeneficiaryBankName(nft.getBeneficiaryBankName());
+        trt.setBeneficiaryBank(nft.getBeneficiaryBankName());
         trt.setBeneficiarySortCode(nft.getBeneficiarySortCode());
         trt.setInstrumentType(nft.getInstrumentType());
         trt.setCollectionType(nft.getCollectionType());
@@ -270,6 +276,7 @@ public class CorpNEFTTransferController {
         trt.setNarration(nft.getNarration());
         trt.setCharge(nft.getCharge());
         trt.setChannel(nft.getChannel());
+        trt.setBeneficiaryCurrencyCode(nft.getBeneficiaryCurrencyCode());
         return trt;
 
     }
@@ -279,6 +286,26 @@ public class CorpNEFTTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("benName", transferRequestDTO.getBeneficiaryAccountName());
         return page + "pageiN2";
+    }
+
+    @ModelAttribute
+    public void setNairaSourceAccount(Model model, Principal principal) {
+
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        if (user != null) {
+            List<Account> accountList = new ArrayList<>();
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCorporate().getAccounts());
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+                    .forEach(accountList::add);
+            model.addAttribute("accountList", accountList);
+
+
+        }
+
     }
 
 }

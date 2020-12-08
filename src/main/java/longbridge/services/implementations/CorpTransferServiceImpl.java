@@ -64,6 +64,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private AccountConfigService accountConfigService;
 
     @Autowired
+    private CorpNeftTransferRepo corpNeftTransferRepo;
+
+    @Autowired
     private CorpTransferAuthRepo transferAuthRepo;
 
     @Autowired
@@ -144,10 +147,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     private String getUserBvn(String accountnumber){
-        Account account = accountRepo.findFirstByAccountNumber(accountnumber);
+        Account account = accountRepo.findByAccountNumber(accountnumber);
         String customerId = account.getCustomerId();
-        Corporate corporateUser = corporateRepo.findFirstByCustomerId(customerId);
-        return corporateUser.getBvn();
+        logger.info("Customer Id is {}", customerId);
+        Corporate corporateUser = corporateRepo.findByCustomerId(customerId);
+        logger.info("Corporate Id is {}", corporateUser);
+        String bvn = corporateUser.getBvn();
+        return bvn;
     }
 
 
@@ -161,22 +167,35 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setAmount(neftTransferDTO.getAmount());
         neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
         neftTransfer.setNarration(neftTransferDTO.getNarration());
-        neftTransfer.setSpecialClearing(true);
+        neftTransfer.setSpecialClearing(false);
         neftTransfer.setBVNBeneficiary(neftTransferDTO.getBeneficiaryBVN());
         neftTransfer.setBankOfFirstDepositSortCode(bankSortCode);
         neftTransfer.setCollectionType(neftTransferDTO.getCollectionType());
         neftTransfer.setBVNPayer(bvn);
+        neftTransfer.setPayerName(neftTransferDTO.getPayerName());
         neftTransfer.setInstrumentType(neftTransferDTO.getInstrumentType());
-        neftTransfer.setMICRRepairInd("");
+        neftTransfer.setMICRRepairInd(micrRepairInd);
         neftTransfer.setSettlementTime("not settled");
         neftTransfer.setCycleNo("01");
-        neftTransfer.setNarration(neftTransferDTO.getRemarks());
         neftTransfer.setPresentingBankSortCode(bankSortCode);
         neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
         neftTransfer.setTranCode("20");
         neftTransfer.setSerialNo("");
-//        neftTransferRepo.save(neftTransfer);
         return neftTransferRepo.save(neftTransfer);
+    }
+
+    @Override
+    public CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+
+            logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
+            pfDataItemStore(transferRequestDTO);
+//            CorpTransRequest  transRequest2 = persistTransfer(transferRequestDTO);
+            logger.info("uniqueid {}", transferRequestDTO);
+        transferRequestDTO.setStatus("PENDING");
+//            corpTransferRequestRepo.save(transRequest2);
+
+            return transferRequestDTO;
+
     }
 
 
