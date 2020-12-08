@@ -27,21 +27,21 @@
                         <tr class="top-row">
 
                             <th>Source account</th>
-                            <td th:text="${transRequest.customerAccountNumber}"></td>
+                            <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
 
                         </tr>
                         <tr>
                             <th>Destination account</th>
-                            <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                            <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
                         </tr>
                         <tr>
                             <th>Amount</th>
-                            <td th:text="${#numbers.formatDecimal(transRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(corpTransferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
                         </tr>
                         <tr>
 
                             <th>Remarks</th>
-                            <td th:text="${transRequest.narration}"></td>
+                            <td th:text="${corpTransferRequest.narration}"></td>
 
                         </tr>
                         </tbody>
