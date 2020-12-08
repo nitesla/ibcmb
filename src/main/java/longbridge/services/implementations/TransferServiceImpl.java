@@ -455,6 +455,7 @@ public class TransferServiceImpl implements TransferService {
         dto.setChannel(transRequest.getChannel());
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
         dto.setNarration(transRequest.getNarration());
+        dto.setRemarks(transRequest.getNarration());
         if(transRequest.getTransferType() == TransferType.QUICKTELLER){
             dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
             dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
