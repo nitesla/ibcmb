@@ -2,10 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.InternationalTransferRequestDTO;
-import longbridge.dtos.NeftTransferRequestDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
@@ -235,6 +232,10 @@ public class TransferServiceImpl implements TransferService {
             neftTransfer.setNeftResponse(neftResponse);
             neftTransferRepo.save(neftTransfer);
             transRequest2.setStatus("00");
+            transRequest2.setStatusDescription("Transaction Successful");
+            transRequest2.setReferenceNumber(longbridge.utils.NumberUtils.generateReferenceNumber(15));
+            logger.info("Transfer reference Number : {} ", transRequest2.getReferenceNumber());
+            logger.info("Transfer reference Number : {} ", transRequest2.getUserReferenceNumber());
             transRequest = transferRequestRepo.save(transRequest2);
 
 
