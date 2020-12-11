@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['NEFT'],['add beneficiary']];currentBar('inter bank transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['inter bank transfer','/retail/transfer/interbank'],['NEFT'],['add beneficiary']];currentBar('inter bank transfer : NEFT');breadCrumb(bread)">
 
 
     <div layout:fragment="content">
@@ -85,7 +85,7 @@
                          <label style="font-weight: bold; color: black;margin-left:10px !important">
                              <input  type="checkbox" id="add" name="add"/>
                                 <span class='addNew' th:if="${session.beneficiaryType} == 'CR'">Add Beneficiary</span>
-                                <span class='addNew' th:if="${session.beneficiaryType} == 'CR'">Add Source</span>
+                                <span class='addNew' th:if="${session.beneficiaryType} == 'DB'">Add Source</span>
                          </label>
                      </div>
                      <button id="localsave" type = "submit" style="display: none;" class="btn btn-link required-step" >Next</button>
