@@ -24,6 +24,8 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
 
     Account findFirstByAccountNumber(String accountNumber);
 
+    Account findByAccountNumber(String accountNumber);
+
     Account findFirstByAccountId(String accountId);
 
     Account findFirstAccountByCustomerId(String customerId);

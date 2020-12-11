@@ -48,11 +48,10 @@
                                 <td th:text="${#numbers.formatDecimal(transferRequest.amount, 1, 'COMMA', 2, 'POINT')}"></td>
 
                             </tr>
-                            <tr>
-
-                                <th>Charge</th>
-                                <td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>
-                            </tr>
+                            <!--<tr>-->
+                                <!--<th>Charge</th>-->
+                                <!--<td th:text="*{charge ==null or charge == ''} ? '':${#numbers.formatDecimal(charge, 1, 'COMMA', 2, 'POINT')}"></td>-->
+                            <!--</tr>-->
                             <tr>
 
                                 <th>Remarks</th>
@@ -67,21 +66,21 @@
 
 
 
-                    <form method="post" th:action="@{/corporate/transfer/neft/edit}" th:object="${transferRequest}" style="display:none;">
-                        <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryBankName}"/>
-                        <input type="hidden" th:field="*{amount}"/>
-                        <input type="hidden" th:field="*{narration}"/>
+                    <!--<form method="post" th:action="@{/corporate/transfer/neft/edit}" th:object="${corpTransferRequest}" style="display:none;">-->
+                        <!--<input type="hidden" th:field="*{customerAccountNumber}"/>-->
+                        <!--<input type="hidden" th:field="*{beneficiaryAccountNumber}"/>-->
+                        <!--<input type="hidden" th:field="*{beneficiaryBankName}"/>-->
+                        <!--<input type="hidden" th:field="*{amount}"/>-->
+                        <!--<input type="hidden" th:field="*{narration}"/>-->
 
-                    </form>
-
-
+                    <!--</form>-->
 
 
 
 
-                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${transferRequest}">
+
+
+                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -93,6 +92,7 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
                         <input type="hidden" th:field="*{transferType}"/>
+                        <input type="hidden" th:field="*{beneficiaryCurrencyCode}"/>
 <!--                        <input type="hidden" th:field="*{lastname}" />-->
 <!--                        <input type="hidden" th:field="*{firstname}" />-->
 
@@ -106,7 +106,7 @@
                     </form>
 
 
-                    <form method="post" id="form_edit" th:action="@{/corporate/transfer/neft/edit}" th:object="${transferRequest}">
+                    <form method="post" id="form_edit" th:action="@{/corporate/transfer/neft/edit}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -116,6 +116,7 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{narration}"/>
                         <input type="hidden" th:field="*{transferType}"/>
+                        <input type="hidden" th:field="*{beneficiaryCurrencyCode}"/>
 <!--                        <input type="hidden" th:field="*{lastname}" />-->
 <!--                        <input type="hidden" th:field="*{firstname}" />-->
                     </form>
