@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class NeftBeneficiarySeriviceImpl implements NeftBeneficiaryService {
+public class NeftBeneficiaryServiceImpl implements NeftBeneficiaryService {
 
     @Autowired
     private NeftBeneficiaryRepo repo;

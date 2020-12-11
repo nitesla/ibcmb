@@ -54,6 +54,7 @@ public class TransferServiceImpl implements TransferService {
     private final Locale locale = LocaleContextHolder.getLocale();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SessionUtil sessionUtil;
+    private final AntiFraudRepo antiFraudRepo;
 
 
     @Autowired
@@ -82,7 +83,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-            , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil) {
+            , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil, AntiFraudRepo antiFraudRepo) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -92,6 +93,7 @@ public class TransferServiceImpl implements TransferService {
         this.retailUserRepo = retailUserRepo;
         this.messages = messages;
         this.sessionUtil=sessionUtil;
+        this.antiFraudRepo = antiFraudRepo;
         this.accountRepo=accountRepo;
 
     }
@@ -176,6 +178,7 @@ public class TransferServiceImpl implements TransferService {
             antiFraudData.setDeviceNumber("");
             antiFraudData.setSessionkey(sessionkey);
             antiFraudData.setTranLocation("");
+//            AntiFraudData antiFraud = antiFraudRepo.save(antiFraudData);
             transRequest1.setChannel("INTERNET");
             transRequest1.setAntiFraudData(antiFraudData);
 
@@ -206,13 +209,19 @@ public class TransferServiceImpl implements TransferService {
             logger.trace("Transfer Details: ", transRequest);
         
         if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
-
+            AntiFraudData antiFraudData = transRequest2.getAntiFraudData();
+            antiFraudData = antiFraudRepo.save(antiFraudData);
+            transRequest2.setAntiFraudData(antiFraudData);
             logger.info("uniqueid {}",transRequest2);
             NeftResponseDTO response = integrationService.submitInstantNeftTransfer(neftTransfer);
             NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(response));
             neftTransfer.setNeftResponse(neftResponse);
             neftTransferRepo.save(neftTransfer);
             transRequest2.setStatus("00");
+            transRequest2.setStatusDescription("Transaction Successful");
+            transRequest2.setReferenceNumber(longbridge.utils.NumberUtils.generateReferenceNumber(15));
+            logger.info("Transfer reference Number : {} ", transRequest2.getReferenceNumber());
+            logger.info("Transfer reference Number : {} ", transRequest2.getUserReferenceNumber());
             transRequest = transferRequestRepo.save(transRequest2);
 
 

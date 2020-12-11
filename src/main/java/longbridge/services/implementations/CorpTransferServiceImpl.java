@@ -161,7 +161,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setAmount(neftTransferDTO.getAmount());
         neftTransfer.setCurrency(neftTransferDTO.getCurrencyCode());
         neftTransfer.setNarration(neftTransferDTO.getNarration());
-        neftTransfer.setSpecialClearing(true);
+        neftTransfer.setSpecialClearing(false);
         neftTransfer.setBVNBeneficiary(neftTransferDTO.getBeneficiaryBVN());
         neftTransfer.setBankOfFirstDepositSortCode(bankSortCode);
         neftTransfer.setCollectionType(neftTransferDTO.getCollectionType());
