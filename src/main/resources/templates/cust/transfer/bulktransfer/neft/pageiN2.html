@@ -49,7 +49,7 @@
 
                             <select name="source" class="form-control" id="source"
                                     th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
-                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+                                <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                             </select>
                             <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
                                class="errors"></p>

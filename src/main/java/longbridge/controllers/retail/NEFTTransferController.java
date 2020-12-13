@@ -143,10 +143,11 @@ public class NEFTTransferController {
 
     @GetMapping(path = "/neft/all")
     public @ResponseBody
-    DataTablesOutput<NeftTransfer> getAllNeftRequest(DataTablesInput input){
+    DataTablesOutput<NeftTransfer> getAllNeftRequest(DataTablesInput input, Principal principal){
         Pageable pageable = DataTablesUtils.getPageable(input);
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Page<NeftTransfer> neftTransfers = null;
-        neftTransfers = transactionService.getNeftUnsettledTransactions(pageable);
+        neftTransfers = transactionService.getNeftUnsettledTransactions(retailUser, pageable);
         DataTablesOutput<NeftTransfer> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(neftTransfers.getContent());

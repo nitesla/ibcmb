@@ -145,7 +145,9 @@ public class TransferServiceImpl implements TransferService {
         neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
         neftTransfer.setTranCode("20");
         neftTransfer.setSerialNo("");
-        neftTransfer.setUser(user);
+        neftTransfer.setRetailUser(user);
+        neftTransfer.setStatus("PENDING");
+        neftTransfer.setBeneficiaryBank(neftTransferDTO.getBeneficiaryBank());
 
         logger.info("Neft pfDataItemStore : {}", neftTransfer);
         return neftTransferRepo.save(neftTransfer);
