@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.TransactionFeeDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Corporate;
 import longbridge.models.NeftTransfer;
 import longbridge.models.RetailUser;
 import longbridge.models.TransactionFee;
@@ -121,8 +122,17 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<NeftTransfer> getNeftUnsettledTransactions(Pageable pageable) {
-        return neftTransferRepo.findBySettlementTime(pageable);
+    public Page<NeftTransfer> getNeftUnsettledTransactions(RetailUser user, Pageable pageable) {
+//        RetailUser user = getCurrentUser();
+        logger.info("User is {}", user);
+        return neftTransferRepo.findByRetailUser(user, pageable);
+    }
+
+    @Override
+    public Page<NeftTransfer> getCorpNeftUnsettledTransactions(Corporate corporate,  Pageable pageable) {
+//        RetailUser user = getCurrentUser();
+        logger.info("User is {}", corporate);
+        return neftTransferRepo.findByCorporate(corporate, pageable);
     }
 
 

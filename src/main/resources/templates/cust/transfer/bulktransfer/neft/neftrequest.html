@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Neft Request']];currentBar('Neft Request');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['NEFT Bulk Tranfer','/retail/transfer/bulk/index'],['NEFT Request']];currentBar('Neft Request');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5">
@@ -34,8 +34,8 @@
                             <th class="text-left">Beneficiary Acct-Number</th>
                             <th class="text-left">Beneficiary</th>
                             <th class="text-left">Amount</th>
-                            <th class="text-left">Settlement-Time</th>
-                            <th class="text-left">Narration</th>
+                            <th class="text-left">Beneficiary Bank</th>
+                            <th class="text-left">Status</th>
                         </tr>
                         </thead>
                         <tbody class="text-left">
@@ -82,8 +82,8 @@
                     { "data": "beneficiaryAccountNo" },
                     { "data": "beneficiary" },
                     { "data": "amount" },
-                    { "data": "settlementTime" },
-                    { "data": "narration" }
+                    { "data": "beneficiaryBank" },
+                    { "data": "status" }
 
 
                 ] });
