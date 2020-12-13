@@ -1,10 +1,7 @@
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.*;
-import longbridge.models.Account;
-import longbridge.models.CorpNeftBeneficiary;
-import longbridge.models.CorporateUser;
-import longbridge.models.NeftTransfer;
+import longbridge.models.*;
 import longbridge.repositories.NeftTransferRepo;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
@@ -129,7 +126,7 @@ public class CorpNEFTTransferController {
     @PostMapping("/settle")
     @ResponseBody
     public String settleTransactions(){
-        List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
+//        List<NeftTransfer> getUnsettledNeftList = neftTransferRepo.getAllUnsettledList();
         integrationService.submitNeftTransfer();
         return "successful";
     }
@@ -137,10 +134,12 @@ public class CorpNEFTTransferController {
 
     @GetMapping(path = "/neft/all")
     public @ResponseBody
-    DataTablesOutput<NeftTransfer> getAllNeftRequest(DataTablesInput input){
+    DataTablesOutput<NeftTransfer> getAllNeftRequest(DataTablesInput input, Principal principal){
         Pageable pageable = DataTablesUtils.getPageable(input);
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        Corporate corporate = user.getCorporate();
         Page<NeftTransfer> neftTransfers = null;
-        neftTransfers = transactionService.getNeftUnsettledTransactions(pageable);
+        neftTransfers = transactionService.getCorpNeftUnsettledTransactions(corporate, pageable);
         DataTablesOutput<NeftTransfer> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(neftTransfers.getContent());

@@ -1796,6 +1796,62 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 
+//	@Override
+//	public NeftTransfer checkNeftStatus() {
+//		NeftResponse response;
+//
+//		List<NeftTransfer> checkStatus = neftTransferRepo.checkStatus();
+//		Map<String,Object> params = new HashMap<>();
+//		List<NeftTransfer> checkStatus1 = updateStatus(checkStatus);
+//		params.put("PFItemDataStores", neftTransfers);
+//
+//
+//		Map<String,Object> params = new HashMap<>();
+//		params.put("appid",appId);
+//		params.put("MsgID",getMsgId());
+//		params.put("TotalValue", totalValue);
+//		params.put("BankCode",bankcode);
+//		params.put("ItemCount", ItemCount);
+//		params.put("Date", newDate);
+//		params.put("SettlementTimeF", newDate);
+////		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
+////				.peek(neftTransfer -> updateNeftSettlement(newDate, neftTransfer))
+////				.collect(Collectors.toList());
+//		List<NeftTransfer> neftTransfers = updateSequenceNumber(getUnsettledNeftList, newDate);
+//		logger.info("Complete PFItemDataStores ========= {}", neftTransfers);
+//		params.put("PFItemDataStores", neftTransfers);
+//		logger.info("PARAMS ============ {}", params);
+//		try{
+//			if (!getUnsettledNeftList.isEmpty()){
+//				response = template.postForObject(uri,params, NeftResponse.class);
+//				logger.info("Neft Response {}", response);
+//				getUnsettledNeftList.forEach(neftTransfer -> {
+//					updateNeftSettlement(newDate, neftTransfer);
+//					neftTransferRepo.save(neftTransfer);
+//				});
+//			}else {
+//				logger.info("No pending requests");
+//			}
+//		}catch (HttpStatusCodeException e) {
+//
+//			logger.error("HTTP Error occurred", e);
+//
+//		}catch (Exception e){
+//			logger.info("Error processing request ", e);
+//		}
+//		return response;
+//	}
+//	private List<NeftTransfer> updateStatus(List<NeftTransfer> neftTransfers){
+//		List<NeftTransfer> neftTransferList = new ArrayList<>();
+//		for(int i = 0; i < neftTransfers.size(); i++){
+//			NeftTransfer neftTransfer = neftTransfers.get(i);
+//			neftTransferList.add(neftTransfer);
+//		}
+//		return neftTransferList.
+//				stream()
+//				.peek(neftTransfer -> updateNeftStatus(neftTransfer))
+//				.collect(Collectors.toList());
+//	}
 	@Override
     public NeftResponse submitNeftTransfer() {
 		NeftResponse response = new NeftResponse();
@@ -1887,6 +1943,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 		neftTransfer.setPresentmentDate(newDate);
 		neftTransfer.setInstrumentDate(newDate);
 		neftTransfer.setBankOfFirstDepositDate(newDate);
+		neftTransfer.setStatus("Submitted");
 	}
 
 	private Long getMsgId(){

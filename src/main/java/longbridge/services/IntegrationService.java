@@ -174,6 +174,7 @@ public interface IntegrationService {
     List<QuicktellerBankCodeDTO> getBankCodes();
     CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
     NeftResponse submitNeftTransfer();
+//    NeftTransfer checkNeftStatus();
     NeftResponseDTO submitInstantNeftTransfer(NeftTransfer neftTransfer);
 
 }

@@ -152,12 +152,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         logger.info("Customer Id is {}", customerId);
         Corporate corporateUser = corporateRepo.findByCustomerId(customerId);
         logger.info("Corporate Id is {}", corporateUser);
-        String bvn = corporateUser.getBvn();
-        return bvn;
+        return corporateUser.getBvn();
     }
 
 
     private NeftTransfer pfDataItemStore(CorpTransferRequestDTO neftTransferDTO){
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
         NeftTransfer neftTransfer = new NeftTransfer();
         String bvn = getUserBvn(neftTransferDTO.getCustomerAccountNumber());
         logger.info("corporate user bvn = [{}]", bvn);
@@ -181,6 +182,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         neftTransfer.setSortCode(neftTransferDTO.getBeneficiarySortCode());
         neftTransfer.setTranCode("20");
         neftTransfer.setSerialNo("");
+        neftTransfer.setCorporate(corporate);
+        neftTransfer.setStatus("PENDING");
+        neftTransfer.setBeneficiaryBank(neftTransferDTO.getBeneficiaryBank());
         return neftTransferRepo.save(neftTransfer);
     }
 
