@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import longbridge.response.NeftResponse;
 
 import javax.persistence.*;
@@ -62,9 +63,17 @@ public class NeftTransfer {
     private String SettlementTime;
     @Column(name = "cycleno")
     private String CycleNo;
+    @Column(name = "status")
+    private String status;
+    @Column(name = "beneficiarybank")
+    private String beneficiaryBank;
 
     @ManyToOne
-    private RetailUser user;
+    private RetailUser retailUser;
+
+    @ManyToOne
+    @JsonIgnore
+    private Corporate corporate;
 
     @OneToOne
     private NeftResponse neftResponse;
@@ -286,12 +295,36 @@ public class NeftTransfer {
         this.neftResponse = neftResponse;
     }
 
-    public RetailUser getUser() {
-        return user;
+    public RetailUser getRetailUser() {
+        return retailUser;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setRetailUser(RetailUser retailUser) {
+        this.retailUser = retailUser;
+    }
+
+    public Corporate getCorporate() {
+        return corporate;
+    }
+
+    public void setCorporate(Corporate corporate) {
+        this.corporate = corporate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBeneficiaryBank() {
+        return beneficiaryBank;
+    }
+
+    public void setBeneficiaryBank(String beneficiaryBank) {
+        this.beneficiaryBank = beneficiaryBank;
     }
 
     @Override
@@ -322,7 +355,10 @@ public class NeftTransfer {
                 ", MICRRepairInd='" + MICRRepairInd + '\'' +
                 ", SettlementTime='" + SettlementTime + '\'' +
                 ", CycleNo='" + CycleNo + '\'' +
-                ", user=" + user +
+                ", status='" + status + '\'' +
+                ", beneficiaryBank='" + beneficiaryBank + '\'' +
+                ", retailUser=" + retailUser +
+                ", corporate=" + corporate +
                 ", neftResponse=" + neftResponse +
                 '}';
     }

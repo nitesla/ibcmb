@@ -129,6 +129,9 @@ public class TransferController {
                 case QUICKTELLER: {
                     return "redirect:/retail/transfer/interbank";
                 }
+                case NEFT_BULK: {
+                    return "redirect:/retail/transfer/bulk/index";
+                }
             }
             return "redirect:/retail/transfer/ownaccount";
         }

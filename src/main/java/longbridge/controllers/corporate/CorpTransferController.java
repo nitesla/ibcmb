@@ -131,6 +131,10 @@ public class CorpTransferController {
                 case RTGS: {
                     return "redirect:/corporate/transfer/interbank";
                 }
+
+                case NEFT_BULK: {
+                    return "redirect:/corporate/transfer/bulk/index";
+                }
             }
             return "redirect:/corporate/transfer/ownaccount";
         }
