@@ -67,6 +67,8 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     @OneToOne
     private AntiFraudData antiFraudData;
 
+    @OneToOne
+    private NeftTransfer neftTransfer;
 
     private String channel;
 
@@ -74,7 +76,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
     }
 
 
-    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String beneficiaryBank, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount, String charge, String currencyCode, String responseCode, String mac, String transferCode, String responseCodeGrouping, String transactionDate, QuickBeneficiary quickBeneficiary, QuickInitiation quickInitiation, QuickSender quickSender, QuickTermination quickTermination, AntiFraudData antiFraudData, String channel) {
+    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String beneficiaryBank, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount, String charge, String currencyCode, String responseCode, String mac, String transferCode, String responseCodeGrouping, String transactionDate, QuickBeneficiary quickBeneficiary, QuickInitiation quickInitiation, QuickSender quickSender, QuickTermination quickTermination, AntiFraudData antiFraudData, NeftTransfer neftTransfer, String channel) {
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.tranDate = tranDate;
@@ -101,6 +103,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
         this.quickSender = quickSender;
         this.quickTermination = quickTermination;
         this.antiFraudData = antiFraudData;
+        this.neftTransfer = neftTransfer;
         this.channel = channel;
     }
 
@@ -322,6 +325,14 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
         this.transactionDate = transactionDate;
     }
 
+    public NeftTransfer getNeftTransfer() {
+        return neftTransfer;
+    }
+
+    public void setNeftTransfer(NeftTransfer neftTransfer) {
+        this.neftTransfer = neftTransfer;
+    }
+
     @Override
     public String toString() {
         return "TransRequest{" +
@@ -351,6 +362,7 @@ public class TransRequest extends AbstractEntity implements PrettySerializer {
                 ", quickSender=" + quickSender +
                 ", quickTermination=" + quickTermination +
                 ", antiFraudData=" + antiFraudData +
+                ", neftTransfer=" + neftTransfer +
                 ", channel='" + channel + '\'' +
                 '}';
     }

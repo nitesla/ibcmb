@@ -1,9 +1,15 @@
 package longbridge.response;
 
 
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+
 @Entity
+@Audited(targetAuditMode = NOT_AUDITED)
 public class NeftResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
