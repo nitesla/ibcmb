@@ -12,6 +12,8 @@ public class CorpTransferRequestDTO extends TransferRequestDTO {
 
     private String paymentMethodCode;
 
+    private Long neftId;
+
     public String getPaymentMethodCode() {
         return paymentMethodCode;
     }
@@ -34,5 +36,13 @@ public class CorpTransferRequestDTO extends TransferRequestDTO {
 
     public void setCorporateId(String corporateId) {
         this.corporateId = corporateId;
+    }
+
+    public Long getNeftId() {
+        return neftId;
+    }
+
+    public void setNeftId(Long neftId) {
+        this.neftId = neftId;
     }
 }

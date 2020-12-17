@@ -2,17 +2,23 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import longbridge.response.NeftResponse;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+
 @Entity
-public class NeftTransfer {
+@Audited(withModifiedFlag=true)
+@Where(clause ="del_Flag='N'" )
+public class NeftTransfer extends AbstractEntity {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long Id;
 
 
     @Column(name = "itemsequenceno")
@@ -79,16 +85,6 @@ public class NeftTransfer {
     private NeftResponse neftResponse;
 
     // Getter Methods
-
-
-    public Long getId() {
-        return Id;
-    }
-
-    public void setId(Long id) {
-        Id = id;
-    }
-
     public String getItemSequenceNo() {
         return ItemSequenceNo;
     }
@@ -330,7 +326,6 @@ public class NeftTransfer {
     @Override
     public String toString() {
         return "NeftTransfer{" +
-                "Id=" + Id +
                 ", ItemSequenceNo='" + ItemSequenceNo + '\'' +
                 ", SerialNo='" + SerialNo + '\'' +
                 ", SortCode='" + SortCode + '\'' +
