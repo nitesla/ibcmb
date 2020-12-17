@@ -214,6 +214,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         String sessId = sessionUtil.generateSessionId();
         transferRequest.setReferenceNumber(sessId);
         transferRequestDTO.setReferenceNumber(sessId);
+        transferRequestDTO.setNeftId(transferRequest.getNeftTransfer().getId());
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
@@ -295,13 +296,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 //        corpTransRequest.getAntiFraudData().setChannel(corpTransRequest.getChannel());
         if (corpTransferRequestDTO.getTransferType() == TransferType.NEFT){
-            neftTransfer = pfDataItemStore(corpTransferRequestDTO);
+            if(corpTransferRequestDTO.getNeftId() != null){
+                neftTransfer = neftTransferRepo.findOneById(corpTransferRequestDTO.getNeftId());
+            }
+//            else {
+//                neftTransfer = pfDataItemStore(corpTransferRequestDTO);
+//            }
             try {
                 NeftResponseDTO responseDTO = integrationService.submitInstantNeftTransfer(neftTransfer);
                 NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(responseDTO));
                 neftTransfer.setNeftResponse(neftResponse);
                 neftTransferRepo.save(neftTransfer);
-                getCorpTransferRequestDTO(corpTransRequest);
+                return getCorpTransferRequestDTO(corpTransRequest);
             }catch (InternetBankingTransferException ex){
                 throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
             }
@@ -543,6 +549,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
         transferRequestDTO.setCurrencyCode(corpTransRequest.getCurrencyCode());
 
+        if(corpTransRequest.getNeftTransfer() != null){
+            transferRequestDTO.setInstrumentType(corpTransRequest.getNeftTransfer().getInstrumentType());
+            transferRequestDTO.setCollectionType(corpTransRequest.getNeftTransfer().getCollectionType());
+            transferRequestDTO.setBeneficiaryBVN(corpTransRequest.getNeftTransfer().getBVNBeneficiary());
+            transferRequestDTO.setBeneficiarySortCode(corpTransRequest.getNeftTransfer().getSortCode());
+            transferRequestDTO.setPayerName(corpTransRequest.getNeftTransfer().getPayerName());
+            transferRequestDTO.setNeftId(corpTransRequest.getNeftTransfer().getId());
+        }
 
         if (corpTransRequest.getQuickBeneficiary() != null) {
             transferRequestDTO.setLastname(corpTransRequest.getQuickBeneficiary().getLastname());
@@ -620,55 +634,61 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         if (transferRequestDTO.getTransferType() == TransferType.QUICKTELLER) {
             QuickBeneficiary quickBeneficiary = new QuickBeneficiary();
-        quickBeneficiary.setLastname(transferRequestDTO.getLastname());
-        quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
-        quickBeneficiaryRepo.save(quickBeneficiary);
-        corpTransRequest.setQuickBeneficiary(quickBeneficiary);
+            quickBeneficiary.setLastname(transferRequestDTO.getLastname());
+            quickBeneficiary.setOthernames(transferRequestDTO.getFirstname());
+            quickBeneficiaryRepo.save(quickBeneficiary);
+            corpTransRequest.setQuickBeneficiary(quickBeneficiary);
 
-        QuickInitiation quickInitiation = new QuickInitiation();
-        BigDecimal a = transferRequestDTO.getAmount();
-        BigDecimal b = new BigDecimal(100);
-        BigDecimal initiationAmount = a.multiply(b);
-        quickInitiation.setAmount(initiationAmount);
-        quickInitiation.setChannel("7");
-        quickInitiation.setCurrencyCode("566");
-        quickInitiation.setPaymentMethodCode("CA");
-        quickInitiationRepo.save(quickInitiation);
-        corpTransRequest.setQuickInitiation(quickInitiation);
+            QuickInitiation quickInitiation = new QuickInitiation();
+            BigDecimal a = transferRequestDTO.getAmount();
+            BigDecimal b = new BigDecimal(100);
+            BigDecimal initiationAmount = a.multiply(b);
+            quickInitiation.setAmount(initiationAmount);
+            quickInitiation.setChannel("7");
+            quickInitiation.setCurrencyCode("566");
+            quickInitiation.setPaymentMethodCode("CA");
+            quickInitiationRepo.save(quickInitiation);
+            corpTransRequest.setQuickInitiation(quickInitiation);
 
-        QuickSender quickSender = new QuickSender();
-        quickSender.setEmail(getCurrentUser().getEmail());
-        quickSender.setLastname(getCurrentUser().getLastName());
-        quickSender.setOthernames(getCurrentUser().getFirstName());
-        quickSender.setPhone(getCurrentUser().getPhoneNumber());
-        quickSenderRepo.save(quickSender);
-        corpTransRequest.setQuickSender(quickSender);
+            QuickSender quickSender = new QuickSender();
+            quickSender.setEmail(getCurrentUser().getEmail());
+            quickSender.setLastname(getCurrentUser().getLastName());
+            quickSender.setOthernames(getCurrentUser().getFirstName());
+            quickSender.setPhone(getCurrentUser().getPhoneNumber());
+            quickSenderRepo.save(quickSender);
+            corpTransRequest.setQuickSender(quickSender);
 
 
-        QuickTermination quickTermination = new QuickTermination();
+            QuickTermination quickTermination = new QuickTermination();
 
-        AccountReceivable accountReceivable = new AccountReceivable();
-        accountReceivable.setAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
-        accountReceivable.setAccountType("00");
+            AccountReceivable accountReceivable = new AccountReceivable();
+            accountReceivable.setAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
+            accountReceivable.setAccountType("00");
 
-        quickTermination.setAccountReceivable(accountReceivable);
-        BigDecimal c = transferRequestDTO.getAmount();
-        BigDecimal d = new BigDecimal(100);
-        BigDecimal terminatingAmount = c.multiply(d);
-        quickTermination.setAmount(terminatingAmount);
-        quickTermination.setCountryCode("NG");
-        quickTermination.setCurrencyCode("566");
-        quickTermination.setEntityCode("");
-        quickTermination.setPaymentMethodCode("AC");
-        quickTerminationRepo.save(quickTermination);
-        corpTransRequest.setQuickTermination(quickTermination);
+            quickTermination.setAccountReceivable(accountReceivable);
+            BigDecimal c = transferRequestDTO.getAmount();
+            BigDecimal d = new BigDecimal(100);
+            BigDecimal terminatingAmount = c.multiply(d);
+            quickTermination.setAmount(terminatingAmount);
+            quickTermination.setCountryCode("NG");
+            quickTermination.setCurrencyCode("566");
+            quickTermination.setEntityCode("");
+            quickTermination.setPaymentMethodCode("AC");
+            quickTerminationRepo.save(quickTermination);
+            corpTransRequest.setQuickTermination(quickTermination);
 
-        Random rand = new Random();
-        int upperbound = 9999999;
-        int random = rand.nextInt(upperbound);
-        corpTransRequest.setTransferCode("1453" + random);
+            Random rand = new Random();
+            int upperbound = 9999999;
+            int random = rand.nextInt(upperbound);
+            corpTransRequest.setTransferCode("1453" + random);
 
         }
+
+        if(transferRequestDTO.getTransferType() == TransferType.NEFT && transferRequestDTO.getNeftId() == null){
+            NeftTransfer neftTransfer = pfDataItemStore(transferRequestDTO);
+            corpTransRequest.setNeftTransfer(neftTransfer);
+        }
+
         Corporate corporate = corporateRepo.findOneById(Long.parseLong(transferRequestDTO.getCorporateId()));
         corpTransRequest.setCorporate(corporate);
         if (transferRequestDTO.getTransAuthId() != null) {
