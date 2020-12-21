@@ -1,8 +1,11 @@
 package longbridge.services;
 
+import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpNeftBeneficiaryDTO;
+import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.CorpNeftBeneficiary;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
