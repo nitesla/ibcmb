@@ -168,7 +168,7 @@
             $('#loading-icon').hide();
             return false;
         }
-        $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiryNeft', function (jd) {
+        $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
             var message = jd.message;
             var success = jd.success;
             console.log(message);

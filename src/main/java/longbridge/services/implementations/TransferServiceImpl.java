@@ -2,10 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.InternationalTransferRequestDTO;
-import longbridge.dtos.NeftTransferRequestDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.dtos.apidtos.NeftResponseDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferExceptions;
