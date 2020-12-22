@@ -173,7 +173,7 @@
             $('#loading-icon').hide();
             return false;
         }
-        $.getJSON('/corporate/transfer/' + acct + '/' + bank + '/nameEnquiryNeft', function (jd) {
+        $.getJSON('/corporate/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
             var message = jd.message;
             var success = jd.success;
             console.log(message);
