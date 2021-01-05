@@ -76,11 +76,14 @@
 
                      <div class="form-group">
                          <label >Account Name</label>
+<!--                         <input type="text" class="form-control"  th:field="*{beneficiaryAccountName}"-->
+<!--                                id="acct_name" required="required" readonly/>-->
                          <input type="text" class="form-control"  th:field="*{beneficiaryAccountName}"
-                                id="acct_name" required="required" readonly/>
+                                id="acct_name" required="required" />
                          <p class="errors" th:if="${#fields.hasErrors('beneficiaryAccountName')}" th:errors="*{beneficiaryAccountName}">&times;</p>
                      </div>
-                     <div class="form-group" style="display: none" id="check">
+<!--                     <div class="form-group" style="display: none" id="check">-->
+                     <div class="form-group" id="check">
 <!--                     <div class="form-group" id="check">-->
                          <label style="font-weight: bold; color: black;margin-left:10px !important">
                              <input  type="checkbox" id="add" name="add"/>
@@ -88,8 +91,9 @@
                                 <span class='addNew' th:if="${session.beneficiaryType} == 'DB'">Add Source</span>
                          </label>
                      </div>
-                     <button id="localsave" type = "submit" style="display: none;" class="btn btn-link required-step" >Next</button>
-                     <button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>
+<!--                     <button id="localsave" type = "submit" style="display: none;" class="btn btn-link required-step" >Next</button>-->
+                     <button id="localsave" type = "submit"  class="btn btn-link required-step" >Next</button>
+<!--                     <button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>-->
                  </form>
 
              </div>
@@ -110,7 +114,7 @@
         $('#bank_code').change(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
-            $('#localsave').hide();
+            // $('#localsave').hide();
             $('#neq').show();
         });
         $('#acct_num').focus(function(){
@@ -135,7 +139,6 @@
     let bank_code;
     $("#bank_code").change(function (){
         bank_code = $(this).find(':selected').data('id')
-        console.log("Bank is "+ bank_code)
         if(bank_code !==null){
             $.getJSON('/retail/transfer/interbank/neft/' + bank_code + '/branch', function (data) {
                 if(data !== undefined && data !== null){
@@ -159,7 +162,7 @@
         var acct = $('#acct_num').val();
         // var bank = $('#bank_code').val();
         var bank =bank_code;
-        console.log("THis is the bank id " + bank);
+
 
         if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
 
