@@ -102,6 +102,19 @@ public class MainController {
         return new ModelAndView("retpage1", "error", error);
     }
 
+    @RequestMapping(value = "/login/retail/feedback", method = RequestMethod.GET)
+    public ModelAndView getFeedbackPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model,HttpServletResponse response,HttpServletRequest requests,HttpSession session) {
+
+        request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
+        //clearSession();
+        SecurityContextHolder.clearContext();
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue("" + sessionTimeout);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return new ModelAndView("retpagefeedback", "error", error);
+    }
+
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request,HttpServletResponse response,HttpServletRequest requests) {
 //        SecurityContextHolder.clearContext();
@@ -113,6 +126,20 @@ public class MainController {
         request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
         //clearSession();
         return new ModelAndView("corppage1", "error", error);
+
+    }
+
+    @RequestMapping(value = "/login/corporate/feedback", method = RequestMethod.GET)
+    public ModelAndView getCorpFeedbackPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request,HttpServletResponse response,HttpServletRequest requests) {
+//        SecurityContextHolder.clearContext();
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue(sessionTimeout.toString());
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
+        //clearSession();
+        return new ModelAndView("corppagefeedback", "error", error);
 
     }
 

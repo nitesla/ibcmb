@@ -70,19 +70,21 @@ public class TransferStatusJobLauncher {
                         i -> {
                             LOGGER.info("status {}",i.getStatus());
 
-                            try {
-                                String batch = "" + i.getRefCode();
-                                LOGGER.info("Running status update job for transfer batchId {}", batch);
-                                JobExecution jobExecution = jobLauncher.run(job, newExecution(batch));
-                                LOGGER.info("Job Exit status: {}",jobExecution.getExitStatus().toString());
-                                LOGGER.info("Job Execution status: {}",jobExecution.toString());
+                            if ((i.getStatus() != "UNPAID") || (i.getStatus() != "PAID") ) {
 
-                            } catch (JobRestartException | JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
-                                LOGGER.error("Error occurred", e);
-                            } catch (Exception e) {
-                                LOGGER.error("Error occurred", e);
+                                try {
+                                    String batch = "" + i.getRefCode();
+                                    LOGGER.info("Running status update job for transfer batchId {}", batch);
+                                    JobExecution jobExecution = jobLauncher.run(job, newExecution(batch));
+                                    LOGGER.info("Job Exit status: {}", jobExecution.getExitStatus().toString());
+                                    LOGGER.info("Job Execution status: {}", jobExecution.toString());
+
+                                } catch (JobRestartException | JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
+                                    LOGGER.error("Error occurred", e);
+                                } catch (Exception e) {
+                                    LOGGER.error("Error occurred", e);
+                                }
                             }
-
                         }
 
                 );
