@@ -386,7 +386,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
         return bulkTransferRepo.findByCorporate(corporate);
     }
     public List<BulkTransfer>getByStatus(){
-        return bulkTransferRepo.findByStatus("Processing");
+        return bulkTransferRepo.findByStatusNotNull();
     }
 
     private RetailUser getCurrentUser() {

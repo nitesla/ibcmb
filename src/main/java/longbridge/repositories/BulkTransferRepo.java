@@ -26,7 +26,7 @@ public interface BulkTransferRepo extends CommonRepo<BulkTransfer, Long>{
 
     List<BulkTransfer> findByStatusNotInIgnoreCase(List<String> list);
 
-    List<BulkTransfer> findByStatus(String status);
+    List<BulkTransfer> findByStatusNotNull();
 
     BulkTransfer findFirstByRefCode(String refCode);
 

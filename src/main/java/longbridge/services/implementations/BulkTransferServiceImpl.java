@@ -500,7 +500,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
        return bulkTransferRepo.findByCorporate(corporate);
    }
    public List<BulkTransfer>getByStatus(){
-       return bulkTransferRepo.findByStatus("Processing");
+       return bulkTransferRepo.findByStatusNotNull();
    }
 
 
