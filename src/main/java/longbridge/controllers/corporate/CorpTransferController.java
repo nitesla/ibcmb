@@ -337,7 +337,7 @@ public class CorpTransferController {
 
                 if (corpTransferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
 //                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
-                    model.addAttribute("message", messageSource.getMessage(transferErrorService.getMessage(corpTransferRequestDTO.getStatus()), null, locale));
+                    model.addAttribute("message", "Click on Neft Request to settle all pending transactions");
                     logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
 
                     return "corp/transfer/bulktransfer/neft/pendingNeftTransfer";
