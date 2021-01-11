@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <title>Log in | <span th:text="#{menu.bank.name}" ></span> </title>
+    <title th:text="#{menu.bank.name}" ></title>
 
     <!-- Bootstrap -->
     <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
@@ -36,7 +36,7 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <img th:src="@{/bank/images/cmb_logo.png}" th:alt="#{menu.bank.name}" />
+                <img th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
                 <br/>
                 
                 <form th:action="@{/admin/login}" method="POST" autocomplete="off">

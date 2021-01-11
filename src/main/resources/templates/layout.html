@@ -34,7 +34,7 @@
     <!-- menu profile quick info -->
     <div class="profile clearfix">
         <div class="profile_pic">
-            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+            <img th:src="@{~/customer/{name}/img/logo_fav.png(name=#{menu.img})}" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
             <span>Welcome,</span>
@@ -136,7 +136,7 @@
     <!-- menu profile quick info -->
     <div class="profile clearfix">
         <div class="profile_pic">
-            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+            <img th:src="@{~/customer/{name}/img/logo_fav.png(name=#{menu.img})}" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
             <span>Welcome,</span>
