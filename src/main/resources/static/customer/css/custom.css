@@ -500,7 +500,7 @@ select {
 -moz-box-sizing: border-box; */
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url('../img/select.jpg') !important;
+    background-image: url('../coronation_merchant_bank/img/select.jpg') !important;
     background-repeat: no-repeat;
     background-position: right center;
     background-size: contain;
@@ -1794,7 +1794,7 @@ textarea {
     /* margin: 30px 0 0; */
     width: 100%;
     min-height: 500px;
-    background-image: url('../img/bgg.jpg');
+    background-image: url('../coronation_merchant_bank/img/bgg.jpg');
     background-size: cover;
     /*overflow: hidden;*/
 }
@@ -1802,7 +1802,7 @@ textarea {
     /* margin: 30px 0 0; */
     width: 100%;
     min-height: 500px;
-    background-image: url('../img/bgb.png');
+    background-image: url('../coronation_merchant_bank/img/bgb.png');
     background-size: cover;
 
     /*overflow: hidden;*/

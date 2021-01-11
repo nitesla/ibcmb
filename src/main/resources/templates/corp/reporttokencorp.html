@@ -7,8 +7,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-<link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.img})}" type="image/x-icon">
+<link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.img})}" type="image/x-icon">
 
     <title>Report Token For Corporate</title>
 </head>
@@ -18,7 +18,7 @@
     <div class="container">
         <div class="top_bar">
             <ul class="list_group">
-                <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
+                <li><a href="https://www.coronationmb.com/" target="_blank" th:text="#{menu.bank.name}"></a></li>
             </ul>
         </div>
         <nav class="navbar navbar-default">
@@ -59,7 +59,7 @@
             </div>
         </nav>
         <a href="#" class="logo">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+            <img th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
         </a>
     </div>
 </header>
@@ -217,7 +217,7 @@
                 </ul>
 
             </div>
-            <div class="col-md-6 col-xs-12"><p> &copy; 2020 Coronation Merchant Bank. - All rights reserved</p></div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2021 <span th:text="#{menu.bank.name}" ></span>. - All rights reserved</p></div>
 
         </div>
     </div>

@@ -106,7 +106,7 @@
 
                                         <!--image placeholdder-->
                                         <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
-                                            <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank" src="/customer/img/asset.jpg" />
+                                            <img style="max-height:250px" class="center img-responsive" th:alt="#{menu.bank.name}" src="/customer/{name}/img/asset.jpg(name=#{menu.img})" />
                                         </div>
                                     </div>
                                 </div>
@@ -135,7 +135,7 @@
 
             <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
                 <div class="bg-white center" style="width:40%">
-                    <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
+                    <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/{name}/img/loader.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
                     <div id='loading-icon' class=' bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait
                     </div>
                 </div>

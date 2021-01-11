@@ -16,7 +16,7 @@
                     <div>
                         <div class="bg-coronation-brown center img-phish-box-mobile" style="">
                             <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
+                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/{name}/img/cmb_ph.png(name=#{menu.img})}" />
                             <p class="text-center text-white" th:text="${secCaption}"></p>
                             <input type="checkbox" class='center' style='display:block;' name="phishing" />
                         </div>
@@ -58,7 +58,7 @@
                     <div class="" style="width:200px;padding:0px 10px">
                         <div class="bg-coronation-brown img-phish-box-desk" style="">
                             <img th:if="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{/customer/img/cmb_ph.png}" />
+                            <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish-desk'  th:src="@{/customer/{name}/img/cmb_ph.png(name=#{menu.img})}" />
                             <p class="text-center" th:text="${secCaption}">&#160;</p>
                             <input type="checkbox" class="center" style='display:block;' name="phishing" />
                         </div>

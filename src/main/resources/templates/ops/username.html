@@ -30,7 +30,7 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <img th:src="@{/bank/images/cmb_logo.png}" th:alt="#{menu.bank.name}" />
                 <br/>
                 <form th:action="@{/general/operations/users/password/reset/}" method="POST">
 

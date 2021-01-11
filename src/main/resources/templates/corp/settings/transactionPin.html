@@ -43,7 +43,7 @@
         </div>
     </nav>
     <a href="#" class="logo">
-        <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <img th:src="@{/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
     </a>
 </div>
 

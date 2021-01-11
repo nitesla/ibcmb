@@ -274,7 +274,7 @@
                     <div class="col-md-6 login-section" >
                         <div class="form-body bodyform"  >
                             <form id="loginform" th:action="@{/login/u/corporate}" method="POST" class="form-signinn " autocomplete="off" style="margin-bottom: 5% !important;">
-                                <h5 class=" form-signin-heading text-white welcome" style="font-size: 22px;margin-left: 8px">Welcome to CoronationMB<br> Online Banking!</h5>
+                                <h5 class=" form-signin-heading text-white welcome" style="font-size: 22px;margin-left: 8px">Welcome to <span th:text="#{menu.bank.name}" ></span><br> Online Banking!</h5>
                                 <p class="form-signin header-line text-white" style="margin-left:8px !important;">Enter your username to continue</p>
                                 <br/>
                                 <div th:if="${param.message != null}" class="alert alert-info erro" th:text="${param.message[0]}"></div>

@@ -26,9 +26,9 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}"/>
 
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
-    <title>Coronation Merchant Bank</title>
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.img})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.img})}" type="image/x-icon">
+    <title th:text="#{menu.bank.name}" ></title>
 
 </head>
 
@@ -55,7 +55,7 @@
                 <div class="top-bar col-xs-12">
                     <ul class="top-link">
                         <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;
+                        <li><a href="https://www.coronationmb.com/" target="_blank" th:text="#{menu.bank.name}"></a>&nbsp;
                         </li>
                         <li><a target="_blank" th:href="@{/faqs}">Help</a>&nbsp;</li>
                     </ul>
@@ -148,7 +148,7 @@
                 <div class="col-xs-12 col-sm-3 no-pad-right ">
                     <a href="/retail/dashboard" class="">
                         <img class='img img-responsive pull-right' style="height:70px"
-                             th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank"/>
+                             th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}"/>
                     </a>
                 </div>
             </div>
@@ -515,8 +515,8 @@
 
                         <!--image placeholdder-->
                         <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
-                            <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank"
-                                 src="/customer/img/asset.jpg"/>
+                            <img style="max-height:250px" class="center img-responsive" th:alt="#{menu.bank.name}"
+                                 th:src="@{~/customer/{name}/img/asset.jpg(name=#{menu.img})}"/>
                         </div>
                     </div>
                 </div>
@@ -538,7 +538,7 @@
 
                 </div>
                 <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right">
-                    <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span
+                    <p class=' '> &copy; 2017 - <span th:text="#{menu.bank.name}"></span>.<span
                             class="hidden-xs"> All rights reserved</span></p>
                     <p class="visible-xs">All rights reserved</p>
 
