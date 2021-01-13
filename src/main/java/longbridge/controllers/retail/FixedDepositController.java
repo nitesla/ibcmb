@@ -84,7 +84,7 @@ public class FixedDepositController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Page<FixedDepositDTO> fixedDepositDTOS = null;
-        fixedDepositDTOS = fixedDepositService.getFixedDepositDetials(retailUser.getCustomerId(), pageable);
+        fixedDepositDTOS = fixedDepositService.getFixedDepositsForView(retailUser.getCustomerId(), pageable);
         DataTablesOutput<FixedDepositDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fixedDepositDTOS.getContent());

@@ -34,6 +34,7 @@ public class RetailUser extends User implements PrettySerializer {
     private Date birthDate;
     private String resetSecurityQuestion;
     private String feedBackStatus;
+    private String coverage;
 
     @OneToMany
     @JsonIgnore
@@ -49,10 +50,10 @@ public class RetailUser extends User implements PrettySerializer {
     @JsonIgnore
     private List<BulkTransfer> transfers;
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonIgnore
-    private List<Coverage> coverages;
-
+//    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+//    @JsonIgnore
+//    private List<Coverage> coverages;
+//
 
 
     public RetailUser() {
@@ -123,12 +124,12 @@ public class RetailUser extends User implements PrettySerializer {
         this.feedBackStatus = feedBackStatus;
     }
 
-    public List<Coverage> getCoverages() {
-        return coverages;
+    public String getCoverage() {
+        return coverage;
     }
 
-    public void setCoverages(List<Coverage> coverages) {
-        this.coverages = coverages;
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
     }
 
     @Override
@@ -202,6 +203,7 @@ public class RetailUser extends User implements PrettySerializer {
                 else if ("L".equals(value.status))
                     status = "Locked";
                 gen.writeStringField("status", status);
+                gen.writeStringField("coverage", coverage);
                 gen.writeStringField("role", value.role.getName());
                 gen.writeEndObject();
             }

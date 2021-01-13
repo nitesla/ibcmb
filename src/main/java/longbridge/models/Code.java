@@ -42,8 +42,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
     private String description;
     private String extraInfo;
 
-	@OneToMany(mappedBy = "codeEntity",cascade = CascadeType.ALL,orphanRemoval = true)
-	private List<Coverage> coverages;
+
 
 	public String getCode() {
         return code;
@@ -78,13 +77,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		this.extraInfo = extraInfo;
 	}
 
-	public List<Coverage> getCoverages() {
-		return coverages;
-	}
-
-	public void setCoverages(List<Coverage> coverages) {
-		this.coverages = coverages;
-	}
+	
 
 	@Override
 	public int hashCode() {

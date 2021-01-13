@@ -29,10 +29,10 @@ public class RetailUserDTO {
     private String password;
     private String status;
     private String bvn;
-    private String createdOnDate;
+    private Date createdOnDate;
     private Date expiryDate;
     private Date lockedUntilDate;
-    private String lastLoginDate;
+    private Date lastLoginDate;
     private int noOfLoginAttempts;
     private List<String> securityQuestion;
     private List<String> securityAnswer;
@@ -41,6 +41,7 @@ public class RetailUserDTO {
     private Role role;
     private Code alertPreference;
     private String feedBackStatus;
+    private List<String> coverageCodes;
 
     public Long getId() {
         return id;
@@ -147,19 +148,19 @@ public class RetailUserDTO {
         this.lockedUntilDate = lockedUntilDate;
     }
 
-    public String getCreatedOnDate() {
+    public Date getCreatedOnDate() {
         return createdOnDate;
     }
 
-    public void setCreatedOnDate(String createdOnDate) {
+    public void setCreatedOnDate(Date createdOnDate) {
         this.createdOnDate = createdOnDate;
     }
 
-    public String getLastLoginDate() {
+    public Date getLastLoginDate() {
         return lastLoginDate;
     }
 
-    public void setLastLoginDate(String lastLoginDate) {
+    public void setLastLoginDate(Date lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
     }
 
@@ -242,6 +243,14 @@ public class RetailUserDTO {
 
     public void setFeedBackStatus(String feedBackStatus) {
         this.feedBackStatus = feedBackStatus;
+    }
+
+    public List<String> getCoverageCodes() {
+        return coverageCodes;
+    }
+
+    public void setCoverageCodes(List<String> coverageCodes) {
+        this.coverageCodes = coverageCodes;
     }
 
     @Override

@@ -34,6 +34,8 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private String bvn;
     private String taxId;
 
+    private String coverage;
+
     @ElementCollection
     private Set<String> cifids;
 
@@ -58,9 +60,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     private List<CorpTransRule> corpTransRules;
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonIgnore
-    private List<Coverage> coverages;
 
 
     @ManyToMany
@@ -223,19 +222,19 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
         this.cifids = cifids;
     }
 
-    public List<Coverage> getCoverages() {
-        return coverages;
+    public String getCoverage() {
+        return coverage;
     }
 
-    public void setCoverages(List<Coverage> coverages) {
-        this.coverages = coverages;
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
     }
 
     @Override
 	public String toString() {
 		return "Corporate [rcNumber=" + rcNumber + ", customerId=" + customerId + ", corporateType=" + corporateType
 				+ ", name=" + name + ", email=" + email + ", address=" + address + ", status=" + status
-				+ ", createdOnDate=" + createdOnDate + ", bvn=" + bvn + "]";
+				+ ", createdOnDate=" + createdOnDate + ", bvn=" + bvn + ", coverage=" + coverage + "]";
 	}
 
 	@Override @JsonIgnore
@@ -281,6 +280,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
                 gen.writeStringField("status", value.status);
                 gen.writeStringField("createdOnDate", value.createdOnDate.toString());
                 gen.writeStringField("bvn", value.bvn);
+                gen.writeStringField("coverage", value.coverage);
                 gen.writeEndObject();
             }
         };

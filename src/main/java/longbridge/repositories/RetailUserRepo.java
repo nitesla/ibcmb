@@ -1,5 +1,6 @@
 package longbridge.repositories;
 
+import longbridge.dtos.RetailUserDTO;
 import longbridge.models.RetailUser;
 import longbridge.models.Role;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -50,8 +52,8 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     @Query("select id from RetailUser ")
     Set<Long> getAllRetailUserId();
 
+////
+//    @Query("select a from RetailUser a where a.customerId in :customerIds")
+//    List<RetailUserDTO> getCoverages(@Param("customerId")List<String> customerIds);
 
-
-//    @Query("select r.bvn from RetailUser r where r.userName = :username")
-//    String payerBvn(@Param("username") String username);
 }

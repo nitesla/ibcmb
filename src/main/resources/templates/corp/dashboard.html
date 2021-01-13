@@ -63,7 +63,7 @@
                     <th>Account Name</th>
                     <th>Account Number</th>
                     <th>Account Currency</th>
-                     <th>Pdf</th>
+                    <th>Pdf</th>
                     <th>Excel</th>
                     <th>Email</th>
 
@@ -125,6 +125,40 @@
 
 
         </div>
+
+
+        <table class="table table-hover no-pad-lef" id="coverage">
+
+            <caption style="font-size: large">COVERAGE TYPES</caption>
+
+            <thead>
+            <tr>
+
+                <th>Customer ID</th>
+                <th>Coverage Name</th>
+                <th>Coverage Details</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+            <tr>
+                <th>Customer ID</th>
+                <th>Coverage Name</th>
+                <th>Coverage Details</th>
+
+            </tr>
+
+            </tr>
+            </tfoot>
+        </table>
+
+
+
+
 
 
         <div id="coverage-div">
@@ -378,6 +412,37 @@
 
         });
 
+
+        var table = $('#coverage').DataTable({
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20,-1],	[ 5, 10,20, "All" ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide" : true,
+            "ajax": "/corporate/dashboard/coverage",
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+                { "data": "customerId"},
+                { "data": "coverageName"},
+                { "data": "coverageUrl", render : function (data,type,full,meta) {
+                        if(data!=null){
+                            console.log("The Data2 : " + data);
+                            return'<a href="/corporate/coverage/view/' + data + '"><i class="fa fa-eye"></i>  View </a>';
+                        }
+
+                    }
+
+
+                }
+
+            ]
+
+        });
+
+
+
         /*]]>*/
     </script>
     <script th:inline="javascript">
@@ -426,126 +491,6 @@
         $("#mailButton").click(function () {
             $("#waiting").show();
         });
-    </script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        $(document).ready(function () {
-            var corpId = [[${corpId}]];
-
-            $.ajax({
-                url: "/corporate/coverage/"+corpId,
-                type: 'GET',
-                success: function (coverageData) {
-                    for (let n = 0; n < coverageData.length; n++) {
-                       var coverageDetails = coverageData[n].coverageDetails;
-                        var coverageName = coverageData[n].coverageName;
-
-                       if(!(jQuery.isEmptyObject(coverageDetails)))
-                          {
-
-                               var container = document.createElement('div');
-                               container.setAttribute('id',coverageName+'div');
-                               container.setAttribute('class','no-pad-lef table-responsive no-mt bg-white alert');
-
-                               var table = document.createElement('table');
-                               table.setAttribute('id',coverageName+'table');
-                               table.setAttribute('class','table table-hover');
-
-                               var tableCaptionElement = document.createElement('caption');
-                               tableCaptionElement.setAttribute('id',coverageName+'caption');
-                               tableCaptionElement.setAttribute("style", "margin-top: 1em;");
-
-                               var tableCaptionNode = document.createTextNode(coverageName.toUpperCase());
-                               tableCaptionElement.appendChild(tableCaptionNode);
-
-                               var tableHeader = document.createElement('thead');
-                               tableHeader.setAttribute('class','thead');
-
-                              var tbody = document.createElement('tbody')
-                              var tbodyDetails = coverageDetails;
-                              console.log(tbodyDetails);
-
-                              if(Array.isArray(tbodyDetails)){
-                                  var datatableColumns =[];
-                                  var header = Object.keys(tbodyDetails[0]);
-                                  console.log(header);
-                                  for(var i=0;i<header.length;i++){
-                                      var th = document.createElement('th');
-                                      var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
-                                      th.appendChild(node);
-                                      tableHeader.appendChild(th);
-                                      datatableColumns.push({"data":header[i]});
-
-                                  }
-                                   for (var i = 0; i < tbodyDetails.length; i++) {
-                                       var tr = document.createElement('tr');
-                                       var row = Object.keys(tbodyDetails[i]);
-                                       for (var coverageElement of row) {
-                                           var td = document.createElement('td');
-                                           tr.appendChild(td);
-                                           var textNode = document.createTextNode(tbodyDetails[i][coverageElement]);
-                                           td.appendChild(textNode);
-                                       }
-                                   tbody.appendChild(tr);
-                                   }
-                               }
-                               else {
-                                  var datatableColumns =[];
-                                  var header = Object.keys(tbodyDetails);
-                                   console.log(header);
-                                  for(var i=0;i<header.length;i++){
-                                      var th = document.createElement('th');
-                                      var node = document.createTextNode(header[i][0].toUpperCase()+header[i].slice(1));
-                                      th.appendChild(node);
-                                      tableHeader.appendChild(th);
-                                      datatableColumns.push({"data":header[i]});
-                                  }
-                                   var tr = document.createElement('tr');
-                                   var row = Object.keys(tbodyDetails);
-                                   for (var coverageElement of row) {
-                                       var td = document.createElement('td');
-                                       tr.appendChild(td);
-                                       var textNode = document.createTextNode(tbodyDetails[coverageElement]);
-                                       td.appendChild(textNode);
-                                   }
-                                   tbody.appendChild(tr);
-                               }
-                                   table.appendChild(tableCaptionElement);
-                                   table.appendChild(tableHeader);
-                                   table.appendChild(tbody);
-                                   container.appendChild(table);
-                                   document.getElementById('coverage-div').appendChild(container);
-                                                          }
-
-                       var datatable = $("#"+coverageName+'table').DataTable({
-                                   responsive: true,
-                                   "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
-                                   "pagingType": "full_numbers",
-                                   "searching": false,
-                                   "paging": true,
-                                   "dom": 'T<"clear">frtlp',
-                                   "columns":datatableColumns,
-
-                               });
-
-                    };
-
-
-                },
-                error:function (response) {
-                    console.log(response)
-                }
-            });
-
-
-        });
-
-
-
-
-
-
-        /*]]>*/
     </script>
 
 </th:block>
