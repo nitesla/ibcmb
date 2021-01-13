@@ -7,9 +7,8 @@ public class CoverageDTO {
     private String code;
     private String description;
     private boolean enabled;
-    private Long corpId;
     private Long codeId;
-    private Long retId;
+    private String customerId;
 
 
     public Long getId() {
@@ -45,13 +44,6 @@ public class CoverageDTO {
     }
 
 
-    public Long getCorpId() {
-        return corpId;
-    }
-
-    public void setCorpId(Long corpId) {
-        this.corpId = corpId;
-    }
 
     public Long getCodeId() {
         return codeId;
@@ -61,25 +53,14 @@ public class CoverageDTO {
         this.codeId = codeId;
     }
 
-    public Long getRetId() {
-        return retId;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setRetId(Long retId) {
-        this.retId = retId;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
-    @Override
-    public String toString() {
-        return "CoverageDTO{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", enabled=" + enabled +
-                ", corpId=" + corpId +
-                ", codeId=" + codeId +
-                ", retId=" + retId +
-                '}';
-    }
+
 
 }

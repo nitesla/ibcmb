@@ -1,8 +1,11 @@
 package longbridge.services.implementations;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import longbridge.api.*;
 import longbridge.dtos.*;
 import longbridge.dtos.apidtos.NeftResponseDTO;
@@ -136,7 +139,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
                                   ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo, CoverageRepo coverageRepo,
+                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,
 								  NeftTransferRepo neftTransferRepo) {
 		this.template = template;
 		this.mailService = mailService;
@@ -1439,8 +1442,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		String uri = URI+"/deposit/"+ accountNumber;
 
+//		String uri = "http://localhost:8090"+"/deposit/"+ accountNumber;
+
+
 		Map<String,String> params = new HashMap<>();
 		params.put("accountNumber",accountNumber);
+
 
 		try{
 
@@ -1778,22 +1785,63 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public  CoverageDetailsDTO  getCoverageDetails(String coverageName, Set<String> customerIds){
-		CoverageDetailsDTO coverageDetailsDTO = new CoverageDetailsDTO();
-		String uri = URI+"/{coverageName}/{customerIds}";
-		System.out.println(coverageName);
-		Map<String,Object> params = new HashMap<>();
-		params.put("coverageName",coverageName.toLowerCase());
-		params.put("customerIds",customerIds.stream().map(s->s.replaceAll("(\r\n|\r|\n)","")).map(Objects::toString).collect(Collectors.joining(",")));
-		ObjectMapper mapper= new ObjectMapper();
-		try {
-			coverageDetailsDTO = template.getForObject(uri,CoverageDetailsDTO.class,params);
-		}
-		catch (Exception e){
-			logger.error("Error getting coverage details",e);
-		}
-		return coverageDetailsDTO;
+	public List<CoverageDetailsDTO> getCoverages(String coverageNames, String customerId){
+
+		return Arrays.stream(coverageNames.split(","))
+				.map(coverageName -> {
+					CoverageDetailsDTO coverageDetails = new CoverageDetailsDTO();
+					coverageDetails.setCoverageName(coverageName);
+					coverageDetails.setCustomerId(customerId);
+					coverageDetails.setCoverageUrl(customerId +"/"+ coverageName);
+				return coverageDetails;
+				}).collect(Collectors.toList());
 	}
+
+	@Override
+	public Map<String, List<String>> getCoverageDetails(String coverageName, String customerId) {
+		Map<String,Object> payloadParameters = new HashMap<>();
+        Map<String, List<String>> coverageDetails = new LinkedHashMap<>();
+
+		try {
+			String lowerCaseCoverageName = coverageName.toLowerCase();
+			String uri = URI+"/{coverageName}/{customerId}";
+
+			payloadParameters.put("coverageName",lowerCaseCoverageName);
+			payloadParameters.put("customerId",customerId.replaceAll("(\r\n|\r|\n)",""));
+			JsonNode coverageJsonNode = template.getForObject(uri, JsonNode.class, payloadParameters);
+			JsonNode value = coverageJsonNode.fields().next().getValue();
+			if(value instanceof ArrayNode){
+				value.forEach(jsonNode -> extractCoverageDetails(coverageDetails, jsonNode));
+			}else{
+                extractCoverageDetails(coverageDetails, value);
+			}
+
+
+		} catch (Exception e) {
+			logger.error("Error getting coverage details", e);
+		}
+		return coverageDetails;
+	}
+
+	private void extractCoverageDetails(Map<String, List<String>> coverageDetails, JsonNode jsonNode) {
+		Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+		while(fields.hasNext()) {
+			Map.Entry<String, JsonNode> field = fields.next();
+			String coverageKey = field.getKey().toUpperCase();
+			String coverageValue = field.getValue().asText().toUpperCase();
+			if(coverageDetails.containsKey(coverageKey)){
+				coverageDetails.get(coverageKey).add(coverageValue);
+			}
+			else {
+				coverageDetails.put(coverageKey, new ArrayList(Arrays.asList((coverageValue))));
+			}
+		}
+	}
+
+
+
+
+
 
 
 //	@Override

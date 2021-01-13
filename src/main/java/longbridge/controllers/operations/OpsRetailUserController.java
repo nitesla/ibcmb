@@ -1,6 +1,9 @@
 package longbridge.controllers.operations;
 
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.dtos.UpdateCoverageCmd;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
@@ -9,6 +12,7 @@ import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
 import longbridge.services.AccountService;
+import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
 import longbridge.services.VerificationService;
 import longbridge.utils.DataTablesUtils;
@@ -22,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,10 +56,14 @@ public class OpsRetailUserController {
     private MessageSource messageSource;
 
     @Autowired
+    private CodeService codeService;
+
+    @Autowired
     private AccountService accountService;
 
     @Autowired
     private VerificationService verificationService;
+
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -75,12 +86,16 @@ public class OpsRetailUserController {
      */
     @GetMapping("/{userId}/view")
     public String viewUserDetails(@PathVariable Long userId, Model model) {
+
         RetailUserDTO retailUser = retailUserService.getUser(userId);
+        logger.info("the cifid for coverage tab {}",retailUser.getCustomerId());
+        List<CodeDTO> account_coverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        model.addAttribute("coverageTypes",account_coverage);
         model.addAttribute("retailUser", retailUser);
-        model.addAttribute("retId",userId);
         model.addAttribute("userType", UserType.RETAIL);
         return "/ops/retail/viewdetails";
     }
+
 
 
     @GetMapping(path = "/{userId}/accounts")
@@ -148,6 +163,20 @@ public class OpsRetailUserController {
         retailUserService.updateUser(retailUser);
         redirectAttributes.addFlashAttribute("message", "Retail user updated successfully");
         return "redirect:/ops/retail/users";
+    }
+
+    @PostMapping("/coverage")
+    public @ResponseBody
+    ResponseEntity<?> UpdateCoverage(UpdateCoverageCmd updateCoverageCmd) throws Exception {
+      RetailUserDTO user = retailUserService.getUser(updateCoverageCmd.getEntityId());
+        user.setCoverageCodes(updateCoverageCmd.getCoverages());
+        boolean ok = retailUserService.updateUser(user);
+
+        if(ok)
+            return ResponseEntity.status(HttpStatus.OK).build();
+        else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not save coverage");
+
     }
 
 

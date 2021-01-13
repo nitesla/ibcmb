@@ -7,7 +7,6 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.services.CodeService;
-import longbridge.services.CoverageAdministrationService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -38,8 +37,6 @@ public class CodeServiceImpl implements CodeService {
      private final ModelMapper modelMapper;
 
     private final Locale locale = LocaleContextHolder.getLocale();
-    @Autowired
-    private CoverageAdministrationService coverageService;
 
 
     @Autowired
@@ -170,11 +167,15 @@ public class CodeServiceImpl implements CodeService {
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
-            codeRepo.save(code);
+
 //            if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
 //                logger.info("am here boss {}", code.getType());
-//               coverageService.addCoverageForNewCodes(code);
+////               coverageService.addCoverageForNewCodes(code);
+//
+//
 //            }
+
+            codeRepo.save(code);
 
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);

@@ -10,6 +10,7 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.StatusCode;
 import longbridge.utils.Verifiable;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.thymeleaf.context.Context;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static longbridge.models.UserAccountRestriction.RestrictionType;
 
@@ -91,8 +93,6 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private UserAccountRestrictionRepo userAccountRestrictionRepo;
 
-    @Autowired
-    private CoverageAdministrationService coverageService;
 
     @Value("${host.url}")
     private String hostUrl;
@@ -171,9 +171,8 @@ public class CorporateServiceImpl implements CorporateService {
         corporate.setCifids(corporateRequestDTO.getCifids());
         List<Account> accounts = accountService.addAccounts(new ArrayList<>(corporateRequestDTO.getAccounts()));
         corporate.setAccounts(accounts);
-
-        coverageService.addCoverageForNewCorporate(corporate);
         Corporate newCorporate = corporateRepo.save(corporate);
+
 
 
         List<CorporateUserDTO> authorizers = new ArrayList<>();
@@ -509,6 +508,8 @@ public class CorporateServiceImpl implements CorporateService {
             corporate.setEmail(corporateDTO.getEmail());
             corporate.setName(corporateDTO.getName());
             corporate.setAddress(corporateDTO.getAddress());
+            corporate.setCoverage(String.join(",",corporateDTO.getCoverageCodes()));
+//            corporate.setCoverage(corporateDTO.getCoverageCodes().stream().collect(Collectors.joining(",")));
             corporateRepo.save(corporate);
             return messageSource.getMessage("corporate.update.success", null, locale);
         } catch (Exception e) {
@@ -1066,18 +1067,44 @@ public class CorporateServiceImpl implements CorporateService {
         return transferRuleDTOs;
     }
 
+
+
     private CorporateDTO convertEntityToDTO(Corporate corporate) {
         CorporateDTO corporateDTO = modelMapper.map(corporate, CorporateDTO.class);
-        if (corporate.getCreatedOnDate() != null) {
-            corporateDTO.setCreatedOnDate(DateFormatter.format(corporate.getCreatedOnDate()));
+        String coverage = corporate.getCoverage();
+        if(StringUtils.isNotBlank(coverage)){
+            String[] coverages = coverage.split(",");
+            corporateDTO.setCoverageCodes(Arrays.asList(coverages));
+        }else{
+            corporateDTO.setCoverageCodes(Collections.emptyList());
         }
         corporateDTO.setStatus(corporate.getStatus());
         return corporateDTO;
     }
 
     private Corporate convertDTOToEntity(CorporateDTO corporateDTO) {
-        return modelMapper.map(corporateDTO, Corporate.class);
+        Corporate map=modelMapper.map(corporateDTO, Corporate.class);
+        map.setCoverage(String.join(",",corporateDTO.getCoverageCodes()));
+        return map;
     }
+
+
+//    private Corporate convertDTOToEntity(CorporateDTO corporateDTO) {
+//        return modelMapper.map(corporateDTO, Corporate.class);
+//    }
+//
+//    private CorporateDTO convertEntityToDTO(Corporate corporate) {
+//        CorporateDTO corporateDTO = modelMapper.map(corporate, CorporateDTO.class);
+//        if (corporate.getCreatedOnDate() != null) {
+//            corporateDTO.setCreatedOnDate(DateFormatter.format(corporate.getCreatedOnDate()));
+//        }
+//        corporateDTO.setStatus(corporate.getStatus());
+//        return corporateDTO;
+//    }
+
+
+//
+
 
     private List<CorporateDTO> convertEntitiesToDTOs(Iterable<Corporate> corporates) {
         List<CorporateDTO> corporateDTOList = new ArrayList<>();
@@ -1091,6 +1118,23 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return corporateDTOList;
     }
+
+//    @Override
+//    public boolean updateCorpCoverage(CorporateDTO corporate) throws InternetBankingException {
+//            boolean ok = false;
+//            try {
+//                if (corporate != null) {
+//                    Corporate corpCoverage = convertDTOToEntity(corporate);
+//                    this.corporateRepo.save(corpCoverage);
+//                    logger.info("USER SUCCESSFULLY UPDATED");
+//                    ok = true;
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return ok;
+//        }
+
 
     @Override
     public Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails) {
@@ -1117,5 +1161,7 @@ public class CorporateServiceImpl implements CorporateService {
 
         return transferPending || bulkTransferPending;
     }
+
+
 
 }

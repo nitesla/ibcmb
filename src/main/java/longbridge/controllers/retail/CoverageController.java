@@ -1,7 +1,9 @@
-package longbridge.controllers.corporate;
+package longbridge.controllers.retail;
+
 
 import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.services.CoverageService;
+import longbridge.services.RetailUserService;
 import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,39 +23,45 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/corporate/coverage")
-public class CorpCoverageController {
+@RequestMapping("/retail/coverage")
+public class CoverageController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+    @Autowired
+    private RetailUserService retailUserService;
     @Autowired
     private CoverageService coverageService;
 
     @GetMapping("/view/{customerId}/{coverageName}")
-    public String viewCoverageDetails(@PathVariable String customerId, @PathVariable String coverageName,  Model model) {
+    public String viewCoverageDetails(@PathVariable String customerId, @PathVariable String coverageName, Principal principal, Model model) {
 
         Map<String, List<String>> coverageDetails = coverageService.getCoverageDetails(coverageName, customerId);
 
+//        model.addAttribute("coverageHeaders",coverageDetails.keySet());
+//        List<String> coverageValues = coverageDetails.values().stream().map(values -> values.stream().collect(Collectors.joining("\n\n\n\n"))).collect(Collectors.toList());
         model.addAttribute("coverageDetails", coverageDetails);
         model.addAttribute("coverageName", coverageName.toUpperCase());
-        return "corp/coverage/index";
+        return "cust/coverage/index";
     }
+
 
 
 //    @GetMapping("/getViewData/{customerId}")
 //    @ResponseBody
-//    public DataTablesOutput<CoverageDetailsDTO> getViewDetails(@PathVariable String customerIds, String coverage, DataTablesInput input) {
+//    public DataTablesOutput<CoverageDetailsDTO> getViewDetails(@PathVariable String customerIds, String coverage, DataTablesInput input){
 //        Pageable pageable = DataTablesUtils.getPageable(input);
 //        Page<CoverageDetailsDTO> coverageDetailsDTO = null;
-//        coverageDetailsDTO = coverageService.getCoverages(coverage, customerIds, pageable);
+//        coverageDetailsDTO=coverageService.getCoverages(coverage,customerIds,pageable);
 //        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
 //        out.setDraw(input.getDraw());
 //        out.setData(coverageDetailsDTO.getContent());
 //        out.setRecordsFiltered(coverageDetailsDTO.getTotalElements());
 //        out.setRecordsTotal(coverageDetailsDTO.getTotalElements());
-//        logger.info("elem deposit {}", coverageDetailsDTO.getTotalElements());
 //        return out;
 //    }
+//
 }

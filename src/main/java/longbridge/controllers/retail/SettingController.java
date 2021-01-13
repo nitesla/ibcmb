@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import com.google.gson.Gson;
 import longbridge.api.ExchangeRate;
 import longbridge.dtos.*;
 import longbridge.exception.*;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -32,10 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +52,9 @@ public class SettingController {
 
     @Autowired
     private CodeService codeService;
+
+    @Autowired
+    private CoverageService coverageService;
 
     @Autowired
     private RetailUserService retailUserService;
@@ -84,6 +86,7 @@ public class SettingController {
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
 
+
     private final Locale locale = LocaleContextHolder.getLocale();
 
 
@@ -99,27 +102,20 @@ public class SettingController {
         logger.debug("Getting user {} accounts and balances", retailUser.getUserName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
 
+
+
+
+
         logger.debug("Retrieved {} account balance(s) for user {}", accountList.size(), retailUser.getUserName());
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
-        /* if (dto != null && dto.isEnabled()) {
-            String[] list = StringUtils.split(dto.getValue(), ",");
-            accountList = accountList
-                    .stream()
-                    .filter(i -> ArrayUtils.contains(list, i.getAccountType()))
-                    .collect(Collectors.toList());
-        }
 
-        accountList.stream().filter(Objects::nonNull)
-                .forEach(i -> {
-                            Code code = codeService.getByTypeAndCode("ACCOUNT_CLASS", i.getAccountType());
-                            if (code != null && code.getDescription() != null) {
-                                i.setAccountType(code.getDescription());
-                            }
-                        }
-                );*/
+
 
         List<String> loansAccountList = new ArrayList<>();
         List<String> fixedDepositDTOList = new ArrayList<>();
+//        List<String> coverageList = new ArrayList<>();
+
+
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -143,15 +139,18 @@ public class SettingController {
                     })
                     .collect(Collectors.toList());
         }
+
         List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
+//        List<RetailUserDTO> coverageDetails = coverageService.getCoverageDetails(coverageList);
+
         model.addAttribute("accountList", accountList);
         model.addAttribute("retId",retId);
         model.addAttribute("loanAccounts",loanAccounts);
         model.addAttribute("mailLoanDTO",new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
-
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
+//        model.addAttribute("coverageDetails", coverageDetails);
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
@@ -169,6 +168,7 @@ public class SettingController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<String> loansAccountList = new ArrayList<>();
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+
 
         SettingDTO dto = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         if (dto != null && dto.isEnabled()) {
@@ -212,14 +212,29 @@ public class SettingController {
         DataTablesOutput<Account> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(fixedDepositAccounts.getContent());
+        logger.info("Data passed to the front 2 : {}",fixedDepositAccounts.getContent());
         out.setRecordsFiltered(fixedDepositAccounts.getTotalElements());
         out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
         return out;
     }
 
 
+    @GetMapping("/dashboard/coverage")
+    public @ResponseBody DataTablesOutput<CoverageDetailsDTO> getCoverageDetails(DataTablesInput input) {
+
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CoverageDetailsDTO> coverageDetails = coverageService.getCoverages(retailUser.getCoverage(), retailUser.getCustomerId(), pageable);
 
 
+        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(coverageDetails.getContent());
+        out.setRecordsFiltered(coverageDetails.getTotalElements());
+        out.setRecordsTotal(coverageDetails.getTotalElements());
+        return out;
+    }
 
 
 

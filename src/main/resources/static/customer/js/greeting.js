@@ -42,6 +42,7 @@ function getCorporateGreetings() {
         url: "/corporate/account/greetings/current",
         type: "GET",
         success: function (result) {
+
            setGreetings(result);
         },
         error: function () {
@@ -194,7 +195,14 @@ function greetingUtility() {
 
     });
 
-    $("#parameter").on("click",function(){
+    // $("#parameter").on("click",function(){
+    //     var caretPos = $("#message")[0].selectionStart;
+    //     var existingText= $("#message").val();
+    //     var txtToAdd = $("#parameter").val();
+    //     $("#message").val(existingText.substring(0, caretPos) + txtToAdd + existingText.substring(caretPos) );
+    // });
+
+    $("#parameter").change(function(){
         var caretPos = $("#message")[0].selectionStart;
         var existingText= $("#message").val();
         var txtToAdd = $("#parameter").val();

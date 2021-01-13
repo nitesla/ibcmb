@@ -14,10 +14,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -172,7 +172,9 @@ public interface IntegrationService {
     RecurringPayment recurringPayment(RecurringPayment recurringPayment);
     List<BillerCategoryDTO> getBillerCategories();
     List<QuicktellerBankCodeDTO> getBankCodes();
-    CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
+
+    List<CoverageDetailsDTO> getCoverages(String coverageName, String customerId);
+    Map<String, List<String>> getCoverageDetails(String coverageName, String customerId);
     NeftResponse submitNeftTransfer();
 //    NeftTransfer checkNeftStatus();
     NeftResponseDTO submitInstantNeftTransfer(NeftTransfer neftTransfer);

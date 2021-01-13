@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/corp/dashboard'],['account coverage', '']];currentBar('account coverage');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['account coverage', '']];currentBar('account coverage');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -12,22 +12,29 @@
         </select>
     </div>
 
+
     <div class="col-xs-12 " >
         <div class=" no-pad-lef no-mt alert no-bd">
             <div class="">
                 <div class=" table-responsive">
                     <table class="table " id="coverage">
-
-
                         <caption style="font-size: large" th:text="${coverageName}"></caption>
-                        <tr th:each="coverageDetail : ${coverageDetails}">
+                        <!--Incomplete-->
+                        <!--<td th:each="coverageHeader : ${coverageHeaders}">-->
+                            <!--<th:block th:text="${coverageHeader}"></th:block>-->
+                        <!--</td>-->
+                        <!--<tr></tr>-->
+                        <!--<td th:each="coverageDetail : ${coverageDetails}">-->
+                            <!--<th:block th:text="${coverageDetail}"></th:block>-->
+                        <!--</td>-->
+                        <!--Incomplete-->
+
+                        <tr th:each ="coverageDetail : ${coverageDetails}">
                             <th th:text="${coverageDetail.key}"></th>
                             <td th:each="coverageValue : ${coverageDetail.value}">
                                 <th:block th:text="${coverageValue}"></th:block>
                             </td>
                         </tr>
-
-
                     </table>
                 </div>
 
