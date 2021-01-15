@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
-    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/bootstrap.min.css(name=#{menu.custom})}" rel="stylesheet"/>
     <link th:href="@{~/bank/font-awesome/font-awesome.min.css}" rel="stylesheet"/>
 </head>
 
