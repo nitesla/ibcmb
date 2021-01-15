@@ -31,7 +31,7 @@ public class CustomPostUpdateListener extends EnversPostUpdateEventListenerImpl 
                 super.onPostUpdate(event);
             }
         } catch (Exception e) {
-            logger.warn("!!! Application context not properly initialized , not auditing !!!", e);
+            logger.warn("!!! Application context not properly initialized , not auditing !!!");
         }
     }
 

@@ -22,7 +22,6 @@ import java.util.List;
 @Where(clause ="del_Flag='N'" )
 public class Permission extends AbstractEntity  implements PrettySerializer{
 
-    private Long id;
     private String name;
     private String description;
     private String code;
@@ -41,15 +40,6 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
         this.userType = userType;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

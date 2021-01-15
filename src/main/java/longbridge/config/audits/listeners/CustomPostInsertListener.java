@@ -36,7 +36,7 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
                 super.onPostInsert(event);
             }
         } catch (Exception e) {
-            logger.warn("!!! Application context not properly initialized , not auditing !!!", e);
+            logger.warn("!!! Application context not properly initialized , not auditing !!!");
         }
     }
 

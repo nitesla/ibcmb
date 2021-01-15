@@ -1,7 +1,9 @@
 package longbridge.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import groovy.lang.Lazy;
 import longbridge.models.*;
@@ -51,7 +53,7 @@ public class AppInit implements InitializingBean {
     @Value("${auto.load.file.code:codes.csv}")
     private String codesFile;
 
-    @Value("${auto.load.file.permission:permission.csv}")
+    @Value("${auto.load.file.permission:permissions.csv}")
     private String permissionsFile;
 
     @Value("${auto.load.file.settings:settings.csv}")
@@ -60,10 +62,12 @@ public class AppInit implements InitializingBean {
 
     @Transactional
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
 
         loadCodes();
         loadPermissions();
+
+        loadSettings();
         if (adminUserRepo.count() <= 0)
             createDefaultAdmin(createDefaultRole());
 
@@ -151,7 +155,13 @@ public class AppInit implements InitializingBean {
     public <T> List<T> loadObjectList(Class<T> type, String fileName) {
         try {
             CsvSchema bootstrapSchema = CsvSchema.emptySchema().withHeader();
-            CsvMapper mapper = new CsvMapper();
+            CsvMapper mapper = new CsvMapper().configure(CsvParser.Feature.ALLOW_TRAILING_COMMA, true)
+                    .configure(CsvParser.Feature.FAIL_ON_MISSING_COLUMNS, false)
+                    .configure(CsvParser.Feature.INSERT_NULLS_FOR_MISSING_COLUMNS, true)
+                    .configure(CsvParser.Feature.SKIP_EMPTY_LINES, true)
+                    .configure(CsvParser.Feature.TRIM_SPACES, true)
+                    .configure(CsvParser.Feature.WRAP_AS_ARRAY, false)
+                    .configure(CsvParser.Feature.IGNORE_TRAILING_UNMAPPABLE, true);
             File file = new ClassPathResource(fileName).getFile();
             MappingIterator<T> readValues =
                     mapper.readerWithTypedSchemaFor(type).with(bootstrapSchema).readValues(file);
