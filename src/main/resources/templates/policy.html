@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/bootstrap.css(name=#{menu.custom})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/media.css(name=#{menu.custom})}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
-    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.img})}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.img})}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
@@ -82,7 +82,7 @@
     <div class="browserupgrade">
 
         <div class="text-center">
-            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
+            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
 
             <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
@@ -97,7 +97,7 @@
             <div class="row hide-content-only">
                     <div class="top-bar col-xs-12">
                         <ul class="top-link">
-                            <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                            <li class="no-bd"><a  th:href="#{menu.bank.website}" target="_blank" th:text="#{menu.bank.name}" ></a>&nbsp;</li>
                         </ul>
                     </div>
                 </div>
@@ -106,8 +106,8 @@
         
                     <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
                         <div class="center" style="margin:0px auto;">
-                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:title="#{menu.bank.name}">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                             </a>
                         </div>
                     </div>
@@ -149,8 +149,8 @@
         
                     <div class="col-sm-3 hidden-xs no-pad-right">
                         <div class="center" style="margin:0px auto;">
-                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:title="#{menu.bank.name}">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                             </a>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                         <h3 style=''>Privacy Policy</h3>
                         <h3 style=''>We care about your privacy.</h3>
                         <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
-                                Coronation Merchant Bank Limited does not use any form of cookies to track your activities. We take appropriate measures and technology to safeguard your personal information. These processes are regularly updated in line with industry standards. Our employees are also trained to ensure that your personal information is protected from loss, unauthorized access, misuse, modification or disclosure.                        </p>   
+                                <span th:text="#{menu.bank.name}"></span> Limited does not use any form of cookies to track your activities. We take appropriate measures and technology to safeguard your personal information. These processes are regularly updated in line with industry standards. Our employees are also trained to ensure that your personal information is protected from loss, unauthorized access, misuse, modification or disclosure.                        </p>
                         <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
                                 www.coronationmb.com is a corporate website that treats your information as private and confidential. We are dedicated to protecting your privacy and providing you with the highest level of security at any point of interaction with us. All activities are considered private and are not recorded. www.coronationmb.com does not provide any user information to any third party
                         </p>   
@@ -179,9 +179,9 @@
                             <li>	General
                                 <ul class='terms'>
                                            
-                                   <li>1.1	This agreement governs your use of the Coronation Merchant Bank Limited information service (the "Service"), including Discussion Areas, which are operated by Coronation Merchant Bank Limited, (“Coronation MB”)  Additional terms and conditions of use applicable to specific areas of the Service may also be posted in such areas and, together with this agreement, govern your use of those areas. This agreement, together with any such additional term and conditions, are referred to as this "Agreement." </li>
+                                   <li>1.1	This agreement governs your use of the <span th:text="#{menu.bank.name}"></span> Limited information service (the "Service"), including Discussion Areas, which are operated by <span th:text="#{menu.bank.name}"></span> Limited, (“Coronation MB”)  Additional terms and conditions of use applicable to specific areas of the Service may also be posted in such areas and, together with this agreement, govern your use of those areas. This agreement, together with any such additional term and conditions, are referred to as this "Agreement." </li>
                                     
-                                    <li>1.2	Coronation Merchant Bank Limited reserves the right, in its discretion, to change or modify all or any part of this Agreement at any time, effective immediately upon notice published on the Service. Your continued use of the Service constitutes your binding acceptance of these terms and conditions, including any changes or modifications made by Coronation MB as permitted above. If at any time the terms and conditions of this Agreement are no longer acceptable to you, you should immediately cease all use of the Service.  </li>
+                                    <li>1.2	<span th:text="#{menu.bank.name}"></span> Limited reserves the right, in its discretion, to change or modify all or any part of this Agreement at any time, effective immediately upon notice published on the Service. Your continued use of the Service constitutes your binding acceptance of these terms and conditions, including any changes or modifications made by Coronation MB as permitted above. If at any time the terms and conditions of this Agreement are no longer acceptable to you, you should immediately cease all use of the Service.  </li>
                                     
                                 </ul>
                             </li>

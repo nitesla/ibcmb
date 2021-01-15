@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/bootstrap.css(name=#{menu.custom})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.img})}" type="image/x-icon">
-<link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.img})}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+<link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
     <title>Log in | <span th:text="#{menu.bank.name}" ></span>
     </title>
 </head>
@@ -13,7 +13,7 @@
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
-            <li><a href="https://www.coronationmb.com/" target="_blank" th:text="#{menu.bank.name}"></a></li>
+            <li><a  th:href="#{menu.bank.website}" target="_blank" th:text="#{menu.bank.name}"></a></li>
         </ul>
     </div>
     <nav class="navbar navbar-default">
@@ -45,7 +45,7 @@
         </div>
     </nav>
     <a href="#" class="logo">
-        <img th:src="@{~/customer/{name}/img/logo.png(name=#{menu.img})}" th:alt="#{menu.bank.name}" />
+        <img th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
     </a>
 </div>
 

@@ -17,7 +17,7 @@
                 <div class="carousel-inner">
 
                     <div class="item active">
-                        <img class="sliding" th:src="@{~/customer/{name}/img/cmb_bg.jpg(name=#{menu.img})}" th:alt="#{menu.bank.name}" style="width:100%;" />
+                        <img class="sliding" th:src="@{~/customer/{name}/img/cmb_bg.jpg(name=#{menu.custom})}" th:alt="#{menu.bank.name}" style="width:100%;" />
                         <div class="carousel-caption">
                             <!--<h3></h3>-->
                             <p>We are setting standards of excellence in the Nigerian banking sector and beyond</p>
@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="item">
-                        <img class="sliding" th:src="@{~/customer/{name}/img/st_bg.jpg(name=#{menu.img})}" alt="Token Unboarding" style="width:100%;" />
+                        <img class="sliding" th:src="@{~/customer/{name}/img/st_bg.jpg(name=#{menu.custom})}" alt="Token Unboarding" style="width:100%;" />
                         <!--<div class="carousel-caption">-->
                             <!--&lt;!&ndash;<h3></h3>&ndash;&gt;-->
                             <!--<p>Download our token to help authenticate your transactions. Complete your registration on-->
@@ -148,7 +148,7 @@
                                 </button>
                     <ul class="dropdown-menu contact-details">
                         <li>Send us an email</li>
-                        <li id='copy_email'>crc@coronationmb.com</li>
+                        <li id='copy_email' th:text="#{menu.bank.email}"></li>
                         <li id='copy' class="icontext pull-right"><button class="btn copy-btn btn-link required" data-clipboard-action="copy" data-clipboard-target="#copy_email">Copy email</button></li>
                     </ul>
                 </div>

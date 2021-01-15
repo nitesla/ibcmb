@@ -1,0 +1,16 @@
+.corpdropdown{
+    border: 2px solid #034f92;
+    background: #034f92;
+    border-radius: 10px;
+}
+.corpdropdown:hover {
+    background-color: blue;
+}
+.corpdropdown .corpDefault:hover{
+    background-color: #034f90;
+
+}.corpdropdown .corpCat{
+     background-color: #92a8d1;
+    color: white;
+
+}
