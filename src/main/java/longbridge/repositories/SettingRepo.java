@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface SettingRepo extends CommonRepo<Setting,Long>{
 
     Setting findByName(String name);
+
+    boolean existsByName(String name);
     
 }

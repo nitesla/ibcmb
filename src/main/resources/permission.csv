@@ -1,0 +1,27 @@
+category,description,name,type
+General,View Staff,VIEW_STAFF,ADMIN
+General,Role Admin,ROLE_ADMIN,ADMIN
+General ,Role Staff,ROLE_STAFF ,STAFF
+General ,Update Student,UPDATE_STUDENT,STAFF
+General,Change Staff,CHANGE_STAFF,STAFF
+General,Create Student,CREATE_STUDENT,STAFF
+General,View Staff Details,VIEW_STAFF_DETAILS,STAFF
+General,View Students,VIEW_STUDENTS,STAFF
+Menu,Classes Menu,CLASSES_MENU,STAFF
+Menu,Subjects Menu,SUBJECTS_MENU,STAFF
+Menu,Adm No Menu,ADM_NO_MENU,STAFF
+Menu,Assignment Menu,ASSIGNMENT_MENU,STAFF
+Menu,Assessment Menu,ASSESSMENT_MENU,STAFF
+Menu,Motor Menu,MOTOR_MENU,STAFF
+Menu,Payments Menu,PAYMENTS_MENU,STAFF
+Menu,Role Menu,ROLE_MENU,STAFF
+Menu,Timetable Menu,TIMETABLE_MENU,STAFF
+Menu,Grades Menu,GRADES_MENU,STAFF
+Menu,Parents Menu,PARENTS_MENU,STAFF
+Menu,Results Menu,RESULTS_MENU,STAFF
+Menu,Staff Menu,STAFF_MENU,STAFF
+Menu,Session Menu,SESSION_MENU,STAFF
+Menu,Students Menu,STUDENTS_MENU,STAFF
+Menu,Levels Menu,LEVELS_MENU,STAFF
+Menu,Discounts Menu,DISCOUNTS_MENU,STAFF
+Menu,Fees Menu,FEES_MENU,STAFF

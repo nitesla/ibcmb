@@ -1,0 +1,22 @@
+description,name,type
+Mr,MR,TITLE
+Mrs,MRS,TITLE
+Miss,MISS,TITLE
+Term,T,EVENTTYPE
+Mid-Term,M,EVENTTYPE
+Holiday,H,EVENTTYPE
+Teacher,T,OCCUPATION
+Male,M,GENDER
+Female,F,GENDER
+Precise,0.1,ACCURACY
+Round Off,0.5,ACCURACY
+Islam,I,RELIGION
+Christianity,C,RELIGION
+Togo,TG,COUNTRY
+Benin,BEN,COUNTRY
+Ghana,GH,COUNTRY
+Nigeria,NG,COUNTRY
+Single,S,MARITAL_STATUS
+Married,M,MARITAL_STATUS
+Assignment,A,NOTETYPE
+Lesson Note,LN,NOTETYPE
