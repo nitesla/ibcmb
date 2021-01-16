@@ -1,16 +1,21 @@
 package longbridge.repositories;
 
-import longbridge.config.audits.ModifiedEntityTypeEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import longbridge.audit.AuditBlob;
+import longbridge.audit.RevisionDTO;
+import longbridge.config.audits.ModifiedType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Longbridge on 10/26/2017.
- */
 @NoRepositoryBean
-public interface AuditRepo<T, ID extends Serializable> extends JpaRepository<T, ID> {
-    List<ModifiedEntityTypeEntity> searchModifiedEntity(String entityName, Class<?> clazz, String search);
+public interface AuditRepo {
+
+    Page<ModifiedType> findByRevision(Pageable details, RevisionDTO crit);
+
+    Object findRevision(Long entityId);
+
+    List<AuditBlob> getRevisionInfo(Long entityId);
+
 }

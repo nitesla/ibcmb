@@ -19,6 +19,7 @@ public class AuditConfig extends AbstractEntity
     @Column(name = "table_name")
     private String entityName;
     private String enabled;
+	private String fullName;
 	public String getEntityName() {
 		return entityName;
 	}
@@ -31,7 +32,15 @@ public class AuditConfig extends AbstractEntity
 	public void setEnabled(String enabled) {
 		this.enabled = enabled;
 	}
-	
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
 	@Override
 	public List<String> getDefaultSearchFields()
 	{

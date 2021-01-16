@@ -1,6 +1,5 @@
 package longbridge.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,6 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@ConditionalOnProperty(
+        value = "icon.boot",
+        havingValue = "true",
+        matchIfMissing = false)
 public class AppInit implements InitializingBean {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

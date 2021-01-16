@@ -104,12 +104,11 @@
                 </ul>
             </li>
 
-            <li sec:authorize="hasAuthority('VIEW_AUDIT')"><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('VIEW_AUDIT')"><a><i class="fa fa-history"></i>Audit<span
+                            class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
-                    <li><a href="/admin/audit/revised/entities">Revisions</a></li>
-                    <li><a href="/admin/audit/entity/index">Audit</a></li>
-                    <!--<li><a href="/admin/audit/revised/entity">Revision Entity</a></li>-->
+                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit/cfg">Configuration</a></li>
+                    <li><a href="/admin/audit">Audit</a></li>
                 </ul>
             </li>
 

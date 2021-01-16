@@ -118,7 +118,7 @@
 			"processing" : true,
             "serverSide" : true,
             "ajax" : {
-				url : "/admin/audit/all",
+				url : "/admin/audit/cfg/all",
 				"type" : "GET",
 				"data" : function(d) {
 					d.csearch = $('#pattern').val();
@@ -168,7 +168,7 @@
 
 
 	$(document).on("change","input[type=checkbox]", function(e) {
-    	var updateUrl = "/admin/audit";
+    	var updateUrl = "/admin/audit/cfg";
     	var cb = $(e.currentTarget);
     	var nm = cb.val();
     	var pk = cb.attr("data-pk");

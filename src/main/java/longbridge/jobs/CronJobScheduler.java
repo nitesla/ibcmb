@@ -1,7 +1,7 @@
 
 package longbridge.jobs;
 
-import longbridge.config.SpringContext;
+import longbridge.config.IbankingContext;
 import longbridge.services.CronJobService;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -28,7 +28,7 @@ public class CronJobScheduler {
          * JOB Triggers
          * @Shedules
          */
-        ApplicationContext context = SpringContext.getApplicationContext();
+        ApplicationContext context = IbankingContext.getApplicationContext();
         CronJobService cronJobService = context.getBean (CronJobService.class);
         Trigger oneTime = TriggerBuilder
                 .newTrigger()

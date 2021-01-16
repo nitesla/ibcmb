@@ -1,7 +1,6 @@
 package longbridge.jobs;
 
-import longbridge.config.SpringContext;
-import longbridge.exception.InternetBankingException;
+import longbridge.config.IbankingContext;
 import longbridge.services.CronJobService;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -22,7 +21,7 @@ public class RunningJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        ApplicationContext context = SpringContext.getApplicationContext();
+        ApplicationContext context = IbankingContext.getApplicationContext();
         CronJobService cronJobService = context.getBean (CronJobService.class);
 //        System.out.println("hourly job runing");
         try {
