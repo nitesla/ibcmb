@@ -7,8 +7,8 @@ import longbridge.exception.InternetBankingException;
 public interface TransferSettingsService {
 
 
-    public String adjustTransferFee(TransferFeeAdjustmentDTO tfaDTO) throws InternetBankingException;
-    public String updateTransferLimit(TransferSetLimitDTO tslDTO)throws InternetBankingException;
+    String adjustTransferFee(TransferFeeAdjustmentDTO tfaDTO) throws InternetBankingException;
+    String updateTransferLimit(TransferSetLimitDTO tslDTO)throws InternetBankingException;
 
 
 }

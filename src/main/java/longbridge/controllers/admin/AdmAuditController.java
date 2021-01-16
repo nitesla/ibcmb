@@ -5,7 +5,6 @@ import longbridge.audit.AuditBlob;
 import longbridge.audit.AuditId;
 import longbridge.audit.RevisionDTO;
 import longbridge.config.audits.ModifiedType;
-import longbridge.config.audits.ModifiedType;
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.DataTablesUtils;

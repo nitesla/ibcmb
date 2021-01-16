@@ -61,7 +61,6 @@ package longbridge.controllers.operations;
 
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.CodeDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;

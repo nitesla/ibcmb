@@ -18,7 +18,7 @@ build-job:
     - 'mvn $MAVEN_CLI_OPTS  clean package'
   artifacts:
     paths:
-      - target/ibcmb.war
+      - target/*.war
   only:
     - cmb_final_dev2
 

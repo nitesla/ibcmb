@@ -311,7 +311,7 @@ public class  AdminUserController {
             SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
-                tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+                tokenAuth = (setting.getValue().equalsIgnoreCase("yes"));
             }
 
             if (tokenAuth) {

@@ -198,7 +198,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
     @Override
     public Boolean refCodeExists(String refCode) {
         BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(refCode);
-        return (bulkTransfer != null) ? true : false;
+        return bulkTransfer != null;
     }
 
     @Override

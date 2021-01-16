@@ -1,6 +1,7 @@
 package longbridge.trace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,8 +13,7 @@ public class TraceStore {
 
 	public void add(String... trace){
 		if(this.trace != null){
-			for(String t:trace)
-				this.trace.add(t);
+            this.trace.addAll(Arrays.asList(trace));
 		}
 
 	}

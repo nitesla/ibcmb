@@ -3,7 +3,6 @@ package longbridge.repositories;
 import longbridge.audit.AuditBlob;
 import longbridge.audit.RevisionDTO;
 import longbridge.config.audits.ModifiedType;
-import longbridge.config.audits.ModifiedType;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.AuditConfigService;
 import org.apache.commons.lang3.StringUtils;

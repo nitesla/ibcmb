@@ -25,10 +25,10 @@ public interface CorpCustomDutyService {
     CustomTransactionStatus updatePayamentStatus(Long id);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount);
+    boolean isAccountBalanceEnough(String acctNumber, BigDecimal amount);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public String saveCustomPaymentRequestForAuthorization(CorpPaymentRequest corpPaymentRequest);
+    String saveCustomPaymentRequestForAuthorization(CorpPaymentRequest corpPaymentRequest);
 
     String addAuthorization(CorpTransReqEntry transReqEntry, Principal principal);
 
@@ -62,7 +62,7 @@ public interface CorpCustomDutyService {
     Page<CorpPaymentRequest> getEntities(Pageable pageable);
 
     @PreAuthorize("hasAuthority('VIEW_CUSTOM_DUTY')")
-    public String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest,Principal principal);
+    String opsMakeCustomDutyPayment(CorpPaymentRequest corpPaymentRequest, Principal principal);
 
     List<CorpPaymentRequest> updatePendingStatus();
 

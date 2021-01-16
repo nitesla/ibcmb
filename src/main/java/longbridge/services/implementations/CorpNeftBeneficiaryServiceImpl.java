@@ -80,7 +80,7 @@ public class CorpNeftBeneficiaryServiceImpl implements CorpNeftBeneficiaryServic
     @Override
     public String deleteCorpNeftBeneficiary(Long beneficiaryId) {
         try {
-            this.corpNeftBeneficiaryRepo.deleteById(beneficiaryId);;
+            this.corpNeftBeneficiaryRepo.deleteById(beneficiaryId);
             logger.info("Beneficiary with Id {} deleted", beneficiaryId);
             return messageSource.getMessage("beneficiary.delete.success",null,locale);
         } catch (Exception e) {

@@ -445,7 +445,6 @@ public class AccountServiceImpl implements AccountService {
                     i.setAccountBalance(availbalance);
                     i.setLedgerBalance(ledBalance);
                     i.setAccountType(i.getSchemeType());
-                    logger.info("Acc",i.getAccountType());
                     accountsForDebitAndCredit.add(i);
 
 

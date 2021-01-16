@@ -794,8 +794,7 @@ public class OpsCorporateController {
     }
 
     private Set<String> getUniqueCifids(String[] cifids) {
-        Set<String> selectedCifids = new HashSet<>();
-        selectedCifids.addAll(Arrays.asList(cifids));
+        Set<String> selectedCifids = new HashSet<>(Arrays.asList(cifids));
         logger.debug("Unique Customer cifids size " + selectedCifids.size());
 
         return selectedCifids;

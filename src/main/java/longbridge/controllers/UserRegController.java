@@ -4,7 +4,6 @@ import longbridge.api.AccountDetails;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.RegistrationForm;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;

@@ -84,7 +84,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public boolean userExists(String username) {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
-        return (opsUser != null) ? true : false;
+        return opsUser != null;
 
     }
 

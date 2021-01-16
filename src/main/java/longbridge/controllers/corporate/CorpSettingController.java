@@ -303,7 +303,7 @@ public class CorpSettingController {
             SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
-                tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+                tokenAuth = (setting.getValue().equalsIgnoreCase("YES"));
             }
 
             if (tokenAuth) {
