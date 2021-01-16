@@ -10,7 +10,7 @@ build_app:
     paths:
     - target/ibcmb.war
 
-deploy:stand:
+deploy:
   stage: deploy
   dependencies:
     - build_app
