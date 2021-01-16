@@ -6,9 +6,6 @@ build_app:
   stage: build
   script: 
   - mvn clean package
-  artifacts:
-    paths:
-    - target/ibcmb.war
 
 deploy:
   stage: deploy
@@ -17,7 +14,7 @@ deploy:
   script:
     - mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT$COMMIT_TIME
     - mkdir /opt/tomcat/latest/webapps/ROOT
-    - ./cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
+    - cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
     - jar -xf ibcmb.war
 only:
     - cmb_final_dev2
