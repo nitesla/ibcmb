@@ -15,10 +15,10 @@ build-job:
   tags:
     - ibcmb
   script:
-    - mvn $MAVEN_CLI_OPTS  clean package
-    artifacts:
-      paths:
-        - target/*.war
+    - 'mvn $MAVEN_CLI_OPTS  clean package'
+  artifacts:
+    paths:
+      - target/*.war
   only:
     - cmb_final_dev2
 
