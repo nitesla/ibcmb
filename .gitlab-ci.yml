@@ -12,7 +12,7 @@ build-job:
   tags:
     - ibcmb
   script:
-    - mvn clean package
+    - mvn -DskipTests=true clean package
   only:
     - cmb_final_dev2
 
@@ -24,7 +24,7 @@ deploy-job:
   script:
     - sudo mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID}
     - sudo mkdir /opt/tomcat/latest/webapps/ROOT
-    - sudo cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
+    - sudo cp  ${PWD}/target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
     - sudo jar -xf ibcmb.war
   only:
   - cmb_final_dev2
