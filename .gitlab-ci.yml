@@ -9,6 +9,8 @@ stages:
 
 build-job:
   stage: build
+  tags:
+    - ibcmb
   script:
     - mvn clean package
   only:
@@ -17,6 +19,8 @@ build-job:
 
 deploy-job:
   stage: deploy
+  tags:
+    - ibcmb
   script:
     - mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT$COMMIT_TIME
     - mkdir /opt/tomcat/latest/webapps/ROOT
