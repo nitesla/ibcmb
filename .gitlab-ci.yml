@@ -1,23 +1,32 @@
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/README.html#stages
+#
 stages:
   - build
   - deploy
 
-build_app:
+build-job:
   stage: build
+  tags:
+    - ibcmb
   script:
-  - mvn clean package
-  artifacts:
-    paths:
-    - target/ibcmb.war
+    - mvn clean package
+  only:
+    - cmb_final_dev2
 
-deploy:
+
+deploy-job:
   stage: deploy
-  dependencies:
-    - build_app
+  tags:
+    - ibcmb
   script:
     - mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT$COMMIT_TIME
     - mkdir /opt/tomcat/latest/webapps/ROOT
-    - ./cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
+    - cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
     - jar -xf ibcmb.war
-only:
-    - cmb_final_dev2
+  only:
+  - cmb_final_dev2
+
+
