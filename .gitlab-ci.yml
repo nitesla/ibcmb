@@ -4,7 +4,7 @@ stages:
 
 build_app:
   stage: build
-  script: 
+  script:
   - mvn clean package
   artifacts:
     paths:
