@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -19,6 +20,10 @@ import java.util.Set;
  */
 
 @Component
+@ConditionalOnProperty(
+        value = "icon.boot",
+        havingValue = "true",
+        matchIfMissing = false)
 public class MakerCheckerInitializer implements InitializingBean {
 
     @Autowired
@@ -34,11 +39,12 @@ public class MakerCheckerInitializer implements InitializingBean {
 
 
     private void pathScan() {
-        String pkg = "longbridge.services";
+        String pkg = "longbridge";
 
         Set<Method> methodsAnnotatedWith = new Reflections(pkg, new MethodAnnotationsScanner()).getMethodsAnnotatedWith(Verifiable.class);
-        methodsAnnotatedWith.stream().map(this::create).
-        peek(a -> System.out.println("@@@---" + a)).forEach(this::checkAndCreate);
+        methodsAnnotatedWith.stream().map(this::create)
+//                .peek(a -> System.out.println("@@@---" + a))
+                .forEach(this::checkAndCreate);
     }
 
     private void checkAndCreate(MakerChecker makerChecker) {
