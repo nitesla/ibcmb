@@ -1,12 +1,7 @@
 stages:
   - build
-  - deploy
-
 build_app:
   stage: build
-  script: 
-  - mvn clean package
-
-
+  script: mvn clean package
 only:
     - cmb_final_dev2
