@@ -22,10 +22,10 @@ deploy-job:
   tags:
     - ibcmb
   script:
-    - mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT${CI_COMMIT_TIMESTAMP}
-    - mkdir /opt/tomcat/latest/webapps/ROOT
-    - cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
-    - jar -xf ibcmb.war
+    - sudo mv -R /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID}
+    - sudo mkdir /opt/tomcat/latest/webapps/ROOT
+    - sudo cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
+    - sudo jar -xf ibcmb.war
   only:
   - cmb_final_dev2
 
