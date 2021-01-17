@@ -20,7 +20,7 @@ build-job:
     paths:
       - target/*.war
   only:
-    - cmb_final_dev2
+    - icon_deploy
 
 
 deploy-job:
@@ -28,12 +28,13 @@ deploy-job:
   tags:
     - ibcmb
   script:
-    - sudo mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID} || echo 'No ROOT to backup'
+    - sudo mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
     - sudo mkdir /opt/tomcat/latest/webapps/ROOT
     - sudo unzip target/ibcmb.war -d /opt/tomcat/latest/webapps/ROOT
+    - sudo systemctl start tomcat || sudo systemctl restart tomcat
   dependencies:
     - build-job
   only:
-  - cmb_final_dev2
+  - icon_deploy
 
 
