@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/bootstrap.css(name=#{menu.custom})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/media.css(name=#{menu.custom})}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
@@ -82,7 +82,7 @@
     <div class="browserupgrade">
 
         <div class="text-center">
-            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+            <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
 
             <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
@@ -97,7 +97,7 @@
             <div class="row hide-content-only">
                     <div class="top-bar col-xs-12">
                         <ul class="top-link">
-                            <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                            <li class="no-bd"><a  th:href="#{menu.bank.website}" target="_blank"  th:text="#{menu.bank.name}"></a>&nbsp;</li>
                         </ul>
                     </div>
                 </div>
@@ -106,8 +106,8 @@
         
                     <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
                         <div class="center" style="margin:0px auto;">
-                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:text="#{menu.bank.name}" >
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                             </a>
                         </div>
                     </div>
@@ -149,8 +149,8 @@
         
                     <div class="col-sm-3 hidden-xs no-pad-right">
                         <div class="center" style="margin:0px auto;">
-                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                            <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:text="#{menu.bank.name}">
+                                <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                             </a>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                     <div class='alert info-box ' style='padding:30px !important;background:#f1f1f1'>
                         <h3 style=''>Terms and Conditions</h3>
                         <p class='text-bold' style='font-size:14px;margin-bottom:10px;line-height:25px;'>
-                            The following Terms and Conditions apply to all services provided by Coronation Merchant Bank Ltd. (“Coronation MB”), which is accessed by a User through the internet, phone or any hand-held or computer device.
+                            The following Terms and Conditions apply to all services provided by <span th:text="#{menu.bank.name}"></span> Ltd. (“Coronation MB”), which is accessed by a User through the internet, phone or any hand-held or computer device.
                             In these Terms, “we”, “us” or “our” refers to Coronation MB and its successors, agents and assigns, while “you”, “your” refers to you and/or any person who subscribes for, uses or authorizes the use of the Service.
                             By signing at the end of these Terms and Conditions, you agree that you have received, read, understood and agree to be bound by the terms contained herein, and subsequent amendments thereto, as well as the laws, rules, and regulations now existing or which may hereafter be enacted, issued or enforced. You also agree that you shall use the Services in accordance with these Terms. If you do not agree with the terms contained herein, DO NOT ACCESS THE SERVICE.
                         </p>   
@@ -172,7 +172,7 @@
                                 <ul class='terms'>
                                     <li>1.1.	“Account” means the Bank account held or to be held with Coronation MB, the number of which is specified in the application form for a Service and/or communicated to the User, as appropriate.</li>
                                     <li>1.2.	"Accesscode, Passcode, Username and Password” means the enabling code with which you access the system and which is known to you only. </li>
-                                    <li>1.3.	“Bank” or “Coronation MB” means Coronation Merchant Bank Ltd., a banking institution incorporated in Nigeria and having its registered office at 10 Amodu Ojikutu Street, Victoria Island, Lagos Nigeria. </li>
+                                    <li>1.3.	“Bank” or “Coronation MB” means <span th:text="#{menu.bank.name}"></span> Ltd., a banking institution incorporated in Nigeria and having its registered office at 10 Amodu Ojikutu Street, Victoria Island, Lagos Nigeria. </li>
                                     <li>1.4.	"Customers" means a customer of the Bank who has or operates an account with the bank and is named in the application form but where two individuals are named, either or both of them are customers.  </li>
                                     <li>1.5.	“Transaction” means any banking transaction made via the Service.</li>
                                     <li>1.6.	“Service” means any banking service provided by the Bank and accessed or used by a User through the internet, and/or a phone and/or a computer and/or any other mobile, hand-held or computer device or any type of card used through an electronic channel or payment platform. </li>

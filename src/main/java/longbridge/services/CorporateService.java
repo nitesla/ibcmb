@@ -90,7 +90,7 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails);
 
-    public boolean corporateExists(String customerId);
+    boolean corporateExists(String customerId);
 
 
     /**

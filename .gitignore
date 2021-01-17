@@ -31,12 +31,10 @@ nbdist/
 
 ##Application logs
 *.log
+*.log.*
 logs/
 application.log
 .DS_Store
 application-local.properties
 *.jpage
 ajcore.20200723.144145.009.txt
-.velocity.log
-.velocity.log.1
-velocity.log.1

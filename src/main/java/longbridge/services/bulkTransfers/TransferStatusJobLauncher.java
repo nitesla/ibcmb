@@ -70,7 +70,7 @@ public class TransferStatusJobLauncher {
                         i -> {
                             LOGGER.info("status {}",i.getStatus());
 
-                            if ((i.getStatus() != "UNPAID") || (i.getStatus() != "PAID") ) {
+                            if ((!i.getStatus().equals("UNPAID")) || (!i.getStatus().equals("PAID")) ) {
 
                                 try {
                                     String batch = "" + i.getRefCode();

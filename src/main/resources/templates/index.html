@@ -17,7 +17,7 @@
                 <div class="carousel-inner">
 
                     <div class="item active">
-                        <img class="sliding" th:src="@{~/customer/img/cmb_bg.jpg}" alt="Coronation Merchant Bank" style="width:100%;" />
+                        <img class="sliding" th:src="@{~/customer/{name}/img/cmb_bg.jpg(name=#{menu.custom})}" th:alt="#{menu.bank.name}" style="width:100%;" />
                         <div class="carousel-caption">
                             <!--<h3></h3>-->
                             <p>We are setting standards of excellence in the Nigerian banking sector and beyond</p>
@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="item">
-                        <img class="sliding" th:src="@{~/customer/img/st_bg.jpg}" alt="Token Unboarding" style="width:100%;" />
+                        <img class="sliding" th:src="@{~/customer/{name}/img/st_bg.jpg(name=#{menu.custom})}" alt="Token Unboarding" style="width:100%;" />
                         <!--<div class="carousel-caption">-->
                             <!--&lt;!&ndash;<h3></h3>&ndash;&gt;-->
                             <!--<p>Download our token to help authenticate your transactions. Complete your registration on-->
@@ -59,8 +59,8 @@
 
                 <div>
                     <h3 class="home-heading">Welcome to Internet Banking</h3>
-                    <p class="home-para">We are setting standards of excellence in the Nigerian banking sector and beyond. Coronation Merchant Bank Internet banking platform lets you bank whenever and wherever you are! Our clients retain focus on achieving their business objectives,
-                        confident that our financial solutions are World-class. Coronation Merchant Bank Internet banking is fast, efficient, and secure.</p>
+                    <p class="home-para">We are setting standards of excellence in the Nigerian banking sector and beyond. <span th:text="#{menu.bank.name}" ></span> Internet banking platform lets you bank whenever and wherever you are! Our clients retain focus on achieving their business objectives,
+                        confident that our financial solutions are World-class. <span th:text="#{menu.bank.name}" ></span> Internet banking is fast, efficient, and secure.</p>
                     <br/><br/>
 
                     <div class="dropdown margin-bottom">
@@ -148,7 +148,7 @@
                                 </button>
                     <ul class="dropdown-menu contact-details">
                         <li>Send us an email</li>
-                        <li id='copy_email'>crc@coronationmb.com</li>
+                        <li id='copy_email' th:text="#{menu.bank.email}"></li>
                         <li id='copy' class="icontext pull-right"><button class="btn copy-btn btn-link required" data-clipboard-action="copy" data-clipboard-target="#copy_email">Copy email</button></li>
                     </ul>
                 </div>

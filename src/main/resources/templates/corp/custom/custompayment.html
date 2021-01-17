@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/bootstrap.css(name=#{menu.custom})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
     <title>Custom Duty Payment</title>
 </head>
 <body onload="javascript:var bread = [['Home', '/corporate/custom'],['Custom Payment', '/corporate/custom']];currentBar('Custom Payment');breadCrumb(bread)">

@@ -8,14 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/jquery-ui.css(name=#{menu.custom})}"/>
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
 
 
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/bootstrap.css(name=#{menu.custom})}"/>
 
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/select.bootstrap.css(name=#{menu.custom})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css"
           th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
@@ -23,12 +23,12 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/media.css(name=#{menu.custom})}"/>
 
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
-    <title>Coronation Merchant Bank</title>
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
+    <title th:text="#{menu.bank.name}" ></title>
 
 </head>
 
@@ -55,7 +55,7 @@
                 <div class="top-bar col-xs-12">
                     <ul class="top-link">
                         <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;
+                        <li><a  th:href="#{menu.bank.website}" target="_blank" th:text="#{menu.bank.name}"></a>&nbsp;
                         </li>
                         <li><a target="_blank" th:href="@{/faqs}">Help</a>&nbsp;</li>
                     </ul>
@@ -148,7 +148,7 @@
                 <div class="col-xs-12 col-sm-3 no-pad-right ">
                     <a href="/retail/dashboard" class="">
                         <img class='img img-responsive pull-right' style="height:70px"
-                             th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank"/>
+                             th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}"/>
                     </a>
                 </div>
             </div>
@@ -252,7 +252,7 @@
                                             th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own
                                         account transfers </a></li>
                                     <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a
-                                            th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer
+                                            th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.within}">Transfer
                                         to Coronation account </a></li>
                                     <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a
                                             th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer
@@ -515,8 +515,8 @@
 
                         <!--image placeholdder-->
                         <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
-                            <img style="max-height:250px" class="center img-responsive" alt="Coronation Merchant Bank"
-                                 src="/customer/img/asset.jpg"/>
+                            <img style="max-height:250px" class="center img-responsive" th:alt="#{menu.bank.name}"
+                                 th:src="@{~/customer/{name}/img/asset.jpg(name=#{menu.custom})}"/>
                         </div>
                     </div>
                 </div>
@@ -536,9 +536,9 @@
                         <li><a href="/terms" target="_blank">Terms &amp; Conditions</a></li>
                     </ul>
 
-                </div>
+                </div> 
                 <div class="col-sm-6  col-xs-12  footer-mobile  no-pad-left no-pad-right">
-                    <p class=' '> &copy; 2017 - Coronation Merchant Bank.<span
+                    <p class=' '> &copy; 2017 - <span th:text="#{menu.bank.name}"></span>.<span
                             class="hidden-xs"> All rights reserved</span></p>
                     <p class="visible-xs">All rights reserved</p>
 

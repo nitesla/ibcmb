@@ -46,7 +46,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
     @Modifying(clearAutomatically=true)
     @Query(value="update retail_user set feed_back_status=?1 where id=?2",nativeQuery=true)
-    public void updateFeedBackStatus(String status,Long id);
+    void updateFeedBackStatus(String status, Long id);
 
 
     @Query("select id from RetailUser ")

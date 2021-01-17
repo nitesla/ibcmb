@@ -1,0 +1,41 @@
+name,value,enabled,type,description
+INTERNET_DOMAIN_NAME,example.com,true,Organization,The organization's Internet domain name
+VALIDATE_CORPORATE_EMAIL,Yes,false,Organization,Whether to validate that Admin or Ops user is created with a corporate email
+DEF_ENTRUST_RET_GRP,Retail_Group,true,Entrust,Default retail user entrust group
+DEF_ENTRUST_CORP_GRP,Corporate_Group,true,Entrust,Default Corporate Entrust Group
+DEF_ENTRUST_OPS_GRP,Coronation Group,true,Entrust,Default Operations Entrust Group
+DEF_ENTRUST_ADM_GRP,Coronation Group,true,Entrust,Default Admin Entrust Group
+ENABLE_CRON_JOB,Yes,false,Batch Job,Start the batch job
+DEFAULT_RETAIL_ROLE,RETAIL,true,Access,Role for retail users at creation
+RETRY_FAILED_TRANSFER,Yes,true,Transfer,Allow a failed transfer to be tried again
+LOGIN_ALERT,YES,true,Login,Enable login alerts
+ACCOUNT_FOR_DEBIT,"SBA,ODA,CAA",true,Account,Accounts that cannot be deleted
+ADMIN_IP_WHITELIST,,false,Admin Policy,The Range of IP addresses required for Admin Access
+PASSWORD_REUSE,3,true,Password Policy,Number of password changes before a password can be reused
+PASSWORD_AUTO_RESET,1,true,Password Policy,The number of days before the system prompts the user to change password
+SESSION_TIMEOUT,120,true,Session ,The time in minutes before a user is automatically logged out
+LOCK_OUT_DURATION,5,true,Login,The time in minutes during which a user will wait to retry login after maximum failed login attempts
+MAX_FAILED_LOGIN_TRIALS,3,true,Login,The number of times a login attempt fails before the system blocks further login
+ADMIN_USER_DEACTIVATION,60,true,Login,The number of days  after last login an admin console user will be automatically deactivated
+ENABLE_OPS_2FA,YES,false,Authentication,Whether to enable Two-Factor authentication for Operations users
+ENABLE_ENTRUST_CREATION,YES,false,Authentication,Whether to create users on Entrust
+ENABLE_ENTRUST_DELETION,YES,true,Authentication,Whether to delete users on Entrust
+ENABLE_ADMIN_2FA,Yes,false,Authentication,Whether to enable Two-Factor authentication for Admin users
+CUSTOMER_CARE_EMAIL,,true,Customer Care,Customer care Email address
+ACCOUNT_BALANCE_VALIDATION,YES,true,Account,Whether to validate a transfer agianst the account balance
+ENABLE_RETAIL_2FA,,true,Authentication,Whether to enable Two-Factor authentication for Retail users
+ENABLE_CORPORATE_2FA,,true,Authentication,Whether to enable Two-Factor authentication for Corporate users
+MIN_AUTHORIZER_LEVEL,1,true,Corporate,Minimum number of authorizer levels required to for a transaction rule
+PASSWORD_MIN_LENGTH,6,true,Password Policy,Minimum length of passsword required
+PASSWORD_SPECIAL_CHARS,@#$&!+,true,Password Policy,Special characters allowed in password
+PASSWORD_NUM_DIGITS,1,true,Password Policy,Minimum number of digits required in password
+PASSWORD_EXPIRY,2,true,Password Policy,The validity days of a new password entered by the user 
+PASSWORD_NUM_SPECIAL_CHARS,1,true,Password Policy,Number of special characters required
+SOLE_CORPORATE_ROLE,Default Corporate,true,Access,Default role for corporate user
+ENABLE_UNIQUE_ACCOUNTS,,true,Account,Whether to enable unique accounts on creation of corporate entities
+TRANSACTIONAL_ACCOUNTS,"SBA,ODA,CAA",true,Account,Transactional Accounts
+TRANS_HISTORY_RANGE,30,true,Transaction History,Set Transaction History Date Range Limit
+ADMIN_DEACTIVATION,60,true,Password Policy,The number of days after last login for an admin user to be deactivated
+STOP-CHEQUE,1050,true,Service Request,Charge to be displayed for stop cheque request
+DRAFT-REQUEST,210,true,Service Request,Charge to be displayed for draft request
+CURRENT_LENDING_RATE,15,true,loan,Lending Rate

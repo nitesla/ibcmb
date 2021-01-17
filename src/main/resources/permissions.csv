@@ -1,0 +1,310 @@
+name,code,userType,category,description
+Retail  Local Transfer Report ,LOCAL_TRAN_RET,ADMIN,REPORT,Generate Local Transfer Report for Retail
+Report test,LOCAL_TRAN_RET2,ADMIN,REPORT,Test Report
+Report test,LOCAL_TRAN_RET2,OPERATIONS,REPORT,Test Report
+Generate Report,GENERATE_REPORT,OPERATIONS,,Generate Report
+Add Report,ADD_REPORT,ADMIN,,Add new Report
+Edit report Details,EDIT_REPORT,ADMIN,,Edit report Details
+Delete Report,DELETE_REPORT,ADMIN,,Delete Report
+MANAGE INVESTMENT,MANAGE_INVESTMENT,RETAIL,,Manage Investment such as fixed deposit...
+BOOK_FIX_DEPOSIT,BOOK_FIX_DEPOSIT,RETAIL,BOOK FIX DEPOSIT,BOOK_FIX_DEPOSIT
+Feedback Status,FEEDBACK_STATUS,RETAIL,,Set Retail Menu for Feedback status
+View Transactions,VIEW_TRANSACTIONS,OPERATIONS,,For Ops User to view transactions
+Feedback Status,FEEDBACK_STATUS,CORPORATE,,Set Cororate Menu for Feedback status
+Feedback Summary,FEEDBACK_SUMMARY,ADMIN,,To enable view of feedback Summary
+Synchronize Token,RET_SYNC_TOKEN,RETAIL,,Retail Token Synchronization menu
+Synchronize Token,RET_SYNC_TOKEN,CORPORATE,,Corporate Token synchronization menu
+CUSTOM DUTY,CUSTOM_DUTY,CORPORATE,,
+Rate Maintenace,MAINTAIN_RATE,OPERATIONS,,To enable menu view for Rate maintenace
+MANAGE_INVESTMENT,MANAGE_INVESTMENT,CORPORATE,,
+Manage service Request,MANAGE_SERV_REQ,RETAIL,,Manage service Request menu
+Cheque Reguest,REQUEST-CHEQUE,RETAIL,,to enable menu for cheque request
+Stop Cheque,STOP-CHEQUE,RETAIL,,to enable menu for stop cheque
+Cheque Request,REQUEST-CHEQUE,CORPORATE,,to enable menu for cheque request
+Stop Cheque,STOP-CHEQUE,CORPORATE,,to enable menu for stop cheque
+Manage service Request,MANAGE_SERV_REQ,RETAIL,,To manage service request
+Registered users,REPORT_REGISTERED_USERS,ADMIN,REPORT,Registered Users
+Customer Feedback,CUSTOMER_FEEDBACK,OPERATIONS,REPORT,Customer Feedback
+Confirm Cheque,CONFIRM-CHEQUE,RETAIL,,
+Confirm Cheque,CONFIRM-CHEQUE,CORPORATE,,
+Draft request,DRAFT-REQUEST,RETAIL,,
+Draft request,DRAFT-REQUEST,CORPORATE,,
+Link BVN TO Account,LINK-BVN,RETAIL,,
+Link BVN TO Account,LINK-BVN,CORPORATE,,
+Add Greeting ,ADD_GREETING,ADMIN,,For Adding Greetings
+Update Greeting,UPDATE_GREETING,ADMIN,,To update a Greeting
+Delete Greeting,DELETE_GREETING,ADMIN,,For deleting greeting
+Add Investment rate,ADD_RATE,OPERATIONS,,For adding investment rate
+Update Investment Rate,UPDATE_RATE,OPERATIONS,,For updating rate
+Delete Invest rate,DELETE_RATE,OPERATIONS,,For deleting investment rate
+view custom duty,VIEW_CUSTOM_DUTY,OPERATIONS,,for  custom duty
+View Custom Duty,VIEW_CUSTOM_DUTY,OPERATIONS,,
+Cheque Upload,UPLOAD-CHEQUE,CORPORATE,,To enable Menu for cheque Upload
+TESTO,TESTO,CORPORATE,,TESTO
+test1,test,CORPORATE,,testing
+update corp user,UPDATE_CORPORATE_USER,RETAIL,corporate,update user
+Get  Financial Institution,GET_FIN_INST,CORPORATE,Get Financial,Financial Institution
+Get Cheques,GET_CHEQUES,CORPORATE,Corporate,To get uploaded cheques
+Get corporate user,GET_CORPORATE_USER,CORPORATE,corporate,Get corporate user
+Get corporate role,GET_CORPORATE_ROLE,CORPORATE,corporate,To get corporate role
+Add corporate role,ADD_CORPORATE_ROLE,CORPORATE,corporate,To add corporate role
+update corporate role,UPDATE_CORPORATE_ROLE,CORPORATE,corporate,To update corporate role
+Maker Checker Config,MAKER_CHECKER_CONFIG,ADMIN,Admin,To enable maker checker
+Reset Operators Password,RESET_OPS_PASSWORD,ADMIN,Admin,To enable reset of ops password
+Bulk Transfer for Retail,BULK_TRANSFER,RETAIL,,Bulk Transfer for retail
+Get Financial Institution,GET_FIN_INST,RETAIL,,Get Financial Institution
+Get Financial Institution,GET_FIN_INST,CORPORATE,,Get Financial Institution
+Get Financial Institution,GET_FIN_INST,RETAIL,,Get Financial Institution
+Get Financial Institution,GET_FIN_INST,RETAIL,,Get Financial Institution
+Make Transfer,MAKE_TRANSFER,CORPORATE,,Make Transfer
+Make Transfer,MAKE_TRANSFER,RETAIL,,Make Transfer
+International Transfer,INTERNATIONAL_TRANSFER,CORPORATE,,International Transfer
+International Transfer,INTERNATIONAL_TRANSFER,RETAIL,,International Transfer
+Manage bill payment,MANAGE_BILL_PAYMENT,RETAIL,,Perform Bill Payment
+Manage bill payment,MANAGE_BILL_PAYMENT,CORPORATE,,Perform Bill Payment
+Get Transfer,GET_TRANSFER,CORPORATE,,Get Transfer
+Get Service Request Config Detail,GET_SERV_REQ_CONFIG,ADMIN,,Get the details of a service request configuration
+Get Service Request Configurations,GET_SERV_REQ_CONFIGS,ADMIN,,Get the list of Service Request Configurations
+Update Service Request Config,UPDATE_SERV_REQ_CONFIG,ADMIN,,Update a Service Request Configuraton
+Delete Service Request Config,DELETE_SERV_REQ_CONFIG,ADMIN,,Delete a Service Request Configuraton
+View Account Class Restrictions,GET_ACCT_CLASS_RESTRICTS,OPERATIONS,,Get all Account Class Restrictions
+View Account Restrictions,GET_ACCT_RESTRICTS,OPERATIONS,,Get all Account Restrictions
+Edit Account Class Restriction,UPDATE_ACCT_CLASS_RESTRICT,OPERATIONS,,Update Account Class Restriction
+Edit Account Restriction,UPDATE_ACCT_RESTRICT,OPERATIONS,,Update Account Restriction
+Add Account Class Restriction,ADD_ACCT_CLASS_RESTRICT,OPERATIONS,,Add Account Class Restriction
+Add Account Restriction,ADD_ACCT_RESTRICT,OPERATIONS,,Add Account Restriction
+Delete Account Restriction,DELETE_ACCT_RESTRICT,OPERATIONS,,Delete Account Restriction
+Delete Account Class Restriction,DELETE_ACCT_CLASS_RESTRICT,OPERATIONS,,Delete Account  Class Restriction
+Get Account Restriction,GET_ACCT_RESTRICT,OPERATIONS,,Get Account Restriction details
+Get Account Class Restriction,GET_ACCT_CLASS_RESTRICT,OPERATIONS,,Get Account Class Restriction Details
+View Admin Users,GET_ADMIN_USERS,ADMIN,,View list of Admin Users
+Get Admin User,GET_ADMIN_USER,ADMIN,,Get Admin User
+Delete Admin User,DELETE_ADMIN_USER,ADMIN,,Delete Admin User
+Update Admin User,UPDATE_ADMIN_USER,ADMIN,,Update Admin User
+Activate/Deactivate Admin User,UPDATE_ADMIN_USER_STATUS,ADMIN,,Activate/Deactivate Admin User
+Reset Admin User Password,RESET_ADMIN_USER_PASSWD,ADMIN,,Reset Admin User Password
+Change Admin User Password,CHANGE_ADMIN_USER_PASSWD,ADMIN,,Change Admin User Password
+Update Audit Config,UPDATE_AUDIT_CONFIG,ADMIN,,Update Audit Config
+Get Audit Tables,GET_AUDIT_TABLES,ADMIN,,Get Audit Tables
+Add New Config Code,ADD_CODE,ADMIN,,New Config Code
+Delete Configuration Code,DELETE_CODE,ADMIN,,Delete Configuration Code
+Get Configuration Code,GET_CODE,ADMIN,,Get Configuration Code
+Update Configuration Code,UPDATE_CODE,ADMIN,,Update Configuration Code
+Get Configuration Codes,GET_CODES,ADMIN,,Get Configuration Codes
+Add New Config Setting,ADD_SETTING,ADMIN,,Add New Config Setting
+Update Config Setting,UPDATE_SETTING,ADMIN,,Update Config Setting
+Delete Config Setting,DELETE_SETTING,ADMIN,,Delete Config Setting
+Get Config Setting,GET_SETTING,ADMIN,,Get Config Setting
+Get Config Settings,GET_SETTINGS,ADMIN,,Get Config Settings
+Add New Corporate,ADD_CORPORATE,OPERATIONS,,Add New Corporate
+Get Code,GET_CODE,RETAIL,,Get Configuration Codes
+Get Codes,GET_CODES,RETAIL,,Get Configuration Code
+Get Restricted Class Accounts,GET_ACCT_CLASS_RESTRICTS,RETAIL,,Get Restricted Class Accounts
+Get Restricted Accounts,GET_ACCT_RESTRICTS,RETAIL,,Get Restricted Accounts
+Get Account Class Restriction,GET_ACCT_CLASS_RESTRICT,RETAIL,,Get Account Class Restriction
+Get Account Restriction,GET_ACCT_RESTRICT,RETAIL,,Get Account Restriction
+Get Service Request Config Detail,GET_SERV_REQ_CONFIG,RETAIL,,Get  a Service Request Configuration Details
+Get Service Request Configurations,GET_SERV_REQ_CONFIGS,RETAIL,,Get Service Request Configurations
+Add Corporate Beneficiary,ADD_BENEFICIARY,CORPORATE,,Add Corporate Beneficiary
+Delete Corporate Beneficiary,DELETE_BENEFICIARY,CORPORATE,,Delete Corporate Beneficiary
+Get Corporate Beneficiaries,GET_BENEFICIARIES,CORPORATE,,Get Corporate Beneficiaries
+Get Retail Beneficiaries,GET_BENEFICIARIES,RETAIL,,Get Retail Beneficiaries
+Add Retail Beneficiary,ADD_BENEFICIARY,RETAIL,,Add Retail Beneficiary
+Delete Retail Beneficiary,DELETE_BENEFICIARY,RETAIL,,Delete Retail Beneficiary
+Create Corporate,ADD_CORPORATE,OPERATIONS,,Create Corporate on Internet Banking
+Delete Corporate,DELETE_CORPORATE,OPERATIONS,,Delete Corporate from Internet Banking
+Update Corporate,UPDATE_CORPORATE,OPERATIONS,,Update Corporate Details
+Get Corporates,GET_CORPORATE,OPERATIONS,,Get Corporates
+Get Corporates,GET_CORPORATE,CORPORATE,,Get Corporates
+Set Corporate Limit,SET_CORPORATE_LIMIT,CORPORATE,,Set Corporate Limit
+Update Corporate Limit,UPDATE_CORPORATE_LIMIT,CORPORATE,,Update Corporate Limit
+Get Coporate Limit,GET_CORPORATE_LIMIT,CORPORATE,,Get Corporate Limit
+Delete Corporate Limit,DELETE_CORPORATE_LIMIT,CORPORATE,,Delete Corporate Limit
+Change Corporate Status,UPDATE_CORPORATE_STATUS,OPERATIONS,,Change Corporate Status
+Add Corporate Account,ADD_CORPORATE_ACCOUNT,OPERATIONS,,Add Corporate Account
+Add Corporate Account,ADD_CORPORATE_ACCOUNT,CORPORATE,,Add Corporate Account
+Get Corporate Accounts,GET_CORPORATE_ACCOUNT,CORPORATE,,Get Corporate Accounts
+Get Corporate Accounts,GET_CORPORATE_ACCOUNT,OPERATIONS,,Get Corporate Accounts
+Add Corporate Rule,ADD_CORPORATE_RULE,OPERATIONS,,Add Corporate Rule
+Get Corporate Rules,GET_CORPORATE_RULE,OPERATIONS,,Get Corporate Rules
+Update Corporate Rule,UPDATE_CORPORATE_RULE,OPERATIONS,,Update Corporate Rule
+Delete Corporate Rules,DELETE_CORPORATE_RULE,OPERATIONS,,Delete Corporate Rules
+Get Corporate Users,GET_CORPORATE_USER,OPERATIONS,,Get Corporate Users
+Get Corporate Users,GET_CORPORATE_USER,CORPORATE,,Get Corporate Users
+Change Corporate User Status,UPDATE_CORP_USER_STATUS,OPERATIONS,,Change Corporate User Status
+Change Corporate User Status,UPDATE_CORP_USER_STATUS,CORPORATE,,Change Corporate User Status
+Get Transfer Rules,GET_TRANSFER_RULE,CORPORATE,,Get Transfer Rules
+Get Transfer Rules,GET_TRANSFER_RULE,ADMIN,,Get Transfer Rules
+Update Corporate User,UPDATE_CORPORATE_USER,OPERATIONS,,Update Corporate User
+Update Corporate User,UPDATE_CORPORATE_USER,CORPORATE,,Update Corporate User
+Add Corporate User,ADD_CORPORATE_USER,OPERATIONS,,Add Corporate User
+Add Corporate User,ADD_CORPORATE_USER,CORPORATE,,Add Corporate User
+Delete Corporate User,DELETE_CORPORATE_USER,OPERATIONS,,Delete Corporate User
+Delete Corporate User,DELETE_CORPORATE_USER,CORPORATE,,Delete Corporate User
+Add Financial Institution,ADD_FIN_INST,ADMIN,,Add Financial Institution
+Update Financial Institution,UPDATE_FIN_INST,ADMIN,,Update Financial Institution
+Delete Financial Institution,DELETE_FIN_INST,ADMIN,,Delete Financial Institution
+Get Finanacial Institutions,GET_FIN_INST,ADMIN,,Get Finanacial Institutions
+Send Email,SEND_EMAIL,ADMIN,,Send Email
+Send Email,SEND_EMAIL,OPERATIONS,,Send Email
+Send Email,SEND_EMAIL,RETAIL,,Send Email
+Send Email,SEND_EMAIL,CORPORATE,,Send Email
+Get Operations User,GET_OPS_USER,OPERATIONS,,Get Operations User
+Get Operations User,GET_OPS_USER,ADMIN,,Get Operations User
+Update Operations User,UPDATE_OPS_USER,ADMIN,,Update Operations User
+Update Operations User,UPDATE_OPS_STATUS,ADMIN,,Update Operations User Activation Status
+Delete Operations User,DELETE_OPS_USER,ADMIN,,Delete Operations User
+Add Operations User,ADD_OPS_USER,ADMIN,,Add Operations User
+Request History Management,REQUEST_HISTORY,OPERATIONS,,Request History Management
+View Retail Users,GET_RETAIL_USER,OPERATIONS,,View Retail Users
+View Retail Users,GET_RETAIL_USER,OPERATIONS,,View Retail Users
+View User Details,GET_RETAIL_USER,RETAIL,,View Retail User Details
+Delete Retail User,DELETE_RETAIL_USER,OPERATIONS,,Delete Retail User
+Update Retail User Details,UPDATE_RETAIL_USER,RETAIL,,Update Retail User Details
+Update Retail User Details,UPDATE_RETAIL_USER,OPERATIONS,,Update Retail User Details
+Get Roles,GET_ROLE,ADMIN,,Get System Roles
+Add Roles,ADD_ROLE,ADMIN,,Add System Roles
+Update Roles,UPDATE_ROLE,ADMIN,,Update System Roles
+Delete Role,DELETE_ROLE,ADMIN,,Delete Role
+Get Transaction Limits,GET_TRANS_LIMIT,OPERATIONS,,Get Transaction Limits
+Update Transaction Limit,UPDATE_TRANS_LIMIT,OPERATIONS,,Update Transaction Limit
+Add Transaction Limit,ADD_TRANS_LIMIT,OPERATIONS,,Add Transaction Limit
+Delete Transaction Limit,DELETE_TRANS_LIMIT,OPERATIONS,,Delete Transaction Limit
+Perform Transfer,MAKE_TRANSFER,RETAIL,,Perform Transfer
+Get Tranfers,GET_TRANSFER,RETAIL,,Get Transfers
+Get User groups,GET_USER_GRP,ADMIN,,Get User groups
+Add User Group,ADD_USER_GRP,ADMIN,,Add User Group
+Update User Group,UPDATE_USER_GRP,ADMIN,,Update User Group
+Delete User Group,DELETE_USER_GRP,ADMIN,,Delete User Group
+View No of Unattended Requests,UNATTENDED_REQUESTS,OPERATIONS,,No of Unattended Requests
+Get Service Requests,GET_SERVICE_REQUEST,OPERATIONS,,Get Service Requests
+Get Service Requests,GET_SERVICE_REQUEST,RETAIL,,Get Service Requests
+Add Service Request,ADD_SERVICE_REQUEST,RETAIL,,Add Service Request
+Add Service Request,ADD_SERVICE_REQUEST,CORPORATE,,Add Service Request
+Get Service Requests,GET_SERVICE_REQUEST,CORPORATE,,Get Service Requests
+Get Service Request Configurations,GET_SERV_REQ_CONFIG,CORPORATE,,Get Service Request Configurations
+Get User groups,GET_USER_GRP,RETAIL,,Get User groups
+Get User groups,GET_USER_GRP,CORPORATE,,Get User groups
+Get Codes,GET_CODES,CORPORATE,,Get Configuration Codes
+Get Code,GET_CODE,CORPORATE,,Get Configuration Codes
+Get Service Request Configurations Ops,GET_SERV_REQ_CONFIG,OPERATIONS,,Get Service Request Configurations Ops
+Get Codes,GET_CODES,OPERATIONS,,Get Configuration Codes
+Get Code,GET_CODE,OPERATIONS,,Get Configuration Codes
+Get Finanacial Institutions,GET_FIN_INST,RETAIL,,Get Finanacial Institutions
+Get Role,GET_ROLE,RETAIL,,Get Role
+Get Role,GET_ROLE,CORPORATE,,Get Role
+Manage corporate users,USER_MANAGEMENT,CORPORATE,,Manages corporate users
+User Management for ops,USER_MANAGEMENT,OPERATIONS,,User Management for ops
+Update Retail Status,UPDATE_RETAIL_STATUS,OPERATIONS,,Update Retail User Activation Status
+Add FAQ,ADD_FAQ,ADMIN,,Add Frequently Asked Questions
+Update,UPDATE_FAQ,ADMIN,,Update Frequently asked questions
+Delete FAQ,DELETE_FAQ,ADMIN,,Delete Frequently Asked Questions
+Add Security Question,AD_SQ,ADMIN,,Add Security Question for customers
+Update Security Question,UPDATE_SQ,ADMIN,,Update Security Question
+Delete Security Question,DELETE_SQ,ADMIN,,Delete Security Questions for customers
+Add Corporate Role,ADD_CORPORATE_ROLE,OPERATIONS,,Adds corporate approval role
+Update Corporate Role,UPDATE_CORPORATE_ROLE,OPERATIONS,,Updates corporate approval role
+Delete Corporate Role,DELETE_CORPORATE_ROLE,OPERATIONS,,Delete corporate approval role
+Manage tokens,TOKEN_MANAGEMENT,ADMIN,,Manages tokens
+Direct Debit Order,DIRECT_DEBIT,CORPORATE,,Direct Debit menu
+Transfer Request,TRANSFER_REQUEST,CORPORATE,,Transfer Request Menu
+Manage Bil Payment,MANAGE_BILL_PAYMENT,CORPORATE,,Manage Bill Payment Menu
+Manage Investment,MANAGE_INVESTMENT,CORPORATE,,Manage Investment menu
+Manage Service Request,MANAGE_SERV_REQ,CORPORATE,,Manage Service Request menu
+Track Service Request,TRACK_SERV_REQ,CORPORATE,,Track Service Request Menu
+Make Service Requests,MAKE_SERV_REQ,CORPORATE,,Make Service Requests Menu
+Corporate User Settings,CORP_USER_SETTINGS,CORPORATE,,Corporate User Settings Menu
+Set Alert Preference,SET_ALERT_PREFERENCE,CORPORATE,,Set Alert Preference Menu
+Corporate Change Password,CORP_CHANGE_PASSWORD,CORPORATE,,Change Password Menu 
+Synchronise Token,CORP_SYNC_TOKEN,CORPORATE,,Synchronise Token Menu
+Report Lost Token,CORP_LOST_TOKEN,CORPORATE,,Report Lost Token Menu
+Manage Beneficiary,MANAGE_BEN,CORPORATE,,Manage Beneficiary Menu
+Mailbox,CORP_MAILBOX,CORPORATE,,Mailbox menu
+Add new Approve new authorizer,ADD_AUTHORIZER_FROM_CORPORATE_ADMIN,OPERATIONS,,Verify authorizer added by a corporate admin
+Add Permission,ADD_PERMISSION,ADMIN,,Add a permission
+Update Permission,UPDATE_PERMISSION,ADMIN,,Update a permission
+Delete Permission,DELETE_PERMISSION,ADMIN,,Delete a permission
+View Audit,VIEW_AUDIT,ADMIN,,View audits
+Manage Content,MANAGE_CONTENT,ADMIN,,Manage content
+View Ops Verifications,VIEW_OPS_VERIFICATIONS,OPERATIONS,,View verifications on Operations console
+View Admin Verifications,VIEW_ADMIN_VERIFICATIONS,ADMIN,,View verifications on Admin console
+Verify updated Corporate user,UPDATE_USER_FROM_CORPORATE_ADMIN,OPERATIONS,,Verify corporate user updated by corporate Admin
+Change Admin Activation Status,UPDATE_ADMIN_STATUS,ADMIN,,Change Admin Activation Status
+Change Ops Activation Status,UPDATE_OPS_STATUS,ADMIN,,Change Ops Activation Status
+Manage Account,MANAGE_ACCOUNT,CORPORATE,,View Account menu
+Customise Account,CUSTOMIZE_ACCOUNT,CORPORATE,,Customise account menu
+Account Settings,ACCOUNT_SETTINGS,CORPORATE,,Account Settings Menu
+Account Officer,ACCOUNT_OFFICER,CORPORATE,,Account Officer Menu
+Account Statement,ACCOUNT_STATEMENT,CORPORATE,,Account Statement Menu
+Create Account,CREATE_ACCOUNT,CORPORATE,,Create Account Menu
+Tranfers Menu,MANAGE_TRANSFERS,CORPORATE,,Transfers Menu
+Account Officer Menu,ACCOUNT_OFFICER,CORPORATE,,Account Officer Menu
+Own Account Transfer Menu,OWN_ACCOUNT_TRANSFER,CORPORATE,,Own Account Transfer Menu
+Coronation transfer menu,CMB_CMB_TRANSFER,CORPORATE,,Coronation transfer menu
+Interbank transfer,INTERBANK_TRANSFER,CORPORATE,,Interbank Transfer menu
+International Transfer,INTERNATIONAL_TRANSFER,CORPORATE,,International Transfer Menu
+Bulk Transfer,BULK_TRANSFER,CORPORATE,,Bulk Transfer menu
+Corporate Transaction Limit,CORP_TRANSACTION_LIMIT,CORPORATE,,Corporate Transaction Limit Menu
+Standing Order,STANDING_ORDER,CORPORATE,,Standing Order menu
+View User,VIEW_USER,ADMIN,,View users on the system
+Add Admin User,ADD_ADMIN_USER,ADMIN,,ADD  ADMIN USERS TO THE SYSTEM
+Manage Account,MANAGE_ACCOUNT,RETAIL,,View Manage Accounts Menu by Retail Customer
+Customize Account,CUSTOMIZE_ACCOUNT,RETAIL,,Customize Retail account
+Account Settings,ACCOUNT_SETTINGS,RETAIL,,Retail Account Settings
+View Account Officer Details,VIEW_ACCOUNT_OFFICER,RETAIL,,Display Account Officer Details to customer
+Create Account,CREATE_ACCOUNT,RETAIL,,Create new account by customer
+Manage Transfers,MANAGE_TRANSFERS,RETAIL,,View Manage Transfers Menu Item in Retail
+Own Account Transfer,OWN_ACCOUNT_TRANSFER,RETAIL,,View Menu Item Own Account Transfer
+CMB to CMB transfer,CMB_CMB_TRANSFER,RETAIL,,View menu item cmb to cmb transfer 
+Interbank Transfer,INTERBANK_TRANSFER,RETAIL,,View Menu Item for Interbank transfer
+International Transfer,INTERNATIONAL_TRANSFER,RETAIL,,View Menu Item for International Transfer
+Set Retail Transaction Limit,RET_TRANSACTION_LIMIT,RETAIL,,View Menu Item for transaction limit by retail user
+Standing Order,STANDING_ORDER,RETAIL,,View Menu Item to set up Standing Order
+Bill Payment,MANAGE_BILL_PAYMENT,RETAIL,,View Menu Item for Bill Payment
+Manage Investment,MANAGE_INVESTMENT,RETAIL,,View Menu Item for Investment
+Service Requests,MANAGE_SERV_REQ,RETAIL,,View Menu Item for Service Request Retail
+Make Service Request,MAKE_SERV_REQ,RETAIL,,View Menu Items for making Service Requests
+Track Service Requests,TRACK_SERV_REQ,RETAIL,,View Menu Item to track Service Requests Retail
+Retail User Settings,RET_USER_SETTINGS,RETAIL,,View Menu Item for Retail User Settings
+Retail User Alert Preference,SET_ALERT_PREFERENCE,RETAIL,,Set Retail User Alert Preference
+Retail Change Password,RET_CHANGE_PASSWORD,RETAIL,,View Menu Item to Change Password Retail
+View Mailbox Retail,RET_MAILBOX,RETAIL,,View Menu Item for Retail MailBox
+View Retail Beneficiaries,MANAGE_BEN,RETAIL,,View Menu Item for Retail Beneficiaries
+Report Lost Token Retail,RET_LOST_TOKEN,RETAIL,,View Menu Item for Reporting Lost Token Retail
+Retail Synchronise token,RET_SYNC_TOKEN,RETAIL,,View Menu Item to Sync Token Retail
+Service Requests Operations,OPS_SERV_REQ,OPERATIONS,,View Menu Item for Service Request Operations
+View Limit Menu,OPS_LIMIT,OPERATIONS,,View Limit Menu Item
+Corporate Limit,LIMIT_CORPORATE,OPERATIONS,,Set Limit on Corporate
+Corporate Limit Global,LIMIT_CORPORATE_GLOBAL,ADMIN,,Set Global Corporate Limit
+Corporate Limit Class,LIMIT_CORPORATE_CLASS,OPERATIONS,,Set Corporate Limit on Account Class
+Corporate Limit Account,LIMIT_CORPORATE_ACCOUNT,OPERATIONS,,Set Corporate Limit on Account
+Retail Limit,LIMIT_RETAIL,OPERATIONS,,Set Limit on Retail
+Retail Limit Global,LIMIT_RETAIL_GLOBAL,ADMIN,,Set Global Retail Limit
+Retail Limit Class,LIMIT_RETAIL_CLASS,OPERATIONS,,Set Retail Limit on Account Class
+Retail Limit Account,LIMIT_RETAIL_ACCOUNT,OPERATIONS,,Set Retail Limit on Account
+Manage Contacts,CONTACT_GRP,ADMIN,,View Menu Item to Manage Account
+Mailbox,MAILBOX,OPERATIONS,,Operation User MailBox
+Inbox,MAILBOX_INBOX,OPERATIONS,,Have an Inbox 
+Sent Mailbox,MAILBOX_SENT,OPERATIONS,,View Sent Messages in Mailbox
+Fees management,MANAGE_FEES,OPERATIONS,,Fees management by Ops user
+Account Restriction,ACCOUNT_RESTRICTION,OPERATIONS,,Acess to account restriction
+Manage Transaction,MANAGE_TRANSACTION,OPERATIONS,,Acess to manage transactions
+Account Class Restriction,ACCOUNT_CLASS_RESTRICTION,OPERATIONS,,Restrict Accounts of a particular class
+Single Account Restriction,SINGLE_ACCOUNT_RESTRICTION,OPERATIONS,,Restrict a single Account
+User Management,USER_MANAGEMENT,ADMIN,,Access to User Management
+Admin User Management,ADMIN_USER_MANAGEMENT,ADMIN,,Manage Admin User Accounts
+Operator User Management,OPS_USER_MANAGEMENT,ADMIN,,Manage Operator User Accounts
+Corporate User Management,CORPORATE_USER_MANAGEMENT,OPERATIONS,,Manage Corporate User Accounts
+Retail User Management,RETAIL_USER_MANAGEMENT,OPERATIONS,,Manage Retail User Accounts
+Manage Configuration,MANAGE_CONFIG,ADMIN,,Configuration Settings
+Manage Code Configurations,CODE_CONFIG,ADMIN,,Manage Code Configurations
+Manage Settings Configurations,SETTING_CONFIG,ADMIN,,Manage Settings Configurations
+Manage Audit Configurations,AUDIT_CONFIG,ADMIN,,Manage Audit Configurations
+Bank Setup,BANK_CONFIG,ADMIN,,Bank Setup Perm
+Manage Financial Institution,FIN_INST,ADMIN,,Manage Financial Institutions
+Manage Service Requests Configurations,SERVICE_REQ,ADMIN,,Manage Service Request Configurations
+Manage User Access,MANAGE_ACCESS,ADMIN,,Manage System User Access
+Manage User Roles,MANAGE_ROLES,ADMIN,,Manage User Roles
+Manage User Permissions,MANAGE_PERMISSIONS,ADMIN,,Manage User Permissions
+New Service Request Config,ADD_SERV_REQ_CONFIG,ADMIN,,Create New Service Request Configuration
+Add Report,GENERATE_REPORT,ADMIN,,Generate Report

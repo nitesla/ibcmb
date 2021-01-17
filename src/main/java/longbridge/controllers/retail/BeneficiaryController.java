@@ -4,7 +4,6 @@ import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;

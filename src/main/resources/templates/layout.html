@@ -15,16 +15,17 @@
     <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
     <!-- Custom Theme Style -->
     <link th:href="@{~/bank/vendors/bootstrap-editable/css/bootstrap-editable.css}" rel="stylesheet" type="text/css"/>
-    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
-    <link th:href="@{~/bank/css/loader.css}" rel="stylesheet"/>
-    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/custom.css(name=#{menu.custom})}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/loader.css(name=#{menu.custom})}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/coronation.css(name=#{menu.custom})}" rel="stylesheet"/>
     <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" type="text/css" th:href="@{~/bank/vendors/jquery-steps/css/jquery.steps.css}" />
-    <title>Coronation Internet Banking</title>
+    <link th:href="@{~/bank/css/icon.css}" rel="stylesheet"/>
+    <title th:text="#{menu.bank.name}"></title>
 
 </head>
 <body>
@@ -34,7 +35,7 @@
     <!-- menu profile quick info -->
     <div class="profile clearfix">
         <div class="profile_pic">
-            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+            <img th:src="@{~/customer/{name}/img/logo_fav.png(name=#{menu.custom})}" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
             <span>Welcome,</span>
@@ -104,12 +105,11 @@
                 </ul>
             </li>
 
-            <li sec:authorize="hasAuthority('VIEW_AUDIT')"><a><i class="fa fa-history"></i>Audit<span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('VIEW_AUDIT')"><a><i class="fa fa-history"></i>Audit<span
+                            class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Configuration</a></li>
-                    <li><a href="/admin/audit/revised/entities">Revisions</a></li>
-                    <li><a href="/admin/audit/entity/index">Audit</a></li>
-                    <!--<li><a href="/admin/audit/revised/entity">Revision Entity</a></li>-->
+                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit/cfg">Configuration</a></li>
+                    <li><a href="/admin/audit">Audit</a></li>
                 </ul>
             </li>
 
@@ -136,7 +136,7 @@
     <!-- menu profile quick info -->
     <div class="profile clearfix">
         <div class="profile_pic">
-            <img th:src="@{~/bank/images/cmb_logo_fav.png}" alt="..." class="img-circle profile_img">
+            <img th:src="@{~/customer/{name}/img/logo_fav.png(name=#{menu.custom})}" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
             <span>Welcome,</span>
@@ -389,7 +389,7 @@
 
 
     <div class="pull-right">
-        Coronation Merchant Bank
+        <span th:text="#{menu.bank.name}"></span>
     </div>
     <div class="clearfix"></div>
     <!-- jQuery -->

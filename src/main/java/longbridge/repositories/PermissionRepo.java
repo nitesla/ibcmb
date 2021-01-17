@@ -14,11 +14,11 @@ public interface PermissionRepo extends CommonRepo<Permission, Long> {
 
     Iterable<Permission> findByIdNotIn(Long[] permissions);
 
-    Iterable<Permission> findByUserType(String type);
+    List<Permission> findByUserType(String type);
     List<Permission> findByCategory(String category);
     Permission findByCode(String code);
 
-
+    boolean existsByNameAndUserType(String name, String type);
 
 //    @Query( "select v from permission v where v.initiatedBy != :initiated and v.operation in :permissionlist")
 //    Page<Verification> findPermissionForUser(@Param("initiated") String initiatedBy, @Param("permissionlist") List<String> operation);

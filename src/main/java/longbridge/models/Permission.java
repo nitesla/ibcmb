@@ -2,7 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
@@ -22,7 +21,6 @@ import java.util.List;
 @Where(clause ="del_Flag='N'" )
 public class Permission extends AbstractEntity  implements PrettySerializer{
 
-    private Long id;
     private String name;
     private String description;
     private String code;
@@ -41,15 +39,6 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
         this.userType = userType;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

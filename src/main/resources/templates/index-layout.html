@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Coronation Merchant Bank</title>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
+    <title th:text="#{menu.bank.name}" ></title>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/bootstrap.css(name=#{menu.custom})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/media.css(name=#{menu.custom})}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         @font-face {
@@ -59,19 +59,19 @@
             border-radius: 7px;
             margin-top: -5.5%;
         }
-        .continue{
-            background-color: #a7674c;
-            color: #fff;
-            padding:8px 30px 8px 30px;
-            border-radius: 20px;
-            margin-right: -43%;
-        }
-        .continue:hover{
-            background-color: #fff;
-            color:  #224569 !important;
-            text-decoration: none;
-            font-weight: bolder;
-        }
+        /*.continue{*/
+            /*background-color: #a7674c;*/
+            /*color: #fff;*/
+            /*padding:8px 30px 8px 30px;*/
+            /*border-radius: 20px;*/
+            /*margin-right: -43%;*/
+        /*}*/
+        /*.continue:hover{*/
+            /*background-color: #fff;*/
+            /*color:  #224569 !important;*/
+            /*text-decoration: none;*/
+            /*font-weight: bolder;*/
+        /*}*/
         @media only screen and (max-width:320px) {
             .login-section{
                 margin-bottom: 40px !important;
@@ -162,7 +162,7 @@
 <!--[if lte IE 9]>
 <div class="browserupgrade">
     <div class="text-center">
-        <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
         <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     </div>
 </div>
@@ -172,15 +172,15 @@
     <!--<div class="row" >
         <div class="top-bar col-xs-12" >
             <ul class="top-link">
-                <li class="no-bd" style="margin-left: 6%"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                <li class="no-bd" style="margin-left: 6%"><a  th:href="#{menu.bank.website}" target="_blank" th:text="#{menu.bank.name}" ></a>&nbsp;</li>
             </ul>
         </div>
     </div>-->
     <div class="container" style="margin-bottom:10px;margin-top: -4px">
        <!-- <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
             <div class="center" style="margin:0px auto;">
-                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                    <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:title="#{menu.bank.name}">
+                    <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/logo.png}" th:alt="#{menu.bank.name}" />
                 </a>
             </div>
         </div>-->
@@ -188,7 +188,7 @@
         <div>
             <div class="top-bar col-xs-12" style="margin-top: 3%;margin-left: -0.5%">
                 <ul class="top-link">
-                    <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                    <li class="no-bd"><a  th:href="#{menu.bank.website}" target="_blank" th:text="#{menu.bank.name}" ></a>&nbsp;</li>
                 </ul>
             </div>
         </div>
@@ -235,8 +235,8 @@
         </div>
         <div class="col-sm-3 hidden-xs no-pad-right">
             <div class="center" style="margin:0px auto;">
-                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                    <img class="img img-responsive pull-right" style="display:block;margin-right:-35%;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <a href="/" class="log" data-toggle="tooltip" data-placement="bottom"  th:title="#{menu.bank.name}">
+                    <img class="img img-responsive pull-right" style="display:block;margin-right:-35%;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                 </a>
             </div>
         </div>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{index-layout}">
 <head>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}"/>
     <style>
         @font-face {
             font-family: FedraSansStdLight;
@@ -68,7 +69,7 @@
             margin-left: -1em; /* Also needed for space (tweak if needed) */
             padding-top: 10px;
             margin-left: 4px;
-            background: url(../static/customer/img/bullet.png) no-repeat top left;
+            background: url(../static/customer/coronation_merchant_bank/img/bullet.png) no-repeat top left;
             font-size: 18px;
         }
         .bodyform{
@@ -86,20 +87,20 @@
 
 
 
-        .continue{
-            background-color: #a7674c;
-            color: #fff;
-            padding:8px 28px 8px 28px;
-            border-radius: 20px;
-            margin-left: 40px;
+        /*.continue{*/
+            /*background-color: #a7674c;*/
+            /*color: #fff;*/
+            /*padding:8px 28px 8px 28px;*/
+            /*border-radius: 20px;*/
+            /*margin-left: 40px;*/
 
-        }
-        .continue:hover{
-            background-color: #fff;
-            color: #224569 !important;
-            text-decoration: none;
-            font-weight: bolder;
-        }
+        /*}*/
+        /*.continue:hover{*/
+            /*background-color: #fff;*/
+            /*color: #224569 !important;*/
+            /*text-decoration: none;*/
+            /*font-weight: bolder;*/
+        /*}*/
         .col-xs{
             width: 5%;
         }
@@ -378,7 +379,7 @@
                     <div class="col-md-6 login-section" >
                         <div id="loginform" class="form-body bodyform"  >
                             <form id="login" th:action="@{/corporate/login}"  method="POST" class="form-signin " autocomplete="off">
-                                <h5 class=" form-signin-heading text-white welcome">Welcome to CoronationMB<br> Online Banking!</h5>
+                                <h5 class=" form-signin-heading text-white welcome">Welcome to <span th:text="#{menu.bank.name2}" ></span><br> Online Banking!</h5>
                                 <h6 class="form-signin1 header-line text-white" style="margin-bottom: -5px !important;">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
                                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
@@ -389,7 +390,7 @@
                                         <div class="col-xs-5 no-pad-left no-pad-right" style="margin-left: -15px">
                                             <div class="bg-coronation-brown center img-phish-box-mobile no-pad-left no-pad-right fish" style="width:115px; height: auto;border-radius: 7px">
                                                 <img th:if="${secImage}" class='bg-danger img-responsive center img-phish' style="" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                                                <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/img/cmb_ph.png}" />
+                                                <img th:unless="${secImage}" class='bg-danger img-responsive center img-phish'  th:src="@{/customer/{name}/img/cmb_ph.png(name=#{menu.custom})}" />
                                                 <p class="text-center text-white" th:text="${secCaption}"></p>
                                                 <input type="checkbox" id="phishing" class='center' style='display:block;' name="phishing" />
                                             </div>
@@ -418,13 +419,13 @@
                                     <li class="liclass">Internet banking password</li>
                                     <li class="liclass">OTP app password or username</li>
                                 </ul>
-                                <p class="p-bottom"><span class="span-bold"> Coronation Merchant Bank will never ask you </span>to provide your banking details via  <span class="span-bold"> phone call, email, SMS, social media or website links.</span></p>
+                                <p class="p-bottom"><span class="span-bold"> <span th:text="#{menu.bank.name}" ></span> will never ask you </span>to provide your banking details via  <span class="span-bold"> phone call, email, SMS, social media or website links.</span></p>
                                 <hr class="hrclass" >
                                 <p>Kindly report any of such request or attempted identity fraud to the Bank via</p>
                                 <div class="row" style="padding-top: 5px;">
-                                    <div class="col-xs-1 col-md-1 no-pad-left"> <img th:src="@{~/customer/img/email.png}"></div>
-                                    <div class="col-xs-5 col-md-5 no-pad-left">crc@coronationmb.com</div>
-                                    <div class='col-xs-1 col-md-1 no-pad-left'><img th:src="@{~/customer/img/telephone.png}"></div>
+                                    <div class="col-xs-1 col-md-1 no-pad-left"> <img th:src="@{~/customer/{name}/img/email.png(name=#{menu.custom})}"></div>
+                                    <div class="col-xs-5 col-md-5 no-pad-left" th:text="#{menu.bank.email}"></div>
+                                    <div class='col-xs-1 col-md-1 no-pad-left'><img th:src="@{~/customer/{name}/img/telephone.png(name=#{menu.custom})}"></div>
                                     <div class='col-xs-4 col-md-4 no-pad-left'>+234 (0)1 279 7640-43 </div>
                                 </div>
                             </form>

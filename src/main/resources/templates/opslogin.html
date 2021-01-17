@@ -7,18 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <title>Log in | Coronation Merchant Bank</title>
+    <title th:text="#{menu.bank.name}" ></title>
 
     <!-- Bootstrap -->
-    <link th:href="@{~/bank/css/bootstrap.min.css}"  rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/bootstrap.min.css(name=#{menu.custom})}"  rel="stylesheet"/>
     <!-- Font Awesome -->
     <link th:href="@{~/bank/fonts/css/font-awesome.min.css}" rel="stylesheet"/>
     <!-- NProgress -->
     <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet"/>
-    <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/select.bootstrap.css(name=#{menu.custom})}" rel="stylesheet"/>
     <!-- Custom Theme Style -->
-    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
-    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/custom.css(name=#{menu.custom})}" rel="stylesheet"/>
+    <link th:href="@{~/bank/{name}/css/coronation.css(name=#{menu.custom})}" rel="stylesheet"/>
 
 </head>
 
@@ -30,7 +30,7 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <img th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                 <br/>
                 <form th:action="@{/ops/login}" method="POST" autocomplete="off">
 

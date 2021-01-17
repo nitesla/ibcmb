@@ -1,24 +1,40 @@
-#stages:
-#  - build
-#  - deploy
 #
-#before_script:
-#  - export COMMIT_TIME=$(git show -s --format=%ct $CI_COMMIT_SHA)
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/README.html#stages
 #
-#build:
-#  stage: build
-#  script: ./mvn clean package
-#  artifacts:
-#    paths:
-#      - target/ibcmb.war
-#
-#production:
-#  stage: deploy
-#  script:
-#    - mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT$COMMIT_TIME
-#    - mkdir /opt/tomcat/latest/webapps/ROOT
-#    - ./cp target/ibcmb.war /opt/tomcat/latest/webapps/ROOT
-#    - jar -xf ibcmb.war
-#
-#  only:
-#    - cmb_final_dev
+stages:
+  - build
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2  -DskipTests=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+
+build-job:
+  stage: build
+  tags:
+    - ibcmb
+  script:
+    - 'mvn $MAVEN_OPTS  clean package'
+  artifacts:
+    paths:
+      - target/*.war
+  only:
+    - icon_deploy
+
+
+deploy-job:
+  stage: deploy
+  tags:
+    - ibcmb
+  script:
+    - sudo mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
+    - sudo mkdir /opt/tomcat/latest/webapps/ROOT
+    - sudo unzip target/ibcmb.war -d /opt/tomcat/latest/webapps/ROOT
+    - sudo systemctl start tomcat || sudo systemctl restart tomcat
+  dependencies:
+    - build-job
+  only:
+  - icon_deploy
+
+

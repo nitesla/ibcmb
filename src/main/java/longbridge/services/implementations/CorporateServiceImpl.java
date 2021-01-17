@@ -590,7 +590,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     public boolean corporateExists(String customerId) {
         Corporate corporate = corporateRepo.findByCustomerId(customerId);
-        return (corporate != null) ? true : false;
+        return corporate != null;
     }
 
 
@@ -850,7 +850,7 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             CorporateRole originalRole = corporateRoleRepo.findById(updatedRole.getId()).get();
             Set<CorporateUser> originalUsers = new HashSet<>();
-            originalRole.getUsers().forEach(originalUsers::add);
+            originalUsers.addAll(originalRole.getUsers());
             corporateRoleRepo.save(updatedRole);
             updateUsersWithoutAuthorizerRoleToInitiators(originalUsers, updatedRole.getUsers());
         } catch (Exception e) {

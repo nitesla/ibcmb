@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -101,6 +103,7 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Transactional
+    @CacheEvict(value = "codes", key = "#codeDTO.type")
     @Verifiable(operation = "UPDATE_CODE", description = "Updating a Code")
     public String updateCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
@@ -142,6 +145,7 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Override
+    @Cacheable(value = "codes")
     public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
         // TODO Auto-generated method stub
 
@@ -164,6 +168,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Verifiable(operation = "ADD_CODE", description = "Adding a Code")
+    @CacheEvict(value = "codes", key = "#codeDTO.type")
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);

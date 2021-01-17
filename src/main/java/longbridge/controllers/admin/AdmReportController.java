@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.config.SpringContext;
+import longbridge.config.IbankingContext;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.ReportDTO;
@@ -402,7 +402,7 @@ public class AdmReportController {
             logger.info("the parameters {}",modelMap);
             try {
                 modelMap.put("logo",imagePath);
-                ApplicationContext context = SpringContext.getApplicationContext();
+                ApplicationContext context = IbankingContext.getApplicationContext();
                 DataSource dataSource = context.getBean(DataSource.class);
 //                Properties properties = new Properties();
 //                properties.setProperty("Content-Disposition", String.format("inline; filename=\"" + reportDTO.getReportName() + "\""));

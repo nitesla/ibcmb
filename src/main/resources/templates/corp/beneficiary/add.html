@@ -23,7 +23,7 @@
                                                              class="form-control full-width">
                             <option th:value="local">Other Banks</option>
                             <!--<option th:value="foreign">Foreign Banks</option>-->
-                            <option th:value="intrabank">Coronation Merchant Bank</option>
+                            <option th:value="intrabank"th:text="#{menu.bank.name}" ></option>
                             </select>
                         </div>
 
@@ -154,7 +154,7 @@
                                 <span class="required"></span><select name="beneficiaryBank" class="form-control full-width"
                                                                       th:field="*{beneficiaryBank}"
                                                                       required="required">
-                                <option th:value="${bankCode}">Coronation Merchant Bank</option>
+                                <option th:value="${bankCode}"th:text="#{menu.bank.name}" ></option>
                             </select>
                                 <p class="iacctError errors" style="display:none;">invalid account number or Bank
                                     details</p>

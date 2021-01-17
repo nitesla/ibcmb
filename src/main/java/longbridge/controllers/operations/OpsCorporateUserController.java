@@ -6,7 +6,6 @@ import longbridge.dtos.*;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.PasswordException;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.services.*;

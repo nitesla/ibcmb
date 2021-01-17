@@ -111,7 +111,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public boolean userExists(String username) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(username);
-        return (adminUser != null) ? true : false;
+        return adminUser != null;
     }
 
 
