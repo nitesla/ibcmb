@@ -18,7 +18,7 @@ build-job:
     - 'mvn $MAVEN_OPTS  clean package'
   artifacts:
     paths:
-      - target/icmb.war
+      - target/*.war
   only:
     - cmb_final_dev2
 
@@ -31,6 +31,8 @@ deploy-job:
     - '[ ! -f /opt/tomcat/latest/webapps/ROOT ] || sudo mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID}'
     - sudo mkdir /opt/tomcat/latest/webapps/ROOT
     - sudo unzip target/ibcmb.war -d /opt/tomcat/latest/webapps/ROOT
+  dependencies:
+    - build-job
   only:
   - cmb_final_dev2
 
