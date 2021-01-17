@@ -15,7 +15,7 @@ build-job:
   tags:
     - ibcmb
   script:
-    - 'mvn $MAVEN_CLI_OPTS  clean package'
+    - 'sudo mvn $MAVEN_CLI_OPTS  clean package'
   artifacts:
     paths:
       - target/*.war
