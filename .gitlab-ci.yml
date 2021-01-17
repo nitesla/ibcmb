@@ -28,10 +28,9 @@ deploy-job:
   tags:
     - ibcmb
   script:
-    - sudo mv /opt/tomcat/latest/webapps/ROOT /opt/tomcat/latest/webapps/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
-    - sudo mkdir /opt/tomcat/latest/webapps/ROOT
-    - sudo unzip target/ibcmb.war -d /opt/tomcat/latest/webapps/ROOT
-    - sudo systemctl start tomcat || sudo systemctl restart tomcat
+    - sudo mv /opt/tomcat/gtl/webapps/ROOT /opt/tomcat/gtl/webapps/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
+    - sudo mkdir /opt/tomcat/gtl/webapps/ROOT
+    - sudo unzip target/ibcmb.war -d /opt/tomcat/gtl/webapps/ROOT
   dependencies:
     - build-job
   only:
