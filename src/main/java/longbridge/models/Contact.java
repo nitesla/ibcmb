@@ -1,7 +1,9 @@
 package longbridge.models;
 
+import groovyjarjarpicocli.CommandLine;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -68,6 +70,7 @@ public class Contact extends AbstractEntity implements Person {
 	String firstName;
 	String lastName;
 	String email;
+	@Column(name = "`external`")
 	boolean external;
 	@Override
 	public boolean isExternal() {
