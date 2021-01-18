@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
 <head th:fragment="site-head">
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/jquery-ui.css(name=#{menu.custom})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
 </head>
 
 <body onload="javascript:var bread = [['Home', '/retail/dashboard'],['StopCheque']];currentBar('Stop Cheque Request');breadCrumb(bread)">
