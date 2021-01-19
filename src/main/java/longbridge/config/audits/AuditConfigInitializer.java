@@ -25,7 +25,7 @@ public class AuditConfigInitializer implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         try {
-            entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream().filter(e -> ok(e.getName())).forEach(a -> saveCfg(a));
+            entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream().filter(e -> ok(e.getName())).forEach(this::saveCfg);
         } catch (Exception e) {
             LOGGER.error("Audit Initialization Error", e);
 

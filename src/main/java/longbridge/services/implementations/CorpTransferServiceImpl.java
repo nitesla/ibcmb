@@ -400,7 +400,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         Page<CorpTransRequest> page = corpTransferRequestRepo.findUsingPattern(corporate, pattern, pageDetails);
         List<CorpTransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<CorpTransferRequestDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 

@@ -294,7 +294,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
                 .filter(transRequest -> !accountConfigService.isAccountRestrictedForViewFromUser(accountService.getAccountByAccountNumber(transRequest.getCustomerAccountNumber()).getId(),corporateUser.getId())).collect(Collectors.toList());
 */
         long t = page.getTotalElements();
-        return new PageImpl<BulkTransferDTO>(dtOs, details, t);
+        return new PageImpl<>(dtOs, details, t);
     }
 
     public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer) {
@@ -343,7 +343,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         Page<CreditRequest> page = new PageImpl<>(creditRequests);
         List<CreditRequestDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<CreditRequestDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
 
     @Override
@@ -360,7 +360,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
         Page<CreditRequest> page = (Page<CreditRequest>) bulkTransfer.getCrRequestList();
         List<CreditRequest> creditRequests = page.getContent();
         long t = page.getTotalElements();
-        return new PageImpl<CreditRequest>(creditRequests, pageable, t);
+        return new PageImpl<>(creditRequests, pageable, t);
     }
 
     @Override

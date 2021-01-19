@@ -71,7 +71,7 @@ public class UtilityConfig {
         return new RequestContextListener();
     }
 
-    @Bean
+    @Bean @Primary
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
         String[] baseNames = new String[]{"i18n/messages", "i18n/menu" ,"i18n/integration"};

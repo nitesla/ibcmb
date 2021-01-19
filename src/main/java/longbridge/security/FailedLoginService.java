@@ -110,7 +110,7 @@ public class FailedLoginService {
     }
 
     @Transactional
-    private void updateFailedLogin(User user) {
+    void updateFailedLogin(User user) {
         try {
             if (user != null && user.getUserType() != null) {
                 UserType type = user.getUserType();

@@ -166,8 +166,6 @@ public class RetrieveCredentialController {
             String message = retailUserService.resetPassword(retailUser,custResetPassword);
             redirectAttributes.addAttribute("success", message);
             return "true";
-        } catch (PasswordMismatchException e){
-            return e.getMessage();
         } catch (PasswordException e){
             return e.getMessage();
         } catch (Exception ex){

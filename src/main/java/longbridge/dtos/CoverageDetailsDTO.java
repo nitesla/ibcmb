@@ -1,8 +1,5 @@
 package longbridge.dtos;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import java.util.List;
 import java.util.Set;
 
 public class CoverageDetailsDTO {

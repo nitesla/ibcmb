@@ -52,8 +52,6 @@ public class AppInit implements InitializingBean {
     @Autowired
     private CodeRepo codeRepository;
 
-    private Role defaultRole;
-
     @Value("${auto.load.file.code:codes.csv}")
     private String codesFile;
 
@@ -88,8 +86,7 @@ public class AppInit implements InitializingBean {
         role.setPermissions(permissions);
         role.setUserType(UserType.ADMIN);
         logger.info("Creating default Profile ....");
-        defaultRole = rolerepository.save(role);
-        return defaultRole;
+        return rolerepository.save(role);
     }
 
     private void loadCodes() {

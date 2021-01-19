@@ -397,7 +397,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Completed transfers content" + page.getContent());
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -419,7 +419,7 @@ public class TransferServiceImpl implements TransferService {
         List<TransferRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         logger.trace("Completed transfers", dtOs);
         long t = page.getTotalElements();
-        return new PageImpl<TransferRequestDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
     @Override
     public List<TransRequest> getLastTenTransactionsForAccount(String s) {

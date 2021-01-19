@@ -1,7 +1,6 @@
 package longbridge.controllers.operations;
 
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CoverageDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.UpdateCoverageCmd;
 import longbridge.exception.InternetBankingException;
@@ -35,7 +34,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 

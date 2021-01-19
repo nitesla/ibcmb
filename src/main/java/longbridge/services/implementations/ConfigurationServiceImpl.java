@@ -88,7 +88,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		Page<Setting> page = settingRepo.findAll(pageDetails);
 		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-        return new PageImpl<SettingDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 	}
 
 	private List<SettingDTO> convertEntitiesToDTOs(List<Setting> content) {
@@ -157,7 +157,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		Page<Setting> page = settingRepo.findUsingPattern(pattern, pageDetails);
 		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-        return new PageImpl<SettingDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 	}
 
 }

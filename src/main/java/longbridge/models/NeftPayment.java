@@ -12,21 +12,21 @@ import java.util.List;
 @Where(clause = "delFlag='N'")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NeftPayment extends AbstractEntity {
-    @Column(name = "appid")
+
     private String appId;
-    @Column(name = "bankcode")
+
     private String bankCode;
-    @Column(name = "totalvalue")
+
     private String totalValue;
-    @Column(name = "msgid")
+
     private String msgId;
-    @Column(name = "datee")
+
     private LocalDateTime date = LocalDateTime.now();
-    @Column(name = "itemcount")
+
     private int itemCount;
-    @Column(name = "settlementtimef")
+
     private LocalDateTime settlementTimeF;
-    @Column(name = "status")
+
     private String status;
     @OneToMany
     @JoinTable(name = "neftpayment_itemdatastore")

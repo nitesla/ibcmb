@@ -12,53 +12,53 @@ import java.time.LocalDateTime;
 @Where(clause = "delFlag='N'")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDataStore extends AbstractEntity {
-    @Column(name = "itemsequenceno")
+
     private String itemSequenceNo;
-    @Column(name = "serialno")
+
     private String serialNo;
-    @Column(name = "sortcode")
+
     private String sortCode;
-    @Column(name = "accountno")
+
     private String accountNo;
-    @Column(name = "trancode")
+
     private String tranCode;
-    @Column(name = "amount")
+
     private BigDecimal amount;
-    @Column(name = "currency")
+
     private String currency;
-    @Column(name = "bankoffirstdepositdate")
+
     private LocalDateTime bankOfFirstDepositDate;
-    @Column(name = "bankoffirstdepositsortcode")
+
     private String bankOfFirstDepositSortCode;
-    @Column(name = "presentmentdate")
+
     private LocalDateTime presentmentDate;
-    @Column(name = "payername")
+
     private String payerName;
-    @Column(name = "beneficiary")
+
     private String beneficiary;
-    @Column(name = "beneficiaryaccountno")
+
     private String beneficiaryAccountNo;
-    @Column(name = "bvnbeneficiary")
+
     private String bvnBeneficiary;
-    @Column(name = "bvnpayer")
+
     private String bvnPayer;
-    @Column(name = "collectiontype")
+
     private String collectionType;
-    @Column(name = "instrumenttype")
+
     private String instrumentType;
-    @Column(name = "narration")
+
     private String narration;
-    @Column(name = "presentingbanksortcode")
+
     private String presentingBankSortCode;
-    @Column(name = "specialclearing")
+
     private boolean specialClearing;
-    @Column(name = "instrumentdate")
+
     private LocalDateTime instrumentDate;
-    @Column(name = "micrrepairind")
+
     private String MICRRepairInd;
-    @Column(name = "settlementtime")
+
     private LocalDateTime settlementTime;
-    @Column(name = "cycleno")
+
     private String cycleNo;
 
     public ItemDataStore() {

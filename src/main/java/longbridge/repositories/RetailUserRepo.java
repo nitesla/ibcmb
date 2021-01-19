@@ -1,6 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.dtos.RetailUserDTO;
 import longbridge.models.RetailUser;
 import longbridge.models.Role;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 
 
@@ -33,7 +31,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
 
     @Modifying
-    @Query("update RetailUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
+    @Query("update RetailUser  u set u.lastLoginDate = current_timestamp , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
 
     @Query("select c from RetailUser c where lower(c.userName) like %:userName%  and lower(c.lastName) like %:lastName% " +
@@ -45,7 +43,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
                                   Pageable pageable);
 
     @Modifying(clearAutomatically=true)
-    @Query(value="update retail_user set feed_back_status=?1 where id=?2",nativeQuery=true)
+    @Query(value="update RetailUser u set u.feedBackStatus=:status where u.id=:id")
     void updateFeedBackStatus(String status, Long id);
 
 

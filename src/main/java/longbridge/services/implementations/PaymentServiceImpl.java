@@ -36,7 +36,6 @@ import java.util.Random;
 public class PaymentServiceImpl implements PaymentService {
 
     private final BillPaymentRepo billPaymentRepo;
-    private RetailUserRepo retailUserRepo;
     @Autowired
     private IntegrationService integrationService;
     private final MessageSource messageSource;
@@ -47,9 +46,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final TransferErrorService transferErrorService;
 
     @Autowired
-    public PaymentServiceImpl(BillPaymentRepo billPaymentRepo, RetailUserRepo retailUserRepo, MessageSource messageSource, BillerRepo billersRepo, PaymentItemRepo paymentItemRepo, TransferErrorService transferErrorService) {
+    public PaymentServiceImpl(BillPaymentRepo billPaymentRepo,  MessageSource messageSource, BillerRepo billersRepo, PaymentItemRepo paymentItemRepo, TransferErrorService transferErrorService) {
         this.billPaymentRepo = billPaymentRepo;
-        this.retailUserRepo = retailUserRepo;
         this.messageSource = messageSource;
         this.billersRepo = billersRepo;
         this.paymentItemRepo = paymentItemRepo;
@@ -135,7 +133,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getId().toString(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 
     }
 
@@ -147,7 +145,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getId().toString(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 
     }
 
@@ -159,7 +157,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getId().toString(),pattern, pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<BillPaymentDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 
     }
 
@@ -171,7 +169,7 @@ public class PaymentServiceImpl implements PaymentService {
         Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getId().toString(),pattern, pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<BillPaymentDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
 
     }
 

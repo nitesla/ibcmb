@@ -6,7 +6,6 @@ public class AuditBlob {
     private Object now;
     private Object before;
 
-    private boolean isModified;
 
     public Object getNow() {
         return now;
@@ -33,9 +32,6 @@ public class AuditBlob {
         this.name = name;
     }
 
-    public void setModified(boolean modified) {
-        isModified = modified;
-    }
 
     public boolean isModified() {
         if(now == null && before == null)

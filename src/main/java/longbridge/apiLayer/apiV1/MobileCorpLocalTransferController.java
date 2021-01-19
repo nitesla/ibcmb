@@ -158,7 +158,7 @@ public class MobileCorpLocalTransferController {
                     .collect(Collectors.toList());
             logger.info("beneficiary size {} ", beneficiaries.size());
 
-            beneficiaries.forEach(i->{mobileCorpLocalBeneficiaryDTOS.add(modelMapper.map(i, MobileCorpLocalBeneficiaryDTO.class));});
+            beneficiaries.forEach(i-> mobileCorpLocalBeneficiaryDTOS.add(modelMapper.map(i, MobileCorpLocalBeneficiaryDTO.class)));
             if (!mobileCorpLocalBeneficiaryDTOS.isEmpty()) {
                 responseData.setMessage(message);
                 responseData.setData(mobileCorpLocalBeneficiaryDTOS);

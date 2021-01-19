@@ -76,13 +76,11 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     public void delete(Iterable<? extends T> entities) {
 
         Assert.notNull(entities, "The given Iterable of entities can not be null!");
-        Iterator<? extends T> var2 = entities.iterator();
 
-        while (var2.hasNext()) {
-            T entity = var2.next();
+        for (T entity : entities) {
             entity.setDelFlag("Y");
             entity.setDeletedOn(new Date());
-            System.out.println("the entity to be deleted flag "+entity.getDelFlag() +" id "+entity.getId());
+            System.out.println("the entity to be deleted flag " + entity.getDelFlag() + " id " + entity.getId());
 
             super.save(entity);
         }
@@ -109,10 +107,8 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     @Override
     public void deleteInBatch(Iterable<T> entities) {
         Assert.notNull(entities, "The given Iterable of entities can not be null!");
-        Iterator<? extends T> var2 = entities.iterator();
 
-        while (var2.hasNext()) {
-            T entity = var2.next();
+        for (T entity : entities) {
             safeDelete(entity);
         }
     }
@@ -120,10 +116,8 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     @Transactional
     public void deleteAll()
     {
-        Iterator<T> var1 = this.findAll().iterator();
 
-        while (var1.hasNext()) {
-            T entity = var1.next();
+        for (T entity : this.findAll()) {
             safeDelete(entity);
         }
     }

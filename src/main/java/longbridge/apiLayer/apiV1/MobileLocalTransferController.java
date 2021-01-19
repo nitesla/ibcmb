@@ -86,7 +86,7 @@ public class MobileLocalTransferController {
             responseData.setMessage(e.getMessage());
             responseData.setError(true);
           
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -140,7 +140,7 @@ public class MobileLocalTransferController {
             responseData.setMessage(e.getMessage());
             responseData.setCode("99");
             responseData.setError(true);
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -165,7 +165,7 @@ public class MobileLocalTransferController {
             );
             logger.info("beneficiary size {} ", beneficiaries.size());
 
-            beneficiaries.forEach(i->{mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class));});
+            beneficiaries.forEach(i-> mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class)));
             if (!mobileRetailBeneficiaryDTOS.isEmpty()) {
                 responseData.setMessage(message);
                 responseData.setData(mobileRetailBeneficiaryDTOS);

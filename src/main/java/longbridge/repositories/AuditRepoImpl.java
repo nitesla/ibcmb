@@ -15,6 +15,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metamodel.spi.MetamodelImplementor;
 import org.hibernate.persister.entity.Queryable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,8 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
     private EntityManager em;
     private AuditConfigService auditCfgService;
 
+
+    @Qualifier("dataSource")
     @Autowired
     private DataSource datasource;
 
@@ -222,9 +225,7 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
     }
 
     private List<AuditBlob> compact(Map<String, Object> revisionMap, Map<String, Object> newMap) {
-        List<AuditBlob> baggage = revisionMap.keySet().stream().filter(k -> !k.endsWith("_mod")).map(k -> {
-            return AuditBlob.AuditBlobBuilder.anAuditBlob().withName(k).withNow(revisionMap.get(k)).withBefore(newMap.get(k)).build();
-        }).collect(Collectors.toList());
+        List<AuditBlob> baggage = revisionMap.keySet().stream().filter(k -> !k.endsWith("_mod")).map(k -> AuditBlob.AuditBlobBuilder.anAuditBlob().withName(k).withNow(revisionMap.get(k)).withBefore(newMap.get(k)).build()).collect(Collectors.toList());
         return baggage;
     }
 

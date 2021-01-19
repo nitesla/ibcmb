@@ -152,7 +152,7 @@ public class CodeServiceImpl implements CodeService {
         Page<Code> page = codeRepo.findByType(codeType, pageDetails);
         List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
         long t = page.getTotalElements();
-        return new PageImpl<CodeDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class CodeServiceImpl implements CodeService {
         long t = page.getTotalElements();
 
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        return new PageImpl<CodeDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 

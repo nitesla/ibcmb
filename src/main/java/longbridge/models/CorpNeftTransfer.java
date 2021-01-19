@@ -4,6 +4,7 @@ import longbridge.response.NeftResponse;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.StringJoiner;
 
 @Entity
 public class CorpNeftTransfer {
@@ -14,54 +15,54 @@ public class CorpNeftTransfer {
     private Long Id;
 
 
-    @Column(name = "itemsequenceno")
-    private String ItemSequenceNo;
-    @Column(name = "serialno")
-    private String SerialNo;
-    @Column(name = "sortcode")
-    private String SortCode;
-    @Column(name = "accountno")
-    private String AccountNo;
-    @Column(name = "trancode")
-    private String TranCode;
-    @Column(name = "amount")
-    private BigDecimal Amount;
-    @Column(name = "currency")
-    private String Currency;
-    @Column(name = "bankoffirstdepositdate")
-    private String BankOfFirstDepositDate;
-    @Column(name = "bankoffirstdepositsortcode")
-    private String BankOfFirstDepositSortCode;
-    @Column(name = "presentmentdate")
-    private String PresentmentDate;
-    @Column(name = "payername")
-    private String PayerName;
-    @Column(name = "beneficiary")
-    private String Beneficiary;
-    @Column(name = "beneficiaryacctno")
-    private String BeneficiaryAccountNo;
-    @Column(name = "bvnbeneficiary")
+
+    private String itemSequenceNo;
+
+    private String serialNo;
+
+    private String sortCode;
+
+    private String accountNo;
+
+    private String tranCode;
+
+    private BigDecimal amount;
+
+    private String currency;
+
+    private String bankOfFirstDepositDate;
+
+    private String bankOfFirstDepositSortCode;
+
+    private String presentmentDate;
+
+    private String payerName;
+
+    private String beneficiary;
+
+    private String beneficiaryAccountNo;
+
     private String BVNBeneficiary;
-    @Column(name = "bvnpayer")
+
     private String BVNPayer;
-    @Column(name = "collectiontype")
-    private String CollectionType;
-    @Column(name = "instrumenttype")
-    private String InstrumentType;
-    @Column(name = "narration")
-    private String Narration;
-    @Column(name = "presentingbanksortcode")
-    private String PresentingBankSortCode;
-    @Column(name = "specialclearing")
-    private boolean SpecialClearing;
-    @Column(name = "instrumentdate")
-    private String InstrumentDate;
-    @Column(name = "micrepairind")
+
+    private String collectionType;
+
+    private String instrumentType;
+
+    private String narration;
+
+    private String presentingBankSortCode;
+
+    private boolean specialClearing;
+
+    private String instrumentDate;
+
     private String MICRRepairInd;
-    @Column(name = "settlementtime")
-    private String SettlementTime;
-    @Column(name = "cycleno")
-    private String CycleNo;
+
+    private String settlementTime;
+
+    private String cycleNo;
 
     @ManyToOne
     private Corporate corporate;
@@ -81,209 +82,195 @@ public class CorpNeftTransfer {
     }
 
     public String getItemSequenceNo() {
-        return ItemSequenceNo;
+        return itemSequenceNo;
+    }
+
+    public void setItemSequenceNo(String itemSequenceNo) {
+        this.itemSequenceNo = itemSequenceNo;
     }
 
     public String getSerialNo() {
-        return SerialNo;
+        return serialNo;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
     }
 
     public String getSortCode() {
-        return SortCode;
+        return sortCode;
+    }
+
+    public void setSortCode(String sortCode) {
+        this.sortCode = sortCode;
     }
 
     public String getAccountNo() {
-        return AccountNo;
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
     }
 
     public String getTranCode() {
-        return TranCode;
+        return tranCode;
+    }
+
+    public void setTranCode(String tranCode) {
+        this.tranCode = tranCode;
     }
 
     public BigDecimal getAmount() {
-        return Amount;
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getCurrency() {
-        return Currency;
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getBankOfFirstDepositDate() {
-        return BankOfFirstDepositDate;
+        return bankOfFirstDepositDate;
+    }
+
+    public void setBankOfFirstDepositDate(String bankOfFirstDepositDate) {
+        this.bankOfFirstDepositDate = bankOfFirstDepositDate;
     }
 
     public String getBankOfFirstDepositSortCode() {
-        return BankOfFirstDepositSortCode;
+        return bankOfFirstDepositSortCode;
+    }
+
+    public void setBankOfFirstDepositSortCode(String bankOfFirstDepositSortCode) {
+        this.bankOfFirstDepositSortCode = bankOfFirstDepositSortCode;
     }
 
     public String getPresentmentDate() {
-        return PresentmentDate;
+        return presentmentDate;
+    }
+
+    public void setPresentmentDate(String presentmentDate) {
+        this.presentmentDate = presentmentDate;
     }
 
     public String getPayerName() {
-        return PayerName;
+        return payerName;
+    }
+
+    public void setPayerName(String payerName) {
+        this.payerName = payerName;
     }
 
     public String getBeneficiary() {
-        return Beneficiary;
+        return beneficiary;
+    }
+
+    public void setBeneficiary(String beneficiary) {
+        this.beneficiary = beneficiary;
     }
 
     public String getBeneficiaryAccountNo() {
-        return BeneficiaryAccountNo;
+        return beneficiaryAccountNo;
+    }
+
+    public void setBeneficiaryAccountNo(String beneficiaryAccountNo) {
+        this.beneficiaryAccountNo = beneficiaryAccountNo;
     }
 
     public String getBVNBeneficiary() {
         return BVNBeneficiary;
     }
 
-    public String getBVNPayer() {
-        return BVNPayer;
-    }
-
-    public String getCollectionType() {
-        return CollectionType;
-    }
-
-    public String getInstrumentType() {
-        return InstrumentType;
-    }
-
-    public String getNarration() {
-        return Narration;
-    }
-
-    public String getPresentingBankSortCode() {
-        return PresentingBankSortCode;
-    }
-
-    public boolean getSpecialClearing() {
-        return SpecialClearing;
-    }
-
-    public String getInstrumentDate() {
-        return InstrumentDate;
-    }
-
-    public String getMICRRepairInd() {
-        return MICRRepairInd;
-    }
-
-    public String getSettlementTime() {
-        return SettlementTime;
-    }
-
-    public String getCycleNo() {
-        return CycleNo;
-    }
-
-    // Setter Methods
-
-    public void setItemSequenceNo(String ItemSequenceNo) {
-        this.ItemSequenceNo = ItemSequenceNo;
-    }
-
-    public void setSerialNo(String SerialNo) {
-        this.SerialNo = SerialNo;
-    }
-
-    public void setSortCode(String SortCode) {
-        this.SortCode = SortCode;
-    }
-
-    public void setAccountNo(String AccountNo) {
-        this.AccountNo = AccountNo;
-    }
-
-    public void setTranCode(String TranCode) {
-        this.TranCode = TranCode;
-    }
-
-    public void setAmount(BigDecimal Amount) {
-        this.Amount = Amount;
-    }
-
-    public void setCurrency(String Currency) {
-        this.Currency = Currency;
-    }
-
-    public void setBankOfFirstDepositDate(String BankOfFirstDepositDate) {
-        this.BankOfFirstDepositDate = BankOfFirstDepositDate;
-    }
-
-    public void setBankOfFirstDepositSortCode(String BankOfFirstDepositSortCode) {
-        this.BankOfFirstDepositSortCode = BankOfFirstDepositSortCode;
-    }
-
-    public void setPresentmentDate(String PresentmentDate) {
-        this.PresentmentDate = PresentmentDate;
-    }
-
-    public void setPayerName(String PayerName) {
-        this.PayerName = PayerName;
-    }
-
-    public void setBeneficiary(String Beneficiary) {
-        this.Beneficiary = Beneficiary;
-    }
-
-    public void setBeneficiaryAccountNo(String BeneficiaryAccountNo) {
-        this.BeneficiaryAccountNo = BeneficiaryAccountNo;
-    }
-
     public void setBVNBeneficiary(String BVNBeneficiary) {
         this.BVNBeneficiary = BVNBeneficiary;
+    }
+
+    public String getBVNPayer() {
+        return BVNPayer;
     }
 
     public void setBVNPayer(String BVNPayer) {
         this.BVNPayer = BVNPayer;
     }
 
-    public void setCollectionType(String CollectionType) {
-        this.CollectionType = CollectionType;
+    public String getCollectionType() {
+        return collectionType;
     }
 
-    public void setInstrumentType(String InstrumentType) {
-        this.InstrumentType = InstrumentType;
+    public void setCollectionType(String collectionType) {
+        this.collectionType = collectionType;
     }
 
-    public void setNarration(String Narration) {
-        this.Narration = Narration;
+    public String getInstrumentType() {
+        return instrumentType;
     }
 
-    public void setPresentingBankSortCode(String PresentingBankSortCode) {
-        this.PresentingBankSortCode = PresentingBankSortCode;
+    public void setInstrumentType(String instrumentType) {
+        this.instrumentType = instrumentType;
     }
 
-    public void setSpecialClearing(boolean SpecialClearing) {
-        this.SpecialClearing = SpecialClearing;
+    public String getNarration() {
+        return narration;
     }
 
-    public void setInstrumentDate(String InstrumentDate) {
-        this.InstrumentDate = InstrumentDate;
+    public void setNarration(String narration) {
+        this.narration = narration;
+    }
+
+    public String getPresentingBankSortCode() {
+        return presentingBankSortCode;
+    }
+
+    public void setPresentingBankSortCode(String presentingBankSortCode) {
+        this.presentingBankSortCode = presentingBankSortCode;
+    }
+
+    public boolean isSpecialClearing() {
+        return specialClearing;
+    }
+
+    public void setSpecialClearing(boolean specialClearing) {
+        this.specialClearing = specialClearing;
+    }
+
+    public String getInstrumentDate() {
+        return instrumentDate;
+    }
+
+    public void setInstrumentDate(String instrumentDate) {
+        this.instrumentDate = instrumentDate;
+    }
+
+    public String getMICRRepairInd() {
+        return MICRRepairInd;
     }
 
     public void setMICRRepairInd(String MICRRepairInd) {
         this.MICRRepairInd = MICRRepairInd;
     }
 
-    public void setSettlementTime(String SettlementTime) {
-        this.SettlementTime = SettlementTime;
+    public String getSettlementTime() {
+        return settlementTime;
     }
 
-    public void setCycleNo(String CycleNo) {
-        this.CycleNo = CycleNo;
+    public void setSettlementTime(String settlementTime) {
+        this.settlementTime = settlementTime;
     }
 
-    public boolean isSpecialClearing() {
-        return SpecialClearing;
+    public String getCycleNo() {
+        return cycleNo;
     }
 
-    public NeftResponse getNeftResponse() {
-        return neftResponse;
-    }
-
-    public void setNeftResponse(NeftResponse neftResponse) {
-        this.neftResponse = neftResponse;
+    public void setCycleNo(String cycleNo) {
+        this.cycleNo = cycleNo;
     }
 
     public Corporate getCorporate() {
@@ -294,36 +281,25 @@ public class CorpNeftTransfer {
         this.corporate = corporate;
     }
 
+    public NeftResponse getNeftResponse() {
+        return neftResponse;
+    }
+
+    public void setNeftResponse(NeftResponse neftResponse) {
+        this.neftResponse = neftResponse;
+    }
+
     @Override
     public String toString() {
-        return "CorpNeftTransfer{" +
-                "Id=" + Id +
-                ", ItemSequenceNo='" + ItemSequenceNo + '\'' +
-                ", SerialNo='" + SerialNo + '\'' +
-                ", SortCode='" + SortCode + '\'' +
-                ", AccountNo='" + AccountNo + '\'' +
-                ", TranCode='" + TranCode + '\'' +
-                ", Amount=" + Amount +
-                ", Currency='" + Currency + '\'' +
-                ", BankOfFirstDepositDate='" + BankOfFirstDepositDate + '\'' +
-                ", BankOfFirstDepositSortCode='" + BankOfFirstDepositSortCode + '\'' +
-                ", PresentmentDate='" + PresentmentDate + '\'' +
-                ", PayerName='" + PayerName + '\'' +
-                ", Beneficiary='" + Beneficiary + '\'' +
-                ", BeneficiaryAccountNo='" + BeneficiaryAccountNo + '\'' +
-                ", BVNBeneficiary='" + BVNBeneficiary + '\'' +
-                ", BVNPayer='" + BVNPayer + '\'' +
-                ", CollectionType='" + CollectionType + '\'' +
-                ", InstrumentType='" + InstrumentType + '\'' +
-                ", Narration='" + Narration + '\'' +
-                ", PresentingBankSortCode='" + PresentingBankSortCode + '\'' +
-                ", SpecialClearing=" + SpecialClearing +
-                ", InstrumentDate='" + InstrumentDate + '\'' +
-                ", MICRRepairInd='" + MICRRepairInd + '\'' +
-                ", SettlementTime='" + SettlementTime + '\'' +
-                ", CycleNo='" + CycleNo + '\'' +
-                ", corporate=" + corporate +
-                ", neftResponse=" + neftResponse +
-                '}';
+        return new StringJoiner(", ", CorpNeftTransfer.class.getSimpleName() + "[", "]")
+                .add("Id=" + Id)
+                .add("itemSequenceNo='" + itemSequenceNo + "'")
+                .add("serialNo='" + serialNo + "'")
+                .add("sortCode='" + sortCode + "'")
+                .add("accountNo='" + accountNo + "'")
+                .add("tranCode='" + tranCode + "'")
+                .add("currency='" + currency + "'")
+                .add("payerName='" + payerName + "'")
+                .toString();
     }
 }

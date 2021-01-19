@@ -96,7 +96,7 @@ public class ApplicationErrorController implements ErrorController {
 
         if (!"405".equals(statusCode)) {
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.append("Time: " + time + "\n")
+            messageBuilder.append("Time: ").append(time).append("\n")
                     .append("Path: " + path + "\n")
                     .append("Status Code: " + statusCode + "\n")
                     .append("Error: " + error + "\n")

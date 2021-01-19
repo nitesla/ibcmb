@@ -913,7 +913,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Page<CorporateUser> page = corporateUserRepo.findByCorporateId(corpId, pageDetails);
         List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
@@ -924,7 +924,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -1323,7 +1323,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             dtOs.add(corporateUserDTO);
         }
         long t = page.getTotalElements();
-        return new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     private CorporateUser getCurrentUser() {

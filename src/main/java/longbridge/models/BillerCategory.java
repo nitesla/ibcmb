@@ -10,20 +10,15 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "BILLERCATEGORY")
 public class BillerCategory extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "categoryid")
     private Long categoryId;
-    @Column(name = "categoryname")
     private String categoryName;
-    @Column(name = "categorydescription")
     private String categoryDescription;
-    @Column(name = "enabled")
     private Boolean enabled;
 
 

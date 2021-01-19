@@ -166,13 +166,7 @@ public class MobileOwnTransferController {
                 transferUtils.validateTransferCriteria();
                 transferService.validateTransfer(transferRequestDTO);
 
-            } catch (InternetBankingTransferException e) {
-                logger.error("Error making transfer {} ", e);
-                responseData.setMessage(e.getMessage());
-                responseData.setCode("99");
-                responseData.setError(true);
-                return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("Error making transfer {} ", e);
                 responseData.setMessage(e.getMessage());
                 responseData.setCode("99");

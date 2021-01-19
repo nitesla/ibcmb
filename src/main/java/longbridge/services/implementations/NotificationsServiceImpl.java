@@ -57,7 +57,7 @@ public class NotificationsServiceImpl implements NotificationsService {
         List<NotificationsDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<NotificationsDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override

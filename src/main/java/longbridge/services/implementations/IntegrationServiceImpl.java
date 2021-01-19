@@ -4,8 +4,6 @@ package longbridge.services.implementations;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
 import longbridge.api.*;
 import longbridge.dtos.*;
 import longbridge.dtos.apidtos.NeftResponseDTO;
@@ -1833,7 +1831,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				coverageDetails.get(coverageKey).add(coverageValue);
 			}
 			else {
-				coverageDetails.put(coverageKey, new ArrayList(Arrays.asList((coverageValue))));
+				coverageDetails.put(coverageKey, new ArrayList(Collections.singletonList((coverageValue))));
 			}
 		}
 	}
