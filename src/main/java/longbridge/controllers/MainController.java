@@ -14,6 +14,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,6 +66,9 @@ public class MainController {
     private LoggedUserService loggedUserService;
     private Integer sessionTimeout = 5 * 60 ;
 
+    @Value("${feedback.url}")
+    private String feedbackUrl;
+
     @PostConstruct
     void computeSessionTimeout(){
         SettingDTO settingDTO = configurationService.getSettingByName("SESSION_TIMEOUT");
@@ -112,7 +116,8 @@ public class MainController {
         cookie.setValue("" + sessionTimeout);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return new ModelAndView("retpagefeedback", "error", error);
+//        return new ModelAndView("retpagefeedback", "error", error);
+        return  new ModelAndView("redirect:" + feedbackUrl);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
@@ -139,7 +144,8 @@ public class MainController {
 
         request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
         //clearSession();
-        return new ModelAndView("corppagefeedback", "error", error);
+//        return new ModelAndView("corppagefeedback", "error", error);
+        return  new ModelAndView("redirect:" + feedbackUrl);
 
     }
 
