@@ -105,7 +105,7 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
             TransferType tranType = dto.getTransferType();
             switch (tranType) {
-                case CORONATION_BANK_TRANSFER: {
+                case WITHIN_BANK_TRANSFER: {
                     return "redirect:/retail/transfer/local";
                 }
                 case INTER_BANK_TRANSFER: {

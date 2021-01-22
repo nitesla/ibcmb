@@ -130,7 +130,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 				logger.info("beneficary bank is  {}", savedDebit.toString());
 
 				if(savedDebit.getCorpLocalBeneficiary().getBeneficiaryBank().equals(bankCode)){
-					transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+					transferRequest.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
 				}else{
 					transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
 				}
@@ -195,7 +195,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 			transferRequest.setFinancialInstitution(financialInstitution);
 
 			if (directDebit.getBeneficiary().getBeneficiaryBank().equals(bankCode)) {
-				transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+				transferRequest.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
 			} else {
 				transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
 			}
@@ -230,7 +230,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 			FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(corpDirectDebit.getCorpLocalBeneficiary().getBeneficiaryBank());
 			transferRequest.setFinancialInstitution(financialInstitution);
 			if (corpDirectDebit.getCorpLocalBeneficiary().getBeneficiaryBank().equals(bankCode)) {
-				transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+				transferRequest.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
 			} else {
 				transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
 			}
@@ -408,83 +408,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 	    return  result ;
     }
 
-    /*private List<DirectDebitDTO> convertEntitiesToDirectDebitsDTOs(List<DirectDebit> directDebits){
-		return directDebits.stream().map(i-> modelMapper.map(i,DirectDebitDTO.class)).collect(Collectors.toList());
-	}
-    */
 
-	/*private TransferRequestDTO convertDirectDebitToTransferRequestDTO(DirectDebitDTO directDebit) throws TransferException {
-		TransferRequestDTO transferRequest = new TransferRequestDTO();
-		transferRequest.setAmount(directDebit.getAmount());
-		transferRequest.setBeneficiaryAccountName(directDebit.getBeneficiary().getAccountName());
-		transferRequest.setBeneficiaryAccountNumber(directDebit.getBeneficiary().getAccountNumber());
-		transferRequest.setCustomerAccountNumber(directDebit.getDebitAccount());
-		FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(directDebit.getBeneficiary().getBeneficiaryBank());
-		transferRequest.setFinancialInstitution(financialInstitution);
-		transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
-//		transferRequest.setReferenceNumber(referenceNumber);
-		transferRequest.setRemarks(directDebit.getNarration());
-		if(directDebit.getBeneficiary().getBeneficiaryBank().equals(bankCode)){
-			transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-		}else{
-			transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-		}
-		return transferRequest;
-	}
-*/
-
-
-	/*public CorpTransferRequestDTO convertCorpTransEntityToDTO(CorpTransRequest corpTransRequest) {
-		CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
-		transferRequestDTO.setId(corpTransRequest.getId());
-		transferRequestDTO.setVersion(corpTransRequest.getVersion());
-		transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
-		transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
-		transferRequestDTO.setFinancialInstitution(corpTransRequest.getFinancialInstitution());
-		transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getBeneficiaryAccountNumber());
-		transferRequestDTO.setBeneficiaryAccountName(corpTransRequest.getBeneficiaryAccountName());
-		transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
-		transferRequestDTO.setStatus(corpTransRequest.getStatus());
-		transferRequestDTO.setReferenceNumber(corpTransRequest.getReferenceNumber());
-		transferRequestDTO.setNarration(corpTransRequest.getNarration());
-		transferRequestDTO.setStatusDescription(corpTransRequest.getStatusDescription());
-		transferRequestDTO.setAmount(corpTransRequest.getAmount());
-		transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
-		transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
-		if (corpTransRequest.getTransferAuth() != null) {
-			transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
-		}
-		return transferRequestDTO;
-	}
-*/
-	/*private DirectDebitDTO convertEntityToDTO(DirectDebit directDebit) {
-		return modelMapper.map(directDebit, DirectDebitDTO.class);
-	}*/
-
-/*@Override
-	public void performDirectDebit(DirectDebit directDebit) throws TransferException {
-		TransferRequestDTO transferRequest = new TransferRequestDTO();
-		transferRequest.setAmount(directDebit.getAmount());
-		transferRequest.setBeneficiaryAccountName(directDebit.getBeneficiary().getAccountName());
-		transferRequest.setBeneficiaryAccountNumber(directDebit.getBeneficiary().getAccountNumber());
-		transferRequest.setCustomerAccountNumber(directDebit.getDebitAccount());
-		FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(directDebit.getBeneficiary().getBeneficiaryBank());
-		transferRequest.setFinancialInstitution(financialInstitution);
-		transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
-//		transferRequest.setReferenceNumber(referenceNumber);
-		transferRequest.setRemarks(directDebit.getNarration());
-
-		//TODO use the correct bank code of coronation merchant bank
-		if(directDebit.getBeneficiary().getBeneficiaryBank().equals("CORONAION")){
-			transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-		}else{
-			transferRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-		}
-		transferService.makeBackgroundTransfer(transferRequest,directDebit);
-		directDebit.proceedToNextDebitDate();
-		directDebitRepo.save(directDebit);
-	}
-*/
 
 
 }

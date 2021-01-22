@@ -376,7 +376,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		TransferType type = transRequest.getTransferType();
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
-//		transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 		TransferDetails response = null;
 		String uri = URI + "/transfer/local";
 		Map<String, String> params = new HashMap<>();
@@ -421,9 +420,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		validate(account);
 		switch (type) {
-			case CORONATION_BANK_TRANSFER:
+			case WITHIN_BANK_TRANSFER:
 			{
-				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+				transRequest.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
 				String uri = URI + "/transfer/local";
 				try {
 
@@ -659,10 +658,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 		Account account = accountRepo.findFirstByAccountNumber(transRequest.getCustomerAccountNumber());
 		switch (type) {
-			case CORONATION_BANK_TRANSFER:
+			case WITHIN_BANK_TRANSFER:
 
 			{
-				transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+				transRequest.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
 				TransferDetails response;
 				String uri = URI + "/transfer/local";
 				Map<String, String> params = new HashMap<>();
@@ -1169,28 +1168,28 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			assessmentDetailsRequest.setHash(EncryptionUtil.getSHA512(appId+assessmentDetailsRequest.getCustomsCode()
 					+ assessmentDetailsRequest.getSadAsmt().getSADAssessmentSerial()+secretKey, null));
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/retrieveassessmentdetail");
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl+"/customduty/retrieveassessmentdetail");
 			logger.debug("Fetching data assessmentDetailsRequest: {}", assessmentDetailsRequest);
 			CustomAssessmentDetail response = template.postForObject(CustomDutyUrl+"/customduty/retrieveassessmentdetail", assessmentDetailsRequest, CustomAssessmentDetail.class);
 			logger.debug("{}", response);
 			return response;
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service",e);
+			logger.error("Error calling bank service rest service",e);
 		}
 		return null;
 	}
 
 	public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest) {
 		try {
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl);
 			CustomsAreaCommand command = template.postForObject(CustomDutyUrl+"/customduty/getncscommand"
 					,customsAreaCommandRequest, CustomsAreaCommand.class);
-			logger.debug("Fetching data from coronation rest service via the url: {}", command);
+			logger.debug("Fetching data from bank rest service via the url: {}", command);
 			return command;
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service1",e);
+			logger.error("Error calling bank service rest service1",e);
 		}
 		return new CustomsAreaCommand();
 	}
@@ -1212,8 +1211,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("InitiatedBy",corpPaymentRequest.getCustomDutyPayment().getInitiatedBy());
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
 			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl);
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
@@ -1229,7 +1228,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return response;
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service",e);
+			logger.error("Error calling bank service rest service",e);
 		}
 		return null;
 	}
@@ -1249,8 +1248,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 			request.put("PaymentRef",corpPaymentRequest.getReferenceNumber());
 //			request.put("CustomerAccountNo",accessBeneficiaryAcct);
 			request.put("CustomerAccountNo",corpPaymentRequest.getCustomerAccountNumber());
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl);
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl+"/customduty/payassessment");
 			logger.debug("paymentNotificationRequest: {}", request);
 			CustomPaymentNotification response = template.postForObject(CustomDutyUrl+"/customduty/payassessment", request, CustomPaymentNotification.class);
 			logger.debug("payment notification Response: {}", response);
@@ -1260,7 +1259,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			return response;
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service",e);
+			logger.error("Error calling bank service rest service",e);
 		}
 		return null;
 	}
@@ -1271,20 +1270,20 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest){
 		try {
 			//if(corpPaymentRequest.getCustomDutyPayment().getPaymentStatus().equals("F")) {
-				logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+				logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl);
 				Map<String, String> request = new HashMap<>();
 				request.put("hash", EncryptionUtil.getSHA512(
 						appId + corpPaymentRequest.getCustomDutyPayment().getTranId() + secretKey, null));
 				request.put("appId", appId);
 				request.put("Id", corpPaymentRequest.getCustomDutyPayment().getTranId());
-				logger.debug("Fetching data from coronation rest service using: {}", request);
+				logger.debug("Fetching data from bank rest service using: {}", request);
 				CustomTransactionStatus transactionStatus = template.postForObject(CustomDutyUrl + "/customduty/checktransactionstatus", request, CustomTransactionStatus.class);
 				logger.info("the transaction status response {}", transactionStatus);
 				return transactionStatus;
 			//}
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service",e);
+			logger.error("Error calling bank service rest service",e);
 		}
 		return null;
 	}
@@ -1293,19 +1292,19 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public String getReciept(String tranId){
 
 		try {
-			logger.debug("Fetching data from coronation rest service via the url: {}", CustomDutyUrl);
+			logger.debug("Fetching data from bank rest service via the url: {}", CustomDutyUrl);
 			Map<String,String> request = new HashMap<>();
 			request.put("hash",EncryptionUtil.getSHA512(
 					appId+tranId+secretKey,null));
 			request.put("appId",appId);
 			request.put("tranId",tranId);
-			logger.debug("Fetching data from coronation rest service using: {}", request);
+			logger.debug("Fetching data from bank rest service using: {}", request);
 			String receipt= template.postForObject(CustomDutyUrl+"/customduty/getreceipt", request, String.class);
 			logger.info("the transaction status response length {}",receipt.length());
 			return receipt;
 		}
 		catch (Exception e){
-			logger.error("Error calling coronation service rest service",e);
+			logger.error("Error calling bank service rest service",e);
 		}
 		return null;
 	}

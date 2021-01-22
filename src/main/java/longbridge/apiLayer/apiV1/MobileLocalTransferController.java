@@ -246,7 +246,7 @@ public class MobileLocalTransferController {
                 }
 
             }
-            transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            transferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
             try {
 

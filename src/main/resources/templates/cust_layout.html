@@ -128,7 +128,7 @@
                                         <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a
                                                 th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own
                                             account transfers </a></li>
-                                        <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a
+                                        <li sec:authorize="hasAuthority('LOCAL_TRANSFER')"><a
                                                 th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer
                                             to Coronation account </a></li>
                                         <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a

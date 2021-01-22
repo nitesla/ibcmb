@@ -341,13 +341,13 @@ public class  AdminUserController {
     }
 
     @ResponseBody
-    @PostMapping("/submitTransferLimitForCoronationAccounts")
-    public String submitTransferLimitDetailsForCoronationAccounts(@RequestParam("accountNumber") String accountNumber,
-                                                                  @RequestParam("accountClass") String accountClass,
-                                                                  @RequestParam("limit") String limit,
-                                                                  @RequestParam("frequency") String frequency,
-                                                                  @RequestParam("bankUserType") String bankUserType,
-                                                                  @RequestParam("bankChoice") String bankChoice){
+    @PostMapping("/submitTransferLimitForBankAccounts")
+    public String submitTransferLimitDetailsForLocalAccounts(@RequestParam("accountNumber") String accountNumber,
+                                                             @RequestParam("accountClass") String accountClass,
+                                                             @RequestParam("limit") String limit,
+                                                             @RequestParam("frequency") String frequency,
+                                                             @RequestParam("bankUserType") String bankUserType,
+                                                             @RequestParam("bankChoice") String bankChoice){
         logger.info("accountNumber = " + accountNumber);
         logger.info("accountClass = " + accountClass);
         logger.info("limit = " + limit);

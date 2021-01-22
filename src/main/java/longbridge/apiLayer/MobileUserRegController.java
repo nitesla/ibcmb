@@ -56,6 +56,9 @@ public class MobileUserRegController {
     @Value("${antiphishingimagepath}")
     private String imagePath;
 
+    @Value("${mail.from}")
+    private String defaultEmail;
+
     @Autowired
     ModelMapper modelMapper;
 
@@ -74,7 +77,7 @@ public class MobileUserRegController {
             userRegDTO.setDob(birthDate);//added by GB
         }
         if(StringUtils.isBlank(email)){
-            email = "ib@coronationmb.com";
+            email = defaultEmail;
         }
 
         try{
@@ -238,7 +241,7 @@ public class MobileUserRegController {
         birthDate = "19-20-1970";
     }
     if (StringUtils.isBlank(email)) {
-        email = "ib@coronationmb.com";
+        email = defaultEmail;
     }
 
     RetailUserDTO retailUserDTO = new RetailUserDTO();

@@ -95,7 +95,7 @@ public class CorpLocalTransferController {
         try {
             System.out.println(corpTransferRequestDTO);
             corpTransferService.validateTransfer(corpTransferRequestDTO);
-            corpTransferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            corpTransferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("corpTransferRequest", corpTransferRequestDTO);
 
             return page + "pageiii";
@@ -117,7 +117,7 @@ public class CorpLocalTransferController {
         CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
         corpTransferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         corpTransferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
-        corpTransferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        corpTransferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
         corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
@@ -127,7 +127,7 @@ public class CorpLocalTransferController {
 
 
     @GetMapping("/new")
-    public String addCoronationBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, RedirectAttributes redirectAttributes) throws Exception {
+    public String addWithinBankBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, RedirectAttributes redirectAttributes) throws Exception {
 
         try {
             transferUtils.validateTransferCriteria();
@@ -153,7 +153,7 @@ public class CorpLocalTransferController {
         CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
         corpTransferRequestDTO.setBeneficiaryAccountName(corpLocalBeneficiaryDTO.getAccountName());
         corpTransferRequestDTO.setBeneficiaryAccountNumber(corpLocalBeneficiaryDTO.getAccountNumber());
-        corpTransferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        corpTransferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
         corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         request.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryDTO);
@@ -178,7 +178,7 @@ public class CorpLocalTransferController {
         model.addAttribute("corpTransferRequest", requestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null)
             model.addAttribute("beneficiary", request.getSession().getAttribute("Lbeneficiary"));
-        requestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        requestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
 
         return page + "pageii";
     }

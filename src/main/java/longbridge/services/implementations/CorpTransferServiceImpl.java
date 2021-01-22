@@ -740,7 +740,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new InternetBankingTransferException(TransferExceptions.INVALID_AMOUNT.toString());
 
 
-        if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
+        if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.WITHIN_BANK_TRANSFER)) {
             AccountDetails sourceAccount = integrationService.viewAccountDetails(dto.getCustomerAccountNumber());
             AccountDetails destAccount = integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber());
             if (sourceAccount == null)

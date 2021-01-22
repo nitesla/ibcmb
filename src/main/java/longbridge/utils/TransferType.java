@@ -11,7 +11,7 @@ public enum TransferType {
 
 
     OWN_ACCOUNT_TRANSFER("Own Account Transfer"),
-    CORONATION_BANK_TRANSFER("Coronation Bank Transfer"),
+    WITHIN_BANK_TRANSFER("Within Bank Transfer"),
     INTER_BANK_TRANSFER("Interbank Transfer"),
     INTERNATIONAL_TRANSFER("International Transfer"),
     NIP("NIP Transfer"),
