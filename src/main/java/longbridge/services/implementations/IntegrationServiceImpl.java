@@ -53,8 +53,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${ebank.service.uri}")
 	private String URI;
 
-	@Value("${CMB.ALERT.URL}")
-	private String cmbAlert;
+	@Value("${alert.url}")
+	private String alertsSystem;
 
     @Value("${neft.settlement}")
     private String NEFTURI;
@@ -985,7 +985,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<String> contacts = new ArrayList<>();
 		contacts.add(contact);
 		ObjectNode result = null;
-		String uri = cmbAlert;
 		Map<String, Object> params = new HashMap<>();
 		params.put("alertType", "SMS");
 		params.put("message", message);
@@ -998,13 +997,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			logger.info("Sending SMS to {}",contact);
 
-			result = template.postForObject(uri, params, ObjectNode.class);
+			result = template.postForObject(alertsSystem, params, ObjectNode.class);
 
 			logger.debug("SMS API response {}",result.toString());
 			logger.info("SMS sent to {}",contacts);
 
 		} catch (Exception e) {
-			logger.error(uri, params, e);
+			logger.error(alertsSystem, params, e);
 		}
 
 		return CompletableFuture.completedFuture(result);
@@ -1015,7 +1014,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<String> contacts = new ArrayList<>();
 		contacts.add(contact);
 		ObjectNode result = null;
-		String uri = cmbAlert;
 		Map<String, Object> params = new HashMap<>();
 		params.put("alertType", "SMS");
 		params.put("message", message);
@@ -1027,7 +1025,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 			logger.info("Sending registration code to {} via SMS",contact);
 
-			result = template.postForObject(uri, params, ObjectNode.class);
+			result = template.postForObject(alertsSystem, params, ObjectNode.class);
 
 			logger.debug("SMS API response {}",result.toString());
 
@@ -1040,7 +1038,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				return response;
 			}
 		} catch (Exception e) {
-			logger.error(uri, params, e);
+			logger.error(alertsSystem, params, e);
 
 		}
 		return false;

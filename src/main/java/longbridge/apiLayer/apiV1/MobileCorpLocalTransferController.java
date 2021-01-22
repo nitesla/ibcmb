@@ -39,7 +39,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping(value = "/api/v1/corp/localtransfer")
-@Api(description = "Intra Bank Transfer / CMB Transfer", value = "Corporate Local Transfer", tags = {"Corporate Local Transfer"})
+@Api(description = "Intra Bank Transfer", value = "Corporate Local Transfer", tags = {"Corporate Local Transfer"})
 public class MobileCorpLocalTransferController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -187,7 +187,7 @@ public class MobileCorpLocalTransferController {
 
 
 
-    @ApiOperation(value = "CMB Transfer API", tags = {"Corporate Local Transfer"})
+    @ApiOperation(value = "Local transfer API", tags = {"Corporate Local Transfer"})
     @PostMapping(value = "/process")
     public ResponseEntity<?> intrabankTransfer (@RequestBody CorpTransferRequestDTO transferRequestDTO, Principal principal, Locale locale) {
 

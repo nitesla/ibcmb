@@ -202,7 +202,7 @@
             <boolProp name="displaySystemProperties">false</boolProp>
           </DebugPostProcessor>
           <hashTree/>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="CMB transfer set up" enabled="true"/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Local transfer set up" enabled="true"/>
           <hashTree>
             <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create a rule for corporate ID (2001) (own Transfer)" enabled="true">
               <stringProp name="dataSource">database</stringProp>
@@ -8913,7 +8913,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Cmb Transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Initiate Multi Corp Local transfer" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Details" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -10357,7 +10357,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Local transfer" enabled="true"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
@@ -14154,7 +14154,7 @@
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="CMB Transfer (Sole Corporate)" enabled="true"/>
+        <RecordingController guiclass="RecordController" testclass="RecordingController" testname="Local transfer (Sole Corporate)" enabled="true"/>
         <hashTree>
           <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments">
@@ -23400,7 +23400,7 @@ Content-Type: application/octet-stream&#xd;
           </ResultCollector>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve CMB transfer (with invalid token)" enabled="true"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Approve Local transfer (with invalid token)" enabled="true"/>
         <hashTree>
           <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
             <collectionProp name="CookieManager.cookies"/>
