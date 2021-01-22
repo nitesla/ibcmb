@@ -38,8 +38,7 @@ import java.util.Objects;
 
 
 @Configuration
-@EnableWebSecurity(debug = false)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
 

@@ -308,3 +308,4 @@ Manage User Roles,MANAGE_ROLES,ADMIN,,Manage User Roles
 Manage User Permissions,MANAGE_PERMISSIONS,ADMIN,,Manage User Permissions
 New Service Request Config,ADD_SERV_REQ_CONFIG,ADMIN,,Create New Service Request Configuration
 Add Report,GENERATE_REPORT,ADMIN,,Generate Report
+Ops Change Password ,OPS_CHANGE_PASSWORD,OPERATIONS,,Change Password Menu
