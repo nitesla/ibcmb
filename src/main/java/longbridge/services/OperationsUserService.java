@@ -124,7 +124,7 @@ public interface OperationsUserService{
      * * @param oldPassword the oldPassword
      * @param changePassword
      */
-    @PreAuthorize("hasAuthority('OPS_CHANGE_PASSWORD')")
+    @PreAuthorize("hasAuthority('OPERATOR')")
     String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException;
 
 
