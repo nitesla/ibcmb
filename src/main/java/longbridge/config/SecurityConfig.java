@@ -38,7 +38,7 @@ import java.util.Objects;
 
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class SecurityConfig {
 
 
