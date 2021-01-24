@@ -16,7 +16,7 @@ build-job:
     - ibcmb
   script:
     - mvn clean package
-    - sudo mv /opt/tomcat/gtl/webapps/ROOT /opt/tomcat/gtl/webapps/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
+    - sudo mv /opt/tomcat/gtl/webapps/ROOT /opt/tomcat/gtl/backup/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
     - sudo mkdir /opt/tomcat/gtl/webapps/ROOT
     - sudo unzip target/ibcmb.war -d /opt/tomcat/gtl/webapps/ROOT
   artifacts:
