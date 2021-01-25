@@ -312,7 +312,7 @@ public class NAPSTransferController {
 
                 int rowIndex = currentRow.getRowNum();
                 CreditRequestDTO creditRequest = new CreditRequestDTO();
-                Long id = Long.valueOf(rowIndex);
+                Long id = (long) rowIndex;
                 creditRequest.setId(id);
 
                 if (!(NumberUtils.isDigits(cellData.get(0).toString())) && !(cellData.get(0).toString().contains("ERROR"))) {

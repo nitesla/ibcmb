@@ -1,96 +1,50 @@
 package longbridge.controllers.corporate;
 
-
-import longbridge.dtos.CoverageDTO;
-import longbridge.dtos.CoverageDetailsDTO;
-import longbridge.dtos.UpdateCoverageDTO;
-import longbridge.models.CorporateUser;
-import longbridge.models.EntityId;
-import longbridge.models.User;
-import longbridge.models.UserType;
-import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.CorporateUserService;
-import longbridge.services.CoverageAdministrationService;
 import longbridge.services.CoverageService;
-import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
-import java.util.Set;
-
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/corporate/coverage")
 public class CorpCoverageController {
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
     private CoverageService coverageService;
-    @Autowired
-    private CorporateUserService corporateUserService;
 
-    @Autowired
-    MessageSource messageSource;
+    @GetMapping("/view/{customerId}/{coverageName}")
+    public String viewCoverageDetails(@PathVariable String customerId, @PathVariable String coverageName,  Model model) {
 
+        Map<String, List<String>> coverageDetails = coverageService.getCoverageDetails(coverageName, customerId);
 
-    @Resource(name = "sessionCoverage")
-    private Set<CoverageDetailsDTO> coverageDetails;
-
-    @Autowired
-    CoverageAdministrationService administrationService;
-
-    @GetMapping(path = "/{corpId}")
-    @ResponseBody
-    public Set<CoverageDetailsDTO> getEnabledCoverageForCorporate(@PathVariable Long corpId){
-
-        return coverageDetails;
-    }
-
-    @GetMapping(path = "/admin")
-    public String CoverageForCorporateAdmin(Model model){
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        User user =  principal.getUser();
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getUsername());
-        Long corpId = corporateUser.getCorporate().getId();
-        model.addAttribute("corpId",corpId);
-        return "corp/account/coverage";
-    }
-
-    @GetMapping(path = "/admin/{corpId}/all")
-    public @ResponseBody DataTablesOutput<CoverageDTO> getAllCoverageForCorporate(@PathVariable Long corpId, DataTablesInput input) {
-        EntityId entityId = new EntityId();
-        entityId.setEid(corpId);
-        entityId.setType(UserType.CORPORATE);
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CoverageDTO> coverage = administrationService.getAllCoverage(entityId,pageable);
-        DataTablesOutput<CoverageDTO> out = new DataTablesOutput<>();
-        out.setDraw(input.getDraw());
-        out.setData(coverage.getContent());
-        out.setRecordsFiltered(coverage.getTotalElements());
-        out.setRecordsTotal(coverage.getTotalElements());
-        return out;
+        model.addAttribute("coverageDetails", coverageDetails);
+        model.addAttribute("coverageName", coverageName.toUpperCase());
+        return "corp/coverage/index";
     }
 
 
-    @PostMapping(path = "/admin/update")
-    public ResponseEntity<HttpStatus> updateCoverage(@RequestBody UpdateCoverageDTO updateCoverageDTO) {
-        administrationService.updateCoverage(updateCoverageDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
-
+//    @GetMapping("/getViewData/{customerId}")
+//    @ResponseBody
+//    public DataTablesOutput<CoverageDetailsDTO> getViewDetails(@PathVariable String customerIds, String coverage, DataTablesInput input) {
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Page<CoverageDetailsDTO> coverageDetailsDTO = null;
+//        coverageDetailsDTO = coverageService.getCoverages(coverage, customerIds, pageable);
+//        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
+//        out.setDraw(input.getDraw());
+//        out.setData(coverageDetailsDTO.getContent());
+//        out.setRecordsFiltered(coverageDetailsDTO.getTotalElements());
+//        out.setRecordsTotal(coverageDetailsDTO.getTotalElements());
+//        logger.info("elem deposit {}", coverageDetailsDTO.getTotalElements());
+//        return out;
+//    }
 }
-

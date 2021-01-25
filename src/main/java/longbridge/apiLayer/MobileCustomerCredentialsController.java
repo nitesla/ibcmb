@@ -289,14 +289,7 @@ public class MobileCustomerCredentialsController {
 
 
 
-        } catch (InternetBankingException e) {
-            logger.error("Retail User forgot password error {} ", e);
-            responseData.setMessage(e.getMessage().toString());
-            responseData.setError(true);
-            responseData.setCode("99");
-            return new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);
-
-        }catch (NullPointerException e) {
+        } catch (InternetBankingException | NullPointerException e) {
             logger.error("Retail User forgot password error {} ", e);
             responseData.setMessage(e.getMessage().toString());
             responseData.setError(true);

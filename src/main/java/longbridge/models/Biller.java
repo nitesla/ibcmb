@@ -7,45 +7,28 @@ import javax.persistence.*;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(name = "BILLER")
 public class Biller extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(name = "categoryid")
+
     private Long categoryId;
-    @Column(name = "categoryname")
     private String categoryName;
-    @Column(name = "categorydescription")
     private String categoryDescription;
-    @Column(name = "billerid")
     private Long billerId;
-    @Column(name = "billername")
     private String billerName;
-    @Column(name = "customerfield1")
     private String customerField1;
-    @Column(name = "customerfield2")
     private String customerField2;
-    @Column(name = "currencySymbol")
     private String currencySymbol;
-    @Column(name = "logoUrl")
     private String logoUrl;
-    @Column(name = "enabled")
     private boolean enabled;
-    @Column(name = "supportemail")
     private String supportemail;
-    @Column(name = "shortname")
     private String shortname;
-    @Column(name = "paydirectproductid")
     private String paydirectProductId;
-    @Column(name = "paydirectinstitutionid")
     private String paydirectInstitutionId;
-    @Column(name = "surcharge")
     private Long surcharge;
-    @Column(name = "currencycode")
     private Long currencyCode;
-    @Column(name = "narration")
     private String narration;
 
 

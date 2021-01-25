@@ -153,7 +153,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         saveInit(userDTO, operation, description);
     }
     @Transactional
-    private void saveInit(CorporateUserDTO userDTO, String operation, String description)throws VerificationException{
+    void saveInit(CorporateUserDTO userDTO, String operation, String description)throws VerificationException{
 
 
 
@@ -277,7 +277,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
 
     @Transactional
-    private void saveAuth(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
+    void saveAuth(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         try {
 
             if (userDTO.getStatus() == null){
@@ -463,7 +463,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Async
-    private void notifyInitiator(CorpUserVerification corpUserVerification){
+    void notifyInitiator(CorpUserVerification corpUserVerification){
 
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User verifiedBy = principal.getUser();
@@ -553,7 +553,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         Page<CorpUserVerification> page = corpUserVerificationRepo.findAll(pageable);
         List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t =page.getTotalElements();
-        return new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
 
     @Override
@@ -561,7 +561,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
         Page<CorpUserVerification> page = corpUserVerificationRepo.findByCorpIdOrderByStatusDesc(corpId, pageable);
         List<CorpUserVerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t =page.getTotalElements();
-        return new PageImpl<CorpUserVerificationDTO>(dtOs,pageable,t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
 
     public List<String> getPermissionCodes(Role role) {

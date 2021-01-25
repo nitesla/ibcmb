@@ -1,58 +1,34 @@
 package longbridge.services;
 
-import longbridge.config.audits.ModifiedEntityTypeEntity;
-import longbridge.dtos.AuditDTO;
-import longbridge.dtos.AuditSearchDTO;
+import longbridge.audit.AuditCfgDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-import java.util.Map;
 
 //import longbridge.dtos.RevisionInfo;
 
-public interface AuditConfigService
-{
+public interface AuditConfigService {
 
-	AuditConfig findEntity(String entityName);
-
-	Iterable<AuditConfig> getAllEntities();
-
-	@PreAuthorize("hasAuthority('UPDATE_AUDIT_CONFIG')")
-	AuditConfig saveAuditConfig(AuditConfig cfg) throws InternetBankingException;
-
-	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
-	Page<AuditConfig> getEntities(Pageable pageDetails);
-
-	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
-	List<AuditConfig> getEntities();
-	
-	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
-	Page<AuditConfig> findEntities(String pattern, Pageable pageDetails);
-
-	AuditConfig getAuditEntity(Long auditId);
-
-	List<T> revisedEntity(String entityName);
-	Page<T> revisedEntityDetails(String entityName, String revisionNo, Pageable pageable);
-
-	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails);
+    AuditConfig findEntity(String entityName);
 
 
-	Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id, Pageable pageable);
-	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id, String classname, Pageable pageable);
-	Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable);
-	Page<AuditDTO> revisedEntity(String entityName, Pageable pageable);
-	Page<AuditDTO> revisedEntityByQuery(String entityName, Pageable pageable);
-	Page<AuditDTO> searchRevisedEntity(String entityName, Pageable pageable, String search);
-	Map<String,Object> getFormatedEntityDetails(String entityName);
-	List<ModifiedEntityTypeEntity> getAll();
+    @PreAuthorize("hasAuthority('UPDATE_AUDIT_CONFIG')")
+    boolean saveAuditConfig(AuditCfgDTO cfg) throws InternetBankingException;
 
-	Page<ModifiedEntityTypeEntity> searchModifiedEntity(AuditSearchDTO auditSearchDTO, Pageable pageable);
-	Page<ModifiedEntityTypeEntity> searchMod(Pageable pageable, AuditSearchDTO auditSearchDTO);
-//	List<AuditDTO> revisedEntityForClass(String entityName);
+    @PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
+    Page<AuditConfig> getEntities(Pageable pageDetails);
+
+    @PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
+    List<AuditConfig> getEntities();
+
+    @PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
+    Page<AuditConfig> findEntities(String pattern, Pageable pageDetails);
+
+    AuditConfig getAuditEntity(Long auditId);
+
 
 }

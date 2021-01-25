@@ -399,7 +399,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findByStatusAndInitiatedByOrderByInitiatedOnDesc(VerificationStatus.PENDING, doneBy.getUserName(), pageDetails);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 
     }
 
@@ -409,7 +409,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(operation, doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<VerificationDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
 
     }
 
@@ -463,7 +463,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findByInitiatedByAndUserTypeAndStatusOrderByInitiatedOnDesc(doneBy.getUserName(), doneBy.getUserType(), VerificationStatus.PENDING, pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<VerificationDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
 
     }
 
@@ -474,7 +474,7 @@ public class VerificationServiceImpl implements VerificationService {
         Page<Verification> page = verificationRepo.findVerifiedOperationsForUser(verifiedBy.getUserName(), verifiedBy.getUserType(), pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<VerificationDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
 
     private String getCurrentUserName() {

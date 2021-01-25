@@ -2,7 +2,6 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationException;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;

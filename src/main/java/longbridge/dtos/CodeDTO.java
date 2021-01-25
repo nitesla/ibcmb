@@ -74,11 +74,12 @@ public class CodeDTO {
     @Override
     public String toString() {
         return "CodeDTO{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", code='" + code + '\'' +
                 ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
-                ", version='" + version + '\'' +
+                ", extraInfo='" + extraInfo + '\'' +
+                ", version=" + version +
                 '}';
     }
 }

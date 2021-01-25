@@ -53,7 +53,7 @@ public class FaqsServiceImpl implements FaqsService {
         List<FaqsDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<FaqsDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override

@@ -7,13 +7,13 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}" />
-    <link rel="shortcut icon" th:href="@{~/customer/img/favicon.ico}" type="image/x-icon">
-    <link rel="icon" th:href="@{~/customer/img/favico.ico}" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coronation Merchant Bank</title>
+    <titleth:text="#{menu.bank.name}" ></title>
 
 </head>
 
@@ -88,7 +88,7 @@
 <div class="browserupgrade">
 
     <div class="text-center">
-        <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <img class="img img-responsive" style="display:block;margin:0px auto;text-align:center;background:white;padding:10px;margin-bottom:20px" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
 
         <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
@@ -104,7 +104,7 @@
         <div class="row">
             <div class="top-bar col-xs-12">
                 <ul class="top-link">
-                    <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                    <li class="no-bd"><a  th:href="#{menu.bank.website}" target="_blank" th:text="#{menu.bank.name}" ></a>&nbsp;</li>
                 </ul>
             </div>
         </div>
@@ -112,8 +112,8 @@
         <div class="row">
             <div class="col-sm-3 visible-xs no-pad-left no-pad-right">
                 <div class="center" style="margin:0px auto;">
-                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:title="#{menu.bank.name}">
+                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                     </a>
                 </div>
             </div>
@@ -156,8 +156,8 @@
 
             <div class="col-sm-3 hidden-xs no-pad-right">
                 <div class="center" style="margin:0px auto;">
-                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
-                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" th:title="#{menu.bank.name}">
+                        <img class="img img-responsive pull-right" style="display:block;margin:0px auto;" th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                     </a>
                 </div>
             </div>
@@ -327,7 +327,7 @@
                                                 <h5 style="font-size: 16px;margin-bottom:25px;">Related Information</h5>
                                                 <p class="text-bold" style='margin-bottom:10px'>What is a Phishing Image?</p>
                                                 <p class="text-bold">
-                                                    This is an image that will be displayed anytime you want to log into the Coronation Merchant Bank Internet Banking application. This security feature will provide assurance that you are not interacting with a cloned version of the Internet Banking site, protecting you and your financial information even better.
+                                                    This is an image that will be displayed anytime you want to log into the <span th:text="#{menu.bank.name}"></span> Internet Banking application. This security feature will provide assurance that you are not interacting with a cloned version of the Internet Banking site, protecting you and your financial information even better.
                                                 </p>
 
                                             </div>
@@ -409,7 +409,7 @@
 
                 <div class=" no-bd-rad no-bd content text-center " style=" background: transparent !important;">
                     <div class="bg-white center" style="width:40%">
-                        <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/img/loader.png}" alt="Coronation Merchant Bank" />
+                        <img class="img-responsive block center  loader-img" style='padding:7px;' th:src="@{~/customer/{name}/img/loader.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
                         <div id='loading-icon bg-white text-center'><i class='fa fa-spinner block center fa-spin' style="font-size:18px;color:#003056"></i> Loading. Please Wait</div>
                     </div>
                 </div>

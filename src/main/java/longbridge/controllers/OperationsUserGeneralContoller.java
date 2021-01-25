@@ -121,7 +121,7 @@ public class OperationsUserGeneralContoller {
         String username = (String) session.getAttribute("username");
         String result = (String) session.getAttribute("result");
         if (username != null) {
-            if (result != null && "Y".equals(result)) {
+            if ("Y".equals(result)) {
                 try {
                     String message = operationsUserService.resetPassword(username);
                     redirectAttributes.addFlashAttribute("message", message);

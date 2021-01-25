@@ -117,7 +117,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         Page<UserGroup> page = userGroupRepo.findAll(pageDetails);
         List<UserGroupDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<UserGroupDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 

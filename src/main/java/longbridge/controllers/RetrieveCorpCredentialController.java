@@ -280,9 +280,6 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             logger.info("password {}",message);
             redirectAttributes.addAttribute("success", message);
             return "true";
-        } catch (PasswordMismatchException e){
-            e.printStackTrace();
-            return e.getMessage();
         } catch (PasswordException e){
             e.printStackTrace();
             return e.getMessage();
@@ -424,11 +421,9 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
             else {
                 secQuestion = "";
             }
-        } catch (InternetBankingSecurityException e){
+        } catch (Exception e){
             e.printStackTrace();
 //            logger.info("security question exception {}",e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return question;
     }

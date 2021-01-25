@@ -17,7 +17,7 @@
                 <div class="carousel-inner">
 
                     <div class="item active">
-                        <img class="sliding" th:src="@{~/customer/img/cmb_bg.jpg}" alt="Coronation Merchant Bank" style="width:100%;" />
+                        <img class="sliding" th:src="@{~/customer/{name}/img/cmb_bg.jpg(name=#{menu.custom})}" th:alt="#{menu.bank.name}" style="width:100%;" />
                         <div class="carousel-caption">
                             <!--<h3></h3>-->
                             <p>We are setting standards of excellence in the Nigerian banking sector and beyond</p>
@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="item">
-                        <img class="sliding" th:src="@{~/customer/img/st_bg.jpg}" alt="Token Unboarding" style="width:100%;" />
+                        <img class="sliding" th:src="@{~/customer/{name}/img/st_bg.jpg(name=#{menu.custom})}" alt="Token Unboarding" style="width:100%;" />
                         <!--<div class="carousel-caption">-->
                             <!--&lt;!&ndash;<h3></h3>&ndash;&gt;-->
                             <!--<p>Download our token to help authenticate your transactions. Complete your registration on-->
@@ -59,8 +59,8 @@
 
                 <div>
                     <h3 class="home-heading">Welcome to Internet Banking</h3>
-                    <p class="home-para">We are setting standards of excellence in the Nigerian banking sector and beyond. Coronation Merchant Bank Internet banking platform lets you bank whenever and wherever you are! Our clients retain focus on achieving their business objectives,
-                        confident that our financial solutions are World-class. Coronation Merchant Bank Internet banking is fast, efficient, and secure.</p>
+                    <p class="home-para">We are setting standards of excellence in the Nigerian banking sector and beyond. <span th:text="#{menu.bank.name}" ></span> Internet banking platform lets you bank whenever and wherever you are! Our clients retain focus on achieving their business objectives,
+                        confident that our financial solutions are World-class. <span th:text="#{menu.bank.name}" ></span> Internet banking is fast, efficient, and secure.</p>
                     <br/><br/>
 
                     <div class="dropdown margin-bottom">
@@ -83,7 +83,7 @@
 
 
         <div class="row text-center margin-bottom">
-            <h6 class=" home-heading coronation-blue " style="font-size:15px;padding-bottom:0px">Manage your money anywhere, anytime</h6>
+            <h6 class=" home-heading pantone-1 " style="font-size:15px;padding-bottom:0px">Manage your money anywhere, anytime</h6>
             <p class=" home-para ">Fast and easy to use. Our Internet Banking lets you access your account 24 hours a day!</p>
             <div class="biglit   col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
                 <div class="lists  col-md-6  col-sm-6  text-cente">
@@ -126,7 +126,7 @@
 
         <div class="row text-center margin-bottom">
             <div id="contact_us">
-                <h4 class="coronation-brown" style='font-size:20px;'>Contact Us</h4>
+                <h4 class="pantone-2" style='font-size:20px;'>Contact Us</h4>
                 <p class="home-para">Our customer service representatives are ready to assist you with any concerns or comments you have. If you have an enquiry or question or comment, please use any of the links below or send us a message.</p>
                 <div class="dropdown  dropdn-margin">
                     <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-phone text-white"></i>
@@ -139,7 +139,7 @@
                         <li>T +234 01-2797642</li>
                         <li>T +234 01-2797643</li>
 
-                        <li class="icontext pull-right " data-toggle="modal" data-target="#myModal"><button class="btn btn-link coronation-blue">Call back</button></li>
+                        <li class="icontext pull-right " data-toggle="modal" data-target="#myModal"><button class="btn btn-link pantone-1">Call back</button></li>
 
                     </ul>
                 </div>
@@ -148,7 +148,7 @@
                                 </button>
                     <ul class="dropdown-menu contact-details">
                         <li>Send us an email</li>
-                        <li id='copy_email'>crc@coronationmb.com</li>
+                        <li id='copy_email' th:text="#{menu.bank.email}"></li>
                         <li id='copy' class="icontext pull-right"><button class="btn copy-btn btn-link required" data-clipboard-action="copy" data-clipboard-target="#copy_email">Copy email</button></li>
                     </ul>
                 </div>
@@ -177,12 +177,12 @@
                         <input type="text" name="name" class="my-select" placeholder="Name" required="required" />
                     </div>
                     <div class="form-group">
-                        <input type="email" pattern="^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+" name="email" class="my-select" placeholder="Email" required="required" />
+                        <input type="email" name="email" class="my-select" placeholder="Email" required="required" />
                     </div>
                     <div class="form-group">
                         <textarea name="message" value="Message" class="my-select" style="height: 200px;" required="required"></textarea>
                     </div>
-                    <input type="submit" value="Submit" class="btn btn-primary btn-md my-select bg-coronation-blue" />
+                    <input type="submit" value="Submit" class="btn btn-primary btn-md my-select bg-pantone-1" />
                 </form>
             </div>
         </div>

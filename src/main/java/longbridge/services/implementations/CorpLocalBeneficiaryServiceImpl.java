@@ -110,7 +110,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     }
 
     @Async
-    private  void sendAlert(User user , String beneficiary) {
+    void sendAlert(User user, String beneficiary) {
         try {
             if (true) {
                 String preference = user.getAlertPreference().getCode();

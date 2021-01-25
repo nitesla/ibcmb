@@ -162,7 +162,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
     @Override
     public Boolean refCodeExists(String refCode) {
         BulkTransfer bulkTransfer = bulkTransferRepo.findFirstByRefCode(refCode);
-        return (bulkTransfer != null) ? true : false;
+        return bulkTransfer != null;
     }
 
     @Override
@@ -185,7 +185,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 
         long t = page.getTotalElements();
-        return new PageImpl<BulkTransferDTO>(dtOs, details, t);
+        return new PageImpl<>(dtOs, details, t);
     }
 
     public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer) {
@@ -234,7 +234,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
         Page<CreditRequest> page = new PageImpl<>(creditRequests);
         List<CreditRequestDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<CreditRequestDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
 
     @Override
@@ -251,7 +251,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
         Page<CreditRequest> page = (Page<CreditRequest>) bulkTransfer.getCrRequestList();
         List<CreditRequest> creditRequests = page.getContent();
         long t = page.getTotalElements();
-        return new PageImpl<CreditRequest>(creditRequests, pageable, t);
+        return new PageImpl<>(creditRequests, pageable, t);
     }
 
     @Override
@@ -386,7 +386,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
         return bulkTransferRepo.findByCorporate(corporate);
     }
     public List<BulkTransfer>getByStatus(){
-        return bulkTransferRepo.findByStatus("Processing");
+        return bulkTransferRepo.findByStatusNotNull();
     }
 
     private RetailUser getCurrentUser() {

@@ -196,7 +196,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> page = roleRepo.findAll(pageDetails);
         List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<RoleDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Permission> page = permissionRepo.findAll(pageDetails);
         List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -400,7 +400,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> page = roleRepo.findUsingPattern(pattern, pageDetails);
         List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<RoleDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
@@ -409,7 +409,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Permission> page = permissionRepo.findUsingPattern(pattern, pageDetails);
         List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override

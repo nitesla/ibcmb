@@ -257,7 +257,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		System.out.println("srrrr"+page.getContent());
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-        return new PageImpl<ServiceReqConfigDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 	}
 
 	@Override

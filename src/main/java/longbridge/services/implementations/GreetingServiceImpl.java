@@ -306,7 +306,7 @@ public class GreetingServiceImpl implements GreetingService {
             userId=retailUserService.getUserByName(user.getUserName()).getId();
         }
         if(UserType.CORPORATE.equals(user.getUserType())){
-            userId=corporateUserService.getUserByName(user.getUserName()).getCorporate().getId();
+            userId=corporateUserService.getUserByName(user.getUserName()).getId();
         }
         return userId;
     }

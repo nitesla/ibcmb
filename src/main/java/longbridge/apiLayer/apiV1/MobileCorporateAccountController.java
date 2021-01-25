@@ -172,7 +172,7 @@ public class MobileCorporateAccountController {
         }catch (InternetBankingException e){
 
             logger.info("View  Accout Details error {} ", e);
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

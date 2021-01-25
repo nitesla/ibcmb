@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['CMB transfer','/corporate/transfer/local'],['add beneficiary']];currentBar('CMB transfer');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/corporate/dashboard'],['Local transfer','/corporate/transfer/local'],['add beneficiary']];currentBar('Local transfer');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -22,7 +22,7 @@
                     <label>Beneficiary Bank</label>
                     <select name="beneficiaryBank" class="form-control " th:field="*{beneficiaryBank}"
                             required="required">
-                        <option th:value="${bankCode}">Coronation Merchant Bank</option>
+                        <option th:value="${bankCode}"th:text="#{menu.bank.name}" ></option>
                     </select><span class='req-inner'></span>
                 </div>
                 <div class="form-group">

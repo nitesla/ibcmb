@@ -1,6 +1,6 @@
 package longbridge.controllers.operations;
 
-import longbridge.config.SpringContext;
+import longbridge.config.IbankingContext;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ReportDTO;
 import longbridge.models.FinancialInstitution;
@@ -20,7 +20,6 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -145,7 +144,7 @@ public class OpsReportController {
             logger.info("the parameters {}",modelMap);
             try {
                 modelMap.put("logo",imagePath);
-                ApplicationContext context = SpringContext.getApplicationContext();
+                ApplicationContext context = IbankingContext.getApplicationContext();
                 DataSource dataSource = context.getBean(DataSource.class);
                 InputStream stream = new ByteArrayInputStream(reportDTO.getJrxmlFile());
                 JasperDesign design = JRXmlLoader.load(stream);

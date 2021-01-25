@@ -126,7 +126,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
 //            }
         }
-        Long totalCount = Long.valueOf(fixedDepositDTOS.size());
+        Long totalCount = (long) fixedDepositDTOS.size();
         return new PageImpl<>(fixedDepositDTOS, pageable, totalCount);
     }
 
@@ -266,7 +266,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 //            fixedDepositDTOS.add(deposit);
 //        });
         fixedDepositDTOS.add(depositDTO);
-        Long totalCount = Long.valueOf(fixedDepositDTOS.size());
+        Long totalCount = (long) fixedDepositDTOS.size();
         return new PageImpl<>(fixedDepositDTOS, pageable, totalCount);
 
     }
@@ -276,7 +276,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
         List<FixedDepositDTO> depositDTO = integrationService.getFixedDepositsDetails(cifId);
         logger.info("Multiple FixedDeposit Fetched Successfully, HERE IS THE SIZE : {}",depositDTO.size());
-        Long totalCount = Long.valueOf(depositDTO.size());
+        Long totalCount = (long) depositDTO.size();
         return new PageImpl<>(depositDTO, pageable, totalCount);
 
     }

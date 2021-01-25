@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -27,9 +29,10 @@ public class CorporateDTO implements Serializable{
     private String phoneNumber;
     private String status;
     private String address;
-    private String createdOnDate;
+    private Date createdOnDate;
     private String bvn;
     private String taxId;
+    private List<String> coverageCodes;
 
 
 
@@ -101,11 +104,11 @@ public class CorporateDTO implements Serializable{
         this.address = address;
     }
 
-    public String getCreatedOnDate() {
+    public Date getCreatedOnDate() {
         return createdOnDate;
     }
 
-    public void setCreatedOnDate(String createdOnDate) {
+    public void setCreatedOnDate(Date createdOnDate) {
         this.createdOnDate = createdOnDate;
     }
 
@@ -155,5 +158,38 @@ public class CorporateDTO implements Serializable{
 
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;
+    }
+
+    public List<String> getCoverageCodes() {
+        return coverageCodes;
+    }
+
+    public void setCoverageCodes(List<String> coverageCodes) {
+        this.coverageCodes = coverageCodes;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "CorporateDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", rcNumber='" + rcNumber + '\'' +
+                ", corporateType='" + corporateType + '\'' +
+                ", corporateId='" + corporateId + '\'' +
+                ", corporateName='" + corporateName + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", status='" + status + '\'' +
+                ", address='" + address + '\'' +
+                ", createdOnDate=" + createdOnDate +
+                ", bvn='" + bvn + '\'' +
+                ", taxId='" + taxId + '\'' +
+                ", coverageCodes=" + coverageCodes +
+                '}';
     }
 }

@@ -166,7 +166,7 @@ public class MobileInterBankTransferController {
                                     i.setBeneficiaryBank(financialInstitution.getInstitutionCode());
                             }
                     );
-            beneficiaries.forEach(i->{mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class));});
+            beneficiaries.forEach(i-> mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class)));
 
             if (!mobileRetailBeneficiaryDTOS.isEmpty()) {
                 responseData.setMessage(message);

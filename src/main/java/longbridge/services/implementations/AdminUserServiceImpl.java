@@ -111,7 +111,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public boolean userExists(String username) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(username);
-        return (adminUser != null) ? true : false;
+        return adminUser != null;
     }
 
 
@@ -494,7 +494,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -502,7 +502,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUser> page = adminUserRepo.findUsingPattern(pattern, pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override

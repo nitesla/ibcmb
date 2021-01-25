@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+
+</head>
+
+
+
+<body class="nav-md">
+<style>
+    td.details-control {
+        background: url('/bank/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('/bank/images/details_close.png') no-repeat center center;
+    }
+    table.child td {
+        padding: 0 15px 0 15px;
+    }
+</style>
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Audit Revision</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <div class="col-lg-12">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" style="cursor: pointer;" id="searchHeader">
+                                            <span class="glyphicon glyphicon-search"></span><b>Search</b>
+                                        </div>
+                                        <div class="panel-body" id="searchContent">
+
+                                            <div class="form-group">
+                                                <div class="col-lg-6" style="margin-top: 2px">
+                                                    <div class="input-daterange input-group" id="date-range">
+                                                        <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="fromDate" name="from" placeholder="Start date" required="required" />
+                                                        <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                                                        <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="to" id="endDate" placeholder="End date" required="required" />
+                                                        <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6" style="margin-top: 2px">
+                                                    <input type="text" class="form-control" id="ipAddress" name="ipAddress" placeholder="IP adress"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group input-group col-lg-12">
+
+                                                <div class="col-lg-6" style="margin-top: 2px">
+                                                        <input type="text"
+                                                               class="form-control" name="approvedBy" id="approvedBy" placeholder="Approved By"/>
+                                                </div>
+                                                <div class="col-lg-6" style="margin-top: 2px">
+                                                        <input type="text" class="form-control " id="lastChangedBy"
+                                                               name="lastChangedBy" placeholder="Changed By"/>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group input-group col-lg-12">
+
+                                                <div class="col-lg-6">
+                                                    <select id="entityName" name="tableIndex" class="form-control">
+                                                        <option value="">--Table name--</option>
+                                                        <option th:each="entity: ${entities}" th:value="${entity.id}"
+                                                                th:text="${entity.entityName}"></option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <select id="operations" name="operations" multiple="multiple" class="form-control">
+                                                        <option value="">--Operations--</option>
+                                                        <option th:each="op: ${operations}" th:value="${op}"
+                                                                th:text="${op}"></option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group input-group col-lg-12">
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="id" placeholder="id" style="display: none"/>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="form-group input-group col-lg-12">
+
+
+                                                <div class="col-lg-12">
+                                                    <button class="btn btn-success pull-right" id="search" type="button">Go!</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <!--<input type="text" id=""/>-->
+
+
+
+
+                                </div>
+                                <ul class="nav navbar-left panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a  style="display:none;" class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view/details" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+
+                                </ul>
+
+                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                    <!--<li class="pull-right" >-->
+
+                                        <!--</li>-->
+
+                                </ul>
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <table class="table table-striped table-hover" id="auditview">
+
+                                    <thead>
+                                    <tr>
+                                        <th> </th>
+                                        <th> Entity</th>
+                                        <th> Operations</th>
+                                        <th>IP Address</th>
+                                        <th>Time</th>
+                                        <th>Modifed By</th>
+                                        <th>Approved By</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/vendors/select2/js/select2.full.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+<script th:src="@{~/bank/js/lodash.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script th:inline="javascript">
+
+    $('#searchHeader').on("click", function () {
+        var display = $('#searchContent').css('display');
+        if (display != 'none') {
+            $('#searchContent').hide();
+        } else {
+            $('#searchContent').show();
+
+        }
+    });
+
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        $('#searchContent').hide();
+        $('#searchById').hide();
+        $('.datepicker').datepicker({
+            autoclose: true,
+            todayBtn: true,
+            todayHighlight: true,
+            CloseText : "clear"
+        });
+
+        var table = $('#auditview').DataTable({
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            rowId: 'id',
+            "paging": true,
+            "serverSide" : true,
+            "ajax" : {
+                url : "/admin/audit/all",
+                "type" : "GET",
+                "data" : function(d) {
+                    console.log("Value D:", d);
+                    d.id = $('#id').val();
+                    d.tableIndex = $('#entityName').val();
+                    d.from = $('#fromDate').val();
+                    d.to = $('#endDate').val();
+                    d.ipAddress = $('#ipAddress').val();
+                    d.modifier = $('#lastChangedBy').val();
+                    d.approver = $('#approvedBy').val();
+                    var arr = $('#operations').val();
+                    console.log(arr);
+
+                   if(arr) d.operations = arr.join()
+                   //  for (idx = 0; idx < arr.length; idx++) {
+                   //     // n= encodeURI(`operations[${idx}]`)
+                   //      d.operations.push(arr[idx]);
+                   //  }
+                }
+            },
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
+                { "data": "entity" },
+                {"data": "revision.trace"},
+                { "data": "revision.ipAddress" },
+                { "data": "revision.timestamp" },
+                { "data": "revision.lastChangedBy" },
+                {"data": "revision.approvedBy"}
+
+            ] ,"columnDefs" : [ {
+                "targets" : 4,
+                "data" : "initiatedDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            },{
+                "targets" : 1,
+                "data" : "entity",
+                "render" : function(data, type,full, meta) {
+                    if(type ==='display')
+                    {
+                        data= data.substring((data.lastIndexOf(".")+1),(data.length));
+                    }
+                    return data;
+                }
+            }, {
+                "targets": 2,
+
+                "data": "revision.trace",
+                "render": function (data, type, full, meta) {
+                    let d = "" ;
+                    if (type === 'display' && !_.isEmpty(data)) {
+                        var ops = data.split(',');
+                        ops.forEach(function (value, index, array) {
+                            d += `<span class="tag">${value}</span>`
+                        });
+                        return d;
+                    }
+                    return data;
+                }
+            }]
+        });
+
+        table.on('select', function()
+        {
+            if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+
+        $("#search").on("click", function(e)
+        {
+
+            dt = $('#auditview').DataTable();
+            dt.ajax.reload(null, true);
+        });
+
+        // Add event listener for opening and closing details
+        $('#auditview tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Open this row
+                var id = table.row(this).id();
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/admin/audit/revision",
+                    data: {id : id },
+                    dataType: 'json',
+                    timeout: 100000,
+                    success: function (data) {
+                        console.log("SUCCESS: ", data);
+                        row.child(format(data)).show();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("ERROR: ", errorThrown);
+                        var notify = $.notify({message: "error"}, {allow_dismiss: true, type: 'danger'});
+                    },
+                    done: function (e) {
+                        console.log("DONE");
+                    }
+                });
+                tr.addClass('shown');
+            }
+        });
+
+    });
+
+    function format(data) {
+        temp ='<table class="table child table-striped no-footer" border="1">' ;
+        for (const d of data) {
+            if(d.name === 'revtype'){
+                switch (d.now) {
+                    case 0 : d.now = 'ADDED';break;
+                    case 1 :
+                        d.now = 'MODIFIED';
+                        break;
+
+                    case 2 :
+                        d.now = 'DELETED';
+                        break;
+                }
+            }
+
+            jj = d.modified ? "style = 'text-decoration-line: underline;  text-decoration-style: dotted;text-decoration-color:red' " : "";
+            jk = d.before === null ? '<span class="label label-default ">empty</span>' : d.before ;
+            jl = d.now === null ? '<span class="label label-default">empty</span>' : d.now;
+            temp += `<tr><td style="font-weight:bolder;">${_.startCase(d.name)}</td><td ${jj} >  ${jk}  </td><td ${jj} > ${jl} </td></tr>`
+        }
+        temp += '</table>';
+        return temp;
+    }
+
+
+
+
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled"))
+        {
+            return;
+        }
+        var dt = $('#auditview').DataTable();
+        var details = id+"/"+className;
+        var refDetials = link.attr("href").replace("id/classname",details);
+        window.location.assign(refDetials);
+
+    } );
+
+
+    $("#operations").select2({
+        allowClear: true
+    });
+
+    /*]]>*/
+</script>
+
+
+
+</body>
+</html>

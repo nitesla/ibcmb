@@ -157,19 +157,12 @@ public class MobileCorpOwnTransferController {
                 transferUtils.validateTransferCriteria();
                 corpTransferService.validateTransfer(transferRequestDTO);
 
-            } catch (InternetBankingTransferException e) {
-                logger.error("Error initiating a transfer ", e);
-                responseData.setMessage(e.getMessage());
-                responseData.setCode("99");
-                responseData.setError(true);
-                return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
                 logger.error("Error initiating a transfer ", e);
                 responseData.setMessage(e.getMessage());
                 responseData.setCode("99");
                 responseData.setError(true);
                 return new ResponseEntity<Object>(responseData, HttpStatus.BAD_REQUEST);
-
             }
 
 

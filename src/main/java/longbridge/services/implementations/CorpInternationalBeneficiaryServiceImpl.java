@@ -77,7 +77,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Async
-    private  void sendAlert(User user , String beneficiary) {
+    public  void sendAlert(User user , String beneficiary) {
         try {
             if (true) {
                 String preference = user.getAlertPreference().getCode();

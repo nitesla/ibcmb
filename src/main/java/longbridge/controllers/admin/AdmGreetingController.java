@@ -1,7 +1,6 @@
 package longbridge.controllers.admin;
 
 
-import longbridge.InternetbankingApplication;
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.GreetingDTO;
@@ -12,14 +11,12 @@ import longbridge.services.CorporateUserService;
 import longbridge.services.GreetingService;
 import longbridge.services.RetailUserService;
 import longbridge.utils.DataTablesUtils;
-import org.apache.bcel.classfile.JavaClass;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,9 +32,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 
 @Controller

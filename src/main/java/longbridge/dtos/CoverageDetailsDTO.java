@@ -1,17 +1,24 @@
 package longbridge.dtos;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.Set;
 
 public class CoverageDetailsDTO {
 
     private Set<String> customerIds;
     private String coverageName;
-    private JsonNode coverageDetails;
+    private String coverageUrl;
+    private String customerId;
 
 
     public CoverageDetailsDTO() {
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public Set<String> getCustomerIds() {
@@ -30,20 +37,22 @@ public class CoverageDetailsDTO {
         this.coverageName = coverageName;
     }
 
-    public JsonNode getCoverageDetails() {
-        return coverageDetails;
+    public String getCoverageUrl() {
+        return coverageUrl;
     }
 
-    public void setCoverageDetails(JsonNode coverageDetails) {
-        this.coverageDetails = coverageDetails;
+    public void setCoverageUrl(String coverageUrl) {
+        this.coverageUrl = coverageUrl;
     }
+
 
     @Override
     public String toString() {
         return "CoverageDetailsDTO{" +
-                "customerId='" + customerIds + '\'' +
+                "customerIds=" + customerIds +
                 ", coverageName='" + coverageName + '\'' +
-                ", coverageDetails=" + coverageDetails +
+                ", coverageUrl='" + coverageUrl + '\'' +
+                ", customerId='" + customerId + '\'' +
                 '}';
     }
 }

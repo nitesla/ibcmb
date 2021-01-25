@@ -7,12 +7,13 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.services.CodeService;
-import longbridge.services.CoverageAdministrationService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -38,8 +39,6 @@ public class CodeServiceImpl implements CodeService {
      private final ModelMapper modelMapper;
 
     private final Locale locale = LocaleContextHolder.getLocale();
-    @Autowired
-    private CoverageAdministrationService coverageService;
 
 
     @Autowired
@@ -104,6 +103,7 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Transactional
+    @CacheEvict(value = "codes", key = "#codeDTO.type")
     @Verifiable(operation = "UPDATE_CODE", description = "Updating a Code")
     public String updateCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
@@ -145,13 +145,14 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Override
+    @Cacheable(value = "codes")
     public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
         // TODO Auto-generated method stub
 
         Page<Code> page = codeRepo.findByType(codeType, pageDetails);
         List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
         long t = page.getTotalElements();
-        return new PageImpl<CodeDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -161,20 +162,25 @@ public class CodeServiceImpl implements CodeService {
         long t = page.getTotalElements();
 
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        return new PageImpl<CodeDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
     @Override
     @Verifiable(operation = "ADD_CODE", description = "Adding a Code")
+    @CacheEvict(value = "codes", key = "#codeDTO.type")
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
-            codeRepo.save(code);
+
 //            if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
 //                logger.info("am here boss {}", code.getType());
-//               coverageService.addCoverageForNewCodes(code);
+////               coverageService.addCoverageForNewCodes(code);
+//
+//
 //            }
+
+            codeRepo.save(code);
 
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);

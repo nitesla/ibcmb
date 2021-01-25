@@ -14,6 +14,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,6 +66,9 @@ public class MainController {
     private LoggedUserService loggedUserService;
     private Integer sessionTimeout = 5 * 60 ;
 
+    @Value("${feedback.url}")
+    private String feedbackUrl;
+
     @PostConstruct
     void computeSessionTimeout(){
         SettingDTO settingDTO = configurationService.getSettingByName("SESSION_TIMEOUT");
@@ -102,6 +106,20 @@ public class MainController {
         return new ModelAndView("retpage1", "error", error);
     }
 
+    @RequestMapping(value = "/login/retail/feedback", method = RequestMethod.GET)
+    public ModelAndView getFeedbackPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model,HttpServletResponse response,HttpServletRequest requests,HttpSession session) {
+
+        request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
+        //clearSession();
+        SecurityContextHolder.clearContext();
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue("" + sessionTimeout);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+//        return new ModelAndView("retpagefeedback", "error", error);
+        return  new ModelAndView("redirect:" + feedbackUrl);
+    }
+
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request,HttpServletResponse response,HttpServletRequest requests) {
 //        SecurityContextHolder.clearContext();
@@ -113,6 +131,21 @@ public class MainController {
         request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
         //clearSession();
         return new ModelAndView("corppage1", "error", error);
+
+    }
+
+    @RequestMapping(value = "/login/corporate/feedback", method = RequestMethod.GET)
+    public ModelAndView getCorpFeedbackPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request,HttpServletResponse response,HttpServletRequest requests) {
+//        SecurityContextHolder.clearContext();
+        Cookie cookie = CookieUtil.getCookie(requests);
+        cookie.setValue(sessionTimeout.toString());
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        request.ifPresent(httpServletRequest -> httpServletRequest.getSession().invalidate());
+        //clearSession();
+//        return new ModelAndView("corppagefeedback", "error", error);
+        return  new ModelAndView("redirect:" + feedbackUrl);
 
     }
 

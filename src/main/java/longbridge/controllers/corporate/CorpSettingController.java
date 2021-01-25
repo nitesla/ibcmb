@@ -5,10 +5,8 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.Account;
-import longbridge.models.Code;
-import longbridge.models.CorporateUser;
-import longbridge.models.FeedBackStatus;
+import longbridge.models.*;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,10 +76,8 @@ public class CorpSettingController {
     @Autowired
     private IntegrationService integrationService;
 
-
-    private CoverageService coverageService;
     @Autowired
-    private FixedDepositService fixedDepositService;
+    private CoverageService coverageService;
 
 
     @RequestMapping("/dashboard")
@@ -204,6 +201,30 @@ public class CorpSettingController {
     }
 
 
+    @GetMapping("/dashboard/coverage")
+    public @ResponseBody DataTablesOutput<CoverageDetailsDTO> getCoverageDetails(DataTablesInput input) {
+
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
+        Corporate corporate = corporateService.getCorp(user.getCorpId());
+//        CorporateUser corporateUser = (CorporateUser) user.getUser();
+//        Corporate corporate1 = corporateUser.getCorporate();
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+
+
+        Page<CoverageDetailsDTO> coverageDetails = coverageService.getCoverages(corporate.getCoverage(),corporate.getCustomerId(),pageable);
+
+        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(coverageDetails.getContent());
+        out.setRecordsFiltered(coverageDetails.getTotalElements());
+        out.setRecordsTotal(coverageDetails.getTotalElements());
+        return out;
+    }
+
+
+
     @GetMapping("/error")
     public String getCorporateErrorPage() {
         return "/corp/error";
@@ -303,7 +324,7 @@ public class CorpSettingController {
             SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
-                tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+                tokenAuth = (setting.getValue().equalsIgnoreCase("YES"));
             }
 
             if (tokenAuth) {

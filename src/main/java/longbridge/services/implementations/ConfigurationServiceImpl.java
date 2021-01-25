@@ -9,6 +9,8 @@ import longbridge.services.ConfigurationService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -69,6 +71,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	}
 
 	@Override
+	@Cacheable(value = "settings", unless = "#result == null")
 	public SettingDTO getSettingByName(String name) {
 		return convertEntityToDTO(settingRepo.findByName(name));
 	}
@@ -85,7 +88,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		Page<Setting> page = settingRepo.findAll(pageDetails);
 		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-        return new PageImpl<SettingDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 	}
 
 	private List<SettingDTO> convertEntitiesToDTOs(List<Setting> content) {
@@ -102,6 +105,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Transactional
 	@Override
 	@Verifiable(operation="UPDATE_SETTING",description="Update Settings")
+	@CacheEvict(value = "settings", key = "#dto.name")
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			Setting setting = settingRepo.findById(dto.getId()).get();
@@ -153,7 +157,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		Page<Setting> page = settingRepo.findUsingPattern(pattern, pageDetails);
 		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-        return new PageImpl<SettingDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 	}
 
 }

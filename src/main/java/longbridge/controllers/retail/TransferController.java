@@ -1,7 +1,10 @@
 package longbridge.controllers.retail;
 
 
-import longbridge.dtos.*;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.NeftBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
@@ -102,7 +105,7 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
             TransferType tranType = dto.getTransferType();
             switch (tranType) {
-                case CORONATION_BANK_TRANSFER: {
+                case WITHIN_BANK_TRANSFER: {
                     return "redirect:/retail/transfer/local";
                 }
                 case INTER_BANK_TRANSFER: {
@@ -425,7 +428,7 @@ public class TransferController {
             }
             if (transferRequestDTO.getStatus().equalsIgnoreCase("PENDING")) {
 //                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
-                model.addAttribute("message", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
+                model.addAttribute("message", "Click on Neft Request to settle all pending transactions");
                 logger.info("NEFT Transfer Status{}", transferRequestDTO.getStatus());
 
                 return "cust/transfer/bulktransfer/neft/pendingNeftTransfer";

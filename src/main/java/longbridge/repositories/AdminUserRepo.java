@@ -26,7 +26,7 @@ public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
 //    Integer countByRole(Role r);
 
     @Modifying
-    @Query("update AdminUser u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")
+    @Query("update AdminUser u set u.lastLoginDate = current_timestamp , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
 	Integer countByRole(Role role);
 

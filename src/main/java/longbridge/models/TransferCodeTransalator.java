@@ -8,7 +8,6 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "TransferCode")
 public class TransferCodeTransalator extends AbstractEntity {
 
 private String responseCode;

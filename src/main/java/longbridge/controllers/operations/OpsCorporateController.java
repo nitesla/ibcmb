@@ -177,10 +177,13 @@ public class OpsCorporateController {
     @GetMapping("/{reqId}/view")
     public String viewCorporate(@PathVariable Long reqId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(reqId);
+        List<CodeDTO> account_coverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+       model.addAttribute("coverageTypes",account_coverage);
         model.addAttribute("userType",UserType.CORPORATE);
         model.addAttribute("corporate", corporate);
         return "/ops/corporate/viewdetails";
     }
+
 
     @GetMapping(path = "/{corpId}/users")
     public
@@ -261,6 +264,28 @@ public class OpsCorporateController {
 
         }
     }
+
+
+
+    @PostMapping("/coverage")
+
+    public String UpdateCoverage(UpdateCoverageCmd updateCoverageCmd,RedirectAttributes redirectAttributes) throws Exception {
+        CorporateDTO corporate = corporateService.getCorporate(updateCoverageCmd.getEntityId());
+        corporate.setCoverageCodes(updateCoverageCmd.getCoverages());
+        try{
+            String message = corporateService.updateCorporate(corporate);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/corporates";
+        }catch (InternetBankingException ibe) {
+            logger.error("Failed to update corporate entity", ibe);
+           logger.error("Invalid", ibe.getMessage());
+            return "/ops/corporate/edit";
+
+        }
+    }
+
+
+
 
     @GetMapping("/{id}/activation")
     public String changeCorporateActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -794,8 +819,7 @@ public class OpsCorporateController {
     }
 
     private Set<String> getUniqueCifids(String[] cifids) {
-        Set<String> selectedCifids = new HashSet<>();
-        selectedCifids.addAll(Arrays.asList(cifids));
+        Set<String> selectedCifids = new HashSet<>(Arrays.asList(cifids));
         logger.debug("Unique Customer cifids size " + selectedCifids.size());
 
         return selectedCifids;
@@ -1557,5 +1581,8 @@ public class OpsCorporateController {
 
         return "success";
     }
+
+
+
 
 }

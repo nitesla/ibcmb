@@ -133,13 +133,10 @@ public class NEFTTransferController {
         try {
             integrationService.submitNeftTransfer();
             return "successful";
-        } catch (InternetBankingTransferException e) {
+        } catch (Exception e) {
             logger.error("Error making transfer", e);
             return "failed";
 
-        } catch (Exception e) {
-            logger.error("Error making transfer", e);
-           return "failed";
         }
     }
 

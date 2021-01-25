@@ -2,7 +2,6 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
@@ -13,7 +12,6 @@ import javax.persistence.*;
 import java.io.IOException;
 
 @Entity
-@Table(name = "Transfer_Limit")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class TransferSetLimit extends AbstractEntity implements PrettySerializer {
@@ -21,17 +19,17 @@ public class TransferSetLimit extends AbstractEntity implements PrettySerializer
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "channel", nullable = true)
+
     private String channel;
-    @Column(name = "customertype", nullable = true)
+
     private String customerType;
-    @Column(name = "delFlag", columnDefinition = "N")
+
     private String delFlag;
-    @Column(name = "description", nullable = true)
+
     private String description;
-    @Column(name = "lowerLimit", nullable = true)
+
     private String lowerLimit;
-    @Column(name = "upperLimit", nullable = true)
+
     private String upperLimit;
 
 

@@ -5,8 +5,8 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/calendar.css(name=#{menu.custom})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
 
@@ -18,7 +18,7 @@
     <div class="container">
         <div class="top_bar">
             <ul class="list_group">
-                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+                <li><a href="#"> <span th:text="#{menu.bank.name}"></span></a></li>
             </ul>
         </div>
         <nav class="navbar navbar-default">
@@ -42,7 +42,7 @@
             </div>
         </nav>
         <a href="#" class="logo">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+            <img th:src="@{~/customer/{name}/img/logo.png(name=#{menu.custom})}" th:alt="#{menu.bank.name}" />
         </a>
     </div>
 </header>

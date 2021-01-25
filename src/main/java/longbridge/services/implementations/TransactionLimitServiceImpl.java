@@ -401,7 +401,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         String accountClass = account.getSchemeCode();
 
-        if (transferType.equals(TransferType.CORONATION_BANK_TRANSFER)) {
+        if (transferType.equals(TransferType.WITHIN_BANK_TRANSFER)) {
 
             GlobalLimit globalLimit = globalLimitRepo.findByChannel("CMB");
             ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(), accountClass, "CMB");

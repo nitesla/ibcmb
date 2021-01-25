@@ -10,7 +10,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.
@@ -42,8 +41,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
     private String description;
     private String extraInfo;
 
-	@OneToMany(mappedBy = "codeEntity",cascade = CascadeType.ALL,orphanRemoval = true)
-	private List<Coverage> coverages;
+
 
 	public String getCode() {
         return code;
@@ -78,13 +76,7 @@ public class Code extends AbstractEntity implements PrettySerializer{
 		this.extraInfo = extraInfo;
 	}
 
-	public List<Coverage> getCoverages() {
-		return coverages;
-	}
-
-	public void setCoverages(List<Coverage> coverages) {
-		this.coverages = coverages;
-	}
+	
 
 	@Override
 	public int hashCode() {

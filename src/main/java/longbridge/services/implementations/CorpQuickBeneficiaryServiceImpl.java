@@ -108,7 +108,7 @@ public class CorpQuickBeneficiaryServiceImpl implements CorpQuickBeneficiaryServ
     }
 
     @Async
-    private  void sendAlert(User user , String beneficiary) {
+    void sendAlert(User user, String beneficiary) {
         try {
             if (true) {
                 String preference = user.getAlertPreference().getCode();

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['CMB transfer']];currentBar('Mail Center');breadCrumb(bread)">
+<body onload="javascript:var bread = [['Home', '/retail/dashboard'],['Local transfer']];currentBar('Mail Center');breadCrumb(bread)">
 
 <div layout:fragment="content">
     <!--<form class="col-sm-4" role="search" >-->
@@ -35,7 +35,7 @@
                     <aside class="col-md-3 alert  mail-links-box">
                     <div class="">
                         <ul class='mail-links'>
-                           <a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
+                           <a th:href="@{/retail/mailbox/compose}"><li class='bg-white pantone-1' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
                             </li></a>
                                 <a th:href="@{/retail/mailbox/inbox}"><li >Inbox <span th:text="${noOfInbox}">(1)</span> <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
                                 <a th:href="@{/retail/mailbox/sentmail}"><li class='mail-active'>Sent <span th:text="${noOfSent}">(1)</span><i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
@@ -45,7 +45,7 @@
                     </div>
                 </aside>
                 <article class="col-md-9 article">  
-                    <div class="alert alert-bottom bg-coronation-blue">
+                    <div class="alert alert-bottom bg-pantone-1">
                             <p style="color:white">Draft Messages</p>
                     </div>
 

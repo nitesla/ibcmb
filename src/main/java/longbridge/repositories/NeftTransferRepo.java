@@ -14,10 +14,10 @@ import java.util.List;
 @Repository
 public interface NeftTransferRepo extends CommonRepo<NeftTransfer, Long>{
 
-    @Query(value = "select * from NEFT_TRANSFER n where n.status = 'Submitted' ", nativeQuery = true)
+    @Query(value = "select n from NeftTransfer n where n.status = 'Submitted' ")
     List<NeftTransfer> checkStatus();
 
-    @Query(value = "select * from NEFT_TRANSFER n where n.settlementTime = 'not settled' ", nativeQuery = true)
+    @Query(value = "select n from NeftTransfer n where n.SettlementTime = 'not settled' ")
     List<NeftTransfer> getAllUnsettledList();
 
 //    @Query(value = "select n from NeftTransfer n where n.SettlementTime = 'not settled' and n.retailUser =:user ")

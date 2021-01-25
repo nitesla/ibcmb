@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
-
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
@@ -24,57 +22,57 @@ public class NeftTransfer extends AbstractEntity {
 //    private Long Id;
 
 
-    @Column(name = "itemsequenceno")
+
     private String ItemSequenceNo;
-    @Column(name = "serialno")
+
     private String SerialNo;
-    @Column(name = "sortcode")
+
     private String SortCode;
-    @Column(name = "accountno")
+
     private String AccountNo;
-    @Column(name = "trancode")
+
     private String TranCode;
-    @Column(name = "amount")
+
     private BigDecimal Amount;
-    @Column(name = "currency")
+
     private String Currency;
-    @Column(name = "bankoffirstdepositdate")
+
     private String BankOfFirstDepositDate;
-    @Column(name = "bankoffirstdepositsortcode")
+
     private String BankOfFirstDepositSortCode;
-    @Column(name = "presentmentdate")
+
     private String PresentmentDate;
-    @Column(name = "payername")
+
     private String PayerName;
-    @Column(name = "beneficiary")
+
     private String Beneficiary;
-    @Column(name = "beneficiaryacctno")
+
     private String BeneficiaryAccountNo;
-    @Column(name = "bvnbeneficiary")
+
     private String BVNBeneficiary;
-    @Column(name = "bvnpayer")
+
     private String BVNPayer;
-    @Column(name = "collectiontype")
+
     private String CollectionType;
-    @Column(name = "instrumenttype")
+
     private String InstrumentType;
-    @Column(name = "narration")
+
     private String Narration;
-    @Column(name = "presentingbanksortcode")
+
     private String PresentingBankSortCode;
-    @Column(name = "specialclearing")
+
     private boolean SpecialClearing;
-    @Column(name = "instrumentdate")
+
     private String InstrumentDate;
-    @Column(name = "micrepairind")
+
     private String MICRRepairInd;
-    @Column(name = "settlementtime")
+
     private String SettlementTime;
-    @Column(name = "cycleno")
+
     private String CycleNo;
-    @Column(name = "status")
+
     private String status;
-    @Column(name = "beneficiarybank")
+
     private String beneficiaryBank;
 
     @ManyToOne

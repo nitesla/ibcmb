@@ -31,7 +31,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
 
     @Modifying
-    @Query("update RetailUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
+    @Query("update RetailUser  u set u.lastLoginDate = current_timestamp , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
 
     @Query("select c from RetailUser c where lower(c.userName) like %:userName%  and lower(c.lastName) like %:lastName% " +
@@ -43,15 +43,15 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
                                   Pageable pageable);
 
     @Modifying(clearAutomatically=true)
-    @Query(value="update retail_user set feed_back_status=?1 where id=?2",nativeQuery=true)
-    public void updateFeedBackStatus(String status,Long id);
+    @Query(value="update RetailUser u set u.feedBackStatus=:status where u.id=:id")
+    void updateFeedBackStatus(String status, Long id);
 
 
     @Query("select id from RetailUser ")
     Set<Long> getAllRetailUserId();
 
+////
+//    @Query("select a from RetailUser a where a.customerId in :customerIds")
+//    List<RetailUserDTO> getCoverages(@Param("customerId")List<String> customerIds);
 
-
-//    @Query("select r.bvn from RetailUser r where r.userName = :username")
-//    String payerBvn(@Param("username") String username);
 }

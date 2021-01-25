@@ -22,6 +22,7 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.RetailWebHook;
 import longbridge.utils.Verifiable;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by SYLVESTER on 3/29/2017.
@@ -87,7 +85,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     private SecurityService securityService;
     private RoleService roleService;
     private IntegrationService integrationService;
-    private CoverageAdministrationService coverageService;
+
     @Autowired
     private ConfigurationService configService;
 
@@ -104,13 +102,13 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Autowired
-    public RetailUserServiceImpl(CodeService codeService, AccountService accountService, SecurityService securityService, RoleService roleService, IntegrationService integrationService,CoverageAdministrationService coverageService) {
+    public RetailUserServiceImpl(CodeService codeService, AccountService accountService, SecurityService securityService, RoleService roleService, IntegrationService integrationService) {
         this.codeService = codeService;
         this.accountService = accountService;
         this.securityService = securityService;
         this.roleService = roleService;
         this.integrationService = integrationService;
-        this.coverageService = coverageService;
+
     }
 
     @Override
@@ -242,7 +240,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
             passwordPolicyService.saveRetailPassword(retailUser);
-            coverageService.addCoverageForNewRetail(retailUser);
+//            coverageService.addCoverageForNewRetail(retailUser);
             retailUserRepo.save(retailUser);
 
             logger.info("Retail user {} created", user.getUserName());
@@ -631,6 +629,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                 RetailUser retailUser = convertDTOToEntity(user);
                 this.retailUserRepo.save(retailUser);
                 logger.info("USER SUCCESSFULLY UPDATED");
+                ok = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -669,17 +668,27 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO = modelMapper.map(retailUser, RetailUserDTO.class);
-        if (retailUser.getCreatedOnDate() != null) {
-            retailUserDTO.setCreatedOnDate(DateFormatter.format(retailUser.getCreatedOnDate()));
-        }
-        if (retailUser.getLastLoginDate() != null) {
-            retailUserDTO.setLastLoginDate(DateFormatter.format(retailUser.getLastLoginDate()));
+//        if (retailUser.getCreatedOnDate() != null) {
+//            retailUserDTO.setCreatedOnDate(DateFormatter.format(retailUser.getCreatedOnDate()));
+//        }
+//        if (retailUser.getLastLoginDate() != null) {
+//            retailUserDTO.setLastLoginDate(DateFormatter.format(retailUser.getLastLoginDate()));
+//        }
+        String coverage = retailUser.getCoverage();
+        if(StringUtils.isNotBlank(coverage)){
+            String[] coverages = coverage.split(",");
+            retailUserDTO.setCoverageCodes(Arrays.asList(coverages));
+        }else{
+            retailUserDTO.setCoverageCodes(Collections.emptyList());
         }
         return retailUserDTO;
     }
 
     private RetailUser convertDTOToEntity(RetailUserDTO retailUserDTO) {
-        return modelMapper.map(retailUserDTO, RetailUser.class);
+        RetailUser map = modelMapper.map(retailUserDTO, RetailUser.class);
+
+        map.setCoverage(String.join(",",retailUserDTO.getCoverageCodes()));
+        return map;
     }
 
     private List<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers) {
@@ -696,7 +705,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUser> page = retailUserRepo.findAll(pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
@@ -731,7 +740,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern, pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -853,6 +862,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             dtOs.add(retailDTO);
         }
         long t = page.getTotalElements();
-        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 }

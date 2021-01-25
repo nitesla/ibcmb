@@ -4,7 +4,6 @@ import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
@@ -167,8 +166,6 @@ public class RetrieveCredentialController {
             String message = retailUserService.resetPassword(retailUser,custResetPassword);
             redirectAttributes.addAttribute("success", message);
             return "true";
-        } catch (PasswordMismatchException e){
-            return e.getMessage();
         } catch (PasswordException e){
             return e.getMessage();
         } catch (Exception ex){

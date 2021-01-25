@@ -1,7 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.AuditConfig;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,18 +11,14 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long>
-{
-
-
+public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long> {
     AuditConfig findFirstByEntityName(String name);
+
     boolean existsByEntityName(String name);
-    boolean existsByEntityNameAndEnabled(String name, String enabled);
-    @Query("select r from AuditConfig r  order by r.entityName asc")
-    List<AuditConfig> findAllOrderByEntityNameAsc();
 
+    boolean existsByFullName(String fullname);
 
-
+    List<AuditConfig> findByOrderByEntityNameAsc();
 
 
 }

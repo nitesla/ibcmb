@@ -57,6 +57,7 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE')")
     String updateCorporate(CorporateDTO corporate) throws InternetBankingException;
 
+
     /**
      * Returns a {@code Corporate} object that has the details of the customer
      *
@@ -89,7 +90,7 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails);
 
-    public boolean corporateExists(String customerId);
+    boolean corporateExists(String customerId);
 
 
     /**

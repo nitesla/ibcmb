@@ -7,21 +7,17 @@ package longbridge.dtos;
  */
 public class CardDTO {
 
-    private Long id;
+
     private String cardReference;
     private String cardNumber;
     private String cardName;
     private String expiryDate;
     private String cardType;
+    private String balance;
 
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
     public String getCardType() {
         return cardType;
@@ -63,13 +59,23 @@ public class CardDTO {
         this.cardName = cardName;
     }
 
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
     @Override
     public String toString() {
-        return "Card{" +
-                "cardReference='" + cardReference + '\'' +
+        return "Cards{" +
+                ", cardReference='" + cardReference + '\'' +
                 ", cardNumber='" + cardNumber + '\'' +
                 ", cardName='" + cardName + '\'' +
-                ", cardType=" + cardType +
+                ", expiryDate='" + expiryDate + '\'' +
+                ", cardType='" + cardType + '\'' +
+                ", balance='" + balance + '\'' +
                 '}';
     }
 }

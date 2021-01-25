@@ -179,7 +179,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
@@ -189,7 +189,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -223,7 +223,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
 	        long t = page.getTotalElements();
 
 	        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        return new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
 	}
     @Override
     public void updateFinancialInstitutions() {

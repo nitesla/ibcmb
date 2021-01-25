@@ -2,15 +2,11 @@ package longbridge.jobs;
 
 import longbridge.services.CronJobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * Created by Longbridge on 6/9/2017.

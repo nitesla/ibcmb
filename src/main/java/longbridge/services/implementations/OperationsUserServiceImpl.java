@@ -84,7 +84,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public boolean userExists(String username) {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
-        return (opsUser != null) ? true : false;
+        return opsUser != null;
 
     }
 
@@ -117,7 +117,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -490,7 +490,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
@@ -500,7 +500,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 

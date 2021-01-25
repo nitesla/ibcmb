@@ -12,31 +12,24 @@ import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
-/**
- * Created by ayoade_farooq@yahoo.com on 4/8/2017.
- */
-
 public class CustomEnversIntegrator extends EnversIntegrator {
+
 
     @Override
     public void integrate(Metadata metadata, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
-        EventListenerRegistry listenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
-        listenerRegistry.addDuplicationStrategy( EnversListenerDuplicationStrategy.INSTANCE );
-        
+        EventListenerRegistry listenerRegistry = serviceRegistry.getService(EventListenerRegistry.class);
+        listenerRegistry.addDuplicationStrategy(EnversListenerDuplicationStrategy.INSTANCE);
+
         EnversService enversService = serviceRegistry.getService(EnversService.class);
-        if (!enversService.isInitialized()) {
-            throw new HibernateException("Expecting EnversService to have been initialized prior to call to EnversIntegrator#integrate");
-        }
-        if(enversService.getEntitiesConfigurations().hasAuditedEntities()) {
-           listenerRegistry.appendListeners( EventType.POST_UPDATE, new CustomPostUpdateListener(enversService));
-			listenerRegistry.appendListeners(EventType.POST_INSERT,
-                    new CustomPostInsertListener(enversService));
-           // listenerRegistry.appendListeners( EventType.POST_DELETE, new PostDeleteListenerLog( enversService ) );
+        if (enversService.isEnabled()) {
+            if (!enversService.isInitialized()) {
+                throw new HibernateException("Expecting Envers Service to have been initialized prior to call to EnversIntegrator#integrate");
+            }
+            if (enversService.getEntitiesConfigurations().hasAuditedEntities()) {
+                listenerRegistry.appendListeners(EventType.POST_UPDATE, new PostUpdateEventListener[]{new BCUpdateListener(enversService)});
+                listenerRegistry.appendListeners(EventType.POST_INSERT,
+                        new PostInsertEventListener[]{new BCPostInsertListener(enversService)});
+            }
         }
     }
-
-
-
-
-
 }

@@ -153,7 +153,7 @@ public class MobileBeneficiaryController {
             List<MobileCorpLocalBeneficiaryDTO> mobileCorpLocalBeneficiaryDTOs = new ArrayList<>();
 
             Iterable<CorpLocalBeneficiary> viewLocalBeneficiary =corpLocalBeneficiaryService.getCorpLocalBeneficiaries();
-            viewLocalBeneficiary.forEach(i->{mobileCorpLocalBeneficiaryDTOs.add(modelMapper.map(i, MobileCorpLocalBeneficiaryDTO.class));});
+            viewLocalBeneficiary.forEach(i-> mobileCorpLocalBeneficiaryDTOs.add(modelMapper.map(i, MobileCorpLocalBeneficiaryDTO.class)));
             logger.info("Mobile corp {} ",mobileCorpLocalBeneficiaryDTOs.size());
 
             if (!mobileCorpLocalBeneficiaryDTOs.isEmpty()){
@@ -272,7 +272,7 @@ public class MobileBeneficiaryController {
             List<MobileRetailBeneficiaryDTO> mobileRetailBeneficiaryDTOS = new ArrayList<>();
 
             Iterable<LocalBeneficiary> viewLocalBeneficiary =localBeneficiaryService.getLocalBeneficiaries();
-            viewLocalBeneficiary.forEach(i->{mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class));});
+            viewLocalBeneficiary.forEach(i-> mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class)));
             logger.info("Mobile retail beneficiary {} ",mobileRetailBeneficiaryDTOS.size());
             if (!mobileRetailBeneficiaryDTOS.isEmpty()){
                 responseData.setMessage("Successful");

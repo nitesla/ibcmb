@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -134,19 +133,19 @@ public interface IntegrationService {
     Rate getFee(String...channel);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest);
+    CustomsAreaCommand getCustomsAreaCommands(CustomsAreaCommandRequest customsAreaCommandRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
+    CustomAssessmentDetail getAssessmentDetails(CustomAssessmentDetailsRequest assessmentDetailsRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String username);
+    CustomPaymentNotification paymentNotification(CorpPaymentRequest corpPaymentRequest, String username);
 
     @PreAuthorize("hasAuthority('VIEW_CUSTOM_DUTY')")
-    public CustomPaymentNotification opsPaymentNotification(CorpPaymentRequest corpPaymentRequest, String userName);
+    CustomPaymentNotification opsPaymentNotification(CorpPaymentRequest corpPaymentRequest, String userName);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
-    public CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
+    CustomTransactionStatus paymentStatus(CorpPaymentRequest corpPaymentRequest);
 
     String getReciept(String tranId);
 
@@ -172,7 +171,9 @@ public interface IntegrationService {
     RecurringPayment recurringPayment(RecurringPayment recurringPayment);
     List<BillerCategoryDTO> getBillerCategories();
     List<QuicktellerBankCodeDTO> getBankCodes();
-    CoverageDetailsDTO getCoverageDetails(String coverageName, Set<String> customerIds);
+
+    List<CoverageDetailsDTO> getCoverages(String coverageName, String customerId);
+    Map<String, List<String>> getCoverageDetails(String coverageName, String customerId);
     NeftResponse submitNeftTransfer();
 //    NeftTransfer checkNeftStatus();
     NeftResponseDTO submitInstantNeftTransfer(NeftTransfer neftTransfer);

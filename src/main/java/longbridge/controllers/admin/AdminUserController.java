@@ -311,7 +311,7 @@ public class  AdminUserController {
             SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
-                tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+                tokenAuth = (setting.getValue().equalsIgnoreCase("yes"));
             }
 
             if (tokenAuth) {
@@ -341,13 +341,13 @@ public class  AdminUserController {
     }
 
     @ResponseBody
-    @PostMapping("/submitTransferLimitForCoronationAccounts")
-    public String submitTransferLimitDetailsForCoronationAccounts(@RequestParam("accountNumber") String accountNumber,
-                                                                  @RequestParam("accountClass") String accountClass,
-                                                                  @RequestParam("limit") String limit,
-                                                                  @RequestParam("frequency") String frequency,
-                                                                  @RequestParam("bankUserType") String bankUserType,
-                                                                  @RequestParam("bankChoice") String bankChoice){
+    @PostMapping("/submitTransferLimitForBankAccounts")
+    public String submitTransferLimitDetailsForLocalAccounts(@RequestParam("accountNumber") String accountNumber,
+                                                             @RequestParam("accountClass") String accountClass,
+                                                             @RequestParam("limit") String limit,
+                                                             @RequestParam("frequency") String frequency,
+                                                             @RequestParam("bankUserType") String bankUserType,
+                                                             @RequestParam("bankChoice") String bankChoice){
         logger.info("accountNumber = " + accountNumber);
         logger.info("accountClass = " + accountClass);
         logger.info("limit = " + limit);

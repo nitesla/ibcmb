@@ -106,7 +106,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {
-            tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()) ? true : false);
+            tokenAuth = ("YES".equalsIgnoreCase(setting.getValue()));
         }
 
         if (tokenAuth) {
