@@ -282,10 +282,10 @@ public class SecurityConfig {
                     // logout
 
                     // Enable this for only Coronation Bank
-                    .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail/feedback").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
+                    //.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail/feedback").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
                     // Enable this for other banks
-                    //.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
             ;
             // disable page caching
@@ -373,10 +373,10 @@ public class SecurityConfig {
                     // logout
 
                     // Enable this for only Coronation Bank
-                    .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate/feedback").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
+                    //.logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate/feedback").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
 
                     // Enable this for other banks
-                    //.logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
+                    .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
 
 
             // disable page caching
