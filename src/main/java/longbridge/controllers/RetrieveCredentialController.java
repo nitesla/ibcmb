@@ -3,7 +3,6 @@ package longbridge.controllers;
 import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
