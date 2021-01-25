@@ -45,6 +45,7 @@ public class CorpInterBankTransferController {
     private final TransferErrorService transferErrorService;
     private final CorpNeftBeneficiaryService corpNeftBeneficiaryService;
     private final CodeService codeService;
+    private final NeftBankService neftBankService;
     private final String page = "corp/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
@@ -52,7 +53,7 @@ public class CorpInterBankTransferController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, QuicktellerBankCodeService quicktellerBankCodeService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService, CorpNeftBeneficiaryService corpNeftBeneficiaryService, CodeService codeService) {
+    public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, QuicktellerBankCodeService quicktellerBankCodeService, CorpQuickBeneficiaryService corpQuickBeneficiaryService, TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService, TransferUtils transferUtils, TransferErrorService transferErrorService, CorpNeftBeneficiaryService corpNeftBeneficiaryService, CodeService codeService, NeftBankService neftBankService) {
         this.corporateUserService = corporateUserService;
         this.messages = messages;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
@@ -66,14 +67,16 @@ public class CorpInterBankTransferController {
         this.transferErrorService = transferErrorService;
         this.corpNeftBeneficiaryService = corpNeftBeneficiaryService;
         this.codeService = codeService;
+        this.neftBankService = neftBankService;
     }
 
     @ModelAttribute
     public void getNeftbanks(Model model) {
-        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+//        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+        List<NeftBankDTO> bankNames = neftBankService.getNeftBankList();
         Set<String> names = bankNames
                 .stream()
-                .map(CodeDTO::getDescription)
+                .map(NeftBankDTO::getBankName)
                 .collect(Collectors.toSet());
         Collections.sort(new ArrayList<>(names));
         model.addAttribute("neftBanks"
@@ -660,8 +663,9 @@ public class CorpInterBankTransferController {
 
     @ResponseBody
     @GetMapping("neft/{bankName}/branch")
-    public List<CodeDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
-        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+    public List<NeftBankDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
+//        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+        return neftBankService.getNeftBranchesByBankName(bankName);
     }
 
     @ResponseBody
@@ -688,7 +692,6 @@ public class CorpInterBankTransferController {
         trt.setBeneficiarySortCode(nft.getBeneficiarySortCode());
         trt.setInstrumentType(nft.getInstrumentType());
         trt.setCollectionType(nft.getCollectionType());
-//        trt.setCurrency(nft.getCurrencyCode());
         trt.setCurrencyCode(nft.getCurrencyCode());
         trt.setCustomerAccountNumber(nft.getCustomerAccountNumber());
         trt.setTransferType(TransferType.NEFT);
