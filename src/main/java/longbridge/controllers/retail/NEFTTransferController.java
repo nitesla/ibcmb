@@ -51,15 +51,17 @@ public class NEFTTransferController {
     private TransactionService transactionService;
     @Autowired
     private TransferUtils transferUtils;
+    private final NeftBankService neftBankService;
 
 
 
     @Autowired
-    public NEFTTransferController(AccountService accountService, RetailUserService retailUserService, NeftBeneficiaryService neftBeneficiaryService, CodeService codeService) {
+    public NEFTTransferController(AccountService accountService, RetailUserService retailUserService, NeftBeneficiaryService neftBeneficiaryService, CodeService codeService, NeftBankService neftBankService) {
         this.accountService = accountService;
         this.retailUserService = retailUserService;
         this.neftBeneficiaryService = neftBeneficiaryService;
         this.codeService = codeService;
+        this.neftBankService = neftBankService;
     }
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -98,10 +100,11 @@ public class NEFTTransferController {
 
     @ModelAttribute
     public void getNeftbanks(Model model) {
-        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+//        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+        List<NeftBankDTO> bankNames = neftBankService.getNeftBankList();
         Set<String> names = bankNames
                 .stream()
-                .map(CodeDTO::getDescription)
+                .map(NeftBankDTO::getBankName)
                 .collect(Collectors.toSet());
         Collections.sort(new ArrayList<>(names));
         model.addAttribute("neftBanks"
@@ -155,8 +158,9 @@ public class NEFTTransferController {
 
     @ResponseBody
     @GetMapping("bulktransfer/{bankName}/branch")
-    public List<CodeDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
-        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+    public List<NeftBankDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
+//        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+        return neftBankService.getNeftBranchesByBankName(bankName);
     }
 
     @ResponseBody
