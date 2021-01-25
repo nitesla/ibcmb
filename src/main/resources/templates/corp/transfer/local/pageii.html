@@ -29,10 +29,10 @@
                         <div class="form-group">
                             <label class='my-label'>Beneficiary</label>
                             <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
-                            <input type="text" class="form-control ben-bg coronation-blue"
+                            <input type="text" class="form-control ben-bg pantone-1"
                                    th:if="${beneficiary.preferredName} !=''" th:name="${beneficiary.preferredName}" th:value="${beneficiary.preferredName}"
                                    disabled/>
-                            <input type="text" class="form-control ben-bg coronation-blue"
+                            <input type="text" class="form-control ben-bg pantone-1"
                                    th:if="${beneficiary.preferredName} ==''" th:name="${beneficiary.accountName}" th:value="${beneficiary.accountName}"
                                    disabled/>
                             <a href='/corporate/transfer/local/' class="btn btn-link required-step"
@@ -93,10 +93,10 @@
                     <h3 class="related-bar">Related Information</h3>
 
                     <!--<input type="availBal" name="availBal"/>-->
-                    <p class="related-info coronation-blue" id="availBal"><b></b></p>
-                    <p class="related-info coronation-blue" th:if="${fee}!=null">Charge:&nbsp;&nbsp; <b
+                    <p class="related-info pantone-1" id="availBal"><b></b></p>
+                    <p class="related-info pantone-1" th:if="${fee}!=null">Charge:&nbsp;&nbsp; <b
                             th:text="${fee}"></b></p>
-                    <p class="related-info coronation-blue" id="limit"><b></b></p>
+                    <p class="related-info pantone-1" id="limit"><b></b></p>
                 </div>
             </div>
         </div>

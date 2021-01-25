@@ -29,7 +29,7 @@ MIN_AUTHORIZER_LEVEL,1,true,Corporate,Minimum number of authorizer levels requir
 PASSWORD_MIN_LENGTH,6,true,Password Policy,Minimum length of passsword required
 PASSWORD_SPECIAL_CHARS,@#$&!+,true,Password Policy,Special characters allowed in password
 PASSWORD_NUM_DIGITS,1,true,Password Policy,Minimum number of digits required in password
-PASSWORD_EXPIRY,2,true,Password Policy,The validity days of a new password entered by the user 
+PASSWORD_EXPIRY,30,true,Password Policy,The validity days of a new password entered by the user
 PASSWORD_NUM_SPECIAL_CHARS,1,true,Password Policy,Number of special characters required
 SOLE_CORPORATE_ROLE,Default Corporate,true,Access,Default role for corporate user
 ENABLE_UNIQUE_ACCOUNTS,,true,Account,Whether to enable unique accounts on creation of corporate entities

@@ -87,6 +87,9 @@ public class CorpAccountController {
     private String imagePath;
     @Value("${jrxmlFile.path}")
     private String jrxmlPath;
+    //TODO :check bankname works
+    @Value("#{menu.bank.name}")
+    private String bankName;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
     @GetMapping
@@ -515,6 +518,7 @@ public class CorpAccountController {
         Account account = accountService.getAccountByAccountNumber(acctNumber);
         DecimalFormat formatter = new DecimalFormat("#,###.00");
 //			modelMap.put("datasource", list);
+        modelMap.put("bankName", bankName);
         modelMap.put("format", "pdf");
         modelMap.put("summary.accountNum", acctNumber);
         modelMap.put("summary.customerName", account.getAccountName());
