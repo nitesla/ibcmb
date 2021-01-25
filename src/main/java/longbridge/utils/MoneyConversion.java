@@ -38,7 +38,7 @@ public class MoneyConversion {
             pass = convert(Integer.parseInt(first))+" ";
 //            pass= pass + code.getDescription();
 
-            if (last.length()>0 && Integer.valueOf(last)>0) {
+            if (last.length()>0 && Integer.parseInt(last)>0) {
                 Integer newLast = Integer.valueOf(last);
                 if (last.length() == 1){
                     newLast *= 10;

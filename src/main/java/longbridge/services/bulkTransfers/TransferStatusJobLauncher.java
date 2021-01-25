@@ -79,8 +79,6 @@ public class TransferStatusJobLauncher {
                                     LOGGER.info("Job Exit status: {}", jobExecution.getExitStatus().toString());
                                     LOGGER.info("Job Execution status: {}", jobExecution.toString());
 
-                                } catch (JobRestartException | JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
-                                    LOGGER.error("Error occurred", e);
                                 } catch (Exception e) {
                                     LOGGER.error("Error occurred", e);
                                 }

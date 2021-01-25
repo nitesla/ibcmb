@@ -6,35 +6,34 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 
 @Entity
-@Table (name = "PAYMENT_ITEM")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class PaymentItem extends AbstractEntity {
 
 
-	@Column(name = "PAYMENT_ITEM_ID")
+
 	private Long paymentItemId;
-	@Column(name = "PAYMENT_ITEM_NAME")
+
 	private String paymentItemName;
-	@Column(name = "AMOUNT")
+
 	private Double amount;
-	@Column(name = "CODE")
+
 	private Long code;
-	@Column(name = "CURRENCY_CODE")
+
 	private Long currencyCode;
-	@Column(name = "ITEM_CURRENCY_SYMBOL")
+
 	private String itemCurrencySymbol;
-	@Column(name = "SORT_ORDER")
+
 	private Long sortOrder;
-	@Column(name = "PICTURE_ID")
+
 	private Long pictureId;
-	@Column(name = "PAYMENT_CODE")
+
 	private Long paymentCode;
-	@Column(name = "IS_AMOUNT_FIXED")
+
 	private Boolean isAmountFixed;
-	@Column(name = "READONLY")
+
 	private Boolean readonly;
-	@Column(name = "enabled")
+
 	private boolean enabled;
 
 //	@ManyToOne @JsonIgnore

@@ -132,7 +132,7 @@ public class MerchantServiceImpl implements MerchantService {
 		for(String category : categories) {
 			lst.add(new CategoryDTO(category));
 		}
-        return new PageImpl<CategoryDTO>(lst);
+        return new PageImpl<>(lst);
 		//return merchantrepo.findCategoriesOnly(pageDetails);
 	}
 

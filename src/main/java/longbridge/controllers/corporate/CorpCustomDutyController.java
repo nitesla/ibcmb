@@ -115,7 +115,7 @@ public class CorpCustomDutyController {
             return customDutyService.getCustomsAreaCommands();
         }
         catch (Exception e){
-            LOGGER.error("Error calling coronation service rest service",e);
+            LOGGER.error("Error calling bank service rest service",e);
         }
         return new CustomsAreaCommand();
     }
@@ -185,7 +185,7 @@ public class CorpCustomDutyController {
             }
         }
         catch (Exception e){
-            LOGGER.error("Error calling coronation service rest service",e);
+            LOGGER.error("Error calling bank service rest service",e);
         }
     }
     @GetMapping("/{id}/refresh")
@@ -197,7 +197,7 @@ public class CorpCustomDutyController {
             return customDutyService.updatePayamentStatus(id);
         }
         catch (Exception e){
-            LOGGER.error("Error calling coronation service rest service",e);
+            LOGGER.error("Error calling bank service rest service",e);
         }
         return null;
     }
@@ -214,7 +214,7 @@ public class CorpCustomDutyController {
             return customDutyService.opsMakeCustomDutyPayment(corpPaymentRequest,principal);
         }
         catch (Exception e){
-            LOGGER.error("Error calling coronation service rest service",e);
+            LOGGER.error("Error calling bank service rest service",e);
         }
         return "";
     }
@@ -362,7 +362,7 @@ public class CorpCustomDutyController {
 
         }
         catch (Exception e){
-            LOGGER.error("Error calling coronation service rest service",e);
+            LOGGER.error("Error calling bank service rest service",e);
         }
     }
 

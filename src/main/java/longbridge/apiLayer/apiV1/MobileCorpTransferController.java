@@ -65,7 +65,7 @@ public class MobileCorpTransferController {
 
     @ApiOperation(value = "Corporate Transfer Limit")
     @GetMapping(value = "/limit/{accountNo}/{channel}")
-    public ResponseEntity<?> getLimit (@ApiParam("Account Number") @PathVariable String accountNo, @ApiParam("Transfer Channel, enter (NIP for Interbank Transfer),(INTRABANK for CMB Transfer)") @PathVariable String channel){
+    public ResponseEntity<?> getLimit (@ApiParam("Account Number") @PathVariable String accountNo, @ApiParam("Transfer Channel, enter (NIP for Interbank Transfer),(INTRABANK for Local transfer)") @PathVariable String channel){
 
         try{
 

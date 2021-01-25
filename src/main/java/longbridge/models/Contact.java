@@ -1,6 +1,5 @@
 package longbridge.models;
 
-import groovyjarjarpicocli.CommandLine;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;

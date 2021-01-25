@@ -133,7 +133,7 @@ public class MobileCorpInterBankTransferController {
                         .filter(Objects::nonNull)
                         .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
 
-                        .forEach(i -> accountList.add(i));
+                        .forEach(accountList::add);
 
 
                 if (!accountList.isEmpty()) {
@@ -193,7 +193,7 @@ public class MobileCorpInterBankTransferController {
 
                     );
 
-            beneficiaries.forEach(i->{mobileCorpLocalBeneficiaryDTOS.add(modelMapper.map(i, MobileCorpLocalBeneficiaryDTO.class));});
+            beneficiaries.forEach(i-> mobileCorpLocalBeneficiaryDTOS.add(modelMapper.map(i, MobileCorpLocalBeneficiaryDTO.class)));
             if (!mobileCorpLocalBeneficiaryDTOS.isEmpty()) {
                 responseData.setMessage(message);
                 responseData.setData(mobileCorpLocalBeneficiaryDTOS);

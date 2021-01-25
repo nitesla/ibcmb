@@ -188,7 +188,7 @@ public class AccountServiceImpl implements AccountService {
         Page<Account> page = accountRepo.findAccountByCustomerId(customerId, pageDetails);
         List<AccountDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<AccountDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 

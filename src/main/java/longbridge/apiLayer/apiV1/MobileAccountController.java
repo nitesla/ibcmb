@@ -170,7 +170,7 @@ public class MobileAccountController {
         }catch (InternetBankingException e){
 
             logger.info("View  Accout Details error {} ", e);
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -254,7 +254,7 @@ public class MobileAccountController {
 
                 try {
                     List<TransactionHistory> transactionHistoryList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
-                    transactionHistoryList.forEach(i->{mobileTransactionHistoryDTOS.add(modelMapper.map(i, MobileTransactionHistoryDTO.class));});
+                    transactionHistoryList.forEach(i-> mobileTransactionHistoryDTOS.add(modelMapper.map(i, MobileTransactionHistoryDTO.class)));
                     if (!mobileTransactionHistoryDTOS.isEmpty()) {
 
                         responseData.setMessage(message);

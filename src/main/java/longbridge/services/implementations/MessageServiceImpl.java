@@ -309,7 +309,7 @@ public class MessageServiceImpl implements MessageService {
 
         List<MessageDTO> dtOs = convertEntitiesToDTOs(messages.getContent());
         long t = messages.getTotalElements();
-        return new PageImpl<MessageDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
     @Override
     @Transactional
@@ -324,7 +324,7 @@ public class MessageServiceImpl implements MessageService {
         Page<Message> page = messageRepo.findByRecipientIgnoreCaseAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
         List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<MessageDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
 
     }
 
@@ -384,7 +384,7 @@ public class MessageServiceImpl implements MessageService {
 
         List<MessageDTO> dtOs = convertEntitiesToDTOs(messages.getContent());
         long t = messages.getTotalElements();
-        return new PageImpl<MessageDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override

@@ -121,7 +121,7 @@ public class LocalTransferController {
 
         try {
             transferService.validateTransfer(transferRequestDTO);
-            transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            transferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
 
 
@@ -141,7 +141,7 @@ public class LocalTransferController {
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         transferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
-        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        transferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
@@ -153,7 +153,7 @@ public class LocalTransferController {
 
 
     @GetMapping("/new")
-    public String addCoronationBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
+    public String addWithinBankBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         return page + "pageiA";
@@ -171,7 +171,7 @@ public class LocalTransferController {
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());
         transferRequestDTO.setBeneficiaryAccountNumber(localBeneficiaryDTO.getAccountNumber());
-        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        transferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
         request.getSession().setAttribute("Lbeneficiary", localBeneficiaryDTO);
@@ -208,7 +208,7 @@ public class LocalTransferController {
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
-        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        transferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null)

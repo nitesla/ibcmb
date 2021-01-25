@@ -50,17 +50,17 @@ BOTH,ALERT_PREFERENCE,SMS and Email,
 SMS,ALERT_PREFERENCE,SMS only, 
 EMAIL,ALERT_PREFERENCE,Email only, 
 CODE,SERVICE_REQUEST,Codes, 
-LAG,CMB_BRANCH,Lagos,"10 Amodu Ojikutu Street
+LAG,BANK_BRANCH,Lagos,"10 Amodu Ojikutu Street
 
 Off Saka Tinubu Street
 
 Victoria Island, Lagos, Nigeria"
-ABJ,CMB_BRANCH,Abuja,"Coscharis Plaza, Plot 1070
+ABJ,BANK_BRANCH,Abuja,"Coscharis Plaza, Plot 1070
 
 Faskari Street, Area 3, Garki
 
 Abuja, Nigeria"
-PH,CMB_BRANCH,Port Harcourt,"First Floor, Charis Plaza, By Evo Road Junction
+PH,BANK_BRANCH,Port Harcourt,"First Floor, Charis Plaza, By Evo Road Junction
 
 141, Olu Obasanjo Road
 

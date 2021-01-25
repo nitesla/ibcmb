@@ -7,7 +7,6 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.DateFormatter;
 import longbridge.utils.StatusCode;
 import longbridge.utils.Verifiable;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +30,6 @@ import org.thymeleaf.context.Context;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static longbridge.models.UserAccountRestriction.RestrictionType;
 
@@ -152,7 +150,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Transactional
-    private void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
 
         validateCorporate(corporateRequestDTO);
 
@@ -600,7 +598,7 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -609,7 +607,7 @@ public class CorporateServiceImpl implements CorporateService {
         Page<AccountDTO> page = accountService.getAccounts(corporate.getCustomerId(), pageDetails);
         List<AccountDTO> dtOs = page.getContent();
         long t = page.getTotalElements();
-        return new PageImpl<AccountDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -684,7 +682,7 @@ public class CorporateServiceImpl implements CorporateService {
         Page<CorporateRole> page = corporateRoleRepo.findByCorporate(corporate, pageable);
         List<CorporateRoleDTO> dtOs = convertCorporateRoleEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<CorporateRoleDTO>(dtOs, pageable, t);
+        return new PageImpl<>(dtOs, pageable, t);
     }
 
 
@@ -737,7 +735,7 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorpTransRule> transRuleList = transferRules.getContent();
         List<CorpTransferRuleDTO> transferRuleDTOs = convertTransferRuleEntitiesToDTOs(transRuleList);
         Long t = transferRules.getTotalElements();
-        return new PageImpl<CorpTransferRuleDTO>(transferRuleDTOs, pageable, t);
+        return new PageImpl<>(transferRuleDTOs, pageable, t);
     }
 
     @Override
@@ -813,7 +811,7 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             CorporateRole role = corporateRoleRepo.findById(roleDTO.getId()).get();
             Set<CorporateUser> originalUsers = new HashSet<>();
-            role.getUsers().forEach(originalUsers::add);
+            originalUsers.addAll(role.getUsers());
             entityManager.detach(role);
             role.setVersion(roleDTO.getVersion());
             role.setName(roleDTO.getName());
@@ -849,8 +847,7 @@ public class CorporateServiceImpl implements CorporateService {
     public void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException {
         try {
             CorporateRole originalRole = corporateRoleRepo.findById(updatedRole.getId()).get();
-            Set<CorporateUser> originalUsers = new HashSet<>();
-            originalUsers.addAll(originalRole.getUsers());
+            Set<CorporateUser> originalUsers = new HashSet<>(originalRole.getUsers());
             corporateRoleRepo.save(updatedRole);
             updateUsersWithoutAuthorizerRoleToInitiators(originalUsers, updatedRole.getUsers());
         } catch (Exception e) {
@@ -1142,7 +1139,7 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        return new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 

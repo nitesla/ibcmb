@@ -29,15 +29,15 @@ public interface CorpUserVerificationRepo extends CommonRepo<CorpUserVerificatio
 
     List<CorpUserVerification> findByInitiatedByAndCorpUserType(String initiatedby, CorpUserType corpUserType);
 
-    @Query( "select v from CorpUserVerification v where v.initiatedBy != :initiated and v.corpUserType=:corpUserType and v.operation in :permissionlist and v.status ='PENDING'")
+    @Query( "select v from CorpUserVerification v where v.initiatedBy <> :initiated and v.corpUserType=:corpUserType and v.operation in :permissionlist and v.status ='PENDING'")
     List<CorpUserVerification> findVerificationForUser(@Param("initiated") String initiatedBy, @Param("corpUserType") CorpUserType corpUserType, @Param("permissionlist") List<String> operation);
 
 
-    @Query( "select v from CorpUserVerification v where v.initiatedBy != :initiated and v.corpUserType=:corpUserType and v.operation in :permissionlist and v.status ='PENDING'")
+    @Query( "select v from CorpUserVerification v where v.initiatedBy <> :initiated and v.corpUserType=:corpUserType and v.operation in :permissionlist and v.status ='PENDING'")
     Page<CorpUserVerification> findVerificationForUsers(@Param("initiated") String initiatedBy, @Param("corpUserType") CorpUserType corpUserType, @Param("permissionlist") List<String> operation,Pageable pageable);
 
 
-    @Query( "select v from CorpUserVerification v where v.verifiedBy = :verified and v.corpUserType=:corpUserType and v.status !='PENDING'")
+    @Query( "select v from CorpUserVerification v where v.verifiedBy = :verified and v.corpUserType=:corpUserType and v.status <>'PENDING'")
     Page<CorpUserVerification> findVerifiedOperationsForUser(@Param("verified") String verifiedBy,@Param("corpUserType") CorpUserType corpUserType, Pageable pageable);
 
 }

@@ -92,7 +92,7 @@
 
 
                             <div class="hide-faq">
-                                <h6><a class="coronation-blue" target="_blank" th:href="@{/faqs}"
+                                <h6><a class="pantone-1" target="_blank" th:href="@{/faqs}"
                                        style="text-decoration:none;"> FAQS
 
                                     <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
@@ -251,7 +251,7 @@
                                     <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a
                                             th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own
                                         account transfers </a></li>
-                                    <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a
+                                    <li sec:authorize="hasAuthority('LOCAL_TRANSFER')"><a
                                             th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.within}">Transfer
                                         to Coronation account </a></li>
                                     <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a
@@ -388,7 +388,7 @@
                             <!--                                        <li> T +234 01-2797642 </li>-->
                             <!--                                        <li> T +234 01-2797643 </li>-->
 
-                            <!--                                        <li class="icontext pull-right " data-toggle="modal" data-target="#myCod"><button class="btn btn-link coronation-blue">Call back</button></li>-->
+                            <!--                                        <li class="icontext pull-right " data-toggle="modal" data-target="#myCod"><button class="btn btn-link pantone-1">Call back</button></li>-->
 
                             <!--                                    </ul>-->
                             <!--                            </li>-->

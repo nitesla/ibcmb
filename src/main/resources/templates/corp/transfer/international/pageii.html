@@ -30,8 +30,8 @@
                         <div class="form-group">
                             <label class='my-label'>Beneficiary</label>
                             <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
-                            <input type="text" class="form-control ben-bg coronation-blue"  th:if="${benName}==''"  th:name= "${transferRequest.beneficiaryAccountName}"  th:value= "${transferRequest.beneficiaryAccountName}" disabled />
-                            <input type="text" class="form-control ben-bg coronation-blue" th:if="${benName}!=''"  th:name= "${benName}" th:value= "${benName}" disabled />
+                            <input type="text" class="form-control ben-bg pantone-1"  th:if="${benName}==''"  th:name= "${transferRequest.beneficiaryAccountName}"  th:value= "${transferRequest.beneficiaryAccountName}" disabled />
+                            <input type="text" class="form-control ben-bg pantone-1" th:if="${benName}!=''"  th:name= "${benName}" th:value= "${benName}" disabled />
                             <a href='/corporate/transfer/international' class="btn btn-link required-step" style='font-size:11px;text-decoration:underline'>Change <span class='hidden-xs'>Beneficiary</span></a>
                             <!--<p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>-->
                         </div>
@@ -117,8 +117,8 @@
                         <h3 class="related-bar">Related Information</h3>
 
                         <!--<input type="availBal" name="availBal"/>-->
-                        <p class="related-info coronation-blue" id="availBal"><b></b></p>
-                        <p  class="related-info coronation-blue" id="limit"><b></b></p>
+                        <p class="related-info pantone-1" id="availBal"><b></b></p>
+                        <p  class="related-info pantone-1" id="limit"><b></b></p>
 
                     </div>
                 </div>

@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface CorpNeftTransferRepo extends CommonRepo<CorpNeftTransfer, Long>{
 
-    @Query(value = "select * from NEFT_TRANSFER n where n.settlementTime = 'not settled' ", nativeQuery = true)
+    @Query(value = "select n from CorpNeftTransfer n where n.settlementTime = 'not settled' ")
     List<CorpNeftTransfer> getAllUnsettledList();
 
-    @Query(value = "select * from NEFT_TRANSFER n where n.settlementTime = 'not settled' ", nativeQuery = true)
+    @Query(value = "select n from CorpNeftTransfer n where n.settlementTime = 'not settled' ")
     Page<CorpNeftTransfer> findBySettlementTime(Pageable pageable);
 }

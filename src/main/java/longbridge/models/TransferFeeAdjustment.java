@@ -11,7 +11,6 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.io.IOException;
 @Entity
-@Table(name = "Transfer_Fee_Adjustment")
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class TransferFeeAdjustment extends AbstractEntity implements PrettySerializer{
@@ -19,21 +18,21 @@ public class TransferFeeAdjustment extends AbstractEntity implements PrettySeria
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "feedescription", nullable = true)
+
    private String feeDescription;
-    @Column(name = "feerange", nullable = true)
+
    private String feeRange;
-    @Column(name = "fixedamount", nullable = true)
+
    private String fixedAmount;
-    @Column(name = "fixedamountvalue", nullable = true)
+
    private String fixedAmountValue;
-    @Column(name = "rate", nullable = true)
+
    private String rate;
-    @Column(name = "ratevalue", nullable = true)
+
    private String rateValue;
-    @Column(name = "transactionchannel", nullable = true)
+
    private String transactionChannel;
-    @Column(name = "delflag", columnDefinition = "N")
+
     private String delFlag;
 
 

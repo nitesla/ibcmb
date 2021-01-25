@@ -2,7 +2,6 @@
 package longbridge.services.implementations;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.omnichannel.dto.CustomerInfo;
@@ -706,7 +705,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUser> page = retailUserRepo.findAll(pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
 
@@ -741,7 +740,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern, pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     @Override
@@ -863,6 +862,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             dtOs.add(retailDTO);
         }
         long t = page.getTotalElements();
-        return new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 }

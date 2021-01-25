@@ -49,6 +49,7 @@ public class InterBankTransferController {
     private final CodeService codeService;
 
     private NeftBeneficiaryService neftBeneficiaryService;
+    private NeftBankService neftBankService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 /*
@@ -63,7 +64,7 @@ public class InterBankTransferController {
     public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, AccountService accountService, TransferValidator validator
 
             , IntegrationService integrationService, TransferUtils transferUtils, TransferErrorService transferErrorService, CodeService codeService,
-                                       NeftBeneficiaryService neftBeneficiaryService, QuickBeneficiaryService quickBeneficiaryService, QuicktellerBankCodeService quicktellerBankCodeService) {
+                                       NeftBeneficiaryService neftBeneficiaryService, QuickBeneficiaryService quickBeneficiaryService, QuicktellerBankCodeService quicktellerBankCodeService, NeftBankService neftBankService) {
         this.retailUserService = retailUserService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
@@ -76,6 +77,7 @@ public class InterBankTransferController {
         this.transferErrorService = transferErrorService;
         this.codeService = codeService;
         this.neftBeneficiaryService = neftBeneficiaryService;
+        this.neftBankService = neftBankService;
     }
 
 
@@ -94,11 +96,13 @@ public class InterBankTransferController {
 
     @ModelAttribute
     public void getNeftbanks(Model model) {
-        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+//        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+        List<NeftBankDTO> bankNames = neftBankService.getNeftBankList();
         Set<String> names = bankNames
                 .stream()
-                .map(CodeDTO::getDescription)
+                .map(NeftBankDTO::getBankName)
                 .collect(Collectors.toSet());
+
         Collections.sort(new ArrayList<>(names));
         model.addAttribute("neftBanks"
                 ,names);
@@ -609,8 +613,9 @@ public class InterBankTransferController {
 
     @ResponseBody
     @GetMapping("neft/{bankName}/branch")
-    public List<CodeDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
-        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+    public List<NeftBankDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
+//        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+        return neftBankService.getNeftBranchesByBankName( bankName);
     }
 
     @ResponseBody

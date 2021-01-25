@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
-@Api(value = "Retail Local Transfer", description = "Intra Bank Transfer / CMB Transfer", tags = {"Retail Local Transfer"})
+@Api(value = "Retail Local Transfer", description = "Intra Bank Transfer", tags = {"Retail Local Transfer"})
 @RequestMapping(value = "/api/v1/localtransfer")
 public class MobileLocalTransferController {
 
@@ -86,7 +86,7 @@ public class MobileLocalTransferController {
             responseData.setMessage(e.getMessage());
             responseData.setError(true);
           
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -140,7 +140,7 @@ public class MobileLocalTransferController {
             responseData.setMessage(e.getMessage());
             responseData.setCode("99");
             responseData.setError(true);
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -153,7 +153,7 @@ public class MobileLocalTransferController {
             List<MobileRetailBeneficiaryDTO> mobileRetailBeneficiaryDTOS = new ArrayList<>();
 
             Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries();
-            logger.info("cmbBeneficiaries size {} ", cmbBeneficiaries);
+            logger.info("Local Beneficiaries size {} ", cmbBeneficiaries);
 
             List<LocalBeneficiary> beneficiaries = StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
                     .collect(Collectors.toList());
@@ -165,7 +165,7 @@ public class MobileLocalTransferController {
             );
             logger.info("beneficiary size {} ", beneficiaries.size());
 
-            beneficiaries.forEach(i->{mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class));});
+            beneficiaries.forEach(i-> mobileRetailBeneficiaryDTOS.add(modelMapper.map(i, MobileRetailBeneficiaryDTO.class)));
             if (!mobileRetailBeneficiaryDTOS.isEmpty()) {
                 responseData.setMessage(message);
                 responseData.setData(mobileRetailBeneficiaryDTOS);
@@ -190,7 +190,7 @@ public class MobileLocalTransferController {
         }
     }
 
-    @ApiOperation(value = "CMB Transfer")
+    @ApiOperation(value = "Local transfer")
     @PostMapping(value = "/process")
     public ResponseEntity<?> intrabankTransfer (@RequestBody TransferRequestDTO transferRequestDTO, Principal principal, Locale locale) throws TransferException {
         String errorMessage;
@@ -246,7 +246,7 @@ public class MobileLocalTransferController {
                 }
 
             }
-            transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            transferRequestDTO.setTransferType(TransferType.WITHIN_BANK_TRANSFER);
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
             try {
 
@@ -254,7 +254,7 @@ public class MobileLocalTransferController {
                 transferService.validateTransfer(transferRequestDTO);
 
             } catch (InternetBankingTransferException e) {
-                logger.error("Error making CMB transfer {} ", e);
+                logger.error("Error making Local transfer {} ", e);
                 responseData.setMessage(e.getMessage());
                 responseData.setError(true);
                 responseData.setCode("99");

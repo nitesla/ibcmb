@@ -240,7 +240,7 @@ Create Account,CREATE_ACCOUNT,CORPORATE,,Create Account Menu
 Tranfers Menu,MANAGE_TRANSFERS,CORPORATE,,Transfers Menu
 Account Officer Menu,ACCOUNT_OFFICER,CORPORATE,,Account Officer Menu
 Own Account Transfer Menu,OWN_ACCOUNT_TRANSFER,CORPORATE,,Own Account Transfer Menu
-Coronation transfer menu,CMB_CMB_TRANSFER,CORPORATE,,Coronation transfer menu
+Local transfer menu,LOCAL_TRANSFER,CORPORATE,,Local transfer menu
 Interbank transfer,INTERBANK_TRANSFER,CORPORATE,,Interbank Transfer menu
 International Transfer,INTERNATIONAL_TRANSFER,CORPORATE,,International Transfer Menu
 Bulk Transfer,BULK_TRANSFER,CORPORATE,,Bulk Transfer menu
@@ -255,7 +255,7 @@ View Account Officer Details,VIEW_ACCOUNT_OFFICER,RETAIL,,Display Account Office
 Create Account,CREATE_ACCOUNT,RETAIL,,Create new account by customer
 Manage Transfers,MANAGE_TRANSFERS,RETAIL,,View Manage Transfers Menu Item in Retail
 Own Account Transfer,OWN_ACCOUNT_TRANSFER,RETAIL,,View Menu Item Own Account Transfer
-CMB to CMB transfer,CMB_CMB_TRANSFER,RETAIL,,View menu item cmb to cmb transfer 
+Local transfer,LOCAL_TRANSFER,RETAIL,,View menu item cmb to Local transfer
 Interbank Transfer,INTERBANK_TRANSFER,RETAIL,,View Menu Item for Interbank transfer
 International Transfer,INTERNATIONAL_TRANSFER,RETAIL,,View Menu Item for International Transfer
 Set Retail Transaction Limit,RET_TRANSACTION_LIMIT,RETAIL,,View Menu Item for transaction limit by retail user
@@ -308,3 +308,4 @@ Manage User Roles,MANAGE_ROLES,ADMIN,,Manage User Roles
 Manage User Permissions,MANAGE_PERMISSIONS,ADMIN,,Manage User Permissions
 New Service Request Config,ADD_SERV_REQ_CONFIG,ADMIN,,Create New Service Request Configuration
 Add Report,GENERATE_REPORT,ADMIN,,Generate Report
+Ops Change Password ,OPS_CHANGE_PASSWORD,OPERATIONS,,Change Password Menu

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="icon-eb"/>
+    <property name="LOG_PATTERN"
+              value="%d [%thread] %-5level %logger{36} - %msg%n"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="com.zaxxer" level="WARN"/>
+    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="com.aakkus" level="DEBUG"/>
+
+    <springProfile name="dev | local">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>%d [%thread] %-5level %logger{36} - %msg%n</Pattern>
+            </layout>
+        </appender>
+
+        <root level="debug">
+            <appender-ref ref="console"/>
+        </root>
+
+    </springProfile>
+
+    <springProfile name="dev | local">
+        <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${APP_BASE}/logs/application-${timestamp}.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>${APP_BASE}/logs/archive/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <!-- each file should be at most 10MB, keep 90 days worth of history, but at most 2GB -->
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>90</maxHistory>
+                <totalSizeCap>2GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+    </springProfile>
+
+
+        <springProfile name=" dev | local">
+        <appender name="syslog" class="ch.qos.logback.classic.net.SyslogAppender">
+            <syslogHost>127.0.0.1</syslogHost>
+            <facility>USER</facility>
+            <port>5555</port>
+            <throwableExcluded>true</throwableExcluded>
+            <suffixPattern>${LOG_PATTERN}</suffixPattern>
+        </appender>
+
+        <root level="info">
+            <appender-ref ref="syslog"/>
+        </root>
+        <logger name="debug" level="info" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="File"/>
+            <appender-ref ref="syslog"/>
+        </logger>
+
+
+        </springProfile>
+
+</configuration>

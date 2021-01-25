@@ -41,7 +41,7 @@ public interface CronJobService {
     boolean stopJob() throws InternetBankingException;
     void addNewAccount() throws InternetBankingException;
     void executeAutoAdminDeactivation();
-    public void refreshPaymentBillers();
+    void refreshPaymentBillers();
 
     void addCoverageForNewCodes();
     void neftSettlementFirstWindow();

@@ -56,7 +56,7 @@ public class PhishingImageServiceImpl implements PhishingImageService{
         Page<PhishingImage> page = phishingImageRepo.findAll(pageDetails);
         List<PhishingImageDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        return new PageImpl<PhishingImageDTO>(dtOs, pageDetails, t);
+        return new PageImpl<>(dtOs, pageDetails, t);
     }
 
     public List<PhishingImageDTO> convertEntToDTOs(Iterable<PhishingImage> phishingImages) {

@@ -10,7 +10,6 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.

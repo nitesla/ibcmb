@@ -41,7 +41,7 @@ public class CorpChequeController {
     @GetMapping("/chequebook")
     public String requestChequeBook(Principal principal, Model model) {
         List<CodeDTO> chequebooks = codeService.getCodesByType("CHEQUEBOOK");
-        List<CodeDTO> pickUpBranch = codeService.getCodesByType("CMB_BRANCH");
+        List<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CHEQUE-REQUEST");
         model.addAttribute("requestConfig", serviceReqConfig);
         model.addAttribute("leaves", chequebooks);
@@ -88,7 +88,7 @@ public class CorpChequeController {
     @GetMapping("/draft")
     public String requestDraft(Model model,Locale locale) {
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("DRAFT-REQUEST");
-        Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("CMB_BRANCH");
+        Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
         SettingDTO draftCharge = configurationService.getSettingByName("DRAFT-REQUEST");
 
         model.addAttribute("requestConfig", serviceReqConfig);

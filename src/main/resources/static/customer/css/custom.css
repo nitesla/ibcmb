@@ -257,15 +257,15 @@ table.dataTable tbody td {
     background-color: #f2dede;
 }
 
-.coronation-blue {
+.pantone-1 {
     color: #003056;
 }
 
-.coronation-brown {
+.pantone-2 {
     color: #9F614B !important;
 }
 
-.bg-coronation-brown {
+.bg-pantone-2 {
     background: #9F614B !important;
     color: white;
 }
@@ -321,11 +321,11 @@ table.dataTable tbody td {
     cursor: pointer;
 }
 
-.bg-coronation-blue {
+.bg-pantone-1 {
     background-color: #003056 !important;
 }
 
-.coronation-blue {
+.pantone-1 {
     color: #003056;
 }
 
