@@ -70,6 +70,7 @@
             <li sec:authorize="hasAuthority('BANK_CONFIG')"><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('FIN_INST')"><a href="/admin/finst">Financial Institutions</a></li>
+                    <li sec:authorize="hasAuthority('FIN_INST')"><a href="/admin/neftb/banks">Neft Banks</a></li>
                     <li sec:git ="hasAuthority('CONTACT_GRP')"><a href="/admin/groups/">Contact Groups</a></li>
                     <li sec:authorize="hasAuthority('SERVICE_REQ')"><a href="/admin/srconfig">Service Requests</a></li>
                     <li><a th:href="@{/admin/billers}"> Quickteller Billers</a></li>

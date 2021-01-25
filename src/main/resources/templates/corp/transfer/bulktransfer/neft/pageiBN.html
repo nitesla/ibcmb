@@ -133,7 +133,7 @@
                         branch.innerHTML = "";
                         let options = "";
                         for(let i = 0; i <data.length; i++){
-                            options += `<option value="${data[i].code}" >${data[i].extraInfo}</option>`;
+                            options += `<option value="${data[i].sortCode}" >${data[i].branchName}</option>`;
                         }
                         branch.insertAdjacentHTML("beforeend",options);
                     }

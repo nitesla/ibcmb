@@ -52,7 +52,7 @@ public interface CodeService {
 	 *            the code's type
 	 * @return a list of codes
 	 */
-	@PreAuthorize("hasAuthority('GET_CODES')")
+//	@PreAuthorize("hasAuthority('GET_CODES')")
 	List<CodeDTO> getCodesByType(String codeType);
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
