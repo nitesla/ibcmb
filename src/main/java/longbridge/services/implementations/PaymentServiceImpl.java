@@ -7,7 +7,6 @@ import longbridge.models.*;
 import longbridge.repositories.BillPaymentRepo;
 import longbridge.repositories.BillerRepo;
 import longbridge.repositories.PaymentItemRepo;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.IntegrationService;
 import longbridge.services.PaymentService;

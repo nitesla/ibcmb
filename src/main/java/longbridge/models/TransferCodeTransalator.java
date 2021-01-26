@@ -1,7 +1,6 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 7/16/2017.

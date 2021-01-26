@@ -1,6 +1,6 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.*;
+import longbridge.dtos.CoverageDetailsDTO;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CoverageService;
 import longbridge.services.IntegrationService;

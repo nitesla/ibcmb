@@ -88,8 +88,8 @@ public class CorpAccountController {
     @Value("${jrxmlFile.path}")
     private String jrxmlPath;
     //TODO :check bankname works
-    @Value("#{menu.bank.name}")
-    private String bankName;
+//    @Value("${menu.bank.name}")
+    private String bankName = "Coronation Merchant Bank";
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
     @GetMapping
