@@ -4,7 +4,6 @@ package longbridge;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
-import static org.apache.commons.lang3.StringUtils.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
