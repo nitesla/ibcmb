@@ -103,6 +103,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public AdminUser getUserByNameWithoutAuthentication(String name) {
+        return this.adminUserRepo.findFirstByUserNameIgnoreCase(name);
+    }
+
+    @Override
     public AdminUserDTO getAdminUser(Long userId) {
         AdminUser adminUser = adminUserRepo.findById(userId).get();
         return convertEntityToDTO(adminUser);
