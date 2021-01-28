@@ -45,10 +45,10 @@
                                         <div th:replace="layout::form-validation"></div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Username</label>
+                                            <label class="col-sm-2 control-label">Username<span class='req-inner' style=" font-size: 16px">*</span></label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{userName}" required="required"/><span class='req-inner'></span>
+                                                <input type="text" class="form-control" th:field="*{userName}" required="required"/>
                                             </div>
 
 
@@ -57,48 +57,48 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">First Name</label>
+                                            <label class="col-sm-2 control-label">First Name<span class='req-inner' style=" font-size: 16px">*</span></label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{firstName}" required="required"/><span class='req-inner'></span>
+                                                <input type="text" class="form-control" th:field="*{firstName}" required="required"/>
                                             </div>
 
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Last Name</label>
+                                            <label class="col-sm-2 control-label">Last Name<span class='req-inner' style=" font-size: 16px">*</span></label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lastName}" required="required"/><span class='req-inner'></span>
+                                                <input type="text" class="form-control" th:field="*{lastName}" required="required"/>
                                                 <!--<p th:if="${#fields.hasErrors('*')}" th:errors="*{lastName}">Last Name Error</p>-->
 
                                             </div>
 
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Email</label>
+                                            <label class="col-sm-2 control-label">Email<span class='req-inner' style=" font-size: 16px">*</span></label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{email}" required="required"/><span class='req-inner'></span>
+                                                <input type="text" class="form-control" th:field="*{email}" required="required"/>
                                             </div>
 
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Phone</label>
+                                            <label class="col-sm-2 control-label">Phone<span class='req-inner' style=" font-size: 16px">*</span></label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{phoneNumber}" required="required"/><span class='req-inner'></span>
+                                                <input type="text" class="form-control" th:field="*{phoneNumber}" required="required"/>
                                             </div>
 
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Role</label>
+                                            <label class="col-sm-2 control-label">Role<span class='req-inner' style=" font-size: 16px">*</span></label>
                                             <div class="col-sm-6">
 
                                                 <select class="form-control" th:field="*{roleId}">
                                                     <option value="" >Select..</option>
-                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'operations')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==operationsUser.roleId}" required="required"></option><span class='req-inner'></span>
+                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'operations')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==operationsUser.roleId}" required="required"></option>
                                                 </select>
 
 
