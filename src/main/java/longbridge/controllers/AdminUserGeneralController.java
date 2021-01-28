@@ -52,7 +52,7 @@ public class AdminUserGeneralController {
             return "/adm/admin/username";
         }
 
-        AdminUser adminUser = adminUserService.getUserByName(username);
+        AdminUser adminUser = adminUserService.getUserByNameWithoutAuthentication(username);
         if(adminUser==null){
             model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
             return "/adm/admin/username";

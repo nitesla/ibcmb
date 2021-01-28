@@ -35,6 +35,9 @@ public interface AdminUserService {
     @PreAuthorize("hasAuthority('GET_ADMIN_USER')")
     AdminUser getUserByName(String name);
 
+    /*@PreAuthorize("hasAuthority('GET_ADMIN_USER')")*/
+    AdminUser getUserByNameWithoutAuthentication(String name);
+
     /**
      * Returns a DTO of {@code AdminUserDTO} having the specified userId
      * @param userId the user's Id
