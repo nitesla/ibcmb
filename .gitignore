@@ -36,8 +36,7 @@ logs/
 application.log
 .DS_Store
 application-local.properties
-./velocity.log.1
-./velocity.log
 resources/i18n/menu_en.properties
 *.jpage
-ajcore.20200723.144145.009.txt
+ajcore.*
+
