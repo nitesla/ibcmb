@@ -1,9 +1,10 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class UserRegDTO {
+public class UserRegDTO implements Serializable {
     private String acctNumber;
     private String userName;
     private String email;

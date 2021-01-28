@@ -1,11 +1,12 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by mac on 31/01/2018.
  */
-public class ReportParameterDTO {
+public class ReportParameterDTO implements Serializable {
     private String parameterName;
     private String parameterDesc;
     private String datatype;

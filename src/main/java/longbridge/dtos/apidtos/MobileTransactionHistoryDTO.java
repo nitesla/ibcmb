@@ -1,8 +1,9 @@
 package longbridge.dtos.apidtos;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MobileTransactionHistoryDTO {
+public class MobileTransactionHistoryDTO implements Serializable {
 
     private String narration;
     private Date postedDate;

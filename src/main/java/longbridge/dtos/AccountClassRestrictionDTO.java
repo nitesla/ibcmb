@@ -3,11 +3,12 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 /**
  * Created by Fortune on 4/28/2017.
  */
-public class AccountClassRestrictionDTO {
+public class AccountClassRestrictionDTO implements Serializable {
 
 
     @JsonProperty("DT_RowId")

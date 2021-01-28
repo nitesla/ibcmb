@@ -2,7 +2,9 @@ package longbridge.dtos;
 
 import longbridge.models.EntityId;
 
-public class UpdateCoverageDTO {
+import java.io.Serializable;
+
+public class UpdateCoverageDTO implements Serializable {
 
     private EntityId id;
     private String code;

@@ -1,8 +1,9 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class CoverageDetailsDTO {
+public class CoverageDetailsDTO implements Serializable {
 
     private Set<String> customerIds;
     private String coverageName;

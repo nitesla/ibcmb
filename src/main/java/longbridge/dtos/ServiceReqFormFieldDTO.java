@@ -1,6 +1,5 @@
 package longbridge.dtos;
 
-
 /**
  * Created by Fortune on 08/04/2017.
  */

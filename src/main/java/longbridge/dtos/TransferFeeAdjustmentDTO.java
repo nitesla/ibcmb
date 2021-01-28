@@ -2,7 +2,9 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TransferFeeAdjustmentDTO {
+import java.io.Serializable;
+
+public class TransferFeeAdjustmentDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

@@ -2,10 +2,11 @@ package longbridge.dtos;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class PFItemDataStoreDTO {
+public class PFItemDataStoreDTO implements Serializable {
     private String itemSequenceNo;
     private String serialNo;
     private String sortCode;

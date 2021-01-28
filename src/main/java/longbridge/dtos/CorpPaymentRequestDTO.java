@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class CorpPaymentRequestDTO extends TransferRequestDTO {
+ import java.io.Serializable;
+
+public class CorpPaymentRequestDTO extends TransferRequestDTO implements Serializable {
 
     private String corporateId;
 

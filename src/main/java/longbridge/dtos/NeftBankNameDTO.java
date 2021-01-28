@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class NeftBankNameDTO {
+ import java.io.Serializable;
+
+public class NeftBankNameDTO implements Serializable {
 
     private String bankName;
 

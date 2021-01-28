@@ -2,11 +2,12 @@ package longbridge.dtos;
 
 import longbridge.models.RetailUser;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 
-public class RecurringPaymentDTO {
+public class RecurringPaymentDTO implements Serializable {
 
     private Long id;
     private String customerAccountNumber;

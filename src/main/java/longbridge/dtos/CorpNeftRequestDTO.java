@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class CorpNeftRequestDTO extends NeftTransferRequestDTO {
+ import java.io.Serializable;
+
+public class CorpNeftRequestDTO extends NeftTransferRequestDTO implements Serializable {
     private String corporateId;
 
     private String transAuthId;

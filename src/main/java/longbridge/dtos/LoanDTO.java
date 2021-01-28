@@ -1,5 +1,7 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 
 
 /**
@@ -7,7 +9,7 @@ package longbridge.dtos;
  */
 
 
-public class LoanDTO {
+public class LoanDTO implements Serializable {
 
     private String accountId;
     private String accountNumber;

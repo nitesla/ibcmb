@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import java.util.Date;
  * Created by Longbridge on 14/06/2017.
  */
 
-public class CreditRequestDTO {
+public class CreditRequestDTO implements Serializable {
     @JsonProperty("DT_RowId")
     private Long id;
     private String customerAccountNumber;

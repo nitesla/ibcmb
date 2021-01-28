@@ -2,7 +2,9 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-public class ContactDTO {
+import java.io.Serializable;
+
+public class ContactDTO implements Serializable {
 
 	private long dt_RowId;
 	private String firstName;

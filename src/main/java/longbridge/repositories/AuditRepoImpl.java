@@ -207,12 +207,12 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
 
         //check for next revision of entity
 
-        sql = String.format("select max(tab.rev) from %s tab where tab.id=%d and tab.rev < %d ", table, (Long) revisionMap.get("id"), rev);
+        sql = String.format("select max(tab.rev) from %s tab where tab.id=%d and tab.rev < %d ", table, revisionMap.get("id"), rev);
         Long maxRev = template.queryForObject(sql, Long.class);
         Map<String, Object> newMap = null;
         if (maxRev != null) {
             // get it
-            sql = String.format("select * from %s tab where tab.id=%d and tab.rev = %d order by tab.rev desc", table, (Long) revisionMap.get("id"), maxRev);
+            sql = String.format("select * from %s tab where tab.id=%d and tab.rev = %d order by tab.rev desc", table, revisionMap.get("id"), maxRev);
             newMap = template.queryForMap(sql);
             sanitize(newMap);
         } else {

@@ -1,6 +1,8 @@
 package longbridge.dtos.apidtos;
 
-public class MobileRegSecQuestionDTO {
+import java.io.Serializable;
+
+public class MobileRegSecQuestionDTO implements Serializable {
 
     private String code;
     private  String type;

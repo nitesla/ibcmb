@@ -1,6 +1,8 @@
 package longbridge.dtos.apidtos;
 
-public class MobileRetailBeneficiaryDTO {
+import java.io.Serializable;
+
+public class MobileRetailBeneficiaryDTO implements Serializable {
 
     private Long id;
     private String accountName;

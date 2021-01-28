@@ -1,10 +1,12 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by chiomarose on 16/06/2017.
  */
 
-public class MakerCheckerDTO {
+public class MakerCheckerDTO implements Serializable {
     private long id;
 
     private String name;

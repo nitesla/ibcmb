@@ -1,11 +1,13 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 
 /**
  * Created by Fortune on 2/26/2018.
  */
 
-public class FixedDepositDTO {
+public class FixedDepositDTO implements Serializable {
 
     private String accountId;
     private String accountNumber;

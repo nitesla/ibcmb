@@ -5,12 +5,13 @@ import longbridge.models.Code;
 import longbridge.models.UserType;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Fortune on 4/5/2017.
  */
-public class AdminUserDTO {
+public class AdminUserDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

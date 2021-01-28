@@ -1,8 +1,9 @@
 package longbridge.dtos;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
-public class NeftBeneficiaryDTO {
+public class NeftBeneficiaryDTO implements Serializable {
     private Long id;
     @NotEmpty(message = "Please enter a Beneficiary Name")
     private String beneficiaryAccountName;

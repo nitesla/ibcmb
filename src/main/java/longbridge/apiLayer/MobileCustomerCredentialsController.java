@@ -232,7 +232,7 @@ public class MobileCustomerCredentialsController {
             }
         } catch (InternetBankingException e) {
             logger.error("Error validating security questions and answers", e);
-            responseData.setMessage(e.getMessage().toString());
+            responseData.setMessage(e.getMessage());
            responseData.setError(true);
             responseData.setCode("99");
             return new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);
@@ -291,7 +291,7 @@ public class MobileCustomerCredentialsController {
 
         } catch (InternetBankingException | NullPointerException e) {
             logger.error("Retail User forgot password error {} ", e);
-            responseData.setMessage(e.getMessage().toString());
+            responseData.setMessage(e.getMessage());
             responseData.setError(true);
             responseData.setCode("99");
             return new ResponseEntity<Object>(responseData,HttpStatus.BAD_REQUEST);

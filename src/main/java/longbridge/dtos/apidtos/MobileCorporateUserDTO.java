@@ -1,6 +1,8 @@
 package longbridge.dtos.apidtos;
 
-public class MobileCorporateUserDTO {
+import java.io.Serializable;
+
+public class MobileCorporateUserDTO implements Serializable {
 
     private String corporateName;
     private String rcNumber;

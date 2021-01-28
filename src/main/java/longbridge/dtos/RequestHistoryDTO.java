@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by Fortune on 4/5/2017.
  */
-public class RequestHistoryDTO {
+public class RequestHistoryDTO implements Serializable {
 
     private Long id;
     private String serviceRequestId;

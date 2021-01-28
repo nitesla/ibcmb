@@ -1,8 +1,9 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserRetrievalDTO {
+public class UserRetrievalDTO implements Serializable {
 
     private String accountNum;
     private String customerId;

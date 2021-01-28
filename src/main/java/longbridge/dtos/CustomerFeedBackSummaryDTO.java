@@ -1,8 +1,9 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class CustomerFeedBackSummaryDTO {
+public class CustomerFeedBackSummaryDTO implements Serializable {
         private String tranType;
         private BigDecimal retailRating;
         private BigDecimal corporateRating;

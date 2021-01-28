@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import longbridge.models.RetailUser;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import java.util.Date;
  *
  */
 
-public class RetailCustLimitDTO {
+public class RetailCustLimitDTO implements Serializable {
 
 	private RetailUser customer;
 	private String description;

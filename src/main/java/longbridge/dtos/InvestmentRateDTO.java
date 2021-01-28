@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class InvestmentRateDTO {
+public class InvestmentRateDTO implements Serializable {
     @JsonProperty("DT_RowId")
     private Long id;
     @NotEmpty(message="investmentName")

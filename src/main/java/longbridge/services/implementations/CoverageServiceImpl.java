@@ -37,7 +37,7 @@ public class CoverageServiceImpl implements CoverageService {
     @Override
     public Page<CoverageDetailsDTO> getCoverages(String coverageName, String customerId,  Pageable pageable) {
         List<CoverageDetailsDTO> coverageDetails = integrationService.getCoverages(coverageName, customerId);
-        return new PageImpl<>(coverageDetails, pageable, (long) coverageDetails.size());
+        return new PageImpl<>(coverageDetails, pageable, coverageDetails.size());
 
     }
 

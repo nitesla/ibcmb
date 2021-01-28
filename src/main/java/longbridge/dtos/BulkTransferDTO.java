@@ -1,14 +1,15 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * Created by Longbridge on 14/06/2017.
  */
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
-
-public class BulkTransferDTO {
+public class BulkTransferDTO implements Serializable {
     @JsonProperty("DT_RowId")
     private Long id;
     private String customerAccountNumber;

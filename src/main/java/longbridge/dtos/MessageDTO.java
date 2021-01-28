@@ -3,12 +3,13 @@ package longbridge.dtos;
 import longbridge.models.UserType;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *  Created by Fortune on 4/5/2017.
  */
-public class MessageDTO {
+public class MessageDTO implements Serializable {
 
 
     private Long id;

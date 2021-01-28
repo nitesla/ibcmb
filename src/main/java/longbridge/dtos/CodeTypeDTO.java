@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class CodeTypeDTO {
+ import java.io.Serializable;
+
+public class CodeTypeDTO implements Serializable {
 
 	private String type;
 

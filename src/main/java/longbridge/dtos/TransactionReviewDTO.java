@@ -4,8 +4,9 @@ import longbridge.utils.TransferType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 
-public class TransactionReviewDTO {
+public class TransactionReviewDTO implements Serializable {
 
     private String startDate;
     private String endDate;

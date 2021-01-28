@@ -1,10 +1,11 @@
 package longbridge.dtos;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class BillPaymentDTO {
+public class BillPaymentDTO implements Serializable {
     private Long id;
     @NotEmpty(message = "Amount is required")
     private String amount;

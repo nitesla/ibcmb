@@ -2,13 +2,14 @@ package longbridge.dtos;
 
 import longbridge.models.Permission;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by mac on 30/01/2018.
  */
-public class ReportDTO {
+public class ReportDTO implements Serializable {
 //    @JsonProperty("DT_RowId")
 private Long id;
     private int version;

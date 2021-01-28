@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by mac on 22/02/2018.
  */
-public class PaymentDTO {
+public class PaymentDTO implements Serializable {
 
     private Long id;
 

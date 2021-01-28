@@ -1,8 +1,9 @@
 package longbridge.dtos.apidtos;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class MobileAccountDTO {
+public class MobileAccountDTO implements Serializable {
 
     private Long id;
     private String accountNumber;

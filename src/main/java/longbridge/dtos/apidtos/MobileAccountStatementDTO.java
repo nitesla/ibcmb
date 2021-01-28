@@ -2,10 +2,11 @@ package longbridge.dtos.apidtos;
 
 import longbridge.utils.statement.TransactionDetails;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MobileAccountStatementDTO {
+public class MobileAccountStatementDTO implements Serializable {
 
     private String acctNum;
     private String fromDate;

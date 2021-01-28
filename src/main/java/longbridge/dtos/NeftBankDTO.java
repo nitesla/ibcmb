@@ -3,8 +3,9 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
-public class NeftBankDTO {
+public class NeftBankDTO implements Serializable {
     @JsonProperty("DT_RowId")
     private Long id;
     @NotEmpty(message = "bank name")

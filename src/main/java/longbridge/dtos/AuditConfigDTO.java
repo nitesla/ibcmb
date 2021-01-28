@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by chiomarose on 03/07/2017.
  */
-public class AuditConfigDTO {
+public class AuditConfigDTO implements Serializable {
 
 
     private long id;

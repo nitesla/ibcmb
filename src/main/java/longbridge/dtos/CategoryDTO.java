@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class CategoryDTO {
+ import java.io.Serializable;
+
+public class CategoryDTO implements Serializable {
 
     public CategoryDTO() {
     }

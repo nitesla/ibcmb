@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -7,7 +8,7 @@ import java.util.Date;
  * Created by Fortune on 4/5/2017.
  *
  */
-public class CorpLimitDTO {
+public class CorpLimitDTO implements Serializable {
 
 	private CorporateDTO corporateDTO;
 	private String description;
