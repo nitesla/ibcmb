@@ -55,7 +55,7 @@
                                             <label class="col-sm-2 control-label">Username</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{userName}"/>
+                                                <input type="text" class="form-control" th:field="*{userName}" required="required"/><span class='req-inner'></span>
                                             </div>
 
 
@@ -67,7 +67,7 @@
                                             <label class="col-sm-2 control-label">First Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{firstName}"/>
+                                                <input type="text" class="form-control" th:field="*{firstName}" required="required"/><span class='req-inner'></span>
                                             </div>
 
                                         </div>
@@ -75,7 +75,7 @@
                                             <label class="col-sm-2 control-label">Last Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                                <input type="text" class="form-control" th:field="*{lastName}" required="required"/><span class='req-inner'></span>
                                                 <!--<p th:if="${#fields.hasErrors('*')}" th:errors="*{lastName}">Last Name Error</p>-->
 
                                             </div>
@@ -85,7 +85,7 @@
                                             <label class="col-sm-2 control-label">Email</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{email}"/>
+                                                <input type="text" class="form-control" th:field="*{email}" required="required"/><span class='req-inner'></span>
                                             </div>
 
                                         </div>
@@ -93,7 +93,7 @@
                                             <label class="col-sm-2 control-label">Phone</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{phoneNumber}"/>
+                                                <input type="text" class="form-control" th:field="*{phoneNumber}" required="required"/><span class='req-inner'></span>
                                             </div>
 
                                         </div>
@@ -106,7 +106,7 @@
 
                                                 <select class="form-control" th:field="*{roleId}">
                                                     <option value="">Select..</option>
-                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'admin')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
+                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'admin')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}" required="required"></option><span class='req-inner'></span>
                                                 </select>
                                             </div>
                                         </div>
