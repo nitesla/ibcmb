@@ -17,7 +17,7 @@ import java.util.List;
 /**
 <
  * The {@code TransferService} interface provides the methods for making transfers.
- * The various transfer types supported include own account transfer, coronation bank transfer, interbank transfer
+ * The various transfer types supported include own account transfer, bank transfer, interbank transfer
  * and international transfer. The transfers can be carried via Finacle, NIP, NAPS and RTGS
  * @author Fortunatus Ekenachi
  * @see TransRequest

@@ -333,7 +333,7 @@ table.dataTable tbody td {
     border-top: 0px !important;
 }
 
-.bg-coronation {
+.bg-bank {
     background-color: #ebecef !important;
 }
 
@@ -553,7 +553,7 @@ table.dataTable thead td {
     border-bottom: 1px solid #111;
 }
 
-.coronation-select:before {
+.bank-select:before {
     position: absolute;
     right: 15%;
     width: 20px;
@@ -2020,7 +2020,7 @@ background-size: cover;*/
     width: 100% !important;
 }
 
-.coronation-form-control {
+.bank-form-control {
     font-size: 12px;
     margin-left: 15px;
 }
