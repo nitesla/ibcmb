@@ -68,6 +68,9 @@ public interface CodeService {
     Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails);
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
+	Page<CodeTypeDTO> getCodeTypes(String pattern,Pageable pageDetails);
+
+	@PreAuthorize("hasAuthority('GET_CODES')")
 	Code getByTypeAndCode(String type, String code);
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
