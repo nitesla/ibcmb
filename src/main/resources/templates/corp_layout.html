@@ -115,7 +115,7 @@
                                 <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                                 <ul class="dropdown-menu">
                                     <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                                    <li sec:authorize="hasAuthority('LOCAL_TRANSFER')"><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
+                                    <li sec:authorize="hasAuthority('LOCAL_TRANSFER')"><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.within}">Transfer to account </a></li>
                                     <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
                                     <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
                                     <li sec:authorize="hasAuthority('BULK_TRANSFER')"><a th:href="@{/corporate/transfer/bulk}" th:text="#{menu.transfer.bulk}">Bulk transfer</a></li>
@@ -343,7 +343,7 @@
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
-    <script th:src="@{~/customer/js/coronation.js}"></script>
+    <script th:src="@{~/customer/js/bank.js}"></script>
     <script th:src="@{~/customer/js/dataTables.select.js}"></script>
 
     <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>-->

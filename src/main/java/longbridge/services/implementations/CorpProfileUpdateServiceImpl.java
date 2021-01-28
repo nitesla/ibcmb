@@ -87,16 +87,15 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
                     setEntrustUserQA(user.getEntrustId(), user.getEntrustGroup(), user.getSecurityQuestion(), user.getSecurityAnswer());
 
                     setEntrustUserMutualAuth(user.getEntrustId(), user.getEntrustGroup(), user.getCaptionSec(), user.getPhishingSec());
-
-                    CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
-
-                    corporateUser.setIsFirstTimeLogon("N");
-
-                    corporateUser.setUserType(UserType.CORPORATE);
-
-                    corporateUserRepo.save(corporateUser);
                 }
             }
+            CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
+
+            corporateUser.setIsFirstTimeLogon("N");
+
+            corporateUser.setUserType(UserType.CORPORATE);
+
+            corporateUserRepo.save(corporateUser);
 
             logger.info("Corporate user {} updated", user.getUserName());
             return messageSource.getMessage("profile.update.success", null, locale);

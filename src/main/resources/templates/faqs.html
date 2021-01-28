@@ -19,7 +19,7 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="faq : ${faqList}">
-                                        <div class="bg-coronation alert" style="margin-bottom:0px !important;">
+                                        <div class="bg-bank alert" style="margin-bottom:0px !important;">
                                             <span th:text="${faq.question}">Can i use the platform to transfer money abroad?</span>
                                             <a th:id="'_'+${faq.id}" class="switch" href='javascript:void(0)' onclick="serviceToggle(id)">
                                                 <i data-toggle="collapse" th:attr="data-target='#'+${faq.id}" class='pull-right fa fa-plus-square faq-icon'></i>
@@ -47,7 +47,7 @@
                                             <h1 style="margin-bottom:10px">Our Promise</h1>
                                             <p>Local expertise: world-class solutions. A commitment to the long-term inspires us to look after our clients’ best interests, harness the potential of our people and shape the financial future of our continent.
                                                 <br/>
-                                                To learn more about what we do, click <a href="https://www.coronationmb.com/what-we-do/introduction" target="_blank"> here </a>
+                                                To learn more about what we do, click <a th:href="#{menu.bank.website}" target="_blank"> here </a>
 
                                             </p>
                                         </div>
