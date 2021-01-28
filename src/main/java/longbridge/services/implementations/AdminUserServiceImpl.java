@@ -268,7 +268,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public void sendActivationCredentials(AdminUser user, String password) {
 
         try {
-            String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
+            String adminUrl = (hostUrl != null) ? hostUrl + "/login/admin" : "";
 
             String fullName = user.getFirstName() + " " + user.getLastName();
             Context context = new Context();
@@ -513,7 +513,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void generateAndSendCredentials(AdminUser user, Email email) {
 
-        String adminUrl = (hostUrl != null) ? hostUrl + "/admin" : "";
+        String adminUrl = (hostUrl != null) ? hostUrl + "/login/admin" : "";
 
         if ("A".equals(user.getStatus())) {
 
