@@ -52,6 +52,9 @@ public class AppInit implements InitializingBean {
     @Autowired
     private CodeRepo codeRepository;
 
+    @Autowired
+    private NeftBankRepo neftBankRepo;
+
     @Value("${auto.load.file.code:codes.csv}")
     private String codesFile;
 
@@ -61,11 +64,11 @@ public class AppInit implements InitializingBean {
     @Value("${auto.load.file.settings:settings.csv}")
     private String settingsFile;
 
-
     @Transactional
     @Override
     public void afterPropertiesSet() {
-
+        System.out.println("I got called");
+        loadNeftBanks();
         loadCodes();
         loadPermissions();
 
@@ -97,6 +100,20 @@ public class AppInit implements InitializingBean {
                     codeRepository.save(c);
                 } catch (Exception e) {
                     logger.trace("not adding code {}", c);
+                }
+            }
+        });
+    }
+
+    private void loadNeftBanks() {
+        List<NeftBank> neftBanks = loadObjectList(NeftBank.class, "neftBanks.csv");
+        System.out.println("These are the neft banks "+ neftBanks);
+        neftBanks.forEach(n -> {
+            if (neftBankRepo.findByBankNameAndBranchNameAndSortCode(n.getBankName(), n.getBranchName(), n.getSortCode()) == null) {
+                try {
+                    neftBankRepo.save(n);
+                } catch (Exception e) {
+                    logger.trace("not adding neft bank {}", n);
                 }
             }
         });
