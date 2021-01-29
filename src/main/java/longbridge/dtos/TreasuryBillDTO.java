@@ -2,13 +2,15 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
+
 /**
  * Created by Fortune on 2/26/2018.
  */
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TreasuryBillDTO {
+public class TreasuryBillDTO implements Serializable {
 
     private String customerId;
     private String startDate;

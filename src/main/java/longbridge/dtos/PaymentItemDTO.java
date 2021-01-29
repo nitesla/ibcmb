@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class PaymentItemDTO {
+ import java.io.Serializable;
+
+public class PaymentItemDTO implements Serializable {
 
 
     private Long id;

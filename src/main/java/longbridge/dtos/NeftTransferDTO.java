@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class NeftTransferDTO {
+ import java.io.Serializable;
+
+public class NeftTransferDTO implements Serializable {
 
         private String ItemSequenceNo;
         private String SerialNo;

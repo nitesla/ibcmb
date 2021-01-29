@@ -84,6 +84,7 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
+    @Cacheable(value = "codes")
     public List<CodeDTO> getCodesByType(String codeType) {
         Iterable<Code> codes = this.codeRepo.findByType(codeType);
         return convertEntitiesToDTOs(codes);
@@ -145,7 +146,6 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Override
-    @Cacheable(value = "codes")
     public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
         // TODO Auto-generated method stub
 
@@ -204,12 +204,25 @@ public class CodeServiceImpl implements CodeService {
     public Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails) {
 
         Page<String> allTypes = codeRepo.findAllTypes(pageDetails);
+        return wrapType(pageDetails, allTypes);
+
+    }
+
+
+
+
+    @Override
+    public Page<CodeTypeDTO> getCodeTypes(String pattern, Pageable pageDetails) {
+              Page<String> foundTypes = codeRepo.searchByType(pattern,pageDetails);
+        return wrapType(pageDetails, foundTypes);
+    }
+
+    private Page<CodeTypeDTO> wrapType(Pageable pageDetails, Page<String> allTypes) {
         long t = allTypes.getTotalElements();
         List<CodeTypeDTO> list = new ArrayList<>();
         for (String s : allTypes) {
             list.add(new CodeTypeDTO(s));
         }
         return new PageImpl<>(list, pageDetails, t);
-
     }
 }

@@ -5,6 +5,7 @@ import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.CodeService;
 import longbridge.utils.DataTablesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,14 +56,13 @@ public class AdmCodeController {
 			return "adm/code/add";
 		}
 
-
 		try {
 
 			String message = codeService.addCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
 
 
-			return "redirect:/admin/codes/alltypes";
+			return "redirect:/admin/codes" + "/type/"+ codeDTO.getType()+"/edit";
 		}
 		catch (InternetBankingException ibe){
 			result.addError(new ObjectError("error",ibe.getMessage()));
@@ -108,10 +108,15 @@ public class AdmCodeController {
 
 
 	@GetMapping(path = "/type")
-	public @ResponseBody DataTablesOutput<CodeTypeDTO> getAllCodeTypes(DataTablesInput input) {
-
+	public @ResponseBody DataTablesOutput<CodeTypeDTO> getAllCodeTypes(DataTablesInput input, @RequestParam("csearch") String search) {
 		Pageable pageable = DataTablesUtils.getPageable(input);
-		Page<CodeTypeDTO> codeTypes = codeService.getCodeTypes(pageable);
+		Page<CodeTypeDTO> codeTypes = null;
+		if (StringUtils.isNoneBlank(search)) {
+   			codeTypes = codeService.getCodeTypes(search, pageable);
+		} else {
+			codeTypes = codeService.getCodeTypes(pageable);
+		}
+
 		DataTablesOutput<CodeTypeDTO> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
 		out.setData(codeTypes.getContent());
@@ -171,7 +176,7 @@ public class AdmCodeController {
 		try {
 			String message = codeService.updateCode(codeDTO);
 			redirectAttributes.addFlashAttribute("message", message);
-			return "redirect:/admin/codes/alltypes";
+			return "redirect:/admin/codes" + "/type/" + codeDTO.getType() + "/edit";
 		}
 		catch (InternetBankingException ibe){
 			result.addError(new ObjectError("error",ibe.getMessage()));

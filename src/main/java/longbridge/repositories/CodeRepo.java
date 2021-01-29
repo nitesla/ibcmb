@@ -28,7 +28,7 @@ public interface CodeRepo extends CommonRepo<Code, Long>{
     List<Code> findAllByType(String type);
     @Query("select distinct c.code from Code c where c.type=:type")
     Set<String> getCodeByType(@Param("type") String type);
-    
-    
-    
+
+    @Query("select distinct c.type from Code c where upper(c.type) like upper(concat('%', :pattern,'%')) ")
+    Page<String> searchByType(@Param("pattern") String pattern, Pageable pageDetails);
 }

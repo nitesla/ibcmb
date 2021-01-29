@@ -1,9 +1,10 @@
 package longbridge.dtos;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 
-public class NeftTransferRequestDTO {
+public class NeftTransferRequestDTO implements Serializable {
     private String beneficiaryAccountNumber;
     private String beneficiaryAccountName;
     private String beneficiaryBVN;

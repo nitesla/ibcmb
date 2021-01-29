@@ -18,7 +18,7 @@ build-job:
     - mvn clean package
     - sudo mv /opt/tomcat/gtl/webapps/ROOT /opt/tomcat/gtl/backup/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
     - sudo mkdir /opt/tomcat/gtl/webapps/ROOT
-    - sudo unzip target/ibcmb.war -d /opt/tomcat/gtl/webapps/ROOT
+    - sudo unzip target/ibanking.war -d /opt/tomcat/gtl/webapps/ROOT
   artifacts:
     paths:
       - target/*.war

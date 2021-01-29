@@ -1,18 +1,18 @@
 package longbridge.dtos;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.Code;
 import longbridge.models.Role;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
  */
-public class RetailUserDTO {
+public class RetailUserDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

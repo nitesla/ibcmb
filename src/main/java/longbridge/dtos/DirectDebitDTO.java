@@ -4,11 +4,12 @@ import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 
-public class DirectDebitDTO {
+public class DirectDebitDTO implements Serializable {
 
     private Long id;
     private LocalBeneficiary beneficiary;

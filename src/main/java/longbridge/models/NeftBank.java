@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import java.io.IOException;
 

@@ -1,10 +1,12 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by chiomarose on 21/06/2017.
  */
 
-    public class PendingDTO {
+    public class PendingDTO implements Serializable {
 
         String entityName;
         int numPending;

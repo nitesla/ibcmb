@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by Longbridge on 7/7/2017.
  */
-public class CustomEntityRevisionDTO {
+public class CustomEntityRevisionDTO implements Serializable {
 
     private String lastChangedBy;
     private String ipAddress;

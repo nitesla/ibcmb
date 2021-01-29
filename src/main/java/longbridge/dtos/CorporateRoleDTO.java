@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * Created by Fortune on 6/8/2017.
  */
-public class CorporateRoleDTO {
+public class CorporateRoleDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

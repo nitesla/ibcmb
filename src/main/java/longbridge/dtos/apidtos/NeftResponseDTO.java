@@ -1,6 +1,8 @@
 package longbridge.dtos.apidtos;
 
-public class NeftResponseDTO {
+import java.io.Serializable;
+
+public class NeftResponseDTO implements Serializable {
 
     private String appId;
     private String responseCode;

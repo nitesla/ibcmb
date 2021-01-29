@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by Fortune on 5/3/2017.
  */
-public class PersonnelContactDTO {
+public class PersonnelContactDTO implements Serializable {
 
     private Long id;
     private int version;

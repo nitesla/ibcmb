@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class MailLoanDTO {
+ import java.io.Serializable;
+
+public class MailLoanDTO implements Serializable {
     private String accountNumber;
     private String recipientName;
     private String recipientEmail;

@@ -5,12 +5,13 @@ import longbridge.models.Verification;
 import longbridge.utils.VerificationStatus;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Showboy on 01/08/2017.
  */
-public class CorpUserVerificationDTO {
+public class CorpUserVerificationDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

@@ -1,8 +1,8 @@
 package longbridge.config;
 
-import longbridge.trace.Trace;
 import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
+import longbridge.trace.Trace;
 import longbridge.utils.Verifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

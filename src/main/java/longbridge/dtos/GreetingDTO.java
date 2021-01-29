@@ -5,9 +5,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
-public class GreetingDTO {
+public class GreetingDTO implements Serializable {
 
 
     @JsonProperty("DT_RowId")

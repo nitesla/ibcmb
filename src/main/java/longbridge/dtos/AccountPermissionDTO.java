@@ -2,7 +2,9 @@ package longbridge.dtos;
 
 import longbridge.models.Account;
 
-public class AccountPermissionDTO {
+import java.io.Serializable;
+
+public class AccountPermissionDTO implements Serializable {
 
     private String accountNumber;
     private String accountName;

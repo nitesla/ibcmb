@@ -3,6 +3,7 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CorpTransferRuleDTO {
+public class CorpTransferRuleDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

@@ -2,10 +2,12 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Created by Longbridge on 03/07/2017.
  */
-public class PhishingImageDTO {
+public class PhishingImageDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

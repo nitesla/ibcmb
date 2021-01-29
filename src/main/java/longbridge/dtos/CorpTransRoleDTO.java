@@ -1,8 +1,9 @@
 package longbridge.dtos;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
-public class CorpTransRoleDTO {
+public class CorpTransRoleDTO implements Serializable {
 
 	private Long id;
 	private int version;

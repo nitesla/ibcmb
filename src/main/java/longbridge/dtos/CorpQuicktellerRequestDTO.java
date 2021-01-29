@@ -1,10 +1,12 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by Fortune on 5/19/2017.
  */
 
-public class CorpQuicktellerRequestDTO extends QuicktellerRequestDTO {
+public class CorpQuicktellerRequestDTO extends QuicktellerRequestDTO implements Serializable {
 
     private String corporateId;
 

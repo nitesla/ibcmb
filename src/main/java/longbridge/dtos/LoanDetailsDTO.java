@@ -1,8 +1,9 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class LoanDetailsDTO {
+public class LoanDetailsDTO implements Serializable {
 
     private List<LoanDTO> loanList;
 

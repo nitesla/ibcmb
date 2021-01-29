@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class AccountDetailsDTO {
+ import java.io.Serializable;
+
+public class AccountDetailsDTO implements Serializable {
     private String instrumentType;
     private String collectionType;
     private String currencyCode;

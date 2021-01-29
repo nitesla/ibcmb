@@ -1,8 +1,10 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
 
 
-public class CoverageDTO {
+
+public class CoverageDTO implements Serializable {
     private Long id;
     private String code;
     private String description;

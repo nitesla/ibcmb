@@ -3,12 +3,13 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Wunmi on 08/04/2017.
  */
-public class ServiceReqConfigDTO {
+public class ServiceReqConfigDTO implements Serializable {
 
 	@JsonProperty("DT_RowId")
     private Long id;

@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.FinancialInstitutionType;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.
  */
-public class FinancialInstitutionDTO {
+public class FinancialInstitutionDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

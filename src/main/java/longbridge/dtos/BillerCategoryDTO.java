@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-public class BillerCategoryDTO {
+ import java.io.Serializable;
+
+public class BillerCategoryDTO implements Serializable {
 
     private Long categoryid;
     private String categoryname;

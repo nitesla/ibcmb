@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by Fortune on 3/5/2018.
  */
-public class CorpInternationalTransferRequestDTO extends CorpTransferRequestDTO {
+public class CorpInternationalTransferRequestDTO extends CorpTransferRequestDTO implements Serializable {
 
     private String beneficiaryBank;
     private String swiftCode;

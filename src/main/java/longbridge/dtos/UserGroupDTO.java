@@ -3,13 +3,14 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Fortune on 5/3/2017.
  */
-public class UserGroupDTO {
+public class UserGroupDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

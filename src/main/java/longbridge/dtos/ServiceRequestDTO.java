@@ -2,13 +2,14 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *  * Created by Fortune on 4/5/2017.
  */
 
-public class ServiceRequestDTO {
+public class ServiceRequestDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;

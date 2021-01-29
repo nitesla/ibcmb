@@ -1,9 +1,11 @@
 package longbridge.dtos;
 
+ import java.io.Serializable;
+
 /**
  * Created by Showboy on 04/07/2017.
  */
-public class PasswordStrengthDTO {
+public class PasswordStrengthDTO implements Serializable {
 
     private int minLength;
     private int numOfdigits;

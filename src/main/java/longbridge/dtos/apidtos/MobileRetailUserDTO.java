@@ -1,8 +1,9 @@
 package longbridge.dtos.apidtos;
 
 
+import java.io.Serializable;
 
-public class MobileRetailUserDTO {
+public class MobileRetailUserDTO implements Serializable {
 
     private String userName;
     private String firstName;
