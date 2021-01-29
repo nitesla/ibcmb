@@ -64,10 +64,12 @@ public class AppInit implements InitializingBean {
     @Value("${auto.load.file.settings:settings.csv}")
     private String settingsFile;
 
+    @Value("${auto.load.file.neftbank:neftbanks.csv}")
+    private String neftBanksFile;
+
     @Transactional
     @Override
     public void afterPropertiesSet() {
-        System.out.println("I got called");
         loadNeftBanks();
         loadCodes();
         loadPermissions();
@@ -106,8 +108,7 @@ public class AppInit implements InitializingBean {
     }
 
     private void loadNeftBanks() {
-        List<NeftBank> neftBanks = loadObjectList(NeftBank.class, "neftBanks.csv");
-        System.out.println("These are the neft banks "+ neftBanks);
+        List<NeftBank> neftBanks = loadObjectList(NeftBank.class, neftBanksFile);
         neftBanks.forEach(n -> {
             if (neftBankRepo.findByBankNameAndBranchNameAndSortCode(n.getBankName(), n.getBranchName(), n.getSortCode()) == null) {
                 try {
