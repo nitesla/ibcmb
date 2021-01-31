@@ -273,8 +273,10 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 	public RecurringPayment makeBackgroundTransfer(QuicktellerRequestDTO quicktellerRequestDTO, RecurringPayment recurringPayment) {
 		logger.info("Initiating a Background Bill Payment", quicktellerRequestDTO);
 		RecurringPayment recurringPayment1 = integrationService.recurringPayment(convertDToToEntityCorp(quicktellerRequestDTO));
-		logger.trace("Recurring Payment Details: {} ", recurringPayment1);
-		recurringPaymentRepo.save(recurringPayment1);
+		logger.info("Recurring Payment Details: {} ", recurringPayment1);
+		recurringPayment1 = integrationService.checkRecurringPaymentTransaction(recurringPayment1);
+		logger.info("Checked Query Transaction details {}", recurringPayment1);
+		recurringPayment1 = recurringPaymentRepo.save(recurringPayment1);
 		return recurringPayment1;
 	}
 

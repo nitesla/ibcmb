@@ -1,10 +1,7 @@
 
 package longbridge.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentResponse {
 
     private String ResponseCode;
@@ -21,7 +18,37 @@ public class PaymentResponse {
 
     private String MiscData;
 
-    private boolean statusNull=false;
+    private String amount;
+
+    private String currencyCode;
+
+    private String customer;
+
+    private String customerEmail;
+
+    private String customerMobile;
+
+    private String paymentDate;
+
+    private String requestReference;
+
+    private String serviceCode;
+
+    private String serviceName;
+
+    private String serviceProviderId;
+
+    private String status;
+
+    private String surcharge;
+
+    private String transactionRef;
+
+    private String transactionResponseCode;
+
+    private String transactionSet;
+
+    private String responseCode;
 
     public PaymentResponse() {
     }
@@ -82,12 +109,116 @@ public class PaymentResponse {
         MiscData = miscData;
     }
 
-    public boolean isStatusNull() {
-        return statusNull;
+    public String getAmount() {
+        return amount;
     }
 
-    public void setStatusNull(boolean statusNull) {
-        this.statusNull = statusNull;
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerMobile() {
+        return customerMobile;
+    }
+
+    public void setCustomerMobile(String customerMobile) {
+        this.customerMobile = customerMobile;
+    }
+
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public String getRequestReference() {
+        return requestReference;
+    }
+
+    public void setRequestReference(String requestReference) {
+        this.requestReference = requestReference;
+    }
+
+    public String getServiceCode() {
+        return serviceCode;
+    }
+
+    public void setServiceCode(String serviceCode) {
+        this.serviceCode = serviceCode;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getServiceProviderId() {
+        return serviceProviderId;
+    }
+
+    public void setServiceProviderId(String serviceProviderId) {
+        this.serviceProviderId = serviceProviderId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getSurcharge() {
+        return surcharge;
+    }
+
+    public void setSurcharge(String surcharge) {
+        this.surcharge = surcharge;
+    }
+
+    public String getTransactionResponseCode() {
+        return transactionResponseCode;
+    }
+
+    public void setTransactionResponseCode(String transactionResponseCode) {
+        this.transactionResponseCode = transactionResponseCode;
+    }
+
+    public String getTransactionSet() {
+        return transactionSet;
+    }
+
+    public void setTransactionSet(String transactionSet) {
+        this.transactionSet = transactionSet;
     }
 
     @Override
@@ -100,6 +231,22 @@ public class PaymentResponse {
                 ", TransactionRef='" + TransactionRef + '\'' +
                 ", ResponseDescription='" + ResponseDescription + '\'' +
                 ", MiscData='" + MiscData + '\'' +
+                ", amount='" + amount + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
+                ", customer='" + customer + '\'' +
+                ", customerEmail='" + customerEmail + '\'' +
+                ", customerMobile='" + customerMobile + '\'' +
+                ", paymentDate='" + paymentDate + '\'' +
+                ", requestReference='" + requestReference + '\'' +
+                ", serviceCode='" + serviceCode + '\'' +
+                ", serviceName='" + serviceName + '\'' +
+                ", serviceProviderId='" + serviceProviderId + '\'' +
+                ", status='" + status + '\'' +
+                ", surcharge='" + surcharge + '\'' +
+                ", transactionRef='" + transactionRef + '\'' +
+                ", transactionResponseCode='" + transactionResponseCode + '\'' +
+                ", transactionSet='" + transactionSet + '\'' +
+                ", responseCode='" + responseCode + '\'' +
                 '}';
     }
 }

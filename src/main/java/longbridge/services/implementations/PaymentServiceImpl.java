@@ -62,20 +62,24 @@ public class PaymentServiceImpl implements PaymentService {
             logger.info("Print   333---->{}", paymentDTO.getCustomerAccountNumber());
             BillPayment payment1 = convertPaymentDTOToEntity(paymentDTO);
             BillPayment billPayment = integrationService.billPayment(payment1);
-            billPayment = billPaymentRepo.save(billPayment);
+//            billPayment = billPaymentRepo.save(billPayment);
 //            billPaymentRepo.save(payment1);
-            logger.info("Added payment {}", billPayment);
+            logger.info("Added Bill payment {}", billPayment);
+            billPayment = integrationService.checkBillPaymentTransaction(billPayment);
+
+            logger.info("Checked Query Transaction details {}", billPayment);
+            billPayment = billPaymentRepo.save(billPayment);
 
             if (billPayment.getStatus().equalsIgnoreCase("94")) {
-                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
+                return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
 
 
-            }else if (billPayment.getStatus().equalsIgnoreCase("90000") || billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus().equalsIgnoreCase("000")) {
+            }else if (billPayment.getResponseCode().equalsIgnoreCase("9000")) {
                 return messageSource.getMessage("Payment Successful", null, locale);
 
             }else {
 
-                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
+                return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
             }
 
             }catch (Exception e){
@@ -94,20 +98,23 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             BillPayment payment1 = convertCorpPaymentDTOToEntity(paymentDTO);
             BillPayment billPayment = integrationService.billPayment(payment1);
-
+//            billPayment = billPaymentRepo.save(billPayment);
+//            billPaymentRepo.save(payment1);
+            logger.info("Added Bill payment {}", billPayment);
+            billPayment = integrationService.checkBillPaymentTransaction(billPayment);
+            logger.info("Checked Query Transaction details {}", billPayment);
             billPayment = billPaymentRepo.save(billPayment);
-            logger.info("Added payment {}",billPayment);
+
             if (billPayment.getStatus().equalsIgnoreCase("94")) {
-                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
+                return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
 
 
-            }
-            if (billPayment.getStatus().equalsIgnoreCase("90000") || billPayment.getStatus().equalsIgnoreCase("SUCCESSFUL") || billPayment.getStatus().equalsIgnoreCase("000")) {
+            }else if (billPayment.getResponseCode().equalsIgnoreCase("9000")) {
                 return messageSource.getMessage("Payment Successful", null, locale);
 
             }else {
 
-                return messageSource.getMessage(transferErrorService.getMessage(billPayment.getStatus()), null, locale);
+                return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
             }
         }
         catch (Exception e){
