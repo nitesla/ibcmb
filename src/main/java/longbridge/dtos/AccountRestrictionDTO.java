@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
@@ -13,11 +14,11 @@ public class AccountRestrictionDTO implements Serializable {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
-    @NotEmpty(message = "restrictionValue")
+    @NotBlank(message = "restrictionValue")
     private String restrictionValue;
-    @NotEmpty(message = "restrictionType")
+    @NotBlank(message = "restrictionType")
     private String restrictionType;
-    @NotEmpty(message = "restrictedFor")
+    @NotBlank(message = "restrictedFor")
     private String restrictedFor;
     private String dateCreated;
 

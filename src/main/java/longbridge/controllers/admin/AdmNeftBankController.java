@@ -5,6 +5,7 @@ import longbridge.dtos.NeftBankNameDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.NeftBankService;
 import longbridge.utils.DataTablesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +57,10 @@ public class AdmNeftBankController {
 			return "adm/neftbank/add";
 		}
 
-
 		try {
-
 			String message = neftBankService.addNeftBank(neftBankDTO);
 			redirectAttributes.addFlashAttribute("message", message);
-
-
-			return "redirect:/admin/neftb/banks";
+			return "redirect:/admin/neftb/banks/" + neftBankDTO.getBankName() + "/edit";
 		}
 		catch (InternetBankingException ibe){
 			result.addError(new ObjectError("error",ibe.getMessage()));
@@ -75,8 +72,8 @@ public class AdmNeftBankController {
 
 
 	@GetMapping("/{bankId}")
-	public NeftBankDTO getNeftBank(@PathVariable Long codeId, Model model) {
-		NeftBankDTO neftBankDTO = neftBankService.getNeftBank(codeId);
+	public NeftBankDTO getNeftBank(@PathVariable Long bankId, Model model) {
+		NeftBankDTO neftBankDTO = neftBankService.getNeftBank(bankId);
 		model.addAttribute("neftBank",neftBankDTO);
 		return neftBankDTO;
 	}
@@ -109,15 +106,21 @@ public class AdmNeftBankController {
 
 
 	@GetMapping(path = "/bank_name")
-	public @ResponseBody DataTablesOutput<NeftBankNameDTO> getAllNeftBankNames(DataTablesInput input) {
+	public @ResponseBody DataTablesOutput<NeftBankNameDTO> getAllNeftBankNames(DataTablesInput input, @RequestParam("csearch") String search) {
+		Page<NeftBankNameDTO> banks = null;
+				Pageable pageable = DataTablesUtils.getPageable(input);
+		if (StringUtils.isNoneBlank(search)) {
+			banks = neftBankService.getNeftBankNames(search, pageable);
+		}
+		else{
+			banks = neftBankService.getNeftBankNames(pageable);
+		}
 
-		Pageable pageable = DataTablesUtils.getPageable(input);
-		Page<NeftBankNameDTO> codeTypes = neftBankService.getNeftBankNames(pageable);
 		DataTablesOutput<NeftBankNameDTO> out = new DataTablesOutput<>();
 		out.setDraw(input.getDraw());
-		out.setData(codeTypes.getContent());
-		out.setRecordsFiltered(codeTypes.getTotalElements());
-		out.setRecordsTotal(codeTypes.getTotalElements());
+		out.setData(banks.getContent());
+		out.setRecordsFiltered(banks.getTotalElements());
+		out.setRecordsTotal(banks.getTotalElements());
 		return out;
 	}
 
@@ -136,7 +139,6 @@ public class AdmNeftBankController {
 
 	@GetMapping(path = "/allBank")
 	public @ResponseBody DataTablesOutput<NeftBankDTO> getAllNeftBankOfBankName(@RequestParam(name="bankName") String bankName,DataTablesInput input) {
-		System.out.println("This is the bank name " + bankName);
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		Page<NeftBankDTO> codes = neftBankService.getNeftBranchesByBankName(bankName, pageable);
 		DataTablesOutput<NeftBankDTO> out = new DataTablesOutput<>();
@@ -172,7 +174,7 @@ public class AdmNeftBankController {
 		try {
 			String message = neftBankService.updateNeftBank(neftBankDTO);
 			redirectAttributes.addFlashAttribute("message", message);
-			return "redirect:/admin/neftb/banks";
+			return "redirect:/admin/neftb/banks/" +neftBankDTO.getBankName()+ "/edit";
 		}
 		catch (InternetBankingException ibe){
 			result.addError(new ObjectError("error",ibe.getMessage()));

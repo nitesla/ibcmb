@@ -19,9 +19,7 @@ public interface NeftBankService {
     Page<NeftBankDTO> getNeftBranchesByBankName(String bankName, Pageable pageDetails);
     Page<NeftBankNameDTO> getNeftBankNames(Pageable pageDetails);
     Page<NeftBankDTO> getNeftBanks(Pageable pageDetails);
-    Iterable<NeftBankDTO> getNeftBanks();
     List<NeftBankDTO> getNeftBankList();
-    NeftBankDTO convertEntityToDTO(NeftBank neftBank);
-    NeftBank convertDTOToEntity(NeftBankDTO neftBankDTO);
-    List<NeftBankDTO> convertEntitiesToDTOs(Iterable<NeftBank> neftBanks);
+
+    Page<NeftBankNameDTO> getNeftBankNames(String search, Pageable pageable);
 }

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class NeftBankServiceImpl implements NeftBankService {
@@ -37,9 +36,9 @@ public class NeftBankServiceImpl implements NeftBankService {
     @Override
     public String addNeftBank(NeftBankDTO code) throws InternetBankingException {
 
-        try{
+        try {
             NeftBank neftBank = convertDTOToEntity(code);
-            System.out.println("This is the object : "+ neftBank);
+            System.out.println("This is the object : " + neftBank);
             neftBankRepo.save(neftBank);
             logger.info("Added new neftBank {} with branch name {}", neftBank.getBankName(), neftBank.getBranchName());
             return messageSource.getMessage("neftBank.add.success", null, locale);
@@ -54,8 +53,8 @@ public class NeftBankServiceImpl implements NeftBankService {
         try {
             neftBankRepo.deleteById(neftBankId);
             return messageSource.getMessage("neftBank.delete.success", null, locale);
-        }catch (Exception ex){
-            throw  new InternetBankingException(messageSource.getMessage("neftBank.delete.failure", null, locale));
+        } catch (Exception ex) {
+            throw new InternetBankingException(messageSource.getMessage("neftBank.delete.failure", null, locale));
         }
     }
 
@@ -66,73 +65,52 @@ public class NeftBankServiceImpl implements NeftBankService {
 
     @Override
     public List<NeftBankDTO> getNeftBranchesByBankName(String bankName) {
-        return convertEntitiesToDTOs(neftBankRepo.findAllByBankName(bankName));
+        return neftBankRepo.findAllByBankName(bankName).stream().map(this::convertEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
     public String updateNeftBank(NeftBankDTO neftBankDTO) throws InternetBankingException {
-        try{
+        try {
             NeftBank neftBank = convertDTOToEntity(neftBankDTO);
             neftBankRepo.save(neftBank);
             return messageSource.getMessage("neftBank.update.success", null, locale);
-        }catch (Exception ex){
-            throw  new InternetBankingException(messageSource.getMessage("neftBank.update.failure", null, locale));
+        } catch (Exception ex) {
+            throw new InternetBankingException(messageSource.getMessage("neftBank.update.failure", null, locale));
         }
     }
 
     @Override
     public Page<NeftBankDTO> getNeftBranchesByBankName(String bankName, Pageable pageDetails) {
-        Page<NeftBank> page = neftBankRepo.findAllByBankName(bankName, pageDetails);
-        List<NeftBankDTO> dtOs = getNeftBranchesByBankName(bankName);
-        long t = page.getTotalElements();
-        return new PageImpl<>(dtOs, pageDetails, t);
+        return neftBankRepo.findAllByBankName(bankName, pageDetails).map(this::convertEntityToDTO);
     }
 
     @Override
     public Page<NeftBankNameDTO> getNeftBankNames(Pageable pageDetails) {
-        List<NeftBank> neftBanks = neftBankRepo.findAll();
-        List<NeftBankNameDTO> bankNames = neftBanks.stream()
-                .map(NeftBank::getBankName)
-                .collect(Collectors.toSet())
-                .stream()
-                .map(NeftBankNameDTO::new)
-                .collect(Collectors.toList());
-        return new PageImpl<>(bankNames, pageDetails, bankNames.size());
+        return neftBankRepo.findAllBanks(pageDetails).map(NeftBankNameDTO::new);
     }
 
     @Override
     public Page<NeftBankDTO> getNeftBanks(Pageable pageDetails) {
-        Page<NeftBank> page = neftBankRepo.findAll(pageDetails);
-        List<NeftBankDTO> dtOs = convertEntitiesToDTOs(page);
-        long t = page.getTotalElements();
-        return new PageImpl<>(dtOs, pageDetails, t);
-    }
-
-    @Override
-    public Iterable<NeftBankDTO> getNeftBanks() {
-        return convertEntitiesToDTOs(neftBankRepo.findAll());
+        return neftBankRepo.findAll(pageDetails).map(this::convertEntityToDTO);
     }
 
     @Override
     public List<NeftBankDTO> getNeftBankList() {
-        return convertEntitiesToDTOs(neftBankRepo.findAll());
+        return neftBankRepo.findAll().stream().map(this::convertEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public NeftBankDTO convertEntityToDTO(NeftBank neftBank) {
+    public Page<NeftBankNameDTO> getNeftBankNames(String pattern, Pageable pageable) {
+        return neftBankRepo.searchByBank(pattern, pageable).map(NeftBankNameDTO::new);
+    }
+
+    private NeftBankDTO convertEntityToDTO(NeftBank neftBank) {
         return modelMapper.map(neftBank, NeftBankDTO.class);
     }
 
-    @Override
-    public NeftBank convertDTOToEntity(NeftBankDTO neftBankDTO) {
+    private NeftBank convertDTOToEntity(NeftBankDTO neftBankDTO) {
         return modelMapper.map(neftBankDTO, NeftBank.class);
     }
 
-    @Override
-    public List<NeftBankDTO> convertEntitiesToDTOs(Iterable<NeftBank> neftBanks) {
-        return StreamSupport.stream(neftBanks.spliterator(), false)
-                .map(this::convertEntityToDTO)
-                .collect(Collectors.toList());
-    }
 
 }

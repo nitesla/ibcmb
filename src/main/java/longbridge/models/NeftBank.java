@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -9,6 +10,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Audited(withModifiedFlag=true)

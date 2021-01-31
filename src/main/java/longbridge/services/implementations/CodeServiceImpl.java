@@ -7,6 +7,7 @@ import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.services.CodeService;
+import longbridge.trace.Trace;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -168,6 +169,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Verifiable(operation = "ADD_CODE", description = "Adding a Code")
+    @Trace("alter-user")
     @CacheEvict(value = "codes", key = "#codeDTO.type")
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
