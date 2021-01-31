@@ -678,7 +678,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (checkTransaction.getResponseDescription() != null) {
                 transRequest.setStatusDescription(checkTransaction.getResponseDescription());
 			}
-            transRequest.setResponseCode(checkTransaction.getTransactionResponseCode());
+            transRequest.setResponseCode(checkTransaction.getResponseCode());
             if(checkTransaction.getTransactionResponseCode().equalsIgnoreCase("9000")){
                 transRequest.setStatus("00");
             }
@@ -1738,7 +1738,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (checkTransaction.getResponseDescription() != null) {
 				billPayment.setResponseDescription(checkTransaction.getResponseDescription());
 			}
-			billPayment.setResponseCode(checkTransaction.getTransactionResponseCode());
+			billPayment.setResponseCode(checkTransaction.getResponseCode());
 			billPayment.setTransactionRef(checkTransaction.getTransactionRef());
 
 			return billPayment;
@@ -1773,7 +1773,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 			if (checkTransaction.getResponseDescription() != null) {
 				recurringPayment.setResponseDescription(checkTransaction.getResponseDescription());
 			}
-			recurringPayment.setResponseCode(checkTransaction.getTransactionResponseCode());
+			recurringPayment.setResponseCode(checkTransaction.getResponseCode());
 			recurringPayment.setTransactionRef(checkTransaction.getTransactionRef());
 
 			return recurringPayment;

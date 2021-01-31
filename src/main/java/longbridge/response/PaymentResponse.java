@@ -42,13 +42,9 @@ public class PaymentResponse {
 
     private String surcharge;
 
-    private String transactionRef;
-
     private String transactionResponseCode;
 
     private String transactionSet;
-
-    private String responseCode;
 
     public PaymentResponse() {
     }
@@ -243,10 +239,8 @@ public class PaymentResponse {
                 ", serviceProviderId='" + serviceProviderId + '\'' +
                 ", status='" + status + '\'' +
                 ", surcharge='" + surcharge + '\'' +
-                ", transactionRef='" + transactionRef + '\'' +
                 ", transactionResponseCode='" + transactionResponseCode + '\'' +
                 ", transactionSet='" + transactionSet + '\'' +
-                ", responseCode='" + responseCode + '\'' +
                 '}';
     }
 }

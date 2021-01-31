@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
             logger.info("Checked Query Transaction details {}", billPayment);
             billPayment = billPaymentRepo.save(billPayment);
 
-            if (billPayment.getStatus().equalsIgnoreCase("94")) {
+            if (billPayment.getResponseCode().equalsIgnoreCase("94")) {
                 return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
 
 
@@ -105,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
             logger.info("Checked Query Transaction details {}", billPayment);
             billPayment = billPaymentRepo.save(billPayment);
 
-            if (billPayment.getStatus().equalsIgnoreCase("94")) {
+            if (billPayment.getResponseCode().equalsIgnoreCase("94")) {
                 return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
 
 
