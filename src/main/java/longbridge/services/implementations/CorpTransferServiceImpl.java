@@ -214,7 +214,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         String sessId = sessionUtil.generateSessionId();
         transferRequest.setReferenceNumber(sessId);
         transferRequestDTO.setReferenceNumber(sessId);
-        transferRequestDTO.setNeftId(transferRequest.getNeftTransfer().getId());
+        if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
+            transferRequestDTO.setNeftId(transferRequest.getNeftTransfer().getId());
+        }
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
@@ -317,6 +319,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(), corpTransRequestNew.getUserReferenceNumber());
+        if (corpTransferRequestDTO.getTransferType() == TransferType.QUICKTELLER){
+            corpTransRequestNew = (CorpTransRequest) integrationService.checkQuicktellerTrTransaction(corpTransRequestNew);
+        }
 
         if (corpTransRequestNew != null ) {
             CorpTransRequest corpTransRequest1 = corpTransferRequestRepo.findById(corpTransRequest.getId()).get();

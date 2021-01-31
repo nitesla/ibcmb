@@ -83,6 +83,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Value("${billpayment.advice}")
 	private String quicktellerBillpaymentAdvice;
 
+	@Value("${quickteller.querytransaction}")
+	private String quicktellerQueryTransaction;
+
 	@Value("${quickteller.fundtransfer}")
 	private String quicktellerFundtransfer;
 
@@ -651,6 +654,49 @@ public class IntegrationServiceImpl implements IntegrationService {
 		logger.trace("request did not match any type");
 		transRequest.setStatus(ResultType.ERROR.toString());
 		return transRequest;
+	}
+
+	@Override
+	public TransRequest checkQuicktellerTrTransaction(TransRequest transRequest){
+
+
+		PaymentResponse checkTransaction;
+		String uri = QUICKTELLER_URI+quicktellerQueryTransaction;
+
+		logger.info("Query Transaction url is {}", uri);
+		Map<String, String> request = new HashMap<>();
+		request.put("hash", EncryptionUtil.getSHA512(
+				appIdQuickteller + transRequest.getTransferCode() + secretKeyQuickteller, null));
+		request.put("appid", appIdQuickteller);
+		request.put("requestReference", transRequest.getTransferCode());
+		logger.debug("Fetching data from Quickteller Query Transaction rest service using: {}", request);
+		try {
+			checkTransaction = template.postForObject(uri, request, PaymentResponse.class);
+
+			logger.info("the query transaction response is {}", checkTransaction);
+
+			if (checkTransaction.getResponseDescription() != null) {
+                transRequest.setStatusDescription(checkTransaction.getResponseDescription());
+			}
+            transRequest.setResponseCode(checkTransaction.getTransactionResponseCode());
+            if(checkTransaction.getTransactionResponseCode().equalsIgnoreCase("9000")){
+                transRequest.setStatus("00");
+            }
+
+			return transRequest;
+        } catch (HttpStatusCodeException e) {
+
+            logger.error("HTTP Error occurred", e);
+            transRequest.setStatus(e.getStatusCode().toString());
+            transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+            return transRequest;
+
+        } catch (Exception e) {
+            logger.error("Error occurred making transfer", e);
+            transRequest.setStatus(StatusCode.FAILED.toString());
+            transRequest.setStatusDescription(messageSource.getMessage("status.code.failed", null, locale));
+            return transRequest;
+        }
 	}
 
 
@@ -1597,14 +1643,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<BillerDTO> getBillers(){
 		List<BillerDTO> billers = new ArrayList<>();
-		String hashedCode = EncryptionUtil.getSHA512(appId+secretKey, null);
+		String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller+secretKeyQuickteller, null);
 		logger.info("skey {}", hashedCode);
 		String uri =QUICKTELLER_URI+quicktellerBillers;
 		Map<String,String> params = new HashMap<>();
-		params.put("appid",appId);
+		params.put("appid",appIdQuickteller);
 		params.put("hash",hashedCode);
 		try {
 			BillerResponse billerResponse = template.postForObject(uri,params, BillerResponse.class);
+            logger.info("biller response is {}", billerResponse);
 			billers = billerResponse.getBillers();
 			return billers;
 		} catch (Exception e){
@@ -1619,6 +1666,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public BillPayment billPayment(BillPayment billPayment){
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
+		logger.info("Bill Payment Advice url is {}", uri);
         BigDecimal d = billPayment.getAmount();
 		BigDecimal f = new BigDecimal(100);
         String amount = d.multiply(f).toPlainString();
@@ -1627,7 +1675,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         params.put("TerminalId",terminalId);
 		logger.info("Terminal ID is {}", terminalId);
-        logger.info("appId is {}", appIdQuickteller);
+        logger.info("appid is {}", appIdQuickteller);
         logger.info("secretKey is {}", secretKeyQuickteller);
 		params.put("amount", amount);
         String hashedCode = EncryptionUtil.getSHA512(appIdQuickteller + billPayment.getPaymentCode() + amount + secretKeyQuickteller, null);
@@ -1645,19 +1693,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
 			logger.info("response for payment {}", payment.toString());
-			billPayment.setStatus(payment.getResponseCodeGrouping());
-			billPayment.setResponseCodeGrouping(payment.getResponseCodeGrouping());
 			billPayment.setResponseDescription (payment.getResponseDescription());
 			billPayment.setResponseCode(payment.getResponseCode());
-			billPayment.setTransactionRef(payment.getTransactionRef());
-			billPayment.setApprovedAmount(payment.getApprovedAmount());
 			billPayment.setTerminalId(terminalId);
 			logger.info("Saved Terminal Id is {}", terminalId);
 
-			if(payment.isStatusNull()){
-				billPayment.setStatus(errorService.getMessage(payment.getResponseCode()));
-				logger.info("Response code {}", billPayment.getStatus());
-			}
+
 			return billPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
@@ -1675,9 +1716,81 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
+	public BillPayment checkBillPaymentTransaction(BillPayment billPayment){
+
+
+		PaymentResponse checkTransaction;
+		String uri = QUICKTELLER_URI+quicktellerQueryTransaction;
+
+		logger.info("Query Transaction url is {}", uri);
+		Map<String, String> request = new HashMap<>();
+		request.put("hash", EncryptionUtil.getSHA512(
+				appIdQuickteller + billPayment.getRequestReference() + secretKeyQuickteller, null));
+		request.put("appid", appIdQuickteller);
+		request.put("requestReference", billPayment.getRequestReference());
+		logger.debug("Fetching data from Quickteller Query Transaction rest service using: {}", request);
+		try {
+			checkTransaction = template.postForObject(uri, request, PaymentResponse.class);
+
+			logger.info("the query transaction response is {}", checkTransaction);
+
+			billPayment.setStatus(checkTransaction.getStatus());
+			if (checkTransaction.getResponseDescription() != null) {
+				billPayment.setResponseDescription(checkTransaction.getResponseDescription());
+			}
+			billPayment.setResponseCode(checkTransaction.getTransactionResponseCode());
+			billPayment.setTransactionRef(checkTransaction.getTransactionRef());
+
+			return billPayment;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			billPayment.setStatus(e.getStatusCode().toString());
+			billPayment.setResponseDescription(e.getStatusCode().getReasonPhrase());
+			return billPayment;
+
+		}
+	}
+
+	@Override
+	public RecurringPayment checkRecurringPaymentTransaction(RecurringPayment recurringPayment){
+
+		PaymentResponse checkTransaction;
+		String uri = QUICKTELLER_URI+quicktellerQueryTransaction;
+
+		logger.info("Query Transaction url is {}", uri);
+		Map<String, String> request = new HashMap<>();
+		request.put("hash", EncryptionUtil.getSHA512(
+				appIdQuickteller + recurringPayment.getRequestReference() + secretKeyQuickteller, null));
+		request.put("appid", appIdQuickteller);
+		request.put("requestReference", recurringPayment.getRequestReference());
+		logger.debug("Fetching data from Quickteller Query Transaction rest service using: {}", request);
+		try {
+			checkTransaction = template.postForObject(uri, request, PaymentResponse.class);
+			logger.info("the query transaction response is {}", checkTransaction);
+
+
+			recurringPayment.setStatus(checkTransaction.getStatus());
+			if (checkTransaction.getResponseDescription() != null) {
+				recurringPayment.setResponseDescription(checkTransaction.getResponseDescription());
+			}
+			recurringPayment.setResponseCode(checkTransaction.getTransactionResponseCode());
+			recurringPayment.setTransactionRef(checkTransaction.getTransactionRef());
+
+			return recurringPayment;
+		} catch (HttpStatusCodeException e) {
+			logger.error("HTTP Error occurred", e);
+			recurringPayment.setStatus(e.getStatusCode().toString());
+			recurringPayment.setResponseDescription(e.getStatusCode().getReasonPhrase());
+			return recurringPayment;
+
+		}
+	}
+
+	@Override
 	public RecurringPayment recurringPayment(RecurringPayment recurringPayment){
 		PaymentResponse payment;
 		String uri = QUICKTELLER_URI+quicktellerBillpaymentAdvice;
+		logger.info("Bill Payment Advice url is {}", uri);
 		BigDecimal d = recurringPayment.getAmount();
 		BigDecimal f = new BigDecimal(100);
 		String amount = d.multiply(f).toPlainString();
@@ -1699,18 +1812,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 		try {
 			payment	 = template.postForObject(uri,params, PaymentResponse.class);
 			logger.info("response for payment {}", payment.toString());
-			recurringPayment.setStatus(payment.getResponseCodeGrouping());
-			recurringPayment.setResponseCodeGrouping(payment.getResponseCodeGrouping());
 			recurringPayment.setResponseDescription (payment.getResponseDescription());
 			recurringPayment.setResponseCode(payment.getResponseCode());
-			recurringPayment.setTransactionRef(payment.getTransactionRef());
-			recurringPayment.setApprovedAmount(payment.getApprovedAmount());
 			recurringPayment.setTerminalId(terminalId);
 			logger.info("Saved Terminal Id is {}", terminalId);
-			if(payment.isStatusNull()){
-				recurringPayment.setStatus(errorService.getMessage(payment.getResponseCode()));
-				logger.info("Response code {}", recurringPayment.getStatus());
-			}
+
 			return recurringPayment;
 		} catch (HttpStatusCodeException e) {
 			logger.error("HTTP Error occurred", e);
@@ -1733,9 +1839,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<PaymentItemDTO> items = new ArrayList<>();
 		String uri = QUICKTELLER_URI+quicktellerPaymentItems;
 		Map<String,String> params = new HashMap<>();
-		params.put("appid",appId);
+		params.put("appid",appIdQuickteller);
 		params.put("billerid", id);
-		params.put("hash",EncryptionUtil.getSHA512(appId+id+secretKey, null));
+		params.put("hash",EncryptionUtil.getSHA512(appIdQuickteller+id+secretKeyQuickteller, null));
 		try {
 			PaymentItemResponse paymentItemResponse = template.postForObject(uri,params, PaymentItemResponse.class);
 			items = paymentItemResponse.getPaymentitems();
@@ -1751,8 +1857,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<BillerCategoryDTO> items = new ArrayList<>();
 		String uri = QUICKTELLER_URI+quicktellerCategories;
 		Map<String,String> params = new HashMap<>();
-		params.put("appid",appId);
-		params.put("hash",EncryptionUtil.getSHA512(appId+secretKey, null));
+		params.put("appid",appIdQuickteller);
+		params.put("hash",EncryptionUtil.getSHA512(appIdQuickteller+secretKeyQuickteller, null));
 		try {
 			BillerCategoryResponse billerCategoryResponse = template.postForObject(uri,params, BillerCategoryResponse.class);
 			items = billerCategoryResponse.getCategorys();
@@ -1769,8 +1875,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 		List<QuicktellerBankCodeDTO> items = new ArrayList<>();
 		String uri = QUICKTELLER_URI+getBankCodes;
 		Map<String,String> params = new HashMap<>();
-		params.put("appid",appId);
-		params.put("hash",EncryptionUtil.getSHA512(appId+secretKey, null));
+		params.put("appid",appIdQuickteller);
+		params.put("hash",EncryptionUtil.getSHA512(appIdQuickteller+secretKeyQuickteller, null));
 		try {
 			BankCodeResponse bankCodeResponse = template.postForObject(uri,params, BankCodeResponse.class);
 			items = bankCodeResponse.getCodes();

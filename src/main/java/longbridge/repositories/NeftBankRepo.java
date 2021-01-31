@@ -1,6 +1,5 @@
 package longbridge.repositories;
 
-import longbridge.dtos.NeftBankNameDTO;
 import longbridge.models.NeftBank;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
