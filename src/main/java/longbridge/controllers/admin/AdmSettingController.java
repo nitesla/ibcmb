@@ -2,6 +2,8 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Setting;
+import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +40,9 @@ public class AdmSettingController {
 
 	@Autowired
 	private MessageSource messageSource;
+
+	@Autowired
+	private SettingRepo settingRepo;
 
 	@GetMapping()
 	public String listSettings(Model model) {
@@ -86,6 +91,17 @@ public class AdmSettingController {
 			return "adm/setting/add";
 		}
 		try {
+
+			Setting setting = settingRepo.findByName(dto.getName());
+			if(setting != null){
+				logger.info("setting name already exists {} ", setting.getName());
+				result.addError(new ObjectError("invalid",messageSource.getMessage("setting.already.exists",null,locale)));
+				return "adm/setting/add";
+			}else{
+				logger.info("setting name not found so proceed to add setting... ");
+			}
+
+
 			String message = configurationService.addSetting(dto);
 			redirectAttributes.addFlashAttribute("message", message);
 			return "redirect:/admin/settings";
