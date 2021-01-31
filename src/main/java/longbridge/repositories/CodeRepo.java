@@ -14,8 +14,8 @@ import java.util.Set;
  */
 public interface CodeRepo extends CommonRepo<Code, Long>{
 
-    Iterable<Code> findByType(String type);
-    Iterable<Code> findByTypeAndDescription(String type, String description);
+    List<Code> findByType(String type);
+    List<Code> findByTypeAndDescription(String type, String description);
     Page<Code> findByType(String type,Pageable pageable);
     Code findByTypeAndCode(String type, String code);
     @Query("select distinct c.type from Code c")

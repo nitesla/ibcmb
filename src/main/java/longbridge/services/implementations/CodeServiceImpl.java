@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -87,20 +88,14 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Cacheable(value = "codes")
     public List<CodeDTO> getCodesByType(String codeType) {
-        Iterable<Code> codes = this.codeRepo.findByType(codeType);
-        return convertEntitiesToDTOs(codes);
+        return codeRepo.findByType(codeType).stream()
+                .map(this::convertEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<CodeDTO> getCodesByTypeAndDescription(String codeType, String description) {
-        Iterable<Code> codes = this.codeRepo.findByTypeAndDescription(codeType,description);
-        return convertEntitiesToDTOs(codes);
-    }
-
-    @Override
-    public Iterable<CodeDTO> getCodes() {
-        Iterable<Code> codes = this.codeRepo.findAll();
-        return convertEntitiesToDTOs(codes);
+        return codeRepo.findByTypeAndDescription(codeType, description).stream()
+                .map(this::convertEntityToDTO).collect(Collectors.toList());
     }
 
 
@@ -127,43 +122,24 @@ public class CodeServiceImpl implements CodeService {
     }
 
 
-    public CodeDTO convertEntityToDTO(Code code) {
+    private CodeDTO convertEntityToDTO(Code code) {
         return modelMapper.map(code, CodeDTO.class);
     }
 
 
-    public Code convertDTOToEntity(CodeDTO codeDTO) {
+    private Code convertDTOToEntity(CodeDTO codeDTO) {
         return modelMapper.map(codeDTO, Code.class);
-    }
-
-    public List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes) {
-        List<CodeDTO> codeDTOList = new ArrayList<>();
-        for (Code code : codes) {
-            CodeDTO codeDTO = convertEntityToDTO(code);
-            codeDTOList.add(codeDTO);
-        }
-        return codeDTOList;
     }
 
 
     @Override
     public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
-        // TODO Auto-generated method stub
-
-        Page<Code> page = codeRepo.findByType(codeType, pageDetails);
-        List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
-        long t = page.getTotalElements();
-        return new PageImpl<>(dtOs, pageDetails, t);
+        return codeRepo.findByType(codeType, pageDetails).map(this::convertEntityToDTO);
     }
 
     @Override
     public Page<CodeDTO> getCodes(Pageable pageDetails) {
-        Page<Code> page = codeRepo.findAll(pageDetails);
-        List<CodeDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        return new PageImpl<>(dtOs, pageDetails, t);
+        return codeRepo.findAll(pageDetails).map(this::convertEntityToDTO);
     }
 
 
@@ -174,23 +150,13 @@ public class CodeServiceImpl implements CodeService {
     public String addCode(CodeDTO codeDTO) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
-
-//            if(codeDTO.getType().equals("ACCOUNT_COVERAGE")){
-//                logger.info("am here boss {}", code.getType());
-////               coverageService.addCoverageForNewCodes(code);
-//
-//
-//            }
-
             codeRepo.save(code);
-
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
 
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
-
             throw new InternetBankingException(messageSource.getMessage("code.add.failure", null, locale), e);
         }
     }
@@ -209,9 +175,6 @@ public class CodeServiceImpl implements CodeService {
         return wrapType(pageDetails, allTypes);
 
     }
-
-
-
 
     @Override
     public Page<CodeTypeDTO> getCodeTypes(String pattern, Pageable pageDetails) {

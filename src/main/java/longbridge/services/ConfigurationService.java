@@ -21,8 +21,6 @@ public interface ConfigurationService{
 
     SettingDTO getSettingByName(String name);
 
-    Iterable<SettingDTO> getSettings();
-
     Page<SettingDTO> findSetting(String pattern,Pageable pageDetails);
     
     Page<SettingDTO> getSettings(Pageable pageDetails);

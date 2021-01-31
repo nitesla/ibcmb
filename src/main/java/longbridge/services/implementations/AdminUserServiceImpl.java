@@ -119,14 +119,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         return adminUser != null;
     }
 
-
-    @Override
-    public Iterable<AdminUserDTO> getUsers() {
-        Iterable<AdminUser> adminUsers = adminUserRepo.findAll();
-        return convertEntitiesToDTOs(adminUsers);
-    }
-
-
     @Override
     @Transactional
     @Verifiable(operation = "ADD_ADMIN_USER", description = "Adding an Admin User")
