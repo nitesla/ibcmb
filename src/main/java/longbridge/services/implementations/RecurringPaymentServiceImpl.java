@@ -10,6 +10,7 @@ import longbridge.models.*;
 import longbridge.repositories.CorpRecurringPaymentRepo;
 import longbridge.repositories.PaymentStatRepo;
 import longbridge.repositories.RecurringPaymentRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RecurringPaymentService;
@@ -25,6 +26,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +79,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			recurringPayment.setDateCreated(now.toDate());
 			recurringPayment.setRetailUser(user);
 			recurringPayment.setRequestReference("RET_" + user.getId());
-			recurringPayment.setCustomerId(user.getId().toString());
+			recurringPayment.setCustomerId(getCurrentUser().getCustomerId());
 			recurringPayment.setPaymentCode(recurringPaymentDTO.getPaymentCode());
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
@@ -99,7 +101,7 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 			recurringPayment.setDateCreated(now.toDate());
 			recurringPayment.setCorporateUser(user);
 			recurringPayment.setRequestReference("COP_" + user.getCorporate().getId());
-			recurringPayment.setCustomerId(user.getCorporate().getId().toString());
+			recurringPayment.setCustomerId(getCurrentCorpUser().getCorporate().getCustomerId());
 			recurringPayment.setStartDate(DateUtil.convertStringToDate(recurringPaymentDTO.getStart()));
 			recurringPayment.setEndDate(DateUtil.convertStringToDate(recurringPaymentDTO.getEnd()));
 			recurringPayment.setNextDebitDate(now.plusDays(recurringPayment.getIntervalDays()).toDate());
@@ -369,6 +371,16 @@ public class RecurringPaymentServiceImpl implements RecurringPaymentService {
 		}
 		recurringPayment.setPayments(recurringPayments);
 		recurringPaymentRepo.save(recurringPayment);
+	}
+
+	private RetailUser getCurrentUser() {
+		CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return (RetailUser) principal.getUser();
+	}
+
+	private CorporateUser getCurrentCorpUser() {
+		CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return (CorporateUser) principal.getUser();
 	}
 
 }
