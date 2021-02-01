@@ -84,7 +84,7 @@ public interface CorporateUserService{
 
 
 
-    @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
+    @PreAuthorize("hasAuthority('UPDATE_CORP_USER_STATUS')")
     @Transactional
     String changeActivationStatus(Long userId) throws InternetBankingException;
 

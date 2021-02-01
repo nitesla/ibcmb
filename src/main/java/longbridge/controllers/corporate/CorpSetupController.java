@@ -33,34 +33,6 @@ import java.util.*;
 @RequestMapping("/corporate/setup")
 public class CorpSetupController {
 
-    private final Locale locale = LocaleContextHolder.getLocale();
-
-    private final Logger logger= LoggerFactory.getLogger(this.getClass());
-
-    @Value("${antiphishingimagepath}")
-    private String imagePath;
-
-    @Value("${phishing.image.folder}")
-    private String fullImagePath;
-
-    @Autowired
-    MessageSource messageSource;
-
-    @Autowired
-    private CodeService codeService;
-
-    @Autowired
-    private SecurityService securityService;
-
-    @Autowired
-    private PasswordPolicyService passwordPolicyService;
-
-    @Autowired
-    private CorporateUserService corporateUserService;
-
-    @Autowired
-    private CorpProfileUpdateService corpProfileUpdateService;
-
     // array of supported extensions (use a List if you prefer)
     static final String[] EXTENSIONS = new String[]{
             "jpeg", "jpg", "gif", "png", "bmp" // and other formats you need
@@ -74,9 +46,27 @@ public class CorpSetupController {
         }
         return (false);
     };
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    MessageSource messageSource;
+    @Value("${antiphishingimagepath}")
+    private String imagePath;
+    @Value("${phishing.image.folder}")
+    private String fullImagePath;
+    @Autowired
+    private CodeService codeService;
+    @Autowired
+    private SecurityService securityService;
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
+    @Autowired
+    private CorporateUserService corporateUserService;
+    @Autowired
+    private CorpProfileUpdateService corpProfileUpdateService;
 
     @GetMapping
-    public String setUp(Model model){
+    public String setUp(Model model) {
 
         File phish = new File(fullImagePath);
         List<String> images = new ArrayList<>();
@@ -92,25 +82,25 @@ public class CorpSetupController {
 
         List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
-        logger.info("num of qs on entrust {}",noOfQuestions);
+        logger.info("num of qs on entrust {}", noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
-        int questionsPerSection = (secQues.size()-(secQues.size()%noOfQuestions))/noOfQuestions;
-        logger.info("question per section {}",questionsPerSection);
+        int questionsPerSection = (secQues.size() - (secQues.size() % noOfQuestions)) / noOfQuestions;
+        logger.info("question per section {}", questionsPerSection);
         int questnPostn = 0;
-        for(int i=0;i< noOfQuestions;i++) {
-            masterList[i] =  new ArrayList<>();
-            for (int j = 0; j <questionsPerSection; j++) {
+        for (int i = 0; i < noOfQuestions; i++) {
+            masterList[i] = new ArrayList<>();
+            for (int j = 0; j < questionsPerSection; j++) {
                 masterList[i].add(secQues.get(questnPostn));
                 questnPostn++;
             }
 
         }
-        logger.trace("master question length"+masterList.length);
+        logger.trace("master question length" + masterList.length);
 
-        for (int i=0;i<masterList.length;i++  ) {
-            logger.trace("master question "+i+" "+masterList[i]);
+        for (int i = 0; i < masterList.length; i++) {
+            logger.trace("master question " + i + " " + masterList[i]);
         }
-        logger.trace("master question "+ Arrays.toString(masterList));
+        logger.trace("master question " + Arrays.toString(masterList));
 
 
         logger.trace("MASTER LIST {}", masterList);
@@ -128,31 +118,32 @@ public class CorpSetupController {
     }
 
     @GetMapping("/tokenAuth/{token}")
-    public @ResponseBody String tokenAth(@PathVariable String token, Principal principal){
+    public @ResponseBody
+    String tokenAth(@PathVariable String token, Principal principal) {
 
         try {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             boolean message = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), token);
-            if (message){
+            if (message) {
                 return "true";
             }
             return messageSource.getMessage("token.auth.failed", null, locale);
-        }catch (InternetBankingException e){
-            logger.error("ERROR AUTHENTICATING USER >>>>> ",e);
+        } catch (InternetBankingException e) {
+            logger.error("ERROR AUTHENTICATING USER >>>>> ", e);
             return messageSource.getMessage("token.auth.failed", null, locale);
         }
     }
 
     @PostMapping
     public @ResponseBody
-    String saveSetUp(WebRequest webRequest, RedirectAttributes redirectAttributes, Principal principal){
+    String saveSetUp(WebRequest webRequest, RedirectAttributes redirectAttributes, Principal principal) {
         Iterator<String> iterator = webRequest.getParameterNames();
-logger.info("posting response ");
-        String result= "";
+        logger.info("posting response ");
+        String result = "";
 
         try {
 
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 logger.info(iterator.next());
             }
 
@@ -166,13 +157,13 @@ logger.info("posting response ");
 
             List<String> secQuestions = new ArrayList<>();
             List<String> securityAnswers = new ArrayList<>();
-            if(noOfQuestions != null){
-                for(int i =0; i < Integer.parseInt(noOfQuestions); i++){
-                    secQuestions.add(webRequest.getParameter("securityQuestion"+i));
-                    securityAnswers.add(webRequest.getParameter("securityAnswer"+i));
+            if (noOfQuestions != null) {
+                for (int i = 0; i < Integer.parseInt(noOfQuestions); i++) {
+                    secQuestions.add(webRequest.getParameter("securityQuestion" + i));
+                    securityAnswers.add(webRequest.getParameter("securityAnswer" + i));
 
-                    logger.info(" sec questions list {}",secQuestions);
-                    logger.info("sec answer list {}",securityAnswers);
+                    logger.trace(" sec questions list {}", secQuestions);
+                    logger.trace("sec answer list {}", securityAnswers);
                 }
             }
 
@@ -187,7 +178,7 @@ logger.info("posting response ");
                 FileInputStream fis = new FileInputStream(image);
                 int cnt = fis.read(buffer);
                 //ensure cnt == length
-            }catch (Exception e){
+            } catch (Exception e) {
                 //TODO: handle exception
             }
 
@@ -208,20 +199,20 @@ logger.info("posting response ");
 
 //            boolean valid = securityService.performTokenValidation(userDTO.getEntrustId(), userDTO.getEntrustGroup(), token);
 //            if (valid){
-                String message = corpProfileUpdateService.completeEntrustProfileCreation(userDTO);
-                logger.info("MESSAGE", message);
-                CorporateUser user = corporateUserService.getUserByName(userDTO.getUserName());
-                String message2 = corporateUserService.resetPassword(user, custResetPassword);
-                logger.info("MESSAGE 2", message2);
-                return "true";
+            String message = corpProfileUpdateService.completeEntrustProfileCreation(userDTO);
+            logger.info("MESSAGE", message);
+            CorporateUser user = corporateUserService.getUserByName(userDTO.getUserName());
+            String message2 = corporateUserService.resetPassword(user, custResetPassword);
+            logger.info("MESSAGE 2", message2);
+            return "true";
 //            }else {
 //                return messageSource.getMessage("token.auth.failure", null, locale);
 //            }
 
-        }catch (InternetBankingSecurityException ibe){
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error validating token", ibe);
             return ibe.getMessage();
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error during corporate user setup", e);
             redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
             return e.getMessage();
