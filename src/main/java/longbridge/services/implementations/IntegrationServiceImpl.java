@@ -679,7 +679,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 transRequest.setStatusDescription(checkTransaction.getResponseDescription());
 			}
             transRequest.setResponseCode(checkTransaction.getResponseCode());
-            if(checkTransaction.getTransactionResponseCode().equalsIgnoreCase("9000")){
+            if(checkTransaction.getTransactionResponseCode().equalsIgnoreCase("90000")){
                 transRequest.setStatus("00");
             }
 
