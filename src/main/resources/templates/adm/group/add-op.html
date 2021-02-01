@@ -122,13 +122,12 @@ $(document).ready(function() {
         "paging": true,
         "serverSide" : true,
         "ajax" : {
-			url :"/general/operations/users/find",
-			"type" : "POST",
+			url :"/admin/operations/users/find",
+			"type" : "GET",
 			"data" : function(d) {
 				var x = $("#ops-search").serializeArray();
 				$.each(	x,function(i,field) {
 					d[field.name] = field.value;
-					console.log(d[field.name]+" = "+field.value);
 				});
 			}
 		},

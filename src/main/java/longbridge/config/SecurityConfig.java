@@ -45,7 +45,7 @@ public class SecurityConfig {
     public HttpSessionEventPublisher httpSessionEventPublisher;
 
     public void customConfig(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/bank/**", "/resources/**", "/static/**", "/css/** ", "/js/**", "/images/**", "/customer/**");
+        web.ignoring().antMatchers("/bank/**",  "/assets/**", "/error/** ","/static/**", "/customer/**");
     }
 
     @Configuration
@@ -124,7 +124,6 @@ public class SecurityConfig {
                     .expiredUrl("/login/admin?expired=true")
                     .sessionRegistry(sessionRegistry);
             http.csrf().disable();
-
 
             // disable page caching
             http.headers().cacheControl();
