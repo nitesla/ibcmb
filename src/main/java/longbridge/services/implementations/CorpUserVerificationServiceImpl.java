@@ -670,7 +670,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     private void sendCreationCredentials(CorporateUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl : "";
+        String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 
@@ -693,7 +693,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Async
     public void sendPostActivateMessage(CorporateUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl : "";
+        String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 
