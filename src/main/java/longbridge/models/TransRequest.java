@@ -28,7 +28,7 @@ import java.util.Date;
 public class TransRequest extends AbstractEntity implements PrettySerializer {
 
 
-    private  String customerAccountNumber;
+    private String customerAccountNumber;
     private TransferType transferType;
     private Date tranDate = new Date();
     @ManyToOne

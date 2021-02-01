@@ -162,12 +162,6 @@
         </dependency>
 
 
-<!--        <dependency>-->
-<!--            <groupId>com.oracle.ojdbc</groupId>-->
-<!--            <artifactId>ojdbc10</artifactId>-->
-<!--            <version>19.3.0.0</version>-->
-<!--        </dependency>-->
-<!--         https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc-->
 
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -193,6 +187,7 @@
             <!--<scope>provided</scope>-->
         </dependency>
 
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -202,11 +197,6 @@
             <artifactId>modelmapper-spring</artifactId>
             <version>0.7.5</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.hibernate</groupId>-->
-        <!--<artifactId>hibernate-validator</artifactId>-->
-        <!--<version>6.0.17.Final</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.github.darrachequesne</groupId>
             <artifactId>spring-data-jpa-datatables</artifactId>
@@ -456,6 +446,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>2.2.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -470,6 +471,8 @@
                 <configuration>
                     <debug>true</debug>
                     <debuglevel>lines,vars,source</debuglevel>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
 
@@ -487,16 +490,16 @@
                         <version>1.12.6</version>
                     </dependency>
 
-                        <dependency>
-                            <groupId>org.aspectj</groupId>
-                            <artifactId>aspectjtools</artifactId>
-                            <version>${aspectj.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                            <version>8.0.1</version> <!-- Use newer version of ASM -->
-                        </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>8.0.1</version> <!-- Use newer version of ASM -->
+                    </dependency>
                 </dependencies>
 
                 <configuration>
@@ -551,16 +554,13 @@
                         <artifactId>liquibase-hibernate5</artifactId>
                         <version>4.0.0</version>
                     </dependency>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-validator</artifactId>
-                        <version>6.1.5.Final</version>
-                    </dependency>
+
                     <dependency>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-starter-data-jpa</artifactId>
                         <version>${project.parent.version}</version>
                     </dependency>
+
                     <dependency>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-beans</artifactId>
@@ -627,14 +627,6 @@
                     <apiToken>d81651a0-df7f-432f-aeab-e49acc43a6ae</apiToken>
                     <failOnSeverity>false</failOnSeverity>
                     <org></org>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>

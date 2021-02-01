@@ -4,6 +4,7 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.CodeService;
+import longbridge.trace.Trace;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -50,6 +51,7 @@ public class AdmCodeController {
 	}
 
 	@PostMapping()
+	@Trace({"create-code"})
 	public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 		if(result.hasErrors()){
 			result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));

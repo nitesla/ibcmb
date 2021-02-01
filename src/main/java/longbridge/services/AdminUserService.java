@@ -46,12 +46,6 @@ public interface AdminUserService {
     @PreAuthorize("hasAuthority('GET_ADMIN_USER')")
     AdminUserDTO getAdminUser(Long userId);
 
-    /**
-     * Returns DTOs of admin users existing in the system
-     * @return a list of the admin users
-     */
-    @PreAuthorize("hasAuthority('GET_ADMIN_USERS')")
-    Iterable<AdminUserDTO> getUsers();
 
     @PreAuthorize("hasAuthority('GET_ADMIN_USERS')")
     Page<AdminUserDTO> getUsers(Pageable pageDetails);

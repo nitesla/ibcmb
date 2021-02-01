@@ -225,9 +225,12 @@ public class TransferServiceImpl implements TransferService {
 
        if (transferRequestDTO.getTransferType() != TransferType.NEFT && transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
            transRequest = integrationService.makeTransfer(transRequest2);
-           logger.info("Transfer Details: ", transRequest);
+           if (transferRequestDTO.getTransferType() == TransferType.QUICKTELLER){
+               transRequest = integrationService.checkQuicktellerTrTransaction(transRequest);
+           }
+           logger.info("Transfer Details: {}", transRequest);
        }
-            logger.trace("Transfer Details: ", transRequest);
+            logger.trace("Transfer Details: {}", transRequest);
         
         if (transferRequestDTO.getTransferType() == TransferType.NEFT) {
 

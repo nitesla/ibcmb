@@ -45,21 +45,27 @@
             <div class="no-pad-lef  no-mt no-bd  alert">
                 <form method="post" id="" class="form-horizontal">
                     <div class="row spacing">
-                        <div>
-                            <p>Request Date: <span th:text="${bulkTransfer.tranDate}"></span></p>
+                        <!--<div>-->
+                            <!--<p>Request Date: <span th:text="${bulkTransfer.tranDate}"></span></p>-->
 
+                        <!--</div>-->
+
+
+
+                        <!--<br/>-->
+                        <!--<div class="form-group col-md-6">-->
+                            <!--<label>Source account</label>-->
+                            <!--<input type="text" class="form-control" th:field="*{bulkTransfer.customerAccountNumber}" readonly/>-->
+                            <!--</div>-->
+
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group ">
+                                <!--<p>Request Date: <span th:text="${bulkTransfer.tranDate}"></span></p>-->
+                                <!--<p>Source account: <span th:text="${bulkTransfer.customerAccountNumber}"></span></p>-->
+
+                            </div>
                         </div>
 
-
-
-                        <br/>
-                        <div class="form-group col-md-6">
-                            <label>Source account</label>
-                            <input type="text" class="form-control" th:field="*{bulkTransfer.customerAccountNumber}" readonly/>
-                            </div>
-
-
-                    <br/>
                         <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" readonly/>
 
                         <br/>

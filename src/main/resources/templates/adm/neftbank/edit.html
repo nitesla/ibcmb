@@ -45,7 +45,7 @@
                                             <label class="col-sm-2 control-label">Bank Name</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" id="codeType" name="codeType" class="form-control" th:field="*{bankName}" />
+                                                <input type="text"  class="form-control" th:field="*{bankName}" />
                                             </div>
 
                                         </div>
@@ -56,7 +56,7 @@
                                             <div class="col-sm-4">
                                                 <input type="hidden" class="form-control" th:field="*{id}" />
                                                 <input type="hidden"  class="form-control" th:field="*{version}" />
-                                                <input type="text" id="code" name="code" class="form-control" th:field="*{branchName}" />
+                                                <input type="text"  class="form-control" th:field="*{branchName}" />
                                             </div>
 
                                         </div>
@@ -64,7 +64,7 @@
                                             <label class="col-sm-2 control-label">Sort Code</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" id="description" name="description" class="form-control" th:field="*{sortCode}" />
+                                                <input type="text" class="form-control" th:field="*{sortCode}" />
                                             </div>
 
                                         </div>
@@ -97,7 +97,9 @@
 
 
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/neftb/banks";}
+        path = $("input[name='bankName']").val()
+        location.href = "/admin/neftb/banks/" + path + "/edit";
+    }
 </script>
 </body>
 </html>

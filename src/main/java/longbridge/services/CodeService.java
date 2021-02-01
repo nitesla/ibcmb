@@ -76,19 +76,8 @@ public interface CodeService {
 	@PreAuthorize("hasAuthority('GET_CODES')")
 	Page<CodeDTO> getCodes(Pageable pageDetails);
 
-	/**
-	 * Returns all the codes in the system
-	 * 
-	 * @return a list of the codes
-	 */
-	@PreAuthorize("hasAuthority('GET_CODES')")
-	Iterable<CodeDTO> getCodes();
 
-	CodeDTO convertEntityToDTO(Code code);
 
-	Code convertDTOToEntity(CodeDTO codeDTO);
-
-	List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes);
 
 
 }

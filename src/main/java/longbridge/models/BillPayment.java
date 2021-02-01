@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -16,6 +17,7 @@ import java.util.Date;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_flag='N'")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BillPayment extends AbstractEntity {
 
     @javax.persistence.Id

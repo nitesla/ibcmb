@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.dtos.NeftBankDTO;
 import longbridge.dtos.NeftBankNameDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.NeftBank;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,9 +18,7 @@ public interface NeftBankService {
     Page<NeftBankDTO> getNeftBranchesByBankName(String bankName, Pageable pageDetails);
     Page<NeftBankNameDTO> getNeftBankNames(Pageable pageDetails);
     Page<NeftBankDTO> getNeftBanks(Pageable pageDetails);
-    Iterable<NeftBankDTO> getNeftBanks();
     List<NeftBankDTO> getNeftBankList();
-    NeftBankDTO convertEntityToDTO(NeftBank neftBank);
-    NeftBank convertDTOToEntity(NeftBankDTO neftBankDTO);
-    List<NeftBankDTO> convertEntitiesToDTOs(Iterable<NeftBank> neftBanks);
+
+    Page<NeftBankNameDTO> getNeftBankNames(String search, Pageable pageable);
 }

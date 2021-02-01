@@ -160,7 +160,7 @@ public interface IntegrationService {
     Response liquidateFixDeposit(FixedDepositDTO fixedDepositDTO);
     Response addFundToDeposit(FixedDepositDTO fixedDepositDTO);
     Response bookFixDeposit(FixedDepositDTO fixedDepositDTO);
-
+    TransRequest checkQuicktellerTrTransaction(TransRequest transRequest);
     TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException;
     LoanDTO getLoanDetails(String accountNumber);
     String updateTransferLimit(TransferSetLimit tsl);
@@ -168,7 +168,9 @@ public interface IntegrationService {
     List<BillerDTO> getBillers();
     List<PaymentItemDTO> getPaymentItems(Long billerId);
     BillPayment billPayment(BillPayment billPayment);
+    BillPayment checkBillPaymentTransaction (BillPayment billPayment);
     RecurringPayment recurringPayment(RecurringPayment recurringPayment);
+    RecurringPayment checkRecurringPaymentTransaction (RecurringPayment recurringPayment);
     List<BillerCategoryDTO> getBillerCategories();
     List<QuicktellerBankCodeDTO> getBankCodes();
 

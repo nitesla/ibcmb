@@ -14,14 +14,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -76,31 +73,12 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return convertEntityToDTO(settingRepo.findByName(name));
 	}
 
-	@Override
-	public Iterable<SettingDTO> getSettings() {
-		List<Setting> all = settingRepo.findAll();
-		return convertEntitiesToDTOs(all);
-	}
 
 
 	@Override
 	public Page<SettingDTO> getSettings(Pageable pageDetails) {
-		Page<Setting> page = settingRepo.findAll(pageDetails);
-		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-		long t = page.getTotalElements();
-        return new PageImpl<>(dtOs, pageDetails, t);
+		return settingRepo.findAll(pageDetails).map(this::convertEntityToDTO);
 	}
-
-	private List<SettingDTO> convertEntitiesToDTOs(List<Setting> content) {
-		ModelMapper mapper = new ModelMapper();
-		List<SettingDTO> allDto = new ArrayList<>();
-		for (Setting s : content) {
-			SettingDTO dto = mapper.map(s, SettingDTO.class);
-			allDto.add(dto);
-		}
-		return allDto;
-	}
-
 
 	@Transactional
 	@Override
@@ -154,10 +132,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Override
 	public Page<SettingDTO> findSetting(String pattern, Pageable pageDetails) {
-		Page<Setting> page = settingRepo.findUsingPattern(pattern, pageDetails);
-		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-		long t = page.getTotalElements();
-        return new PageImpl<>(dtOs, pageDetails, t);
+		return settingRepo.findUsingPattern(pattern, pageDetails).map(this::convertEntityToDTO);
 	}
 
 }
