@@ -475,7 +475,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     public void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
 
-        String url = (hostUrl != null) ? hostUrl : "";
+        String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 

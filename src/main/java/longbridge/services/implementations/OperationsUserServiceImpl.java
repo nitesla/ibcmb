@@ -431,7 +431,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     public void generateAndSendCredentials(OperationsUser user, Email email) {
 
-        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
+        String opsUrl = (hostUrl != null) ? hostUrl + "/login/ops" : "";
 
         if ("A".equals(user.getStatus())) {
             logger.debug("Ops user {} is ACTIVE and should receive mail",user.getUserName());
@@ -509,7 +509,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public void sendActivationCredentials(OperationsUser user, String password) {
 
 
-        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
+        String opsUrl = (hostUrl != null) ? hostUrl + "/login/ops" : "";
 
         String fullName = user.getFirstName() + " " + user.getLastName();
         Context context = new Context();

@@ -299,7 +299,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private void sendCreationCredentials(CorporateUser user, String password) {
 
         try {
-            String url = (hostUrl != null) ? hostUrl : "";
+            String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
             String fullName = user.getFirstName() + " " + user.getLastName();
             Corporate corporate = user.getCorporate();
 
@@ -324,7 +324,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void sendActivationCredentials(CorporateUser user, String password) {
 
         try {
-            String url = (hostUrl != null) ? hostUrl : "";
+            String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
             String fullName = user.getFirstName() + " " + user.getLastName();
             Corporate corporate = user.getCorporate();
 
@@ -475,7 +475,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 corpUser.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(corpUser);
                 corporateUserRepo.save(corpUser);
-                String url = (hostUrl != null) ? hostUrl : "";
+                String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
 
                 Context context = new Context();
                 context.setVariable("fullName", fullName);
@@ -511,7 +511,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corpUser.setExpiryDate(new Date());
             passwordPolicyService.saveCorporatePassword(corpUser);
             corporateUserRepo.save(corpUser);
-            String url = (hostUrl != null) ? hostUrl : "";
+            String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
 
             Context context = new Context();
             context.setVariable("fullName", fullName);

@@ -345,7 +345,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Async
     public void sendPasswordResetMessage(RetailUser user) {
 
-        String url = (hostUrl != null) ? hostUrl : "";
+        String url = (hostUrl != null) ? hostUrl + "/login/retail" : "";
 
         try {
             String newPassword = passwordPolicyService.generatePassword();
@@ -380,7 +380,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public void sendActivationMessage(RetailUser retailUser) {
         try {
 
-            String url = (hostUrl != null) ? hostUrl : "";
+            String url = (hostUrl != null) ? hostUrl + "/login/retail" : "";
 
             String fullName = retailUser.getFirstName() + " " + retailUser.getLastName();
 
@@ -414,7 +414,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     public void sendActivationCredentials(RetailUser user, String password) {
 
         try {
-            String url = (hostUrl != null) ? hostUrl : "";
+            String url = (hostUrl != null) ? hostUrl + "/login/retail" : "";
             String fullName = user.getFirstName() + " " + user.getLastName();
 
             Context context = new Context();
