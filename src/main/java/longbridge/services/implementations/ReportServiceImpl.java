@@ -4,10 +4,8 @@ import longbridge.dtos.ReportDTO;
 import longbridge.dtos.ReportParameterDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.FinancialInstitution;
-import longbridge.models.Permission;
-import longbridge.models.Report;
-import longbridge.models.User;
+import longbridge.models.*;
+import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.ReportRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -31,7 +29,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,6 +72,8 @@ public class ReportServiceImpl implements ReportService {
     private String imagePath;
     @Autowired
     private ConfigurationService configurationService;
+    @Autowired
+    private AdminUserRepo adminUserRepo;
 
     @Override
     public ReportDTO extractParameters(InputStream inputStream, String reportName, String username) throws JRException,IOException, InternetBankingException {
@@ -150,7 +152,16 @@ public class ReportServiceImpl implements ReportService {
     public ReportDTO extractParameters(String reportName, String permissionCode, String username, String sysFileName, String origFileName,MultipartFile file) throws JRException,IOException, InternetBankingException {
 //        String jasperfileName  = TEMP_REPORT_PATH+sysFileName+".jasper";
 //        JasperReport jasperReport1 = JasperCompileManager.compileReport(file.getInputStream());
-        Permission permission = roleService.findPermisionsByCode(permissionCode);
+      //  Permission permission = roleService.findPermisionsByCode(permissionCode);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        logger.info("username for parameter extraction ---------- {} ", userDetails.getUsername());
+
+        AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(username);
+        logger.info("userType for parameter extraction --------- {} ",adminUser.getUserType());
+
+        Permission permission = roleService.findPermisionsByCodeAndUserType(permissionCode, adminUser.getUserType().toString());
 //        File file1 = new File(jasperfileName);
 //        InputStream stream = new ByteArrayInputStream(file.getBytes());
         ReportDTO reportDTO = new ReportDTO();

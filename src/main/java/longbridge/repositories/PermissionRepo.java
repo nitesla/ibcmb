@@ -17,6 +17,7 @@ public interface PermissionRepo extends CommonRepo<Permission, Long> {
     List<Permission> findByUserType(String type);
     List<Permission> findByCategory(String category);
     Permission findByCode(String code);
+    Permission findByCodeAndUserType(String code, String userType);
 
     boolean existsByNameAndUserType(String name, String type);
 
