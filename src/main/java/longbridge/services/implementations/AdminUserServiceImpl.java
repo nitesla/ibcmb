@@ -63,7 +63,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private MessageSource messageSource;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private RoleRepo roleRepo;

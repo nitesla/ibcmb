@@ -46,7 +46,7 @@ public class CorpBeneficiaryController {
     @Autowired
     private CorporateUserService corporateUserService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private CodeService codeService;
     @Autowired

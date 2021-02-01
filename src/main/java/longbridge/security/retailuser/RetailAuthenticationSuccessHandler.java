@@ -3,7 +3,7 @@ package longbridge.security.retailuser;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.SessionUtils;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Autowired
     private RetailUserRepo retailUserRepo;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private SessionUtils sessionUtils;
 

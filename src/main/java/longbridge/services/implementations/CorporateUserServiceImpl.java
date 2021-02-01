@@ -64,7 +64,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private CodeService codeService;

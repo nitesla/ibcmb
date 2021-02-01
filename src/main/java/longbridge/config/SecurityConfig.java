@@ -5,7 +5,7 @@ import longbridge.models.UserType;
 import longbridge.security.CustomerInternetBankingPassWordEncoder;
 import longbridge.security.adminuser.AdminAuthenticationSuccessHandler;
 import longbridge.security.api.ApiAuthenticationFilter;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class SecurityConfig {
         @Qualifier("adminAuthenticationFailureHandler")
         private AuthenticationFailureHandler adminAuthenticationFailureHandler;
         @Autowired
-        private ConfigurationService configService;
+        private SettingsService configService;
         private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public AdminUserConfigurationAdapter() {
@@ -152,7 +152,7 @@ public class SecurityConfig {
         @Qualifier("opAuthenticationFailureHandler")
         private AuthenticationFailureHandler opAuthenticationFailureHandler;
         @Autowired
-        private ConfigurationService configService;
+        private SettingsService configService;
         private final Logger logger = LoggerFactory.getLogger(this.getClass());
         @Autowired
         private SessionRegistry sessionRegistry;

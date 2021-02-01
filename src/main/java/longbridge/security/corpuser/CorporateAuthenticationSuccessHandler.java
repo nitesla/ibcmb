@@ -5,7 +5,7 @@ import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     @Autowired
     private CorporateUserRepo corporateUserRepo;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {

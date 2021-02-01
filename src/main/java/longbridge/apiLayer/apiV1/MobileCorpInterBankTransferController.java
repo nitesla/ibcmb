@@ -58,7 +58,7 @@ public class MobileCorpInterBankTransferController {
     @Autowired
     CorpTransferService corpTransferService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     MessageSource messageSource;
     @Autowired

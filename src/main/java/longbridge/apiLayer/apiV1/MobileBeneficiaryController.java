@@ -52,7 +52,7 @@ public class MobileBeneficiaryController {
     @Autowired
     FinancialInstitutionService financialInstitutionService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     SecurityService securityService;
     @Autowired

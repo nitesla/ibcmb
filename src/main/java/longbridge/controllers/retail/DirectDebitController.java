@@ -50,7 +50,7 @@ public class DirectDebitController {
     private final AccountService accountService;
 
     final LocalBeneficiaryRepo localBeneficia;
-    private final ConfigurationService configService;
+    private final SettingsService configService;
 
 
     private final RetailUserService retailUserService;
@@ -72,7 +72,7 @@ public class DirectDebitController {
                                  FinancialInstitutionService financialInstitutionService,
                                  SecurityService securityService,
                                  AccountService accountService, LocalBeneficiaryRepo localBeneficia,
-                                 ConfigurationService configService,
+                                 SettingsService configService,
                                  RetailUserService retailUserService,
                                  CodeService codeService
     ) {

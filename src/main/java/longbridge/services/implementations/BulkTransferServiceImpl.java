@@ -61,7 +61,7 @@ public class BulkTransferServiceImpl implements BulkTransferService {
 
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private CorporateRoleRepo corpRoleRepo;

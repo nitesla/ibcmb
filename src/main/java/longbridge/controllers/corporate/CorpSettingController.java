@@ -62,7 +62,7 @@ public class CorpSettingController {
     private AccountService accountService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private MessageService messageService;

@@ -2,7 +2,7 @@ package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,7 @@ public class SessionUtils {
 
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     public void setTimeout(HttpSession session) {
         try {

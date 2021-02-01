@@ -33,7 +33,7 @@ public class UserRegServiceImpl implements UserRegService {
     @Autowired
     MessageSource messageSource;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     AccountService accountService;
     @Autowired

@@ -92,11 +92,6 @@ public class CodeServiceImpl implements CodeService {
                 .map(this::convertEntityToDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public List<CodeDTO> getCodesByTypeAndDescription(String codeType, String description) {
-        return codeRepo.findByTypeAndDescription(codeType, description).stream()
-                .map(this::convertEntityToDTO).collect(Collectors.toList());
-    }
 
 
     @Transactional

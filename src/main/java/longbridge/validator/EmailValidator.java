@@ -1,7 +1,7 @@
 package longbridge.validator;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +19,7 @@ import javax.mail.internet.InternetAddress;
 public class EmailValidator {
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     public boolean isValid(String email) {
 

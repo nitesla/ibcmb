@@ -58,7 +58,7 @@ public class UserRegController {
     private CodeService codeService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     private final Locale locale = LocaleContextHolder.getLocale();
 

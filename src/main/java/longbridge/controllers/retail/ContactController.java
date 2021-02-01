@@ -2,7 +2,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.Email;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ContactController {
 
     @Autowired
-    private ConfigurationService configurationService;
+    private SettingsService configurationService;
     @Autowired
     private MailService mailService;
     private final Logger logger= LoggerFactory.getLogger(this.getClass());

@@ -87,7 +87,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     private IntegrationService integrationService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private EntityManager entityManager;

@@ -60,14 +60,14 @@ public class BeneficiaryController {
 
     @Value("${bank.code}")
     private String bankCode;
-    private final ConfigurationService configService;
+    private final SettingsService configService;
 
     private final CodeService codeService;
 
 
     @Autowired
     public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService, CodeService codeService
-            , ConfigurationService configService, SecurityService securityService, MessageSource messageSource
+            , SettingsService configService, SecurityService securityService, MessageSource messageSource
     ) {
         this.localBeneficiaryService = localBeneficiaryService;
         this.messages = messages;

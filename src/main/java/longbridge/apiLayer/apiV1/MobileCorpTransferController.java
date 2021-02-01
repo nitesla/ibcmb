@@ -52,7 +52,7 @@ public class MobileCorpTransferController {
     @Autowired
     FinancialInstitutionService financialInstitutionService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     CorpTransferService transferService;
     @Autowired

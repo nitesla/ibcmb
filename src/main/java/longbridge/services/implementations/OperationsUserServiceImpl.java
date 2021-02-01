@@ -63,7 +63,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private SecurityService securityService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private RoleRepo roleRepo;

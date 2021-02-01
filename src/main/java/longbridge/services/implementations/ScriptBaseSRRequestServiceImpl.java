@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.ServiceRequestFeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +15,7 @@ public class ScriptBaseSRRequestServiceImpl implements ServiceRequestFeeService 
 
 	private final String SCRIPT_PATH = "SCRIPT_PATH";
 	@Autowired
-	ConfigurationService config;
+    SettingsService config;
 	
 	@Override
 	public Map<String, Number> getServiceRequestCharge(ServiceRequestDTO dto) {

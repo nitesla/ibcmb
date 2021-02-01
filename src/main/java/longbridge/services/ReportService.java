@@ -21,11 +21,7 @@ import java.util.List;
  */
 public interface ReportService {
     ReportDTO extractParameters(InputStream inputStream, String reportName, String username) throws JRException,IOException, InternetBankingException;
-    ReportDTO extractParameters(String reportName, String permissionCode, String username, String sysFileName, String originalFileName) throws JRException,IOException, InternetBankingException;
-    ReportDTO extractParameters(String reportName, String permissionCode, String username, String sysFileName, String originalFileName,MultipartFile file ) throws JRException,IOException, InternetBankingException;
-    ReportDTO updateReportParameters(ReportDTO reportDTO, String permissionCode, String username, String originalFileName, MultipartFile file) throws JRException,IOException, InternetBankingException;
-    ReportDTO getFileAndResaved(String reportName) throws JRException,IOException, InternetBankingException;
-    void saveReportTemp(String sysFileName, MultipartFile file, String format) throws IOException, InternetBankingException;
+    ReportDTO extractParameters(String reportName, Long permissionId, String username, String sysFileName, String originalFileName,MultipartFile file ) throws JRException,IOException, InternetBankingException;
     byte[] getReportsInBytes(String sysFileName, MultipartFile file, String format) throws IOException, InternetBankingException;
     void saveReport(String sysFileName, MultipartFile file, String format) throws IOException, InternetBankingException;
     boolean isFileValid(String fileName);
@@ -46,6 +42,8 @@ public interface ReportService {
     String deleteReport(Long id) throws InternetBankingException;
     String deleteReport(Report report) throws InternetBankingException;
     List<FinancialInstitution> getFinancialInstutions();
+
+    ReportDTO updateReportParameters(ReportDTO reportDTO, Long permissionId, String name, String originalFilename, MultipartFile file) throws IOException, JRException;
 //    InputStream sendFileAsAttachement(FileType fileType, Date date);
 
 

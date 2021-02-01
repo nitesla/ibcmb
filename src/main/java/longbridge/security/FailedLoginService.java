@@ -6,7 +6,7 @@ import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.RetailUserRepo;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FailedLoginService {
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private RetailUserRepo retailUserRepo;
     @Autowired

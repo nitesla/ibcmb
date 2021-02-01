@@ -56,7 +56,7 @@ public class MobileOwnTransferController {
     @Autowired
     TransferErrorService transferErrorService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     TransferUtils transferUtils;
 

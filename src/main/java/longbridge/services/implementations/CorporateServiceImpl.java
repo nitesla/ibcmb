@@ -54,7 +54,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private IntegrationService integrationService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private SecurityService securityService;
 

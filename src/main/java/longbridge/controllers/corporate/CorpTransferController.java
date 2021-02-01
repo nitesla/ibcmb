@@ -78,7 +78,7 @@ public class CorpTransferController {
     private CorpTransferService corpTransferService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
 
     @Autowired

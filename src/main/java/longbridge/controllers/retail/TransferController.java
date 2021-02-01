@@ -65,7 +65,7 @@ public class TransferController {
     private final TransferUtils transferUtils;
     private final NeftBeneficiaryService neftBeneficiaryService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -5,7 +5,7 @@ import longbridge.models.AdminUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.security.SessionUtils;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.LoggedUserService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     private LoggedUserService loggedUserService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     public AdminAuthenticationSuccessHandler() {
 

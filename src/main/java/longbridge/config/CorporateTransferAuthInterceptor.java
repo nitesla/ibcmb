@@ -2,7 +2,7 @@ package longbridge.config;
 
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CorporateTransferAuthInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {

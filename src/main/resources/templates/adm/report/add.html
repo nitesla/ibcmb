@@ -81,9 +81,9 @@
                                                     <div class="col-md-12">
                                                         <label class="col-sm-2 control-label">Add permission</label>
                                                         <div class="col-sm-6">
-                                                            <select th:name="permissionCode" th:id="permission" class="form-control">
+                                                            <select th:name="permissionId" th:id="permission" class="form-control">
                                                                 <option>--No Permission--</option>
-                                                                <option th:each="permissionDTO : ${permissionDTOS}" th:text="${permissionDTO.description+' ('+permissionDTO.userType+')'}" th:value="${permissionDTO.code}"></option>
+                                                                <option th:each="permissionDTO : ${permissionDTOS}" th:text="${permissionDTO.description+' ('+permissionDTO.userType+')'}" th:value="${permissionDTO.id}"></option>
                                                             </select>
                                                         </div>
                                                     </div>

@@ -78,7 +78,7 @@ public class CorpDirectDebitController {
     private CodeService codeService;
 
     @Autowired
-    ConfigurationService configurationService;
+    SettingsService configurationService;
 
     @Autowired
     private TransferUtils transferUtils;

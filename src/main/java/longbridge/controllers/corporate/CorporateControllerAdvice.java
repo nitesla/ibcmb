@@ -35,7 +35,7 @@ public class CorporateControllerAdvice {
     private final ServiceReqConfigService reqConfigService;
     private final MessageService messageService;
     @Autowired
-    private ConfigurationService configurationService;
+    private SettingsService configurationService;
     @Autowired
     private  CorpTransferService corpTransferService;
     @Autowired

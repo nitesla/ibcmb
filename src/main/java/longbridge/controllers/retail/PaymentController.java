@@ -45,7 +45,7 @@ public class PaymentController {
     private final String page = "cust/payment/";
     private SecurityService securityService;
     @Autowired
-    ConfigurationService configurationService;
+    SettingsService configurationService;
     @Autowired
     private MessageSource messageSource;
     private final static Logger logger = LoggerFactory.getLogger(PaymentController.class);

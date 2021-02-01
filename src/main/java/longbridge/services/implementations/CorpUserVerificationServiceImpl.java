@@ -68,7 +68,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     private SecurityService securityService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private VerificationRepo verificationRepo;

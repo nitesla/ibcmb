@@ -57,7 +57,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
 
     private final IntegrationService integrationService;
     private final AccountService accountService;
-    private final ConfigurationService configService;
+    private final SettingsService configService;
     private final FinancialInstitutionService financialInstitutionService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -88,7 +88,7 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     private TransferUtils transferUtils;
 
     @Autowired
-    public CorpCustomDutyServiceImpl( IntegrationService integrationService,  AccountService accountService, ConfigurationService configService, FinancialInstitutionService financialInstitution) {
+    public CorpCustomDutyServiceImpl(IntegrationService integrationService, AccountService accountService, SettingsService configService, FinancialInstitutionService financialInstitution) {
         this.integrationService = integrationService;
         this.accountService = accountService;
         this.configService = configService;

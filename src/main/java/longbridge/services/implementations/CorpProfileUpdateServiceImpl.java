@@ -7,7 +7,7 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.CorpProfileUpdateService;
 import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
@@ -39,7 +39,7 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
     private SecurityService securityService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private CorporateUserRepo corporateUserRepo;
