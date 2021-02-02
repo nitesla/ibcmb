@@ -27,6 +27,7 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -71,8 +72,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     private EntityManager entityManager;
 
-    @Value("${host.url}")
-    private String hostUrl;
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -260,7 +259,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     public void sendActivationCredentials(AdminUser user, String password) {
 
         try {
-            String adminUrl = (hostUrl != null) ? hostUrl + "/login/admin" : "";
+            String adminUrl =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/admin";
+
 
             String fullName = user.getFirstName() + " " + user.getLastName();
             Context context = new Context();
@@ -505,7 +506,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void generateAndSendCredentials(AdminUser user, Email email) {
 
-        String adminUrl = (hostUrl != null) ? hostUrl + "/login/admin" : "";
+        String adminUrl =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/admin";
+
 
         if ("A".equals(user.getStatus())) {
 
