@@ -51,7 +51,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private final IntegrationService integrationService;
     private final TransactionLimitServiceImpl limitService;
     private final AccountService accountService;
-    private final ConfigurationService configService;
+    private final SettingsService configService;
     private final DirectDebitService directDebitService;
     private final NeftResponseRepo neftResponseRepo;
 
@@ -127,7 +127,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService,
-                                   AccountService accountService, QuicktellerBankCodeService quicktellerBankCodeService, ConfigurationService configService,
+                                   AccountService accountService, QuicktellerBankCodeService quicktellerBankCodeService, SettingsService configService,
                                    DirectDebitService directDebitService, SessionUtil sessionUtil, NeftTransferRepo neftTransferRepo, NeftResponseRepo neftResponseRepo, AccountRepo accountRepo) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;

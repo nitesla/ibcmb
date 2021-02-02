@@ -52,7 +52,7 @@ public class  AdminUserController {
     private MessageSource messageSource;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private VerificationService verificationService;

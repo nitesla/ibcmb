@@ -66,7 +66,7 @@ public class SettingController {
     @Autowired
     private MessageService messageService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private IntegrationService integrationService;

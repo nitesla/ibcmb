@@ -17,7 +17,7 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.NeftTransferRepo;
 import longbridge.response.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import longbridge.utils.*;
@@ -131,7 +131,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	private final RestTemplate template;
 	private final MailService mailService;
 	private final TemplateEngine templateEngine;
-	private final ConfigurationService configService;
+	private final SettingsService configService;
 	private final TransferErrorService errorService;
 	private final MessageSource messageSource;
 	private final AccountRepo accountRepo;
@@ -142,8 +142,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 	@Autowired
 	public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine,
-                                  ConfigurationService configService, TransferErrorService errorService, MessageSource messageSource,
-                                  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,
+								  SettingsService configService, TransferErrorService errorService, MessageSource messageSource,
+								  AccountRepo accountRepo, CorporateRepo corporateRepo, AntiFraudRepo antiFraudRepo,
 								  NeftTransferRepo neftTransferRepo) {
 		this.template = template;
 		this.mailService = mailService;
@@ -679,7 +679,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 transRequest.setStatusDescription(checkTransaction.getResponseDescription());
 			}
             transRequest.setResponseCode(checkTransaction.getResponseCode());
-            if(checkTransaction.getTransactionResponseCode().equalsIgnoreCase("9000")){
+            if(checkTransaction.getTransactionResponseCode().equalsIgnoreCase("90000")){
                 transRequest.setStatus("00");
             }
 

@@ -68,7 +68,7 @@ public class OpsCorporateController {
     private IntegrationService integrationService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private MakerCheckerService makerCheckerService;

@@ -55,7 +55,7 @@ public class AdmTokenController {
     private CorporateUserService corporateUserService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     TokenUtils tokenUtils;
 

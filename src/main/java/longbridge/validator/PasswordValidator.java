@@ -6,7 +6,7 @@ import longbridge.repositories.AdminPasswordRepo;
 import longbridge.repositories.CorporatePasswordRepo;
 import longbridge.repositories.OpsPasswordRepo;
 import longbridge.repositories.RetailPasswordRepo;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,7 +30,7 @@ public class PasswordValidator {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private AdminPasswordRepo adminPasswordRepo;
 

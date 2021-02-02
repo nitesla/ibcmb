@@ -10,10 +10,10 @@ public class BillPaymentDTO implements Serializable {
     @NotEmpty(message = "Amount is required")
     private String amount;
     private String categoryName;
-    @NotEmpty(message = "Payment Item is required")
+//    @NotEmpty(message = "Payment Item is required")
     private String paymentItemId;
     private String paymentItemName;
-    @NotEmpty(message = "Biller is required")
+//    @NotEmpty(message = "Biller is required")
     private String billerId;
     private String billerName;
     private String customerAccountNumber;

@@ -18,7 +18,7 @@ private Long id;
     private String createdBy;
     private String origFileName;
     private String sysFileName;
-    private Permission permission;
+    private PermissionDTO permission;
     private List<ReportParameterDTO> reportParameters;
     private byte[] jrxmlFile;
     public Long getId() {
@@ -61,11 +61,11 @@ private Long id;
         this.reportParameters = reportParameters;
     }
 
-    public Permission getPermission() {
+    public PermissionDTO getPermission() {
         return permission;
     }
 
-    public void setPermission(Permission permission) {
+    public void setPermission(PermissionDTO permission) {
         this.permission = permission;
     }
 

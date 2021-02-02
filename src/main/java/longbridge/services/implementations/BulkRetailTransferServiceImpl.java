@@ -57,7 +57,7 @@ public class BulkRetailTransferServiceImpl implements BulkRetailTransferService 
 
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     @Autowired
     private CorporateRoleRepo corpRoleRepo;

@@ -57,7 +57,7 @@ public class MainController {
     @Autowired
     private SecurityService securityService;
     @Autowired
-    private ConfigurationService configurationService;
+    private SettingsService configurationService;
     @Autowired
     private MailService mailService;
     @Autowired

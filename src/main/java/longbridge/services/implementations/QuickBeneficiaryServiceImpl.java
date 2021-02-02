@@ -10,7 +10,7 @@ import longbridge.models.User;
 import longbridge.repositories.QuickBeneficiaryRepo;
 import longbridge.repositories.QuicktellerBankCodeRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import longbridge.services.QuickBeneficiaryService;
@@ -44,7 +44,7 @@ public class QuickBeneficiaryServiceImpl implements QuickBeneficiaryService {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     private final Locale locale = LocaleContextHolder.getLocale();
     private final QuickBeneficiaryRepo quickBeneficiaryRepo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

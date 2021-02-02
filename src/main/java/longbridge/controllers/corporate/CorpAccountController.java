@@ -68,7 +68,7 @@ public class CorpAccountController {
     @Autowired
     private IntegrationService integrationService;
     @Autowired
-    private ConfigurationService configurationService;
+    private SettingsService configurationService;
     @Autowired
     private MessageSource messageSource;
     @Autowired

@@ -76,7 +76,7 @@ public class NAPSTransferController {
     @Autowired
     private TransferUtils transferUtils;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private SecurityService securityService;
 

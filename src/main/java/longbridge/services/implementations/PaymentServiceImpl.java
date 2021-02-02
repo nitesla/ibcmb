@@ -74,8 +74,8 @@ public class PaymentServiceImpl implements PaymentService {
                 return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
 
 
-            }else if (billPayment.getResponseCode().equalsIgnoreCase("9000")) {
-                return messageSource.getMessage("Payment Successful", null, locale);
+            }else if (billPayment.getResponseCode().equalsIgnoreCase("90000")) {
+                return ("Payment Successful");
 
             }else {
 
@@ -109,8 +109,8 @@ public class PaymentServiceImpl implements PaymentService {
                 return messageSource.getMessage(billPayment.getResponseDescription(), null, locale);
 
 
-            }else if (billPayment.getResponseCode().equalsIgnoreCase("9000")) {
-                return messageSource.getMessage("Payment Successful", null, locale);
+            }else if (billPayment.getResponseCode().equalsIgnoreCase("90000")) {
+                return ("Payment Successful");
 
             }else {
 
@@ -136,7 +136,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         RetailUser user = getCurrentUser();
-        Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getId().toString(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getPhoneNumber(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<>(dtOs, pageDetails, t);
@@ -148,7 +148,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getId().toString(), pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findByCustomerIdAndStatusNotNullOrderByCreatedOnDesc(user.getCorporate().getCustomerId(), pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<>(dtOs, pageDetails, t);
@@ -160,7 +160,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed payments");
         RetailUser user = getCurrentUser();
-        Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getId().toString(),pattern, pageDetails);
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getPhoneNumber(),pattern, pageDetails);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<>(dtOs, pageDetails, t);
@@ -172,7 +172,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         logger.debug("Retrieving completed CORP payments");
         CorporateUser user = getCurrentCorpUser();
-        Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getId().toString(),pattern, pageable);
+        Page<BillPayment> page = billPaymentRepo.findUsingPattern(user.getCorporate().getCustomerId(),pattern, pageable);
         List<BillPaymentDTO> dtOs = convertPaymentEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         return new PageImpl<>(dtOs, pageable, t);
@@ -195,7 +195,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setAmount(new BigDecimal(paymentDTO.getAmount()));
         payment.setPhoneNumber(paymentDTO.getPhoneNumber());
         payment.setEmailAddress(paymentDTO.getEmailAddress());
-        payment.setCustomerId(getCurrentUser().getId().toString());
+        payment.setCustomerId(getCurrentUser().getPhoneNumber());
         payment.setPaymentCode(paymentDTO.getPaymentCode());
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());
@@ -220,7 +220,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setAmount(new BigDecimal(paymentDTO.getAmount()));
         payment.setPhoneNumber(paymentDTO.getPhoneNumber());
         payment.setEmailAddress(paymentDTO.getEmailAddress());
-        payment.setCustomerId(getCurrentCorpUser().getId().toString());
+        payment.setCustomerId(getCurrentCorpUser().getCorporate().getCustomerId());
         payment.setPaymentCode(paymentDTO.getPaymentCode());
         payment.setPaymentItemName(paymentDTO.getPaymentItemName());
         payment.setBillerName(paymentDTO.getBillerName());

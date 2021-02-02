@@ -11,7 +11,7 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.statement.AccountStatement;
 import org.apache.commons.lang.ArrayUtils;
@@ -51,9 +51,9 @@ public class AccountServiceImpl implements AccountService {
     private final ModelMapper modelMapper;
     private final AccountConfigService accountConfigService;
     private final MessageSource messageSource;
-    private final ConfigurationService configurationService;
+    private final SettingsService configurationService;
     @Autowired
-    public AccountServiceImpl(AccountRepo accountRepo, CorporateRepo corporateRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource, ConfigurationService configurationService) {
+    public AccountServiceImpl(AccountRepo accountRepo, CorporateRepo corporateRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource, SettingsService configurationService) {
         this.accountRepo = accountRepo;
         this.corporateRepo = corporateRepo;
         this.integrationService = integrationService;

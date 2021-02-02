@@ -83,7 +83,7 @@ public class CorpNAPSTransferController {
     private final SecurityService securityService;
     private final FinancialInstitutionService financialInstitutionService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private TransferErrorService transferErrorService;
     @Autowired

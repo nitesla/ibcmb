@@ -62,7 +62,7 @@ public class CorpFixedDepositController {
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private MessageSource messageSource;
 

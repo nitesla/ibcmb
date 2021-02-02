@@ -42,7 +42,7 @@ public class CorpPaymentController {
     private final PaymentService paymentService;
     private final String page = "corp/payment/";
     @Autowired
-    ConfigurationService configurationService;
+    SettingsService configurationService;
     @Autowired
     private MessageSource messageSource;
     private final static Logger logger = LoggerFactory.getLogger(CorpPaymentController.class);

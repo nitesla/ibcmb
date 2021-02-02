@@ -46,7 +46,7 @@ public class CronJobServiceImpl implements CronJobService {
     @Autowired
     private CronJobMonitorRepo cronJobMonitorRepo;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private AccountService accountService;
     @Autowired

@@ -44,24 +44,7 @@ public class OperationsUserGeneralContoller {
     @Autowired
     PasswordPolicyService passwordService;
 
-    @RequestMapping(path = "/find")
-    public
-    @ResponseBody
-    DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input, OperationsUserDTO user) {
 
-        logger.info("Users to search: {}", user.toString());
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<OperationsUserDTO> operationsUsers = operationsUserService.findUsers(user, pageable);
-        DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<>();
-        out.setDraw(input.getDraw());
-        out.setData(operationsUsers.getContent());
-        logger.info("Users found: {}", operationsUsers.getContent().toString());
-        out.setRecordsFiltered(operationsUsers.getTotalElements());
-        out.setRecordsTotal(operationsUsers.getTotalElements());
-
-        return out;
-    }
 
     @GetMapping("/password/reset/")
     public String getOpsUsername() {

@@ -10,7 +10,7 @@ import longbridge.models.User;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.LocalBeneficiaryService;
 import longbridge.services.MailService;
@@ -49,7 +49,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     private final Locale locale = LocaleContextHolder.getLocale();
     private final LocalBeneficiaryRepo localBeneficiaryRepo;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

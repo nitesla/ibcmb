@@ -22,7 +22,7 @@ build-job:
   artifacts:
     paths:
       - target/*.war
-  only:
-    - icon_deploy
+  when:
+    manual
 
 

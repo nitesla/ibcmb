@@ -52,7 +52,7 @@ public class TransferServiceImpl implements TransferService {
     private final TransactionLimitServiceImpl limitService;
     private final ModelMapper modelMapper;
     private final AccountService accountService;
-    private final ConfigurationService configService;
+    private final SettingsService configService;
     private final MessageSource messages;
     private final Locale locale = LocaleContextHolder.getLocale();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -99,7 +99,7 @@ public class TransferServiceImpl implements TransferService {
     private String bankSortCode;
 
     @Autowired
-    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
+    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, SettingsService configurationService
             , RetailUserRepo retailUserRepo, MessageSource messages, SessionUtil sessionUtil) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;

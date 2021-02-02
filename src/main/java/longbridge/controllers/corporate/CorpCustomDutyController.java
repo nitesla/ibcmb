@@ -55,7 +55,7 @@ public class CorpCustomDutyController {
     private final TransferUtils transferUtils;
     private final SecurityService securityService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private MessageSource messageSource;
     @Autowired

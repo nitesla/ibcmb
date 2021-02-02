@@ -6,7 +6,7 @@ import longbridge.models.UserType;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.PasswordPolicyService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     public OpAuthenticationSuccessHandler() {
         setUseReferer(true);
     }

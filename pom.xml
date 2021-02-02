@@ -490,16 +490,16 @@
                         <version>1.12.6</version>
                     </dependency>
 
-                        <dependency>
-                            <groupId>org.aspectj</groupId>
-                            <artifactId>aspectjtools</artifactId>
-                            <version>${aspectj.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                            <version>8.0.1</version> <!-- Use newer version of ASM -->
-                        </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>8.0.1</version> <!-- Use newer version of ASM -->
+                    </dependency>
                 </dependencies>
 
                 <configuration>

@@ -5,7 +5,7 @@ import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.services.ChequeService;
 import longbridge.services.CodeService;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.ServiceReqConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class ChequeController {
     ServiceReqConfigService serviceReqConfigService;
 
     @Autowired
-    ConfigurationService configurationService;
+    SettingsService configurationService;
 
     @GetMapping("/chequebook")
     public String requestChequeBook( Model model) {

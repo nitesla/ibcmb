@@ -2,7 +2,9 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.services.ConfigurationService;
+import longbridge.models.Setting;
+import longbridge.repositories.SettingRepo;
+import longbridge.services.SettingsService;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,10 +36,11 @@ public class AdmSettingController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private ConfigurationService configurationService;
+	private SettingsService configurationService;
 
 	@Autowired
 	private MessageSource messageSource;
+
 
 	@GetMapping()
 	public String listSettings(Model model) {

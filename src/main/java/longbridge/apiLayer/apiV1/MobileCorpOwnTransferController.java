@@ -47,7 +47,7 @@ public class MobileCorpOwnTransferController {
     @Autowired
     CorpTransferService corpTransferService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     MessageSource messageSource;
     @Autowired

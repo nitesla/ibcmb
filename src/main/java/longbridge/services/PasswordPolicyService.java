@@ -26,7 +26,7 @@ import java.util.*;
 public class PasswordPolicyService {
 
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
     @Autowired
     private PasswordValidator passwordValidator;
     @Autowired

@@ -8,7 +8,7 @@ import longbridge.exception.WrongPasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
-import longbridge.services.ConfigurationService;
+import longbridge.services.SettingsService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
@@ -50,7 +50,7 @@ public class OperationsUserController {
     @Autowired
     private SecurityService securityService;
     @Autowired
-    private ConfigurationService configService;
+    private SettingsService configService;
 
     private final Logger logger= LoggerFactory.getLogger(this.getClass());
 

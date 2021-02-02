@@ -46,7 +46,7 @@ public class RecurringPaymentController {
     private CodeService codeService;
 
     @Autowired
-    ConfigurationService configurationService;
+    SettingsService configurationService;
 
     private final AccountService accountService;
     private final SecurityService securityService;

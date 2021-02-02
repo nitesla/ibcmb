@@ -429,4 +429,13 @@ public class RoleServiceImpl implements RoleService {
         logger.info("permissionDTOS size {}",permissions);
         return permissions;
     }
+
+    @Override
+    public Permission findPermisionsByCodeAndUserType(String code, String userType){
+        logger.info("pcode {}",code);
+        logger.info("puserType {}",userType);
+        Permission permissions = permissionRepo.findByCodeAndUserType(code, userType);
+        logger.info("permissionDTOS size {}",permissions);
+        return permissions;
+    }
 }

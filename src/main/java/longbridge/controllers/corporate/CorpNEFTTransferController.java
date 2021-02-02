@@ -48,11 +48,11 @@ public class CorpNEFTTransferController {
     private TransferUtils transferUtils;
     @Autowired
     private CorporateUserService corporateUserService;
-    @Autowired
-    private NeftTransferRepo neftTransferRepo;
 
     @Autowired
     private CorpNeftBeneficiaryService corpNeftBeneficiaryService;
+    @Autowired
+    private NeftBankService neftBankService;
 
 
     @Autowired
@@ -150,8 +150,8 @@ public class CorpNEFTTransferController {
 
     @ResponseBody
     @GetMapping("bulktransfer/{bankName}/branch")
-    public List<CodeDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
-        return codeService.getCodesByTypeAndDescription("NEFT_BANKS", bankName);
+    public List<NeftBankDTO> getNeftBankBranch(@PathVariable("bankName") String bankName) {
+        return neftBankService.getNeftBranchesByBankName(bankName);
     }
 
     @ResponseBody

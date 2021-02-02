@@ -64,7 +64,7 @@ public class MobileLocalTransferController {
     @Autowired
     TransferErrorService transferErrorService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     TransferUtils transferUtils;
     @Autowired

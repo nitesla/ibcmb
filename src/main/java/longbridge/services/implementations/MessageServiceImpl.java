@@ -35,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private ConfigurationService configurationService;
+    private SettingsService configurationService;
     @Autowired
     private UserGroupService userGroupService;
     @Autowired

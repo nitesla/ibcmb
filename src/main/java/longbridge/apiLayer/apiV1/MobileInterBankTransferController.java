@@ -62,7 +62,7 @@ public class MobileInterBankTransferController {
     @Autowired
     TransferErrorService transferErrorService;
     @Autowired
-    ConfigurationService configService;
+    SettingsService configService;
     @Autowired
     TransferUtils transferUtils;
     @Autowired
