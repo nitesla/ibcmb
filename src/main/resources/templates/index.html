@@ -20,7 +20,7 @@
                         <img class="sliding" th:src="@{~/customer/{name}/img/cmb_bg.jpg(name=#{menu.custom})}" th:alt="#{menu.bank.name}" style="width:100%;" />
                         <div class="carousel-caption">
                             <!--<h3></h3>-->
-                            <p>We are setting standards of excellence in the Nigerian banking sector and beyond</p>
+                            <p><span th:text="#{menu.welcome.message2}" ></span></p>
                         </div>
                     </div>
 
@@ -58,9 +58,8 @@
             <div class="text-center">
 
                 <div>
-                    <h3 class="home-heading">Welcome to Internet Banking</h3>
-                    <p class="home-para">We are setting standards of excellence in the Nigerian banking sector and beyond. <span th:text="#{menu.bank.name}" ></span> Internet banking platform lets you bank whenever and wherever you are! Our clients retain focus on achieving their business objectives,
-                        confident that our financial solutions are World-class. <span th:text="#{menu.bank.name}" ></span> Internet banking is fast, efficient, and secure.</p>
+                    <h3 class="home-heading"><span th:text="#{menu.welcome.greetings}" ></span></h3>
+                    <p class="home-para"><span th:text="#{menu.welcome.message}" ></span></p>
                     <br/><br/>
 
                     <div class="dropdown margin-bottom">
@@ -127,17 +126,18 @@
         <div class="row text-center margin-bottom">
             <div id="contact_us">
                 <h4 class="pantone-2" style='font-size:20px;'>Contact Us</h4>
-                <p class="home-para">Our customer service representatives are ready to assist you with any concerns or comments you have. If you have an enquiry or question or comment, please use any of the links below or send us a message.</p>
+                <p class="home-para"><span th:text="#{menu.contact}" ></span></p>
                 <div class="dropdown  dropdn-margin">
                     <button class="btn btn-primary dropdown-toggle bg-btn" type="button" data-toggle="dropdown"><i class="fa fa-phone text-white"></i>
             
                                 </button>
                     <ul class="dropdown-menu contact-details">
 
-                        <li>T +234 01-2797640</li>
-                        <li>T +234 01-2797641</li>
-                        <li>T +234 01-2797642</li>
-                        <li>T +234 01-2797643</li>
+                        <!--<li>T +234 01-2797640</li>-->
+                        <!--<li>T +234 01-2797641</li>-->
+                        <!--<li>T +234 01-2797642</li>-->
+                        <!--<li>T +234 01-2797643</li>-->
+                        <li>01-6370000</li>
 
                         <li class="icontext pull-right " data-toggle="modal" data-target="#myModal"><button class="btn btn-link pantone-1">Call back</button></li>
 
