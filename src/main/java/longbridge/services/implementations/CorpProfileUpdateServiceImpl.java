@@ -92,6 +92,7 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
             CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
 
             corporateUser.setIsFirstTimeLogon("N");
+            corporateUser.setResetSecurityQuestion("N");
 
             corporateUser.setUserType(UserType.CORPORATE);
 

@@ -53,9 +53,6 @@ public class MobileUserRegController {
     @Value("${phishing.image.folder}")
     private String fullImagePath;
 
-    @Value("${antiphishingimagepath}")
-    private String imagePath;
-
     @Value("${mail.from}")
     private String defaultEmail;
 

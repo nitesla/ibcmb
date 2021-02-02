@@ -307,15 +307,10 @@ public class MainController {
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes,HttpSession session) {
         String username = webRequest.getParameter("username");
         String corporateId = webRequest.getParameter("corporateId");
-//        CorporateUser user = corporateUserService.getUserByName(username);
-//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
         CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
 
-        //if (corporate != null && user != null) {
         if (user != null) {
-//            model.addAttribute("images", mutualAuth.get("imageSecret"));
-//            model.addAttribute("captions", mutualAuth.get("captionSecret"));
             try {
                 Map<String, List<String>> mutualAuth = securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
                 if (mutualAuth != null) {
@@ -365,34 +360,6 @@ public class MainController {
         return "redirect:/login/corporate";
     }
 
- //by hashed out by GB
-   /* @PostMapping("/login/p/corporate")
-    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
-        String username = webRequest.getParameter("username");
-        String phishing = webRequest.getParameter("phishing");
-        String corporateId = webRequest.getParameter("corporateId");
-        logger.info("the corporateId {} and username {}", corporateId, username);
-        if ((username != null) && (corporateId != null)) {
-            session.removeAttribute("corporateId");
-            session.removeAttribute("corpUsername");
-            session.setAttribute("corpUsername", username );
-            session.setAttribute("corporateId", corporateId);
-        }
-//        CorporateUser user = corporateUserService.getUserByName(username);
-//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-
-        CorporateUser user = corporateUserService.getUserByNameAndCorporateId(username, corporateId);
-        if (user != null && phishing != null) {
-            model.addAttribute("fake_name", user.getUserName());
-            model.addAttribute("username", user.getUserName() + ":"+ corporateId);
-            model.addAttribute("corporateId", corporateId);
-            return "corplogin";
-        }
-
-        redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "redirect:/login/corporate/failure";
-    }
-*/
 
     @GetMapping("/password/reset/admin")
     public String getAdminUsername() {

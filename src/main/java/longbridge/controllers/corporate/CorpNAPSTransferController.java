@@ -72,8 +72,6 @@ public class CorpNAPSTransferController {
     @Autowired
     IntegrationService integrationService;
     //private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-    @Value("${napsfile.path}")
-    private String SERVER_FILE_PATH;
     @Autowired
     private MessageSource messageSource;
     private final AccountService accountService;
