@@ -25,6 +25,7 @@ import org.springframework.data.domain.*;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -71,8 +72,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Autowired
     private EntityManager entityManager;
 
-    @Value("${host.url}")
-    private String hostUrl;
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -431,7 +430,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     public void generateAndSendCredentials(OperationsUser user, Email email) {
 
-        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
+        String opsUrl =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/ops";
+
 
         if ("A".equals(user.getStatus())) {
             logger.debug("Ops user {} is ACTIVE and should receive mail",user.getUserName());
@@ -509,7 +510,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public void sendActivationCredentials(OperationsUser user, String password) {
 
 
-        String opsUrl = (hostUrl != null) ? hostUrl + "/ops" : "";
+        String opsUrl =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/ops";
+
 
         String fullName = user.getFirstName() + " " + user.getLastName();
         Context context = new Context();
