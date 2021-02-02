@@ -1,7 +1,9 @@
+
 @font-face {
-    font-family: FedraSansStdLight;
-    src: url(../fonts/FedraSans/FedraSansStd-LightLF.otf);
+    font-family: 'FedraSansStdLight';
+    src: url('../fonts/FedraSans/FedraSansStd-LightLF.otf');
 }
+
 
 html,
 body,
