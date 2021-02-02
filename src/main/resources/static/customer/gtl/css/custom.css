@@ -1,6 +1,6 @@
 @font-face {
     font-family: FedraSansStdLight;
-    src: url(../fonts/FedraSans/FedraSansStd-LightLF.otf);
+    src: url(../../fonts/FedraSans/FedraSansStd-LightLF.otf);
 }
 
 html,
@@ -133,6 +133,10 @@ table.dataTable tbody td {
     padding: 8px 5px !important;
 }
 
+.table > thead > tr > th {
+    vertical-align: bottom;
+    border-bottom: 4px solid #16662b;
+}
 .time-icon {
     padding-left: 5px !important;
     color: #006527 !important;
@@ -500,7 +504,7 @@ select {
 -moz-box-sizing: border-box; */
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url('../greenwich_merchant_bank/img/select.jpg') !important;
+    background-image: url('../img/select.jpg') !important;
     background-repeat: no-repeat;
     background-position: right center;
     background-size: contain;
