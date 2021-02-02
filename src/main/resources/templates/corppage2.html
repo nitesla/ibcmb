@@ -380,6 +380,7 @@
                         <div id="loginform" class="form-body bodyform"  >
                             <form id="login" th:action="@{/corporate/login}"  method="POST" class="form-signin " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white welcome">Welcome to <span th:text="#{menu.bank.name2}" ></span><br> Online Banking!</h5>
+                                <h6 class="form-signin1 header-line text-white" th:text="${corporateId +' : ' + fake_name}"></h6>
                                 <h6 class="form-signin1 header-line text-white" style="margin-bottom: -5px !important;">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
                                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>

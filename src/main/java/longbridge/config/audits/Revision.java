@@ -17,7 +17,6 @@ import java.util.Set;
 public class Revision extends DefaultTrackingModifiedEntitiesRevisionEntity {
 
 
-    private String ip;
     private String trace;
 
     private String lastChangedBy;
@@ -68,14 +67,6 @@ public class Revision extends DefaultTrackingModifiedEntitiesRevisionEntity {
 
     public void setType(UserType type) {
         this.type = type;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
     }
 
     public String getTrace() {

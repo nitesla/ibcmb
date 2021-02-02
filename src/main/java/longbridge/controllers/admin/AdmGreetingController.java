@@ -59,9 +59,6 @@ public class AdmGreetingController  {
     CorporateUserService corporateUserService;
 
     @Value("${greetingImage.path}")
-    private String GREETING_IMAGE_FOLDER;
-
-    @Value("${greetingImage.path}")
     private Resource path;
     
     private static String INVALID="invalid";
