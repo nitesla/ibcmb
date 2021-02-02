@@ -25,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -91,9 +92,6 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private UserAccountRestrictionRepo userAccountRestrictionRepo;
 
-
-    @Value("${host.url}")
-    private String hostUrl;
 
     private final Locale locale = LocaleContextHolder.getLocale();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -475,7 +473,8 @@ public class CorporateServiceImpl implements CorporateService {
 
     public void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
 
-        String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+        final String url =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 

@@ -31,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -83,8 +84,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     private CorporateRoleRepo corporateRoleRepo;
 
-    @Value("${host.url}")
-    private String hostUrl;
 
     @Autowired
     private CorporateWebhook corporateWebhook;
@@ -299,7 +298,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private void sendCreationCredentials(CorporateUser user, String password) {
 
         try {
-            String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+            String url =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
+
             String fullName = user.getFirstName() + " " + user.getLastName();
             Corporate corporate = user.getCorporate();
 
@@ -324,7 +325,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public void sendActivationCredentials(CorporateUser user, String password) {
 
         try {
-            String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+            final String url =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
+
             String fullName = user.getFirstName() + " " + user.getLastName();
             Corporate corporate = user.getCorporate();
 
@@ -475,7 +478,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 corpUser.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(corpUser);
                 corporateUserRepo.save(corpUser);
-                String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+                String url =
+                        ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
+
 
                 Context context = new Context();
                 context.setVariable("fullName", fullName);
@@ -511,7 +516,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corpUser.setExpiryDate(new Date());
             passwordPolicyService.saveCorporatePassword(corpUser);
             corporateUserRepo.save(corpUser);
-            String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+            String url =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
+
 
             Context context = new Context();
             context.setVariable("fullName", fullName);

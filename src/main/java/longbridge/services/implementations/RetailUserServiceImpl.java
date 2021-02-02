@@ -38,6 +38,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -92,8 +93,6 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Autowired
     private EntityManager entityManager;
 
-    @Value("${host.url}")
-    private String hostUrl;
 
     @Autowired
     private RetailWebHook retailWebHook;
@@ -345,7 +344,9 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Async
     public void sendPasswordResetMessage(RetailUser user) {
 
-        String url = (hostUrl != null) ? hostUrl + "/login/retail" : "";
+        final String url =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/retail";
+
 
         try {
             String newPassword = passwordPolicyService.generatePassword();
@@ -380,7 +381,9 @@ public class RetailUserServiceImpl implements RetailUserService {
     public void sendActivationMessage(RetailUser retailUser) {
         try {
 
-            String url = (hostUrl != null) ? hostUrl + "/login/retail" : "";
+            String url =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/retail";
+
 
             String fullName = retailUser.getFirstName() + " " + retailUser.getLastName();
 
@@ -414,7 +417,9 @@ public class RetailUserServiceImpl implements RetailUserService {
     public void sendActivationCredentials(RetailUser user, String password) {
 
         try {
-            String url = (hostUrl != null) ? hostUrl + "/login/retail" : "";
+            final String url =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/retail";
+
             String fullName = user.getFirstName() + " " + user.getLastName();
 
             Context context = new Context();

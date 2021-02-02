@@ -33,6 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.persistence.EntityManager;
@@ -86,9 +87,6 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     @Autowired
     private VerificationService verificationService;
-
-    @Value("${host.url}")
-    private String hostUrl;
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -670,7 +668,9 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
     private void sendCreationCredentials(CorporateUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+        final String url =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
+
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 
@@ -693,7 +693,8 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     @Async
     public void sendPostActivateMessage(CorporateUser user, String password) {
 
-        String url = (hostUrl != null) ? hostUrl + "/login/corporate" : "";
+        final String url =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
         String fullName = user.getFirstName() + " " + user.getLastName();
         Corporate corporate = user.getCorporate();
 
