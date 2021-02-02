@@ -133,6 +133,8 @@ public class CorpSettingController {
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
 
+        List<CodeDTO> account_coverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        model.addAttribute("displayCoverage", !account_coverage.isEmpty());
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
 
