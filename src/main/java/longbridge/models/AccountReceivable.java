@@ -3,6 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
@@ -10,7 +11,9 @@ import javax.persistence.Entity;
 @Where(clause ="del_Flag='N'" )
 public class AccountReceivable extends AbstractEntity{
 
+    @Column(name = "acct_num")
     private String accountNumber;
+    @Column(name = "acct_type")
     private String accountType;
 
     public String getAccountNumber() {

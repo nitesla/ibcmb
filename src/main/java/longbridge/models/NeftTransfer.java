@@ -5,6 +5,7 @@ import longbridge.response.NeftResponse;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -15,13 +16,7 @@ import java.math.BigDecimal;
 @Where(clause ="del_Flag='N'" )
 public class NeftTransfer extends AbstractEntity {
 
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private Long Id;
-
-
-
+    @Column(name = "item_seq_no")
     private String ItemSequenceNo;
 
     private String SerialNo;
@@ -36,42 +31,56 @@ public class NeftTransfer extends AbstractEntity {
 
     private String Currency;
 
+    @Column(name = "bnk_fst_dep_dat")
     private String BankOfFirstDepositDate;
 
+    @Column(name = "bnk_fst_dep_cod")
     private String BankOfFirstDepositSortCode;
 
+    @Column(name = "pstmt_date")
     private String PresentmentDate;
 
+    @Column(name = "pay_name")
     private String PayerName;
 
     private String Beneficiary;
 
+    @Column(name = "ben_acct")
     private String BeneficiaryAccountNo;
 
+    @Column(name = "bvn_ben")
     private String BVNBeneficiary;
 
     private String BVNPayer;
 
+    @Column(name = "col_type")
     private String CollectionType;
 
+    @Column(name = "inst_type")
     private String InstrumentType;
 
     private String Narration;
 
+    @Column(name = "pstmt_bnk_cod")
     private String PresentingBankSortCode;
 
+    @Column(name = "spcl_clrg")
     private boolean SpecialClearing;
 
+    @Column(name = "inst_date")
     private String InstrumentDate;
 
+    @Column(name = "micr_rep_ind")
     private String MICRRepairInd;
 
+    @Column(name = "set_time")
     private String SettlementTime;
 
     private String CycleNo;
 
     private String status;
 
+    @Column(name = "ben_bnk")
     private String beneficiaryBank;
 
     @ManyToOne

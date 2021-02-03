@@ -9,6 +9,7 @@ import longbridge.utils.TransferType;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -28,27 +29,40 @@ import java.util.Date;
 public class TransRequest extends AbstractEntity implements PrettySerializer {
 
 
+    @Column(name = "cust_acct_num")
     private String customerAccountNumber;
+    @Column(name = "tran_type")
     private TransferType transferType;
     private Date tranDate = new Date();
     @ManyToOne
     private FinancialInstitution financialInstitution;
+    @Column(name = "ben_acct_num")
     private String beneficiaryAccountNumber;
+    @Column(name = "ben_acct_name")
     private String beneficiaryAccountName;
+    @Column(name = "ben_bank")
     private String beneficiaryBank;
     private String remarks;
     private String status;
+    @Column(name = "ref_num")
     private String referenceNumber;
+    @Column(name = "usr_ref_num")
     private String userReferenceNumber;
     private String narration;
+    @Column(name = "stat_descpt")
     private String statusDescription;
     private BigDecimal amount;
     private String charge;
+    @Column(name = "curcy_cod")
     private String currencyCode;
+    @Column(name = "resp_code")
     private String responseCode;
     private String mac;
+    @Column(name = "tran_cod")
     private String transferCode;
+    @Column(name = "resp_cod_grp")
     private String responseCodeGrouping;
+    @Column(name = "transact_date")
     private String transactionDate;
 
 
