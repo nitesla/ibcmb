@@ -36,7 +36,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     private String coverage;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> cifids;
 
     @OneToMany(mappedBy = "corporate")
