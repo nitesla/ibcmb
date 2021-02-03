@@ -10,18 +10,18 @@ public class TransferRequest implements Serializable{
     public TransferRequest() {
     }
 
-    private String debitAccountNumber;
-    private String debitAccountName;
-    private String creditAccountNumber;
-    private String creditAccountName;
+    private String debitAcctNum;
+    private String debitAcctName;
+    private String creditAcctNum;
+    private String creditAcctName;
     private String tranAmount;
     private String naration;
     private String remarks;
-    private String destinationInstitutionCode;
+    private String destInstCode;
     private String tranType;
     private String status;
-    private String referenceNumber;
-    private String userReferenceNumber;
+    private String refNum;
+    private String userRefNum;
     private BigDecimal amount;
     private String charge;
     private String currencyCode;
@@ -29,46 +29,46 @@ public class TransferRequest implements Serializable{
     private AntiFraudData antiFraudData;
     private String statusDescription;
 
-    private String responseCode;
-    private String  responseDescription;
-    private String  uniqueReferenceCode;
+    private String respCode;
+    private String respDescription;
+    private String uniqueRefCode;
 
-    private QuickBeneficiary quickBeneficiary;
-    private QuickInitiation quickInitiation;
+    private QuickBeneficiary quickBen;
+    private QuickInitiation quickInit;
     private QuickSender quickSender;
     private QuickTermination quickTermination;
 
 
-    public String getDebitAccountNumber() {
-        return debitAccountNumber;
+    public String getDebitAcctNum() {
+        return debitAcctNum;
     }
 
-    public void setDebitAccountNumber(String debitAccountNumber) {
-        this.debitAccountNumber = debitAccountNumber;
+    public void setDebitAcctNum(String debitAcctNum) {
+        this.debitAcctNum = debitAcctNum;
     }
 
-    public String getDebitAccountName() {
-        return debitAccountName;
+    public String getDebitAcctName() {
+        return debitAcctName;
     }
 
-    public void setDebitAccountName(String debitAccountName) {
-        this.debitAccountName = debitAccountName;
+    public void setDebitAcctName(String debitAcctName) {
+        this.debitAcctName = debitAcctName;
     }
 
-    public String getCreditAccountNumber() {
-        return creditAccountNumber;
+    public String getCreditAcctNum() {
+        return creditAcctNum;
     }
 
-    public void setCreditAccountNumber(String creditAccountNumber) {
-        this.creditAccountNumber = creditAccountNumber;
+    public void setCreditAcctNum(String creditAcctNum) {
+        this.creditAcctNum = creditAcctNum;
     }
 
-    public String getCreditAccountName() {
-        return creditAccountName;
+    public String getCreditAcctName() {
+        return creditAcctName;
     }
 
-    public void setCreditAccountName(String creditAccountName) {
-        this.creditAccountName = creditAccountName;
+    public void setCreditAcctName(String creditAcctName) {
+        this.creditAcctName = creditAcctName;
     }
 
     public String getTranAmount() {
@@ -95,12 +95,12 @@ public class TransferRequest implements Serializable{
         this.remarks = remarks;
     }
 
-    public String getDestinationInstitutionCode() {
-        return destinationInstitutionCode;
+    public String getDestInstCode() {
+        return destInstCode;
     }
 
-    public void setDestinationInstitutionCode(String destinationInstitutionCode) {
-        this.destinationInstitutionCode = destinationInstitutionCode;
+    public void setDestInstCode(String destInstCode) {
+        this.destInstCode = destInstCode;
     }
 
     public String getTranType() {
@@ -127,20 +127,20 @@ public class TransferRequest implements Serializable{
         this.status = status;
     }
 
-    public String getReferenceNumber() {
-        return referenceNumber;
+    public String getRefNum() {
+        return refNum;
     }
 
-    public void setReferenceNumber(String referenceNumber) {
-        this.referenceNumber = referenceNumber;
+    public void setRefNum(String refNum) {
+        this.refNum = refNum;
     }
 
-    public String getUserReferenceNumber() {
-        return userReferenceNumber;
+    public String getUserRefNum() {
+        return userRefNum;
     }
 
-    public void setUserReferenceNumber(String userReferenceNumber) {
-        this.userReferenceNumber = userReferenceNumber;
+    public void setUserRefNum(String userRefNum) {
+        this.userRefNum = userRefNum;
     }
 
     public BigDecimal getAmount() {
@@ -167,28 +167,28 @@ public class TransferRequest implements Serializable{
         this.statusDescription = statusDescription;
     }
 
-    public String getResponseCode() {
-        return responseCode;
+    public String getRespCode() {
+        return respCode;
     }
 
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
+    public void setRespCode(String respCode) {
+        this.respCode = respCode;
     }
 
-    public String getResponseDescription() {
-        return responseDescription;
+    public String getRespDescription() {
+        return respDescription;
     }
 
-    public void setResponseDescription(String responseDescription) {
-        this.responseDescription = responseDescription;
+    public void setRespDescription(String respDescription) {
+        this.respDescription = respDescription;
     }
 
-    public String getUniqueReferenceCode() {
-        return uniqueReferenceCode;
+    public String getUniqueRefCode() {
+        return uniqueRefCode;
     }
 
-    public void setUniqueReferenceCode(String uniqueReferenceCode) {
-        this.uniqueReferenceCode = uniqueReferenceCode;
+    public void setUniqueRefCode(String uniqueRefCode) {
+        this.uniqueRefCode = uniqueRefCode;
     }
 
     public String getCurrencyCode() {
@@ -199,20 +199,20 @@ public class TransferRequest implements Serializable{
         this.currencyCode = currencyCode;
     }
 
-    public QuickBeneficiary getQuickBeneficiary() {
-        return quickBeneficiary;
+    public QuickBeneficiary getQuickBen() {
+        return quickBen;
     }
 
-    public void setQuickBeneficiary(QuickBeneficiary quickBeneficiary) {
-        this.quickBeneficiary = quickBeneficiary;
+    public void setQuickBen(QuickBeneficiary quickBen) {
+        this.quickBen = quickBen;
     }
 
-    public QuickInitiation getQuickInitiation() {
-        return quickInitiation;
+    public QuickInitiation getQuickInit() {
+        return quickInit;
     }
 
-    public void setQuickInitiation(QuickInitiation quickInitiation) {
-        this.quickInitiation = quickInitiation;
+    public void setQuickInit(QuickInitiation quickInit) {
+        this.quickInit = quickInit;
     }
 
     public QuickSender getQuickSender() {
@@ -234,28 +234,28 @@ public class TransferRequest implements Serializable{
     @Override
     public String toString() {
         return "TransferRequest{" +
-                "debitAccountNumber='" + debitAccountNumber + '\'' +
-                ", debitAccountName='" + debitAccountName + '\'' +
-                ", creditAccountNumber='" + creditAccountNumber + '\'' +
-                ", creditAccountName='" + creditAccountName + '\'' +
+                "debitAccountNumber='" + debitAcctNum + '\'' +
+                ", debitAccountName='" + debitAcctName + '\'' +
+                ", creditAccountNumber='" + creditAcctNum + '\'' +
+                ", creditAccountName='" + creditAcctName + '\'' +
                 ", tranAmount='" + tranAmount + '\'' +
                 ", naration='" + naration + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", destinationInstitutionCode='" + destinationInstitutionCode + '\'' +
+                ", destinationInstitutionCode='" + destInstCode + '\'' +
                 ", tranType='" + tranType + '\'' +
                 ", status='" + status + '\'' +
-                ", referenceNumber='" + referenceNumber + '\'' +
-                ", userReferenceNumber='" + userReferenceNumber + '\'' +
+                ", referenceNumber='" + refNum + '\'' +
+                ", userReferenceNumber='" + userRefNum + '\'' +
                 ", amount=" + amount +
                 ", charge='" + charge + '\'' +
                 ", currencyCode='" + currencyCode + '\'' +
                 ", antiFraudData=" + antiFraudData +
                 ", statusDescription='" + statusDescription + '\'' +
-                ", responseCode='" + responseCode + '\'' +
-                ", responseDescription='" + responseDescription + '\'' +
-                ", uniqueReferenceCode='" + uniqueReferenceCode + '\'' +
-                ", quickBeneficiary=" + quickBeneficiary +
-                ", quickInitiation=" + quickInitiation +
+                ", responseCode='" + respCode + '\'' +
+                ", responseDescription='" + respDescription + '\'' +
+                ", uniqueReferenceCode='" + uniqueRefCode + '\'' +
+                ", quickBeneficiary=" + quickBen +
+                ", quickInitiation=" + quickInit +
                 ", quickSender=" + quickSender +
                 ", quickTermination=" + quickTermination +
                 '}';

@@ -434,10 +434,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 					TransferRequest params=new TransferRequest();
-					params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
-					params.setDebitAccountName( account.getAccountName());
-					params.setCreditAccountNumber(transRequest.getBeneficiaryAccountNumber());
-					params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
+					params.setDebitAcctNum(transRequest.getCustomerAccountNumber());
+					params.setDebitAcctName( account.getAccountName());
+					params.setCreditAcctNum(transRequest.getBeneficiaryAccountNumber());
+					params.setCreditAcctName(transRequest.getBeneficiaryAccountName());
 					params.setTranAmount(transRequest.getAmount().toString());
 					params.setRemarks(transRequest.getRemarks());
 					params.setAntiFraudData(transRequest.getAntiFraudData());
@@ -454,9 +454,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 //					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("Response:{}",response);
-					transRequest.setStatus(response.getResponseCode());
-					transRequest.setStatusDescription(response.getResponseDescription());
-					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+					transRequest.setStatus(response.getRespCode());
+					transRequest.setStatusDescription(response.getRespDescription());
+					transRequest.setReferenceNumber(response.getUniqueRefCode());
 					transRequest.setNarration(response.getNaration());
 					return transRequest;
 				} catch (HttpStatusCodeException e) {
@@ -542,10 +542,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 				TransferRequest params=new TransferRequest();
-				params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
-				params.setDebitAccountName( account.getAccountName());
-				params.setCreditAccountNumber(transRequest.getBeneficiaryAccountNumber());
-				params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
+				params.setDebitAcctNum(transRequest.getCustomerAccountNumber());
+				params.setDebitAcctName( account.getAccountName());
+				params.setCreditAcctNum(transRequest.getBeneficiaryAccountNumber());
+				params.setCreditAcctName(transRequest.getBeneficiaryAccountName());
 				params.setTranAmount(transRequest.getAmount().toString());
 				params.setRemarks(transRequest.getRemarks());
 				params.setCurrencyCode(transRequest.getCurrencyCode());
