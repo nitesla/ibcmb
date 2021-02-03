@@ -19,6 +19,8 @@ build-job:
     - sudo mv /opt/tomcat/gtl/webapps/ROOT /opt/tomcat/gtl/backup/ROOT_${CI_JOB_ID} || echo "No ROOT to backup"
     - sudo mkdir /opt/tomcat/gtl/webapps/ROOT
     - sudo unzip target/ibanking.war -d /opt/tomcat/gtl/webapps/ROOT
+    - sudo /opt/tomcat/stl/bin/catalina.sh stop -force || echo "Tomcat not started"
+    - sudo /opt/tomcat/stl/bin/catalina.sh start
   artifacts:
     paths:
       - target/*.war
