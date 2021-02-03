@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -44,5 +45,10 @@ public class CoverageServiceImpl implements CoverageService {
     @Override
     public Map<String, List<String>> getCoverageDetails(String coverageName, String customerId) {
         return integrationService.getCoverageDetails(coverageName, customerId);
+    }
+
+    @Override
+    public List<CoverageDetailsDTO> getCoverage(String coverageName, String customerId) {
+       return integrationService.getCoverages(coverageName, customerId);
     }
 }

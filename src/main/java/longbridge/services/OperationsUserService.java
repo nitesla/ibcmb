@@ -42,6 +42,9 @@ public interface OperationsUserService{
     @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUser getUserByName(String name);
 
+    OperationsUser getUserByNameWithoutAuthentication(String name);
+
+
 
 
     /**

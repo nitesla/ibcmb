@@ -255,13 +255,6 @@
    <script>
 
         $(document).ready(function () {
-//            $('.tt').each(function () {
-//                var sth = $(this).find(".bal").html();
-//                $(this).find(".bal").html(numberWithCommas(sth));
-////                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
-//            })
-
-
             $('.bal').each(function(i,obj){
                 var sth = $(this).text();
                 sth = parseFloat(sth).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
