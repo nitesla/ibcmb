@@ -3,6 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -14,7 +15,9 @@ public class QuickBeneficiary extends Beneficiary{
 
     @ManyToOne
     private RetailUser user;
+    @Column(name = "lst_name")
     private String lastname;
+    @Column(name = "othr_name")
     private String othernames;
 
     public RetailUser getUser() {
