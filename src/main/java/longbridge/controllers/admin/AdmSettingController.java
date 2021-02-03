@@ -2,8 +2,6 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Setting;
-import longbridge.repositories.SettingRepo;
 import longbridge.services.SettingsService;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -1,0 +1,56 @@
+{
+    "request": {
+      "method": "GET",
+      "urlPattern": "/wallets/[a-zA-Z0-9,]*"
+      
+      
+    },
+    "response": {
+      "status": 200,
+      "jsonBody": {"wallets":[
+        {
+          "Id": "5678909876",
+          "cardReference": "12340980984234567",
+          "cardNumber": "900556655",
+          "cardName": "Oba Akinjobi",
+          "expiryDate": "18/06/2022",
+          "cardType": "Debit",
+          "balance": "677666.00",
+          "walletType": "AndroidPay",
+          "paymentsPlatform":"AliPal"
+        },
+        {
+          "Id": "5678929877",
+          "cardReference": "0040980984234567",
+          "cardNumber": "9810556655",
+          "cardName": "Isaac John",
+          "expiryDate": "18/06/2023",
+          "cardType": "credit",
+          "balance": "1677666.00",
+          "walletType": "SamsungPay",
+          "paymentsPlatform":"PayPal"
+        },
+        {
+            "Id": "5628909877",
+            "cardReference": "0040980984234567",
+            "cardNumber": "9810556655",
+            "cardName": "Isaac John",
+            "expiryDate": "18/06/2022",
+            "cardType": "credit",
+            "balance": "1677666.00",
+            "walletType": "ApplePay",
+            "paymentsPlatform":"PayPal"
+          }
+      ]},
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+  
+  
+  
+  
+  
+  
+  

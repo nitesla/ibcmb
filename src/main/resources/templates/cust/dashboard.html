@@ -130,7 +130,7 @@
 
 
 
-
+        <div  th:if="${not #lists.isEmpty(coverageDetails)}" class=" no-pad-lef table-responsive bg-white alert">
         <table class="table table-hover no-pad-lef" id="coverage">
 
         <caption style="font-size: large">COVERAGE TYPES</caption>
@@ -159,20 +159,7 @@
         </tr>
         </tfoot>
         </table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        </div>
 
 
 

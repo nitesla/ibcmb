@@ -94,6 +94,10 @@ public class GreetingServiceImpl implements GreetingService {
 
 
     }
+
+
+
+
     /**
     this method is used to retrieve greetings for the greeting view.html
      */
