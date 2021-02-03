@@ -2,9 +2,9 @@ package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
-import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
+import longbridge.services.SettingsService;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
