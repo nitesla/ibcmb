@@ -566,6 +566,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
+
             Corporate corporate = corporateRepo.findById(id).get();
             entityManager.detach(corporate);
             String oldStatus = corporate.getStatus();

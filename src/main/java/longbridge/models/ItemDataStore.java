@@ -3,6 +3,7 @@ package longbridge.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,8 +27,10 @@ public class ItemDataStore extends AbstractEntity {
 
     private String currency;
 
+    @Column(name = "bnkFirstDepDate")
     private LocalDateTime bankOfFirstDepositDate;
 
+    @Column(name = "bnkFistDepSortCode")
     private String bankOfFirstDepositSortCode;
 
     private LocalDateTime presentmentDate;

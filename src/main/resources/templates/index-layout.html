@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title th:text="#{menu.bank.name}" ></title>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
@@ -36,7 +36,7 @@
 
         }
         hr{
-            rgin-top: 20px;
+            margin-top: 20px;
             margin-bottom: 20px;
             border: 0;
             border-top: 2px solid rgba(255, 255, 255, 0.23);
@@ -241,8 +241,11 @@
             </div>
         </div>
     </div>
+
     <div layout:fragment="content">
     </div>
+
+
     <footer style="margin-top: 10px;">
         <div class="">
             <div class="container clearfix">

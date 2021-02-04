@@ -5,6 +5,7 @@ import longbridge.response.NeftResponse;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -36,8 +37,10 @@ public class NeftTransfer extends AbstractEntity {
 
     private String Currency;
 
+    @Column(name = "bnkFirstDepDate")
     private String BankOfFirstDepositDate;
 
+    @Column(name = "bnkFistDepSortCode")
     private String BankOfFirstDepositSortCode;
 
     private String PresentmentDate;

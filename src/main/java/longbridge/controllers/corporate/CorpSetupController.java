@@ -75,6 +75,8 @@ public class CorpSetupController {
                 images.add(f.getName());
                 logger.info("FILE NAME {}", f.getName());
             }
+        }else{
+            logger.error("Directory isn't Valid for phishing image: {}", fullImagePath);
         }
 
         model.addAttribute("images", images);

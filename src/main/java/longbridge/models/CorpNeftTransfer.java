@@ -30,8 +30,10 @@ public class CorpNeftTransfer {
 
     private String currency;
 
+    @Column(name = "bnkFistDepDate")
     private String bankOfFirstDepositDate;
 
+    @Column(name = "bnkFistDepSortCode")
     private String bankOfFirstDepositSortCode;
 
     private String presentmentDate;
