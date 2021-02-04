@@ -155,7 +155,9 @@ public class NAPSTransferController {
         File file = null;
         //file = new File(SERVER_FILE_PATH);
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        file = new File(classloader.getResource(FILENAME).getFile());
+        file = new File(classloader.getResource(FILENAME).getFile().replaceAll("%20", " "));
+        logger.info("download file {}", file.getName());
+        logger.info("download file {}", file.getAbsolutePath());
         if (!file.exists()) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             System.out.println(errorMessage);
