@@ -4,10 +4,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 
@@ -18,11 +15,16 @@ public class QuickTermination extends AbstractEntity  {
 
     @OneToOne(cascade = CascadeType.ALL)
     @Transient
+    @Column(name = "acct_recvble")
     private AccountReceivable accountReceivable;
     private BigDecimal amount;
+    @Column(name = "cntry_cod")
     private String countryCode;
+    @Column(name = "cur_cod")
     private String currencyCode;
+    @Column(name = "ent_cod")
     private String entityCode;
+    @Column(name = "pay_met_cod")
     private String paymentMethodCode;
 
 

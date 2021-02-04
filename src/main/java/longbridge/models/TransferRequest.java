@@ -2,6 +2,7 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,32 +11,46 @@ public class TransferRequest implements Serializable{
     public TransferRequest() {
     }
 
+    @Column(name = "dbt_acct_num")
     private String debitAccountNumber;
+    @Column(name = "dbt_acct_name")
     private String debitAccountName;
+    @Column(name = "cdt_acct_num")
     private String creditAccountNumber;
+    @Column(name = "cdt_acct_name")
     private String creditAccountName;
+    @Column(name = "tran_amt")
     private String tranAmount;
     private String naration;
     private String remarks;
+    @Column(name = "dest_inst_cod")
     private String destinationInstitutionCode;
     private String tranType;
     private String status;
+    @Column(name = "ref_num")
     private String referenceNumber;
+    @Column(name = "usr_ref_num")
     private String userReferenceNumber;
     private BigDecimal amount;
     private String charge;
     private String currencyCode;
 
     private AntiFraudData antiFraudData;
+    @Column(name = "stat_descpt")
     private String statusDescription;
 
     private String responseCode;
+    @Column(name = "resp_descpt")
     private String  responseDescription;
+    @Column(name = "uniq_ref_cod")
     private String  uniqueReferenceCode;
 
+    @Column(name = "quick_ben")
     private QuickBeneficiary quickBeneficiary;
+    @Column(name = "quick_init")
     private QuickInitiation quickInitiation;
     private QuickSender quickSender;
+    @Column(name = "quick_term")
     private QuickTermination quickTermination;
 
 

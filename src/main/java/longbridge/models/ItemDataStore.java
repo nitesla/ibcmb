@@ -3,6 +3,7 @@ package longbridge.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +13,8 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDataStore extends AbstractEntity {
 
+
+    @Column(name = "item_seq_no")
     private String itemSequenceNo;
 
     private String serialNo;
@@ -25,37 +28,37 @@ public class ItemDataStore extends AbstractEntity {
     private BigDecimal amount;
 
     private String currency;
-
+    @Column(name = "bnk_frt_dep_date")
     private LocalDateTime bankOfFirstDepositDate;
-
+    @Column(name = "bnk_fst_dep_cod")
     private String bankOfFirstDepositSortCode;
-
+    @Column(name = "pstmt_date")
     private LocalDateTime presentmentDate;
 
     private String payerName;
 
     private String beneficiary;
-
+    @Column(name = "ben_acct_no")
     private String beneficiaryAccountNo;
-
+    @Column(name = "bvn_ben")
     private String bvnBeneficiary;
 
     private String bvnPayer;
-
+    @Column(name = "col_type")
     private String collectionType;
-
+    @Column(name = "inst_type")
     private String instrumentType;
 
     private String narration;
-
+    @Column(name = "pstmt_bnk_cod")
     private String presentingBankSortCode;
-
+    @Column(name = "special_clrg")
     private boolean specialClearing;
-
+    @Column(name = "inst_date")
     private LocalDateTime instrumentDate;
-
+    @Column(name = "micr_rep_ind")
     private String MICRRepairInd;
-
+    @Column(name = "set_time")
     private LocalDateTime settlementTime;
 
     private String cycleNo;
