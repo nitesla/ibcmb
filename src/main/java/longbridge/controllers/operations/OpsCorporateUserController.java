@@ -217,11 +217,11 @@ public class OpsCorporateUserController {
 
     @GetMapping("/{id}/securityquestion/reset")
     public String resetSecurityQuestion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-
+        String corpId = corporateUserService.getUser(id).getCorporateId();
 
         if (verificationService.isPendingVerification(id, CorporateUser.class.getSimpleName())) {
             redirectAttributes.addFlashAttribute("failure", "User has pending changes to be verified");
-            return "redirect:/ops/retail/users";
+            return "redirect:/ops/corporates/" + id + "/view";
 
         }
 
@@ -232,7 +232,7 @@ public class OpsCorporateUserController {
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
 
-        return "redirect:/ops/retail/users";
+        return "redirect:/ops/corporates/" + corpId + "/view";
     }
 
 

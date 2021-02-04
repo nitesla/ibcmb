@@ -19,22 +19,15 @@
                 <div class=" table-responsive">
                     <table class="table " id="coverage">
                         <caption style="font-size: large" th:text="${coverageName}"></caption>
-                        <!--Incomplete-->
-                        <!--<td th:each="coverageHeader : ${coverageHeaders}">-->
-                            <!--<th:block th:text="${coverageHeader}"></th:block>-->
-                        <!--</td>-->
-                        <!--<tr></tr>-->
-                        <!--<td th:each="coverageDetail : ${coverageDetails}">-->
-                            <!--<th:block th:text="${coverageDetail}"></th:block>-->
-                        <!--</td>-->
-                        <!--Incomplete-->
 
-                        <tr th:each ="coverageDetail : ${coverageDetails}">
-                            <th th:text="${coverageDetail.key}"></th>
-                            <td th:each="coverageValue : ${coverageDetail.value}">
-                                <th:block th:text="${coverageValue}"></th:block>
-                            </td>
+                        <thead>
+                        <tr id="headers">
+
                         </tr>
+                        </thead>
+                        <tbody id="content">
+
+                        </tbody>
                     </table>
                 </div>
 
@@ -44,7 +37,47 @@
 
 </div>
 
+<th:block layout:fragment="scripts">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function(){
+        var coverageName = [[${coverageName}]];
+        var customerId = [[${customerId}]];
 
+        $.ajax({
+            url: `/retail/coverage/loadDetails/${customerId}/${coverageName}`,
+            method: "GET",
+            success: function (result) {
+                console.log("in success", result);
+                var tableHeadRes = Object.keys(result);
+                var tableBodyRes = Object.values(result);
+                var tableHeaders = $("#headers");
+                var tableContent = $("#content");
+                var contentLength = Object.values(result).length;
+                // To pupulate table headers
+                for(var i = 0; i < tableHeadRes.length; i++){
+                    tableHeaders.append("<td>"+tableHeadRes[i].toUpperCase()+"</td>");
+                }
+                //To populate tablebody
+                for(var i = 0; i < contentLength; i++){
+                    for (var j = 0; j < tableBodyRes[0].length; j++) {
+                        var row = `<tr id=row-${j}></tr>`;
+                        tableContent.append(row);
+                        $("#row-"+j).append("<td>"+tableBodyRes[i][j]+"</td>");
+                    }
+                    var all = tableContent.find("tr:not(:has(td))");
+                    all.remove();
+                }
+            },
+            error: function (err) {
+                console.log("Error occured! ", err);
+            }
+        });
+    });
+    /*]]>*/
+
+</script>
+</th:block>
 
 </body>
 </html>

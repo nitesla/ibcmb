@@ -614,6 +614,11 @@
         });
     });
 
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/retail/users";
+    }
+
+
     $("a.btn-link-none").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);

@@ -24,6 +24,7 @@ public class CodeDTO implements Serializable {
     private String extraInfo;
     private int version;
 
+
     public Long getId() {
         return id;
     }
@@ -71,6 +72,8 @@ public class CodeDTO implements Serializable {
     public void setVersion(int version) {
         this.version = version;
     }
+
+
 
     @Override
     public String toString() {

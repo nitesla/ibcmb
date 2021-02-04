@@ -12,7 +12,7 @@
     <style>
         @font-face {
             font-family: FedraSansStdLight;
-            src: url('../static/customer/fonts/FedraSans/FedraSansStd-Book LF.otf');
+            src: url([[ @{ '/customer/fonts/FedraSans/FedraSansStd-Book LF.otf' } ]] );
         }
         .login-section{
             margin-top: 40px;
@@ -223,7 +223,8 @@
 <!--                                    <li><a href="/loginPageLostToken">REPORT LOST TOKEN</a></li>-->
                                     <li><a href="/reporttoken">REPORT LOST TOKEN (INDIVIDUAL)</a></li>
                                     <li><a href="/reporttokencorp">REPORT LOST TOKEN (CORPORATE)</a></li>
-                                    <li><a target="_blank" href="/assets/cmb_soft_token_setup.pdf" th:text="#{softtoken.menu}"></a></li>
+                                    <!--<li><a target="_blank" href="/assets/cmb_soft_token_setup.pdf" th:text="#{softtoken.menu}"></a></li>-->
+                                    <li><a target="_blank" th:href="#{menu.bank.website}"  th:text="#{softtoken.menu}"></a></li>
                                 </ul>
                             </li>
 

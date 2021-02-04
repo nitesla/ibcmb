@@ -80,6 +80,9 @@ public class CorpSettingController {
     private CoverageService coverageService;
 
 
+
+
+
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -87,6 +90,12 @@ public class CorpSettingController {
             return "redirect:/login/corporate";
         }
         Long corpId = corporateUser.getCorporate().getId();
+
+
+//        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
+        Corporate corporate = corporateService.getCorp(user.getCorpId());
+
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 
@@ -98,6 +107,8 @@ public class CorpSettingController {
 
         List<FixedDepositDTO> fixedDepositDTO = new ArrayList<>();
         List<String> fixedDepositDTOList = new ArrayList<>();
+
+
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -126,13 +137,18 @@ public class CorpSettingController {
         }
        List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
+        List<CoverageDetailsDTO> coverageDetails = coverageService.getCoverage(corporate.getCoverage(), corporate.getCustomerId());
+
         model.addAttribute("accountList", accountList);
         model.addAttribute("corpId", corpId);
         model.addAttribute("loanAccounts", loanAccounts);
         model.addAttribute("mailLoanDTO", new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
+        model.addAttribute("coverageDetails", coverageDetails);
 
+        List<CodeDTO> account_coverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        model.addAttribute("displayCoverage", !account_coverage.isEmpty());
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
 
@@ -207,8 +223,6 @@ public class CorpSettingController {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
         Corporate corporate = corporateService.getCorp(user.getCorpId());
-//        CorporateUser corporateUser = (CorporateUser) user.getUser();
-//        Corporate corporate1 = corporateUser.getCorporate();
 
         Pageable pageable = DataTablesUtils.getPageable(input);
 

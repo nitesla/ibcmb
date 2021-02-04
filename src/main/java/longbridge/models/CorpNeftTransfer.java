@@ -16,6 +16,7 @@ public class CorpNeftTransfer {
 
 
 
+    @Column(name = "item_seq_no")
     private String itemSequenceNo;
 
     private String serialNo;
@@ -30,36 +31,49 @@ public class CorpNeftTransfer {
 
     private String currency;
 
+    @Column(name = "bnk_fst_dep_dat")
     private String bankOfFirstDepositDate;
 
+    @Column(name = "bnk_fst_dep_cod")
     private String bankOfFirstDepositSortCode;
 
+    @Column(name = "pstmt_date")
     private String presentmentDate;
 
+    @Column(name = "pay_name")
     private String payerName;
 
     private String beneficiary;
 
+    @Column(name = "ben_acct")
     private String beneficiaryAccountNo;
 
+    @Column(name = "bvn_ben")
     private String BVNBeneficiary;
 
     private String BVNPayer;
 
+    @Column(name = "col_type")
     private String collectionType;
 
+    @Column(name = "inst_type")
     private String instrumentType;
 
     private String narration;
 
+    @Column(name = "pstmt_bnk_cod")
     private String presentingBankSortCode;
 
+    @Column(name = "spcl_clrg")
     private boolean specialClearing;
 
+    @Column(name = "inst_date")
     private String instrumentDate;
 
+    @Column(name = "micr_rep_ind")
     private String MICRRepairInd;
 
+    @Column(name = "set_time")
     private String settlementTime;
 
     private String cycleNo;

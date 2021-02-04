@@ -45,4 +45,9 @@ public class CoverageServiceImpl implements CoverageService {
     public Map<String, List<String>> getCoverageDetails(String coverageName, String customerId) {
         return integrationService.getCoverageDetails(coverageName, customerId);
     }
+
+    @Override
+    public List<CoverageDetailsDTO> getCoverage(String coverageName, String customerId) {
+       return integrationService.getCoverages(coverageName, customerId);
+    }
 }

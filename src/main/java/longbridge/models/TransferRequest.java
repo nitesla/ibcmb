@@ -2,6 +2,7 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,65 +11,79 @@ public class TransferRequest implements Serializable{
     public TransferRequest() {
     }
 
-    private String debitAcctNum;
-    private String debitAcctName;
-    private String creditAcctNum;
-    private String creditAcctName;
+    @Column(name = "dbt_acct_num")
+    private String debitAccountNumber;
+    @Column(name = "dbt_acct_name")
+    private String debitAccountName;
+    @Column(name = "cdt_acct_num")
+    private String creditAccountNumber;
+    @Column(name = "cdt_acct_name")
+    private String creditAccountName;
+    @Column(name = "tran_amt")
     private String tranAmount;
     private String naration;
     private String remarks;
-    private String destInstCode;
+    @Column(name = "dest_inst_cod")
+    private String destinationInstitutionCode;
     private String tranType;
     private String status;
-    private String refNum;
-    private String userRefNum;
+    @Column(name = "ref_num")
+    private String referenceNumber;
+    @Column(name = "usr_ref_num")
+    private String userReferenceNumber;
     private BigDecimal amount;
     private String charge;
     private String currencyCode;
 
     private AntiFraudData antiFraudData;
+    @Column(name = "stat_descpt")
     private String statusDescription;
 
-    private String respCode;
-    private String respDescription;
-    private String uniqueRefCode;
+    private String responseCode;
+    @Column(name = "resp_descpt")
+    private String  responseDescription;
+    @Column(name = "uniq_ref_cod")
+    private String  uniqueReferenceCode;
 
-    private QuickBeneficiary quickBen;
-    private QuickInitiation quickInit;
+    @Column(name = "quick_ben")
+    private QuickBeneficiary quickBeneficiary;
+    @Column(name = "quick_init")
+    private QuickInitiation quickInitiation;
     private QuickSender quickSender;
+    @Column(name = "quick_term")
     private QuickTermination quickTermination;
 
 
-    public String getDebitAcctNum() {
-        return debitAcctNum;
+    public String getDebitAccountNumber() {
+        return debitAccountNumber;
     }
 
-    public void setDebitAcctNum(String debitAcctNum) {
-        this.debitAcctNum = debitAcctNum;
+    public void setDebitAccountNumber(String debitAccountNumber) {
+        this.debitAccountNumber = debitAccountNumber;
     }
 
-    public String getDebitAcctName() {
-        return debitAcctName;
+    public String getDebitAccountName() {
+        return debitAccountName;
     }
 
-    public void setDebitAcctName(String debitAcctName) {
-        this.debitAcctName = debitAcctName;
+    public void setDebitAccountName(String debitAccountName) {
+        this.debitAccountName = debitAccountName;
     }
 
-    public String getCreditAcctNum() {
-        return creditAcctNum;
+    public String getCreditAccountNumber() {
+        return creditAccountNumber;
     }
 
-    public void setCreditAcctNum(String creditAcctNum) {
-        this.creditAcctNum = creditAcctNum;
+    public void setCreditAccountNumber(String creditAccountNumber) {
+        this.creditAccountNumber = creditAccountNumber;
     }
 
-    public String getCreditAcctName() {
-        return creditAcctName;
+    public String getCreditAccountName() {
+        return creditAccountName;
     }
 
-    public void setCreditAcctName(String creditAcctName) {
-        this.creditAcctName = creditAcctName;
+    public void setCreditAccountName(String creditAccountName) {
+        this.creditAccountName = creditAccountName;
     }
 
     public String getTranAmount() {
@@ -95,12 +110,12 @@ public class TransferRequest implements Serializable{
         this.remarks = remarks;
     }
 
-    public String getDestInstCode() {
-        return destInstCode;
+    public String getDestinationInstitutionCode() {
+        return destinationInstitutionCode;
     }
 
-    public void setDestInstCode(String destInstCode) {
-        this.destInstCode = destInstCode;
+    public void setDestinationInstitutionCode(String destinationInstitutionCode) {
+        this.destinationInstitutionCode = destinationInstitutionCode;
     }
 
     public String getTranType() {
@@ -127,20 +142,20 @@ public class TransferRequest implements Serializable{
         this.status = status;
     }
 
-    public String getRefNum() {
-        return refNum;
+    public String getReferenceNumber() {
+        return referenceNumber;
     }
 
-    public void setRefNum(String refNum) {
-        this.refNum = refNum;
+    public void setReferenceNumber(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
     }
 
-    public String getUserRefNum() {
-        return userRefNum;
+    public String getUserReferenceNumber() {
+        return userReferenceNumber;
     }
 
-    public void setUserRefNum(String userRefNum) {
-        this.userRefNum = userRefNum;
+    public void setUserReferenceNumber(String userReferenceNumber) {
+        this.userReferenceNumber = userReferenceNumber;
     }
 
     public BigDecimal getAmount() {
@@ -167,28 +182,28 @@ public class TransferRequest implements Serializable{
         this.statusDescription = statusDescription;
     }
 
-    public String getRespCode() {
-        return respCode;
+    public String getResponseCode() {
+        return responseCode;
     }
 
-    public void setRespCode(String respCode) {
-        this.respCode = respCode;
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
     }
 
-    public String getRespDescription() {
-        return respDescription;
+    public String getResponseDescription() {
+        return responseDescription;
     }
 
-    public void setRespDescription(String respDescription) {
-        this.respDescription = respDescription;
+    public void setResponseDescription(String responseDescription) {
+        this.responseDescription = responseDescription;
     }
 
-    public String getUniqueRefCode() {
-        return uniqueRefCode;
+    public String getUniqueReferenceCode() {
+        return uniqueReferenceCode;
     }
 
-    public void setUniqueRefCode(String uniqueRefCode) {
-        this.uniqueRefCode = uniqueRefCode;
+    public void setUniqueReferenceCode(String uniqueReferenceCode) {
+        this.uniqueReferenceCode = uniqueReferenceCode;
     }
 
     public String getCurrencyCode() {
@@ -199,20 +214,20 @@ public class TransferRequest implements Serializable{
         this.currencyCode = currencyCode;
     }
 
-    public QuickBeneficiary getQuickBen() {
-        return quickBen;
+    public QuickBeneficiary getQuickBeneficiary() {
+        return quickBeneficiary;
     }
 
-    public void setQuickBen(QuickBeneficiary quickBen) {
-        this.quickBen = quickBen;
+    public void setQuickBeneficiary(QuickBeneficiary quickBeneficiary) {
+        this.quickBeneficiary = quickBeneficiary;
     }
 
-    public QuickInitiation getQuickInit() {
-        return quickInit;
+    public QuickInitiation getQuickInitiation() {
+        return quickInitiation;
     }
 
-    public void setQuickInit(QuickInitiation quickInit) {
-        this.quickInit = quickInit;
+    public void setQuickInitiation(QuickInitiation quickInitiation) {
+        this.quickInitiation = quickInitiation;
     }
 
     public QuickSender getQuickSender() {
@@ -234,28 +249,28 @@ public class TransferRequest implements Serializable{
     @Override
     public String toString() {
         return "TransferRequest{" +
-                "debitAccountNumber='" + debitAcctNum + '\'' +
-                ", debitAccountName='" + debitAcctName + '\'' +
-                ", creditAccountNumber='" + creditAcctNum + '\'' +
-                ", creditAccountName='" + creditAcctName + '\'' +
+                "debitAccountNumber='" + debitAccountNumber + '\'' +
+                ", debitAccountName='" + debitAccountName + '\'' +
+                ", creditAccountNumber='" + creditAccountNumber + '\'' +
+                ", creditAccountName='" + creditAccountName + '\'' +
                 ", tranAmount='" + tranAmount + '\'' +
                 ", naration='" + naration + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", destinationInstitutionCode='" + destInstCode + '\'' +
+                ", destinationInstitutionCode='" + destinationInstitutionCode + '\'' +
                 ", tranType='" + tranType + '\'' +
                 ", status='" + status + '\'' +
-                ", referenceNumber='" + refNum + '\'' +
-                ", userReferenceNumber='" + userRefNum + '\'' +
+                ", referenceNumber='" + referenceNumber + '\'' +
+                ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", amount=" + amount +
                 ", charge='" + charge + '\'' +
                 ", currencyCode='" + currencyCode + '\'' +
                 ", antiFraudData=" + antiFraudData +
                 ", statusDescription='" + statusDescription + '\'' +
-                ", responseCode='" + respCode + '\'' +
-                ", responseDescription='" + respDescription + '\'' +
-                ", uniqueReferenceCode='" + uniqueRefCode + '\'' +
-                ", quickBeneficiary=" + quickBen +
-                ", quickInitiation=" + quickInit +
+                ", responseCode='" + responseCode + '\'' +
+                ", responseDescription='" + responseDescription + '\'' +
+                ", uniqueReferenceCode='" + uniqueReferenceCode + '\'' +
+                ", quickBeneficiary=" + quickBeneficiary +
+                ", quickInitiation=" + quickInitiation +
                 ", quickSender=" + quickSender +
                 ", quickTermination=" + quickTermination +
                 '}';

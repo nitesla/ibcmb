@@ -17,9 +17,9 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.NeftTransferRepo;
 import longbridge.response.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
-import longbridge.services.SettingsService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
+import longbridge.services.SettingsService;
 import longbridge.utils.*;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionHistory;
@@ -434,10 +434,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 					TransferRequest params=new TransferRequest();
-					params.setDebitAcctNum(transRequest.getCustomerAccountNumber());
-					params.setDebitAcctName( account.getAccountName());
-					params.setCreditAcctNum(transRequest.getBeneficiaryAccountNumber());
-					params.setCreditAcctName(transRequest.getBeneficiaryAccountName());
+					params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
+					params.setDebitAccountName( account.getAccountName());
+					params.setCreditAccountNumber(transRequest.getBeneficiaryAccountNumber());
+					params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
 					params.setTranAmount(transRequest.getAmount().toString());
 					params.setRemarks(transRequest.getRemarks());
 					params.setAntiFraudData(transRequest.getAntiFraudData());
@@ -454,9 +454,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 //					response = template.postForObject(uri, params, TransferDetails.class);
 					logger.info("Response:{}",response);
-					transRequest.setStatus(response.getRespCode());
-					transRequest.setStatusDescription(response.getRespDescription());
-					transRequest.setReferenceNumber(response.getUniqueRefCode());
+					transRequest.setStatus(response.getResponseCode());
+					transRequest.setStatusDescription(response.getResponseDescription());
+					transRequest.setReferenceNumber(response.getUniqueReferenceCode());
 					transRequest.setNarration(response.getNaration());
 					return transRequest;
 				} catch (HttpStatusCodeException e) {
@@ -542,10 +542,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 				TransferRequest params=new TransferRequest();
-				params.setDebitAcctNum(transRequest.getCustomerAccountNumber());
-				params.setDebitAcctName( account.getAccountName());
-				params.setCreditAcctNum(transRequest.getBeneficiaryAccountNumber());
-				params.setCreditAcctName(transRequest.getBeneficiaryAccountName());
+				params.setDebitAccountNumber(transRequest.getCustomerAccountNumber());
+				params.setDebitAccountName( account.getAccountName());
+				params.setCreditAccountNumber(transRequest.getBeneficiaryAccountNumber());
+				params.setCreditAccountName(transRequest.getBeneficiaryAccountName());
 				params.setTranAmount(transRequest.getAmount().toString());
 				params.setRemarks(transRequest.getRemarks());
 				params.setCurrencyCode(transRequest.getCurrencyCode());
@@ -1891,7 +1891,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public List<CoverageDetailsDTO> getCoverages(String coverageNames, String customerId){
 
-		return Arrays.stream(coverageNames.split(","))
+		List<CoverageDetailsDTO> coverageDetailsDTOList = new ArrayList<>();
+
+		if ((coverageNames == null ||coverageNames.isEmpty()) || (customerId == null ||customerId.isEmpty())){
+			logger.info("No coverage enabled for the user");
+			return coverageDetailsDTOList;
+		}
+		logger.info("Coverage enabled for the user");
+		coverageDetailsDTOList = Arrays.stream(coverageNames.split(","))
 				.map(coverageName -> {
 					CoverageDetailsDTO coverageDetails = new CoverageDetailsDTO();
 					coverageDetails.setCoverageName(coverageName);
@@ -1899,6 +1906,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 					coverageDetails.setCoverageUrl(customerId +"/"+ coverageName);
 				return coverageDetails;
 				}).collect(Collectors.toList());
+
+		return coverageDetailsDTOList;
 	}
 
 	@Override
@@ -1937,7 +1946,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 				coverageDetails.get(coverageKey).add(coverageValue);
 			}
 			else {
-				coverageDetails.put(coverageKey, new ArrayList(Collections.singletonList((coverageValue))));
+				coverageDetails.put(coverageKey, new ArrayList(Arrays.asList((coverageValue))));
 			}
 		}
 	}

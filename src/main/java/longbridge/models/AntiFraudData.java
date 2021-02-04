@@ -17,18 +17,24 @@ public class AntiFraudData implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String countryCode;
+    @Column(name = "device_num")
     private String deviceNumber;
+    @Column(name = "head_prxy_auth")
     private String headerProxyAuthorization;
+    @Column(name = "head_usr_agt")
     private String headerUserAgent;
     private String ip;
     private String loginName;
     private String sessionkey;
+    @Column(name = "sfactor_auth_indct")
     private String  sfactorAuthIndicator;
+    @Column(name = "tran_loc")
     private String tranLocation;
     private Date createdOn=new Date();
     @Transient
     private String channel;
     @JsonIgnore
+    @Column(name = "tran_req_id")
     private Long tranRequestId;
 
 

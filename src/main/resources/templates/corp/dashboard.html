@@ -127,7 +127,7 @@
         </div>
 
 
-        <table class="table table-hover no-pad-lef" id="coverage">
+        <table th:if="${displayCoverage}" class="table table-hover no-pad-lef" id="coverage">
 
             <caption style="font-size: large">COVERAGE TYPES</caption>
 
@@ -156,14 +156,6 @@
             </tfoot>
         </table>
 
-
-
-
-
-
-        <div id="coverage-div">
-
-        </div>
 
     </div>
 
@@ -263,13 +255,6 @@
    <script>
 
         $(document).ready(function () {
-//            $('.tt').each(function () {
-//                var sth = $(this).find(".bal").html();
-//                $(this).find(".bal").html(numberWithCommas(sth));
-////                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
-//            })
-
-
             $('.bal').each(function(i,obj){
                 var sth = $(this).text();
                 sth = parseFloat(sth).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
@@ -412,35 +397,37 @@
 
         });
 
+        var displayCoverage = /*[[${displayCoverage}]]*/ false;
+        if(displayCoverage){
+            var table = $('#coverage').DataTable({
+                select: true,
+                responsive: true,
+                "lengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
+                "pagingType": "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "serverSide": true,
+                "ajax": "/corporate/dashboard/coverage",
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    {"data": "customerId"},
+                    {"data": "coverageName"},
+                    {
+                        "data": "coverageUrl", render: function (data, type, full, meta) {
+                            if (data != null) {
+                                console.log("The Data2 : " + data);
+                                return '<a href="/corporate/coverage/view/' + data + '"><i class="fa fa-eye"></i>  View </a>';
+                            }
 
-        var table = $('#coverage').DataTable({
-            select:true,
-            responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20,-1],	[ 5, 10,20, "All" ] ],
-            "pagingType" : "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "serverSide" : true,
-            "ajax": "/corporate/dashboard/coverage",
-            "dom": 'T<"clear">frtlp',
-            "columns": [
-                { "data": "customerId"},
-                { "data": "coverageName"},
-                { "data": "coverageUrl", render : function (data,type,full,meta) {
-                        if(data!=null){
-                            console.log("The Data2 : " + data);
-                            return'<a href="/corporate/coverage/view/' + data + '"><i class="fa fa-eye"></i>  View </a>';
                         }
+
 
                     }
 
+                ]
 
-                }
-
-            ]
-
-        });
-
+            });
+        }
 
 
         /*]]>*/
