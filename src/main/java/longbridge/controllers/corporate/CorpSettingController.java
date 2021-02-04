@@ -76,12 +76,6 @@ public class CorpSettingController {
     @Autowired
     private IntegrationService integrationService;
 
-    @Autowired
-    private CoverageService coverageService;
-
-
-
-
 
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
@@ -137,7 +131,7 @@ public class CorpSettingController {
         }
        List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
-        List<CoverageDetailsDTO> coverageDetails = coverageService.getCoverage(corporate.getCoverage(), corporate.getCustomerId());
+
 
         model.addAttribute("accountList", accountList);
         model.addAttribute("corpId", corpId);
@@ -145,10 +139,9 @@ public class CorpSettingController {
         model.addAttribute("mailLoanDTO", new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
-        model.addAttribute("coverageDetails", coverageDetails);
 
-        List<CodeDTO> account_coverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
-        model.addAttribute("displayCoverage", !account_coverage.isEmpty());
+        List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        model.addAttribute("account_coverage", accountCoverage);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
 
@@ -215,28 +208,6 @@ public class CorpSettingController {
         out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
         return out;
     }
-
-
-    @GetMapping("/dashboard/coverage")
-    public @ResponseBody DataTablesOutput<CoverageDetailsDTO> getCoverageDetails(DataTablesInput input) {
-
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
-        Corporate corporate = corporateService.getCorp(user.getCorpId());
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-
-
-        Page<CoverageDetailsDTO> coverageDetails = coverageService.getCoverages(corporate.getCoverage(),corporate.getCustomerId(),pageable);
-
-        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
-        out.setDraw(input.getDraw());
-        out.setData(coverageDetails.getContent());
-        out.setRecordsFiltered(coverageDetails.getTotalElements());
-        out.setRecordsTotal(coverageDetails.getTotalElements());
-        return out;
-    }
-
 
 
     @GetMapping("/error")

@@ -1,4 +1,3 @@
-
 package longbridge.services.implementations;
 
 
@@ -27,7 +26,6 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -52,35 +50,21 @@ import java.util.*;
 public class RetailUserServiceImpl implements RetailUserService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-
-    @Value("${WEBHOOK.URL}")
-    private String webhookUrl;
-    @Value("${WEBHOOK.header}")
-    private String webhookAuthKey;
-
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private RetailUserRepo retailUserRepo;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private PasswordPolicyService passwordPolicyService;
-
     @Autowired
     private MailService mailService;
-
     @Autowired
     private FailedLoginService failedLoginService;
-
-    private final Locale locale = LocaleContextHolder.getLocale();
-
     private CodeService codeService;
     private AccountService accountService;
     private SecurityService securityService;
@@ -240,6 +224,41 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             passwordPolicyService.saveRetailPassword(retailUser);
 //            coverageService.addCoverageForNewRetail(retailUser);
+            retailUserRepo.save(retailUser);
+
+            logger.info("Retail user {} created", user.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    public String addUser(RetailUserDTO user) throws InternetBankingException {
+        try {
+            RetailUser retailUser = getUserByName(user.getUserName());
+            if (retailUser != null) {
+                throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+            }
+            RetailUser retUser = getUserByCustomerId(user.getCustomerId());
+            if (retUser != null) {
+                throw new DuplicateObjectException(messageSource.getMessage("user.reg.exists", null, locale));
+            }
+
+            retailUser = new RetailUser();
+            retailUser.setUserName(user.getUserName());
+            retailUser.setCustomerId(user.getCustomerId());
+            retailUser.setFirstName(user.getFirstName());
+            retailUser.setLastName(user.getLastName());
+            retailUser.setEmail(user.getEmail());
+            retailUser.setPhoneNumber(user.getPhoneNumber());
+            retailUser.setCreatedOnDate(new Date());
+            retailUser.setBirthDate(user.getBirthDate());
+            retailUser.setBvn(user.getBvn());
+            retailUser.setRole(new Role(user.getRoleId()));
+            retailUser.setStatus("A");
+            retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+
             retailUserRepo.save(retailUser);
 
             logger.info("Retail user {} created", user.getUserName());
@@ -553,7 +572,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         try {
             RetailUser retailUser = retailUserRepo.findById(user.getId()).get();
-            String encodedPassword =  this.passwordEncoder.encode(custResetPassword.getNewPassword());
+            String encodedPassword = this.passwordEncoder.encode(custResetPassword.getNewPassword());
             retailUser.setPassword(encodedPassword);
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUser.setTempPassword(null);
@@ -563,27 +582,23 @@ public class RetailUserServiceImpl implements RetailUserService {
             WebhookResponse webhookResponse = retailWebHook.pushToWebHook(retailUser);
             logger.info("Webhook Response {} ", webhookResponse);
 
-            if(webhookResponse.getCode().equalsIgnoreCase("0")){
+            if (webhookResponse.getCode().equalsIgnoreCase("0")) {
 
                 return messageSource.getMessage("password.change.success", null, locale);
-            }
-            else if ((webhookResponse.getCode().equalsIgnoreCase("20"))){
-                message =webhookResponse.getDescription();
+            } else if ((webhookResponse.getCode().equalsIgnoreCase("20"))) {
+                message = webhookResponse.getDescription();
                 return message;
 
-            }
-            else if ((webhookResponse.getCode().equalsIgnoreCase("40"))){
-                message =webhookResponse.getDescription();
+            } else if ((webhookResponse.getCode().equalsIgnoreCase("40"))) {
+                message = webhookResponse.getDescription();
                 return message;
 
-            }
-            else if ((webhookResponse.getCode().equalsIgnoreCase("99"))){
-                message =webhookResponse.getDescription();
+            } else if ((webhookResponse.getCode().equalsIgnoreCase("99"))) {
+                message = webhookResponse.getDescription();
                 return message;
 
-            }
-            else if ((webhookResponse.getCode().equalsIgnoreCase("10"))){
-                message =webhookResponse.getDescription();
+            } else if ((webhookResponse.getCode().equalsIgnoreCase("10"))) {
+                message = webhookResponse.getDescription();
                 return message;
 
             }
@@ -595,8 +610,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
-
-
 
 
     @Override
@@ -673,17 +686,13 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO = modelMapper.map(retailUser, RetailUserDTO.class);
-//        if (retailUser.getCreatedOnDate() != null) {
-//            retailUserDTO.setCreatedOnDate(DateFormatter.format(retailUser.getCreatedOnDate()));
-//        }
-//        if (retailUser.getLastLoginDate() != null) {
-//            retailUserDTO.setLastLoginDate(DateFormatter.format(retailUser.getLastLoginDate()));
-//        }
+        if(retailUser != null && retailUser.getRole() != null)
+            retailUserDTO.setRoleId(retailUser.getRole().getId());
         String coverage = retailUser.getCoverage();
-        if(StringUtils.isNotBlank(coverage)){
+        if (StringUtils.isNotBlank(coverage)) {
             String[] coverages = coverage.split(",");
             retailUserDTO.setCoverageCodes(Arrays.asList(coverages));
-        }else{
+        } else {
             retailUserDTO.setCoverageCodes(Collections.emptyList());
         }
         return retailUserDTO;
@@ -691,8 +700,8 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUser convertDTOToEntity(RetailUserDTO retailUserDTO) {
         RetailUser map = modelMapper.map(retailUserDTO, RetailUser.class);
-
-        map.setCoverage(String.join(",",retailUserDTO.getCoverageCodes()));
+        map.setRole(new Role(retailUserDTO.getRoleId()));
+        map.setCoverage(String.join(",", retailUserDTO.getCoverageCodes()));
         return map;
     }
 
@@ -707,10 +716,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public Page<RetailUserDTO> getUsers(Pageable pageDetails) {
-        Page<RetailUser> page = retailUserRepo.findAll(pageDetails);
-        List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        return new PageImpl<>(dtOs, pageDetails, t);
+        return retailUserRepo.findAll(pageDetails).map(this::convertEntityToDTO);
     }
 
 
@@ -836,7 +842,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
     @Override
-    public String changeFeedBackStatus(RetailUserDTO user) throws InternetBankingException{
+    public String changeFeedBackStatus(RetailUserDTO user) throws InternetBankingException {
 
         try {
             if (getUser(user.getId()) == null) {
@@ -855,15 +861,15 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public Page<RetailUserDTO> findUsers(RetailUserDTO user, Pageable pageDetails) {
-        RetailUser retailUser = modelMapper.map(user,RetailUser.class);
+        RetailUser retailUser = modelMapper.map(user, RetailUser.class);
         logger.info("Retail user: " + retailUser.toString());
         Page<RetailUser> page = retailUserRepo.findAllUsers(retailUser.getUserName().toLowerCase(),
-                retailUser.getLastName().toLowerCase(),retailUser.getFirstName().toLowerCase(),
+                retailUser.getLastName().toLowerCase(), retailUser.getFirstName().toLowerCase(),
                 retailUser.getEmail().toLowerCase(), pageDetails);
-        logger.info("retailusers {}",page.getTotalElements());
-        List<RetailUserDTO> dtOs =new ArrayList<>();
+        logger.info("retailusers {}", page.getTotalElements());
+        List<RetailUserDTO> dtOs = new ArrayList<>();
         for (RetailUser retailUser1 : page) {
-            RetailUserDTO retailDTO = modelMapper.map(retailUser1,RetailUserDTO.class);
+            RetailUserDTO retailDTO = modelMapper.map(retailUser1, RetailUserDTO.class);
             dtOs.add(retailDTO);
         }
         long t = page.getTotalElements();

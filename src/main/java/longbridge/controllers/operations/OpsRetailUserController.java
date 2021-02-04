@@ -1,7 +1,9 @@
 package longbridge.controllers.operations;
 
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.dtos.UpdateCoverageCmd;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -10,10 +12,7 @@ import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
-import longbridge.services.AccountService;
-import longbridge.services.CodeService;
-import longbridge.services.RetailUserService;
-import longbridge.services.VerificationService;
+import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,10 +29,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,6 +58,9 @@ public class OpsRetailUserController {
     private CodeService codeService;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
     private AccountService accountService;
 
     @Autowired
@@ -64,14 +68,39 @@ public class OpsRetailUserController {
 
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private IntegrationService integrationService;
+
+    /**
+     * New user
+     *
+     * @return
+     */
+    @GetMapping("/add")
+    public String newUser(Model model) {
+
+        model.addAttribute("coverageTypes", codeService.getCodesByType("ACCOUNT_COVERAGE"));
+        model.addAttribute("retailUser", new RetailUserDTO());
+        model.addAttribute("userType", UserType.RETAIL);
+        model.addAttribute("roles", roleService.getRolesByUserType(UserType.RETAIL));
+        return "/ops/retail/add";
+    }
+
 
 
     @PostMapping
-    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception {
+    public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes, Model model, Locale locale) throws Exception {
         if (result.hasErrors()) {
+            logger.error("Error occurred creating code{}", result);
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            model.addAttribute("coverageTypes", codeService.getCodesByType("ACCOUNT_COVERAGE"));
+            model.addAttribute("userType", UserType.RETAIL);
+            model.addAttribute("roles", roleService.getRolesByUserType(UserType.RETAIL));
             return "/ops/retail/add";
+
         }
-        // retailUserService.addUser(retailUser);
+
+        retailUserService.addUser(retailUser);
         redirectAttributes.addFlashAttribute("message", "Retail user created successfully");
         return "redirect:/ops/retail/users";
     }
@@ -149,7 +178,7 @@ public class OpsRetailUserController {
     public String getUser(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
         model.addAttribute("user", retailUser);
-        return "retailUserDetails";
+        return "/ops/retail/edit";
     }
 
 
@@ -292,6 +321,25 @@ public class OpsRetailUserController {
         retailUserService.updateUser(user);
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
+    }
+
+    @GetMapping("/{cifid}/name")
+    @ResponseBody
+    public ResponseEntity<?> getCustomerName(@PathVariable String cifid) {
+
+        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(cifid);
+
+        if (customerDetails.getCustomerName() == null) {
+            logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED", cifid);
+
+            return ResponseEntity.badRequest().body("Customer not found");
+        }
+        if (customerDetails.isCorp()) {
+            logger.warn("The account details for CIFID : {} is for a Corporate User ", cifid);
+
+            return ResponseEntity.badRequest().body("Customer not a retail customer");
+        }
+        return ResponseEntity.ok(customerDetails);
     }
 
 }
