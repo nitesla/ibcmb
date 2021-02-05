@@ -228,7 +228,7 @@
 
                             <!--image placeholdder-->
                             <div class="sidebar-b hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
-                                <img style="max-height:250px" class="center img-responsive" th:alt="#{menu.bank.name}" src="/customer/{name}/img/asset.jpg(name=#{menu.custom})" />
+                                <img style="max-height:250px" class="center img-responsive" th:alt="#{menu.bank.name}" th:src="@{~/customer/{name}/img/asset.jpg(name=#{menu.custom})}"/ />
                             </div>
                         </div>
                     </div>
