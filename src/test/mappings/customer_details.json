@@ -1,17 +1,33 @@
 {
-  "id" : "5a814ac4-2de6-4ec3-9477-0f431aa4d76f",
-  "name" : "customer_r001965",
-  "request" : {
-    "urlPathPattern" : "/customer/([A-Za-z0-9]+)",
-    "method" : "GET"
+  "request": {
+    "method": "GET",
+    "urlPattern": "/customer/([A-Za-z0-9]+)"
   },
-  "response" : {
-    "status" : 200,
-    "body" : "{\"cifId\":\"R001965\",\"customerName\":\"SUNDAY A AKINOLA\",\"dateOfBirth\":\"1982-08-29\",\"email\":\"sakinola@coronationmb.com\",\"phone\":\"08039213119\",\"bvn\":\"22207271199\",\"lastName\":\"AKINOLA\",\"firstName\":\"SUNDAY\",\"middleName\":\"AYODEJI\",\"preferredName\":\"SUNDAY A AKINOLA\",\"rcNo\":\"\",\"taxId\":\"\",\"corp\":false}",
-    "headers" : {
-      "X-Application-Context" : "application:newtest:8090",
-      "Content-Type" : "application/json;charset=UTF-8",
-      "Date" : "Wed, 20 Dec 2017 13:16:43 GMT"
+  "response": {
+    "status": 200,
+    "jsonBody": {
+			"cifId": "C0102400",
+			"customerName": "RIVERS STATE GOVERNMENT REVENUE ACCOUNT 2",
+			"dateOfBirth": "2008-03-28",
+			"email": "example@example.com",
+			"phone": "+0003111111111",
+			"bvn": "NO BVN",
+			"lastName": "RIVERS STATE GOVERNMENT REVENUE ACCOUNT 2",
+			"firstName": "",
+			"middleName": "",
+			"preferredName": "",
+			"rcNo": "MIGR",
+			"taxId": "",
+			"corp": " {{{ pickRandom 'true' 'true' 'true' 'false' }}} "
+		},
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }
+
+
+
+
+
+

@@ -359,7 +359,7 @@
 
                         <div class="bg-danger alert no-mt advert no-bd-rad ">
                             <h1 style="margin-bottom:10px">Our Promise</h1>
-                            <p>Local expertise: world-class solutions. A commitment to the long-term inspires us to look after our clients’ best interests, harness the potential of our people and shape the financial future of our continent.
+                            <p><span th:text="#{menu.promise}" ></span>
                                 <br/>
                                 To learn more about what we do, click <a th:href="#{menu.bank.website}" target="_blank"> here </a>
 
@@ -458,16 +458,13 @@
 
 
 <!--<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>-->
-<script
-        src="https://code.jquery.com/jquery-2.2.4.js"
-        integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-        crossorigin="anonymous"></script>
+<script th:src="@{~/customer/js/jquery-2.2.4.js}"></script>
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
-<script  th:src="@{~/customer/js/greeting.js}"> </script>
+<script th:src="@{~/customer/js/greeting.js}"> </script>
 <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/customer/js/dataTables.input.js}"></script>
 <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
-<script th:src="@{~/customer/js/momentMin.js}"></script>
+<script th:src="@{~/customer/js/moment.min.js}"></script>
 <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>

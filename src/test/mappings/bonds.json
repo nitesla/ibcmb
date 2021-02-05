@@ -1,0 +1,27 @@
+{
+    "request": {
+      "method": "GET",
+      "urlPattern": "/bonds/([a-zA-Z0-9]*)"
+      },
+    "response": {
+      "status": 200,
+      "jsonBody":{"bonds":
+        
+        {
+  
+          "CustomerId":"124556767878",
+          "bookingDate":"2/26/2018",
+          "faceValue": "3344.87",
+          "carryingValue":"4577890"	,
+          "couponValue":"35788",
+          "rate":"20%",
+          "nextCouponPaymentDate":"2/26/2021"
+      }
+    
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+  

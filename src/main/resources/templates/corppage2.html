@@ -5,7 +5,7 @@
     <style>
         @font-face {
             font-family: FedraSansStdLight;
-            src: url('../static/customer/fonts/FedraSans/FedraSansStd-Book LF.otf');
+            src: url([[ @{'/customer/fonts/FedraSans/FedraSansStd-Book LF.otf'} ]] );
         }
         .login-section{
             margin-top: 40px;
@@ -60,18 +60,7 @@
             list-style: none; /* Remove default bullets */
             font-size: 14px;
         }
-        .ulclass .liclass::before {
-            content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
-            color: #9A6A4F; /* Change the color */
-            font-weight: bolder; /* If you want it to be bold */
-            display: inline-block; /* Needed to add space between the bullet and the text */
-            width: 1.1em; /* Also needed for space (tweak if needed) */
-            margin-left: -1em; /* Also needed for space (tweak if needed) */
-            padding-top: 10px;
-            margin-left: 4px;
-            background: url(../static/customer/coronation_merchant_bank/img/bullet.png) no-repeat top left;
-            font-size: 18px;
-        }
+
         .bodyform{
             max-width: 100%;
             background-color: rgba(0, 48, 87, 1);
@@ -85,22 +74,6 @@
             font-size: 14px;
         }
 
-
-
-        /*.continue{*/
-            /*background-color: #a7674c;*/
-            /*color: #fff;*/
-            /*padding:8px 28px 8px 28px;*/
-            /*border-radius: 20px;*/
-            /*margin-left: 40px;*/
-
-        /*}*/
-        /*.continue:hover{*/
-            /*background-color: #fff;*/
-            /*color: #224569 !important;*/
-            /*text-decoration: none;*/
-            /*font-weight: bolder;*/
-        /*}*/
         .col-xs{
             width: 5%;
         }
@@ -366,9 +339,21 @@
 
         }
 
+    </style>
 
-
-
+    <style>
+        .ulclass .liclass::before {
+            content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+            color: #9A6A4F; /* Change the color */
+            font-weight: bolder; /* If you want it to be bold */
+            display: inline-block; /* Needed to add space between the bullet and the text */
+            width: 1.1em; /* Also needed for space (tweak if needed) */
+            margin-left: -1em; /* Also needed for space (tweak if needed) */
+            padding-top: 10px;
+            margin-left: 4px;
+            background: url( [[ @{('/customer/coronation_merchant_bank/img/bullet.png')} ]] ) no-repeat top left;
+            font-size: 18px;
+        }
     </style>
 </head>
 <div layout:fragment="content">
@@ -380,6 +365,7 @@
                         <div id="loginform" class="form-body bodyform"  >
                             <form id="login" th:action="@{/corporate/login}"  method="POST" class="form-signin " autocomplete="off">
                                 <h5 class=" form-signin-heading text-white welcome">Welcome to <span th:text="#{menu.bank.name2}" ></span><br> Online Banking!</h5>
+                                <h6 class="form-signin1 header-line text-white" th:text="${corporateId +' : ' + fake_name}"></h6>
                                 <h6 class="form-signin1 header-line text-white" style="margin-bottom: -5px !important;">Click the checkbox to confirm image and enter your password to login</h6>
                                 <br/>
                                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>

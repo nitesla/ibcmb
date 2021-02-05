@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-
+<head>
+    <link rel="stylesheet" type="text/css"
+          th:href="@{~/bank/vendors/datatables.net/datatables.net-buttons/css/buttons.dataTables.min.css}"/></head>
 <body onload="javascript:var bread = 'home';currentBar('dashboard');breadCrumb(bread)">
 
 <div layout:fragment="content">
@@ -17,7 +19,7 @@
             <table class="table table-hover no-pad-lef" id="users">
                 <caption style="font-size: large">Transactional Accounts</caption>
 
-                <thead class='thead'>  <div class=" no-pad-lef table-responsive bg-white alert">
+                <thead class='thead'>
                 <strong><th class="text-cente">Acct Name</th></strong>
                 <th class="text-cente">Acct No.</th>
                 <th class="text-cente">Type</th>
@@ -25,7 +27,6 @@
                 <th class="text-cente">Av. Bal</th>
                 <th class="text-cente">Led. Bal.</th>
                 <th class="text-cente">&nbsp;</th>
-                </div>
                 </thead>
                 <tbody>
                 <tr th:each="list : ${accountList}" class="tt">
@@ -127,43 +128,15 @@
         </div>
 
 
-        <table class="table table-hover no-pad-lef" id="coverage">
+        <div class=" no-pad-lef table-responsive bg-white alert" th:each="crv : ${account_coverage}" style="padding:0px !important">
+            <table  class="table table-hover no-pad-lef coverage" th:id="${crv.code}">
+                <caption style="font-size: large" th:text="${crv.description}"> </caption>
+            </table>
+        </div>
 
-            <caption style="font-size: large">COVERAGE TYPES</caption>
-
-            <thead>
-            <tr>
-
-                <th>Customer ID</th>
-                <th>Coverage Name</th>
-                <th>Coverage Details</th>
-
-
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-            <tr>
-                <th>Customer ID</th>
-                <th>Coverage Name</th>
-                <th>Coverage Details</th>
-
-            </tr>
-
-            </tr>
-            </tfoot>
-        </table>
-
-
-
-
-
-
-        <div id="coverage-div">
 
         </div>
+
 
     </div>
 
@@ -258,18 +231,11 @@
 
 <th:block layout:fragment="scripts">
 
-    <link rel="stylesheet" type="text/css" th:href="@{~/bank/vendors/datatables.net/datatables.net-buttons/css/buttons.dataTables.min.css}"/>
-
+    <script th:src="@{~/bank/js/moment.min.js}"></script>
+    <script th:src="@{~/bank/js/lodash.min.js}"></script>
    <script>
 
         $(document).ready(function () {
-//            $('.tt').each(function () {
-//                var sth = $(this).find(".bal").html();
-//                $(this).find(".bal").html(numberWithCommas(sth));
-////                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
-//            })
-
-
             $('.bal').each(function(i,obj){
                 var sth = $(this).text();
                 sth = parseFloat(sth).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
@@ -369,12 +335,9 @@
                         if(data!=null){
 
                               return'<a href="/corporate/fixdeposit/view/details/' + data + '"><i class="fa fa-eye"></i>  View </a>';
-
                         }
 
                         }
-
-
                     }
                 ] ,
 
@@ -391,8 +354,6 @@
                         "targets" : 5,
                         "data" : "accountNumber",
                         "render" : function(data, type,full, meta) {
-
-
                               return'<a href="/corporate/fixdeposit/download/EXCEL/' + data + '"><i class="fa fa-file-excel-o"></i> download </a>';
                         }
                     },
@@ -409,37 +370,39 @@
 
             });
 
-
-        });
-
-
-        var table = $('#coverage').DataTable({
-            select:true,
-            responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20,-1],	[ 5, 10,20, "All" ] ],
-            "pagingType" : "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "serverSide" : true,
-            "ajax": "/corporate/dashboard/coverage",
-            "dom": 'T<"clear">frtlp',
-            "columns": [
-                { "data": "customerId"},
-                { "data": "coverageName"},
-                { "data": "coverageUrl", render : function (data,type,full,meta) {
-                        if(data!=null){
-                            console.log("The Data2 : " + data);
-                            return'<a href="/corporate/coverage/view/' + data + '"><i class="fa fa-eye"></i>  View </a>';
-                        }
-
+            $('table.coverage').each(function (idx, e) {
+                let columns = [];
+                let id = $(e).attr("id")
+                $.get('/corporate/coverage?coverageName=' + id, function (resp) {
+                    // temp = JSON.parse(resp);
+                    let data = resp[_.lowerCase(id)];
+                    if(data.length <= 0)
+                        return;
+                    let columnNames = Object.keys(data[0]);
+                    for (let i in columnNames) {
+                        columns.push({
+                            data: columnNames[i],
+                            title: _.startCase(columnNames[i])
+                        });
                     }
-
-
-                }
-
-            ]
+                    let tb= $("#" + id).DataTable({
+                        select: false,
+                        responsive: true,
+                        "searching": false,
+                        "paging": false,
+                        "serverSide": false,
+                        "dom": 'T<"clear">rtl',
+                        "columns": columns
+                    });
+                    $(tb.table().header()).addClass('thead underline');
+                    tb.rows.add(data).draw();
+                })
+            });
 
         });
+
+
+
 
 
 

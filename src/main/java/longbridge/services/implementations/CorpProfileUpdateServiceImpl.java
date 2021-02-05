@@ -7,9 +7,9 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
-import longbridge.services.SettingsService;
 import longbridge.services.CorpProfileUpdateService;
 import longbridge.services.SecurityService;
+import longbridge.services.SettingsService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +92,7 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
             CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
 
             corporateUser.setIsFirstTimeLogon("N");
+            corporateUser.setResetSecurityQuestion("N");
 
             corporateUser.setUserType(UserType.CORPORATE);
 

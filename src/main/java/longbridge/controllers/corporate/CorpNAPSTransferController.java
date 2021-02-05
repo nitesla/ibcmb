@@ -72,8 +72,6 @@ public class CorpNAPSTransferController {
     @Autowired
     IntegrationService integrationService;
     //private static final String SERVER_FILE_PATH = "C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-    @Value("${napsfile.path}")
-    private String SERVER_FILE_PATH;
     @Autowired
     private MessageSource messageSource;
     private final AccountService accountService;
@@ -269,7 +267,9 @@ public class CorpNAPSTransferController {
         File file = null;
 //        file = new File(SERVER_FILE_PATH);
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        file = new File(classloader.getResource(FILENAME).getFile());
+        file = new File(classloader.getResource(FILENAME).getFile().replaceAll("%20", " "));
+        logger.info("download file {}", file.getName());
+        logger.info("download file {}", file.getAbsolutePath());
         if (!file.exists()) {
             model.addAttribute("failure", messageSource.getMessage("file.not.found", null, locale));
             return "/corp/transfer/bulktransfer/upload";

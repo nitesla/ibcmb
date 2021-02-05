@@ -68,6 +68,14 @@ public interface RetailUserService {
     String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException;
 
     /**
+     * Adds a new retail user to the system
+     *
+     * @param user the retail user to be added
+     */
+    String addUser(RetailUserDTO user) throws InternetBankingException;
+
+
+    /**
      * Deletes a retail user to the system
      * @param userId the retail user's id
      */

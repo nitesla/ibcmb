@@ -2,8 +2,8 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.Email;
-import longbridge.services.SettingsService;
 import longbridge.services.MailService;
+import longbridge.services.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

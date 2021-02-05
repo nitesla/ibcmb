@@ -69,6 +69,7 @@ public class AdminUserGeneralController {
 
         try {
             boolean result = securityService.sendOtp(adminUser.getEntrustId(), adminUser.getEntrustGroup());
+
             if (result) {
                 session.setAttribute("username", adminUser.getUserName());
                 session.setAttribute("entrustId", adminUser.getEntrustId());

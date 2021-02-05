@@ -76,9 +76,6 @@ public class CorpSettingController {
     @Autowired
     private IntegrationService integrationService;
 
-    @Autowired
-    private CoverageService coverageService;
-
 
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
@@ -87,6 +84,12 @@ public class CorpSettingController {
             return "redirect:/login/corporate";
         }
         Long corpId = corporateUser.getCorporate().getId();
+
+
+//        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
+        Corporate corporate = corporateService.getCorp(user.getCorpId());
+
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
 
@@ -98,6 +101,8 @@ public class CorpSettingController {
 
         List<FixedDepositDTO> fixedDepositDTO = new ArrayList<>();
         List<String> fixedDepositDTOList = new ArrayList<>();
+
+
         if (dto != null && dto.isEnabled()) {
             String[] transactionalAccounts = StringUtils.split(dto.getValue(), ",");
             accountList = accountList.stream()
@@ -126,6 +131,8 @@ public class CorpSettingController {
         }
        List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
+
+
         model.addAttribute("accountList", accountList);
         model.addAttribute("corpId", corpId);
         model.addAttribute("loanAccounts", loanAccounts);
@@ -133,6 +140,8 @@ public class CorpSettingController {
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
 
+        List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        model.addAttribute("account_coverage", accountCoverage);
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
 
@@ -199,30 +208,6 @@ public class CorpSettingController {
         out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
         return out;
     }
-
-
-    @GetMapping("/dashboard/coverage")
-    public @ResponseBody DataTablesOutput<CoverageDetailsDTO> getCoverageDetails(DataTablesInput input) {
-
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
-        Corporate corporate = corporateService.getCorp(user.getCorpId());
-//        CorporateUser corporateUser = (CorporateUser) user.getUser();
-//        Corporate corporate1 = corporateUser.getCorporate();
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-
-
-        Page<CoverageDetailsDTO> coverageDetails = coverageService.getCoverages(corporate.getCoverage(),corporate.getCustomerId(),pageable);
-
-        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
-        out.setDraw(input.getDraw());
-        out.setData(coverageDetails.getContent());
-        out.setRecordsFiltered(coverageDetails.getTotalElements());
-        out.setRecordsTotal(coverageDetails.getTotalElements());
-        return out;
-    }
-
 
 
     @GetMapping("/error")

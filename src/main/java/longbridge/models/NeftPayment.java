@@ -4,6 +4,7 @@ package longbridge.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -27,6 +28,8 @@ public class NeftPayment extends AbstractEntity {
 
     private int itemCount;
 
+
+    @Column(name = "set_time_f")
     private LocalDateTime settlementTimeF;
 
     private String status;

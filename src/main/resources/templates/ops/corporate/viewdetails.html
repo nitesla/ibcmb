@@ -526,7 +526,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-<script th:src="@{~/bank/js/momentMin.js}"></script>
+<script th:src="@{~/bank/js/moment.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
 
 <!-- User Management Page-Level Scripts -->
@@ -857,6 +857,10 @@
             }
         });
     });
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/corporates";
+    }
 
 
 

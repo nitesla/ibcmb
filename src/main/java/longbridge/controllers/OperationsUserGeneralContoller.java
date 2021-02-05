@@ -1,27 +1,20 @@
 package longbridge.controllers;
 
-import longbridge.dtos.OperationsUserDTO;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
-import longbridge.utils.DataTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -59,8 +52,8 @@ public class OperationsUserGeneralContoller {
             model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "/ops/username";
         }
-        OperationsUser operationsUser = operationsUserService.getUserByName(username);
 
+        OperationsUser operationsUser=operationsUserService.getUserByNameWithoutAuthentication(username);
         if (operationsUser == null) {
             model.addAttribute("failure", messageSource.getMessage("username.invalid", null, locale));
             return "/ops/username";

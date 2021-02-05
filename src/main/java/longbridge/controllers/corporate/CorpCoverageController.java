@@ -1,17 +1,15 @@
 package longbridge.controllers.corporate;
 
-import longbridge.services.CoverageService;
+import longbridge.services.CorpCoverageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/corporate/coverage")
@@ -20,31 +18,18 @@ public class CorpCoverageController {
 
 
     @Autowired
-    private CoverageService coverageService;
+    private CorpCoverageService corpCoverageService;
 
-    @GetMapping("/view/{customerId}/{coverageName}")
-    public String viewCoverageDetails(@PathVariable String customerId, @PathVariable String coverageName,  Model model) {
-
-        Map<String, List<String>> coverageDetails = coverageService.getCoverageDetails(coverageName, customerId);
-
-        model.addAttribute("coverageDetails", coverageDetails);
-        model.addAttribute("coverageName", coverageName.toUpperCase());
-        return "corp/coverage/index";
+    @GetMapping
+    public @ResponseBody
+    ResponseEntity<?> getCoverageDetails(@RequestParam("coverageName") String coverageName) {
+        try {
+            return ResponseEntity.ok(corpCoverageService.getCoverage(coverageName));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
-//    @GetMapping("/getViewData/{customerId}")
-//    @ResponseBody
-//    public DataTablesOutput<CoverageDetailsDTO> getViewDetails(@PathVariable String customerIds, String coverage, DataTablesInput input) {
-//        Pageable pageable = DataTablesUtils.getPageable(input);
-//        Page<CoverageDetailsDTO> coverageDetailsDTO = null;
-//        coverageDetailsDTO = coverageService.getCoverages(coverage, customerIds, pageable);
-//        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
-//        out.setDraw(input.getDraw());
-//        out.setData(coverageDetailsDTO.getContent());
-//        out.setRecordsFiltered(coverageDetailsDTO.getTotalElements());
-//        out.setRecordsTotal(coverageDetailsDTO.getTotalElements());
-//        logger.info("elem deposit {}", coverageDetailsDTO.getTotalElements());
-//        return out;
-//    }
+
 }

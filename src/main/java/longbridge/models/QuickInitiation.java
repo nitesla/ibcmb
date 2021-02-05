@@ -3,6 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 
@@ -13,7 +14,9 @@ public class QuickInitiation extends AbstractEntity{
 
     private BigDecimal amount;
     private String channel;
+    @Column(name = "curcy_cod")
     private String currencyCode;
+    @Column(name = "pay_met_cod")
     private String paymentMethodCode;
 
     public BigDecimal getAmount() {

@@ -5,6 +5,7 @@ import longbridge.models.Code;
 import longbridge.models.Role;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ public class RetailUserDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "userName")
     private String userName;
     private String entrustId;
     private String customerId;
@@ -38,7 +39,8 @@ public class RetailUserDTO implements Serializable {
     private List<String> securityAnswer;
     private String phishingSec;
     private String captionSec;
-    private Role role;
+    @NotNull(message = "roleId")
+    private Long roleId;
     private Code alertPreference;
     private String feedBackStatus;
     private List<String> coverageCodes;
@@ -172,12 +174,12 @@ public class RetailUserDTO implements Serializable {
         this.noOfLoginAttempts = noOfLoginAttempts;
     }
 
-    public Role getRole() {
-        return role;
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     public String getBvn() {
@@ -278,7 +280,6 @@ public class RetailUserDTO implements Serializable {
                 ", securityAnswer=" + securityAnswer +
                 ", phishingSec='" + phishingSec + '\'' +
                 ", captionSec='" + captionSec + '\'' +
-                ", role=" + role +
                 ", alertPreference=" + alertPreference +
                 ", feedBackStatus='" + feedBackStatus + '\'' +
                 '}';
