@@ -566,14 +566,20 @@ public class CorporateServiceImpl implements CorporateService {
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
 
-            Corporate corporate = corporateRepo.findById(id).get();
-            entityManager.detach(corporate);
-            String oldStatus = corporate.getStatus();
-            String newStatus = "A".equals(oldStatus) ? "I" : "A";
-            corporate.setStatus(newStatus);
-            corporateRepo.save(corporate);
-            logger.info("Corporate {} status changed from {} to {}", corporate.getName(), oldStatus, newStatus);
-            return messageSource.getMessage("corporate.status.success", null, locale);
+            Optional<Corporate> optional = corporateRepo.findById(id);
+            if (optional.isPresent()) {
+                Corporate corporate = optional.get();
+                entityManager.detach(corporate);
+                String oldStatus = corporate.getStatus();
+                String newStatus = "A".equals(oldStatus) ? "I" : "A";
+                corporate.setStatus(newStatus);
+                corporateRepo.save(corporate);
+                logger.info("Corporate {} status changed from {} to {}", corporate.getName(), oldStatus, newStatus);
+                return messageSource.getMessage("corporate.status.success", null, locale);
+            }else{
+                logger.info("Could not find corporate");
+                return messageSource.getMessage("corporate.status.failure", null, locale);
+            }
 
         } catch (VerificationInterruptedException e) {
             return e.getMessage();

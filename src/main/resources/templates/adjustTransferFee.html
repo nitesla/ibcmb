@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Adjust Transfer Fees</h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+
+                                    <div class="col-lg-6 col-xl-3" id="textInputForFeeAdjustment">
+
+                                        <div class="form-group" id="bothSelection">
+                                            <form>
+                                                <!--------------------------------------------------  ADJUST TRANSFER FEES  ---------------------------------------------------------- ---------------------------------------           -->
+
+                                                <div id="selectTransferPlatform">
+                                                    <label>Select transfer method</label>
+                                                    <select class="form-control" id="transferDropdown">
+                                                        <option>-- Select --</option>
+                                                        <option>Nibss Instant Payment</option>
+                                                        <option>Real Time Gross Settlement</option>
+                                                        <option>Nibss Automated Payment Services</option>
+                                                        <option>International</option>
+                                                        <option>Transfer Via Remmittance</option>
+                                                        <option>Bill Payments</option>
+                                                    </select>
+                                                </div>
+
+
+                                                <div>
+                                                    <label>Fee Range</label>
+                                                    <input class="form-control" id="bothSelection1" name="feeRng"
+                                                           required type="text">
+                                                </div>
+                                                <br/>
+                                                <div>
+                                                    <label>Fixed Amount</label>
+                                                    <input class="form-control" id="bothSelection2" name="fixedAmt"
+                                                           required type="text">
+                                                </div>
+                                                <br>
+                                                <div>
+                                                    <label>Fee Description</label>
+                                                    <textarea class="form-control" id="feeDescriptionIdBoth" name="feeDescrip"
+                                                              required type="text"></textarea>
+                                                </div>
+                                                <br>
+                                                <div>
+                                                    <label>Fixed Amount Value</label>
+                                                    <input class="form-control" id="fixedAmountValueIdBoth" name="fixedAmtVal"
+                                                           required type="number">
+                                                </div>
+                                                <br>
+                                                <div>
+                                                    <label>Rate</label>
+                                                    <input class="form-control" id="rateIdBoth" name="rt" required
+                                                           type="text">
+                                                </div>
+                                                <br>
+                                                <div>
+                                                    <label>Rate Value</label>
+                                                    <input class="form-control" id="rateValueIdBoth" name="rtVal"
+                                                           required type="number">
+                                                </div>
+                                                <br>
+                                                <button class="btn btn-success adjustTransferFee" type="button">Submit
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<script>
+    function showNotification(message, type) {
+        $.notify({
+            // options
+            message: message
+        }, {
+            // settings
+            type: type
+        });
+    }
+
+
+    function validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount) {
+        var error = false;
+        if (feeRange == "") {
+            showNotification("Please supply fee-range value", "danger")
+            error = true;
+        } else if (feeDescription == "") {
+            showNotification("Please supply description", "danger")
+            error = true;
+        } else if (fixedAmountValue == "") {
+            showNotification("Please supply fixed-amount value", "danger")
+            error = true;
+        } else if (rate == "") {
+            showNotification("Rate is required", "danger")
+            error = true;
+        } else if (rateValue == "") {
+            showNotification("Rate value is required", "danger")
+            error = true;
+        } else if (fixedAmount == "") {
+            showNotification("Please supply a fixed-amount", "danger")
+            error = true;
+        }
+
+        return error;
+    }
+
+    $(".adjustTransferFee").on("click", function () {
+        var transferMethod = $("#transferDropdown option:selected").val();
+        var feeRange = $("#bothSelection1").val();
+        var fixedAmount = $("#bothSelection2").val();
+        var feeDescription = $("#feeDescriptionIdBoth").val();
+        var fixedAmountValue = $("#fixedAmountValueIdBoth").val();
+        var rate = $("#rateIdBoth").val();
+        var rateValue = $("#rateValueIdBoth").val();
+        if (validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount) == false) {
+            console.log("DEBUGGING!!!")
+            $.ajax({
+                type: "POST",
+                url: "/admin/transfersettings/submitTransferAdjustments",
+                data: {
+                    transactionChannel: transferMethod,
+                    fixedAmount: fixedAmount,
+                    feeRange: feeRange,
+                    feeDescription: feeDescription,
+                    fixedAmountValue: fixedAmountValue,
+                    rate: rate,
+                    rateValue: rateValue
+                }, // parameters
+                success:
+                    function (response) {
+                        showNotification(response, "success");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000)
+                    }
+            })
+        }
+
+
+        // }
+
+    })
+
+
+</script>
+</body>
+</html>

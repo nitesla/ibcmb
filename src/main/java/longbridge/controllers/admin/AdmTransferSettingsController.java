@@ -32,13 +32,22 @@ public class AdmTransferSettingsController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/transfersettings")
-    public String adminSetTransferSettings(Model model)
+    @GetMapping("/adjustTransfer")
+    public String adjustTransferFee(Model model)
     {
         String type = "TRANSFER_CHANNEL";
         List<Code> getTransferChannel = codeRepo.findAllByType(type);
         model.addAttribute("transferchannels",getTransferChannel);
-        return "transfersettings";
+        return "adjustTransferFee";
+    }
+
+    @GetMapping("/setLimit")
+    public String setTransferLimit(Model model)
+    {
+        String type = "TRANSFER_CHANNEL";
+        List<Code> getTransferChannel = codeRepo.findAllByType(type);
+        model.addAttribute("transferchannels",getTransferChannel);
+        return "setTransferLimit";
     }
 
 

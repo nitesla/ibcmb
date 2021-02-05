@@ -61,7 +61,13 @@
                     <li><a href="/admin/checker">Maker Checker</a></li>
                     <!--<li><a href="/admin/secquestions/">Security Questions</a></li>-->
                     <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
-                    <li><a th:href="@{/admin/transfersettings/transfersettings}"> Transfer Settings</a></li>
+                    <li><a th:href="@{/admin/transfersettings/transfersettings}"> Transfer Settings <span class="fa fa-chevron-down"></a>
+                        <ul class="nav child_menu">
+                            <li><a href="/admin/transfersettings/adjustTransfer">Adjust Transfer Fees</a></li>
+                            <li><a href="/admin/transfersettings/setLimit">Set Transfer Limit</a></li>
+                        </ul>
+
+                    </li>
                     <li><a href="/admin/job">Batch Job</a></li>
                     <li sec:authorize="hasAuthority('GREETING_CONFIG')"><a href="/admin/greetings/">Greetings</a></li>
 
