@@ -62,7 +62,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "corporate_account", joinColumns =
     @JoinColumn(name = "corporate_id", referencedColumnName = "id"), inverseJoinColumns =
     @JoinColumn(name = "account_id", referencedColumnName = "id") )
