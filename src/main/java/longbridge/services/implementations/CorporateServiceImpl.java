@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
+import longbridge.exception.IllegalAccessException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -565,7 +566,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
-            Corporate corporate = corporateRepo.findById(id).get();
+            Corporate corporate = corporateRepo.findById(id).orElseThrow(IllegalAccessException::new);
             entityManager.detach(corporate);
             String oldStatus = corporate.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";

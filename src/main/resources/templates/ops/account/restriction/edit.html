@@ -52,11 +52,15 @@
 
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Restriction Type</label>
-
+                                    res= [[*{restrictionType}]]
                                         <div class="col-sm-6">
-                                            <select class="form-control" th:field="*{restrictionType}">
-                                                <option value="">--Select--</option>
-                                                <option th:each="type: ${restrictionType}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictionType}"></option>
+                                            <select class="form-control" th:field="*{restrictionType}" >
+                                                <option value="">--Selector--</option>
+                                                <option th:each="type: ${restrictionType}"
+                                                        th:value="${type.code}" th:text="${type.description}"
+                                                        th:selected= "${#strings.equals(type.code, accountRestriction.restrictionType)}"
+                                                        th:attr="v=${#strings.equals(type.code, accountRestriction.restrictionType)}">
+                                                </option>
                                             </select>
                                         </div>
 
