@@ -129,21 +129,8 @@ public interface AccountConfigService {
 
     boolean isAccountRestrictedForTransactionFromUser(Long accountId, Long userId);
 
-    /**
-     * Returns a list of restricted accounts
-     * @return restricted accounts
-     */
-    @PreAuthorize("hasAuthority('GET_ACCT_RESTRICTS')")
-    Iterable<AccountRestrictionDTO> getAccountRestrictions();
 
 
-
-    /**
-     * Returns a list of restricted account classes
-     * @return restricted account classes
-     */
-    @PreAuthorize("hasAuthority('GET_ACCT_CLASS_RESTRICTS')")
-    Iterable<AccountClassRestrictionDTO> getAccountClassRestrictions();
 
 
     /**

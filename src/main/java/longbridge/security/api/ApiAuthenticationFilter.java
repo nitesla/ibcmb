@@ -5,6 +5,8 @@ import longbridge.security.corpuser.CorporateUserDetailsService;
 import longbridge.security.retailuser.RetailUserDetailsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +23,7 @@ import java.io.IOException;
 
 public class ApiAuthenticationFilter extends OncePerRequestFilter {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     @Qualifier("apiUserDetails")
@@ -77,22 +79,15 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
                     isCorpUser = true;
                     validate = jwtTokenUtil.validateToken(authToken, userDetails, isCorpUser);
                     if (validate) {
-
                         grantAccess(userDetails, authToken);
                         logger.info("user %s has been granted access");
-
-//                        TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
-//                        authentication.setToken(authToken);
-//                        SecurityContextHolder.getContext().setAuthentication(authentication);
-//                        System.out.printf("user %s has been granted access", userDetails.getUsername());
                     } else {
                         error = "Token could not be validated as it does not pass data integrity test. Kindly generate another and try again";
                         response.getWriter().write(processErrorMessage(error));
                         return;
                     }
                 }catch(Exception e){
-                    e.printStackTrace();
-                    logger.info("User is not a corporate user...{} ", e);
+                    logger.error("User is not a corporate user ", e);
                 }
 
 
@@ -115,57 +110,12 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
                         }
                     }
 
-              /*  else {
-                    userDetails = corporateUserDetailsService.loadUserByUsername(username);
-                    logger.info("corporate user details authentication "+userDetails);
-                    isCorpUser = true;
-                     validate =jwtTokenUtil.validateToken(authToken,userDetails,isCorpUser);
-                    if (validate){
 
-                        grantAccess(userDetails, authToken);
-                        logger.info("user %s has been granted access");
-
-//                        TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
-//                        authentication.setToken(authToken);
-//                        SecurityContextHolder.getContext().setAuthentication(authentication);
-//                        System.out.printf("user %s has been granted access", userDetails.getUsername());
-                    }else{
-                        error = "Token could not be validated as it does not pass data integrity test. Kindly generate another and try again";
-                        response.getWriter().write(processErrorMessage(error));
-                        return;
-                    }
-
-                }*/
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.info("User is not a retail user...{} ", e);
+                    logger.info("User is not a retail user...", e);
                 }
-
             }
 
-//            try {
-//                userDetails = corporateUserDetailsService.loadUserByUsername(username);
-//                logger.info("corporate user details authentication "+userDetails);
-//                isCorpUser = true;
-//            } catch (Exception e1) {
-//                e1.printStackTrace();
-//               logger.info("User is not a corporate user...{}", e1 );
-//            }
-//                if (user != null) {
-//                UserDetails userDetails = userDetailsService.loadUserByUsername( username );
-//            if(SecurityContextHolder.getContext().getAuthentication() == null) {
-//                if (jwtTokenUtil.validateToken(authToken, userDetails, isCorpUser)) {
-//                    // Create authentication
-//                    TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
-//                    authentication.setToken(authToken);
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                    System.out.printf("user %s has been granted access", userDetails.getUsername());
-//                }else{
-//                    error = "Token could not be validated as it does not pass data integrity test. Kindly generate another and try again";
-//                    response.getWriter().write(processErrorMessage(error));
-//                    return;
-//                }
-//            }
         } else {
             error = "Authentication failed - no Bearer token provided.";
         }
@@ -185,7 +135,7 @@ public class ApiAuthenticationFilter extends OncePerRequestFilter {
         TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
         authentication.setToken(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        logger.info("user %s has been granted access");
+        logger.info("user {} has been granted access" ,userDetails.getUsername());
 
         return true;
     }

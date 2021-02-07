@@ -140,6 +140,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setPhoneNumber(user.getPhoneNumber());
             adminUser.setStatus("A");
             adminUser.setCreatedOnDate(new Date());
+            adminUser.setExpiryDate(new Date());
             Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
             adminUser.setRole(role);
             AdminUser newUser = adminUserRepo.save(adminUser);

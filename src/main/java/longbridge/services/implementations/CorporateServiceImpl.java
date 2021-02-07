@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
 import longbridge.exception.*;
+import longbridge.exception.IllegalAccessException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -565,21 +566,14 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
-
-            Optional<Corporate> optional = corporateRepo.findById(id);
-            if (optional.isPresent()) {
-                Corporate corporate = optional.get();
-                entityManager.detach(corporate);
-                String oldStatus = corporate.getStatus();
-                String newStatus = "A".equals(oldStatus) ? "I" : "A";
-                corporate.setStatus(newStatus);
-                corporateRepo.save(corporate);
-                logger.info("Corporate {} status changed from {} to {}", corporate.getName(), oldStatus, newStatus);
-                return messageSource.getMessage("corporate.status.success", null, locale);
-            }else{
-                logger.info("Could not find corporate");
-                return messageSource.getMessage("corporate.status.failure", null, locale);
-            }
+            Corporate corporate = corporateRepo.findById(id).orElseThrow(IllegalAccessException::new);
+            entityManager.detach(corporate);
+            String oldStatus = corporate.getStatus();
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
+            corporate.setStatus(newStatus);
+            corporateRepo.save(corporate);
+            logger.info("Corporate {} status changed from {} to {}", corporate.getName(), oldStatus, newStatus);
+            return messageSource.getMessage("corporate.status.success", null, locale);
 
         } catch (VerificationInterruptedException e) {
             return e.getMessage();

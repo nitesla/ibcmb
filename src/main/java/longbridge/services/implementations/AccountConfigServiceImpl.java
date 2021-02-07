@@ -5,10 +5,7 @@ import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.Account;
-import longbridge.models.AccountClassRestriction;
-import longbridge.models.AccountRestriction;
-import longbridge.models.UserAccountRestriction;
+import longbridge.models.*;
 import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
@@ -325,35 +322,15 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         return isRestricted;
     }
 
-
-    @Override
-    public Iterable<AccountRestrictionDTO> getAccountRestrictions() {
-        Iterable<AccountRestriction> accountRestrictions = accountRestrictionRepo.findAll();
-        return convertAccountRestrictionEntitiesToDTOs(accountRestrictions);
-    }
-
-    @Override
-    public Iterable<AccountClassRestrictionDTO> getAccountClassRestrictions() {
-        Iterable<AccountClassRestriction> accountClassRestrictions = accountClassRestrictionRepo.findAll();
-        return convertAccountClassRestrictionEntitiesToDTOs(accountClassRestrictions);
-    }
-
     @Override
     public Page<AccountRestrictionDTO> getAccountRestrictions(Pageable pageable) {
-        Page<AccountRestriction> accountRestrictionPageable = accountRestrictionRepo.findAll(pageable);
-        List<AccountRestrictionDTO> dtos = convertAccountRestrictionEntitiesToDTOs(accountRestrictionPageable.getContent());
-        long t = accountRestrictionPageable.getTotalElements();
-        return new PageImpl<>(dtos, pageable, t);
-
-
+        return accountRestrictionRepo.findAll(pageable).map(this::convertAccountRestrictionEntityToDTO);
     }
 
     @Override
     public Page<AccountClassRestrictionDTO> getAccountClassRestrictions(Pageable pageable) {
-        Page<AccountClassRestriction> accountClassRestrictionPageable = accountClassRestrictionRepo.findAll(pageable);
-        List<AccountClassRestrictionDTO> dtos = convertAccountClassRestrictionEntitiesToDTOs(accountClassRestrictionPageable.getContent());
-        long t = accountClassRestrictionPageable.getTotalElements();
-        return new PageImpl<>(dtos, pageable, t);
+       return accountClassRestrictionRepo.findAll(pageable)
+                .map(this::convertAccountClassRestrictionEntityToDTO);
     }
 
     private void validateNoAccountDuplication(AccountRestrictionDTO accountRestrictionDTO) throws DuplicateObjectException {
@@ -382,7 +359,6 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     private AccountRestrictionDTO convertAccountRestrictionEntityToDTO(AccountRestriction accountRestriction) {
         AccountRestrictionDTO accountRestrictionDTO = modelMapper.map(accountRestriction, AccountRestrictionDTO.class);
         accountRestrictionDTO.setDateCreated(DateFormatter.format(accountRestriction.getDateCreated()));
-
         return accountRestrictionDTO;
     }
 
@@ -391,15 +367,6 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         return this.modelMapper.map(accountRestrictionDTO, AccountRestriction.class);
     }
 
-    private List<AccountRestrictionDTO> convertAccountRestrictionEntitiesToDTOs(Iterable<AccountRestriction> accountRestrictions) {
-        List<AccountRestrictionDTO> accountRestrictionDTOList = new ArrayList<>();
-        for (AccountRestriction accountRestriction : accountRestrictions) {
-            AccountRestrictionDTO accountRestrictionDTO = convertAccountRestrictionEntityToDTO(accountRestriction);
-            accountRestrictionDTO.setRestrictionType(codeService.getByTypeAndCode("RESTRICTION_TYPE", accountRestriction.getRestrictionType()).getDescription());
-            accountRestrictionDTOList.add(accountRestrictionDTO);
-        }
-        return accountRestrictionDTOList;
-    }
 
 
     private AccountClassRestrictionDTO convertAccountClassRestrictionEntityToDTO(AccountClassRestriction accountClassRestriction) {
@@ -414,15 +381,6 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         return this.modelMapper.map(accountClassRestrictionDTO, AccountClassRestriction.class);
     }
 
-    private List<AccountClassRestrictionDTO> convertAccountClassRestrictionEntitiesToDTOs(Iterable<AccountClassRestriction> accountClassRestrictions) {
-        List<AccountClassRestrictionDTO> accountClassRestrictionDTOList = new ArrayList<>();
-        for (AccountClassRestriction accountClassRestriction : accountClassRestrictions) {
-            AccountClassRestrictionDTO accountClassRestrictionDTO = convertAccountClassRestrictionEntityToDTO(accountClassRestriction);
-            accountClassRestrictionDTO.setRestrictionType(codeService.getByTypeAndCode("RESTRICTION_TYPE", accountClassRestriction.getRestrictionType()).getDescription());
-            accountClassRestrictionDTOList.add(accountClassRestrictionDTO);
-        }
-        return accountClassRestrictionDTOList;
-    }
 
 
 }
