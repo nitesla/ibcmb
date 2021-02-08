@@ -37,40 +37,45 @@
                                 <div class="ibox-content">
 
                                     <!-- ------------------------------------------------------- SET TRANSFER LIMIT --------------------------------------------------------------------------------------- -->
-
-                                    <div id="selectLimitForBankUser">
-                                        <br>
-                                        <label>Select user</label>
-                                        <select class="form-control" id="selectBankUser">
-                                            <option>-- Select --</option>
-                                            <option value="R">Retail </option>
-                                            <option value="C">Corporate </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group" id="userChooseOtherBanks">
-                                        <label>Select Platform</label>
-                                        <select class="form-control" id="selectPlatform">
-                                            <option value="-- Select --">-- Select --</option>
-                                            <option th:each="message : ${transferchannels}" th:value="${message.description }"th:text="${message.description }"></option>
-                                        </select>
-                                    </div>
-
                                     <div class="col-lg-6 col-xl-3" id="withinOtherBanks">
+                                        <div id="selectLimitForBankUser">
+                                            <br/>
+                                            <label>Select User</label>
+                                            <select class="form-control" id="selectBankUser">
+                                                <option>-- Select --</option>
+                                                <option value="R">Retail </option>
+                                                <option value="C">Corporate </option>
+                                            </select>
+                                        </div>
+                                        <br/>
+
+                                        <div class="form-group" id="userChooseOtherBanks">
+                                            <label>Select Platform</label>
+                                            <select class="form-control" id="selectPlatform">
+                                                <option value="-- Select --">-- Select --</option>
+                                                <option th:each="message : ${transferchannels}" th:value="${message.description }"th:text="${message.description }"></option>
+                                            </select>
+                                        </div>
+                                        <br/>
+
+
                                         <div class="form-group">
                                             <label>Description</label>
                                             <textarea name="accountnumber" type="text" class="form-control"  id="obankaccountnumberid"></textarea>
                                         </div>
+                                        <br/>
                                         <div class="form-group">
                                             <label>Set Lower Limit</label>
                                             <input class="form-control" id="obankaccountnumberclass" type="number"  required>
 
 
                                         </div>
+                                        <br/>
                                         <div class="form-group">
                                             <label>Set Upper Limit</label>
                                             <input name="limit" type="number" class="form-control" id="obanksetlimit" required>
                                         </div>
+                                        <br/>
                                         <div>
                                             <button class="btn btn-success transferLimitBtn">Save</button>
                                         </div>

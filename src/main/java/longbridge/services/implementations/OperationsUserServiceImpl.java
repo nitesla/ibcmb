@@ -191,6 +191,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setPhoneNumber(user.getPhoneNumber());
+            opsUser.setExpiryDate(new Date());
             opsUser.setStatus("A");
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
