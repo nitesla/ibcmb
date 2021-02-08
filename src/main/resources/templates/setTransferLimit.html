@@ -40,9 +40,9 @@
                                     <div class="col-lg-6 col-xl-3" id="withinOtherBanks">
                                         <div id="selectLimitForBankUser">
                                             <br/>
-                                            <label>Select User</label>
+                                            <label>Select User <span class='req-inner' style=" font-size: 16px">*</span></label>
                                             <select class="form-control" id="selectBankUser">
-                                                <option>-- Select --</option>
+                                                <option value="">-- Select --</option>
                                                 <option value="R">Retail </option>
                                                 <option value="C">Corporate </option>
                                             </select>
@@ -50,9 +50,9 @@
                                         <br/>
 
                                         <div class="form-group" id="userChooseOtherBanks">
-                                            <label>Select Platform</label>
+                                            <label>Select Platform <span class='req-inner' style=" font-size: 16px">*</span></label>
                                             <select class="form-control" id="selectPlatform">
-                                                <option value="-- Select --">-- Select --</option>
+                                                <option value="">-- Select --</option>
                                                 <option th:each="message : ${transferchannels}" th:value="${message.description }"th:text="${message.description }"></option>
                                             </select>
                                         </div>
@@ -60,19 +60,19 @@
 
 
                                         <div class="form-group">
-                                            <label>Description</label>
+                                            <label>Description <span class='req-inner' style=" font-size: 16px">*</span></label>
                                             <textarea name="accountnumber" type="text" class="form-control"  id="obankaccountnumberid"></textarea>
                                         </div>
                                         <br/>
                                         <div class="form-group">
-                                            <label>Set Lower Limit</label>
+                                            <label>Set Lower Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
                                             <input class="form-control" id="obankaccountnumberclass" type="number"  required>
 
 
                                         </div>
                                         <br/>
                                         <div class="form-group">
-                                            <label>Set Upper Limit</label>
+                                            <label>Set Upper Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
                                             <input name="limit" type="number" class="form-control" id="obanksetlimit" required>
                                         </div>
                                         <br/>
@@ -102,13 +102,13 @@
 
     $(".transferLimitBtn").on("click", function (){
         var bankUserType = $("#selectBankUser option:selected").val();
-        var transferPlatform = $("#selectPlatform").val();
+        var transferPlatform = $("#selectPlatform option:selected").val();
         var obankAcctNum = $("#obankaccountnumberid").val();
         var obankAcctclass = $("#obankaccountnumberclass").val();
         var obankSetAcctLimit = $("#obanksetlimit").val();
         // var obankFrequency = $("#obanksetfrequency").val();
 
-        if (validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum) == false){
+        if (validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum, bankUserType, transferPlatform) == false){
 
             $.ajax({
                 type: "POST",
@@ -146,7 +146,7 @@
 
 
 
-    function validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum){
+    function validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum, bankUserType, transferPlatform){
         var error = false;
         if (obankAcctclass == ""){
             showNotification("Please supply Lower Limit","danger")
@@ -158,6 +158,12 @@
         }else
         if (obankAcctNum == ""){
             showNotification("Please provide a description","danger")
+            error = true;
+        }else if(bankUserType == ""){
+            showNotification("Please select a user-type","danger")
+            error = true;
+        }else if(transferPlatform == ""){
+            showNotification("Please select a platform","danger")
             error = true;
         }
 

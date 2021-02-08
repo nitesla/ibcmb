@@ -43,52 +43,55 @@
 
                                                 <br/>
                                                 <div id="selectTransferPlatform">
-                                                    <label>Select Transfer Method</label>
+                                                    <label class="col-sm-2 control-label">Select Transfer Method<span class='req-inner' style=" font-size: 16px">*</span></label>
+
                                                     <select class="form-control" id="transferDropdown">
-                                                        <option>-- Select --</option>
-                                                        <option>Nibss Instant Payment</option>
-                                                        <option>Real Time Gross Settlement</option>
-                                                        <option>Nibss Automated Payment Services</option>
-                                                        <option>International</option>
-                                                        <option>Transfer Via Remmittance</option>
-                                                        <option>Bill Payments</option>
+                                                        <option value="">-- Select --</option>
+                                                        <option value="Nibss Instant Payment">Nibss Instant Payment</option>
+                                                        <option value="Real Time Gross Settlement">Real Time Gross Settlement</option>
+                                                        <option value="Nibss Automated Payment Services">Nibss Automated Payment Services</option>
+                                                        <option value="International">International</option>
+                                                        <option value="Transfer Via Remittance">Transfer Via Remittance</option>
+                                                        <option value="Bill Payments">Bill Payments</option>
                                                     </select>
                                                 </div>
                                                 <br/>
 
 
                                                 <div>
-                                                    <label>Fee Range</label>
+
+                                                    <label class="col-sm-2 control-label">Fee Range<span class='req-inner' style=" font-size: 16px">*</span></label>
+
                                                     <input class="form-control" id="bothSelection1" name="feeRng"
                                                            required type="text">
                                                 </div>
                                                 <br/>
                                                 <div>
-                                                    <label>Fixed Amount</label>
+                                                    <label>Fixed Amount<span class='req-inner' style=" font-size: 16px">*</span></label>
                                                     <input class="form-control" id="bothSelection2" name="fixedAmt"
                                                            required type="text">
                                                 </div>
                                                 <br>
                                                 <div>
-                                                    <label>Fee Description</label>
+                                                    <label>Fee Description<span class='req-inner' style=" font-size: 16px">*</span></label>
                                                     <textarea class="form-control" id="feeDescriptionIdBoth" name="feeDescrip"
                                                               required type="text"></textarea>
                                                 </div>
                                                 <br>
                                                 <div>
-                                                    <label>Fixed Amount Value</label>
+                                                    <label>Fixed Amount Value<span class='req-inner' style=" font-size: 16px">*</span></label>
                                                     <input class="form-control" id="fixedAmountValueIdBoth" name="fixedAmtVal"
                                                            required type="number">
                                                 </div>
                                                 <br>
                                                 <div>
-                                                    <label>Rate</label>
+                                                    <label>Rate<span class='req-inner' style=" font-size: 16px">*</span></label>
                                                     <input class="form-control" id="rateIdBoth" name="rt" required
                                                            type="text">
                                                 </div>
                                                 <br>
                                                 <div>
-                                                    <label>Rate Value</label>
+                                                    <label>Rate Value<span class='req-inner' style=" font-size: 16px">*</span></label>
                                                     <input class="form-control" id="rateValueIdBoth" name="rtVal"
                                                            required type="number">
                                                 </div>
@@ -128,9 +131,12 @@
     }
 
 
-    function validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount) {
+    function validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount, transferMethod) {
         var error = false;
-        if (feeRange == "") {
+        if(transferMethod === ""){
+            showNotification("Please choose a transfer method", "danger")
+            error = true;
+        } else if (feeRange == "") {
             showNotification("Please supply fee-range value", "danger")
             error = true;
         } else if (feeDescription == "") {
@@ -161,7 +167,7 @@
         var fixedAmountValue = $("#fixedAmountValueIdBoth").val();
         var rate = $("#rateIdBoth").val();
         var rateValue = $("#rateValueIdBoth").val();
-        if (validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount) == false) {
+        if (validateAllFields(feeRange, feeDescription, fixedAmountValue, rate, rateValue, fixedAmount, transferMethod) == false) {
             console.log("DEBUGGING!!!")
             $.ajax({
                 type: "POST",
@@ -180,9 +186,16 @@
                         showNotification(response, "success");
                         setTimeout(function () {
                             location.reload();
-                        }, 2000)
+                        }, 5000)
                     }
-            })
+                ,
+                error: function(error){
+                    showNotification(error, "danger");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 5000)
+                }
+            });
         }
 
 

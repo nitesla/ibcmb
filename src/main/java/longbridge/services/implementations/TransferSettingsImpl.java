@@ -53,7 +53,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
             tfa.setFixedAmountValue(tfaDTO.getFixedAmountValue());
             tfa.setRate(tfaDTO.getRate());
             tfa.setRateValue(tfaDTO.getRateValue());
-           tfa.setFeeRange(tfaDTO.getFeeRange());
+            tfa.setFeeRange(tfaDTO.getFeeRange());
             tfa.setDelFlag("N");
             transferAdjustFeeRepository.save(tfa);
             String apiService = integrationService.updateCharge(tfa);
