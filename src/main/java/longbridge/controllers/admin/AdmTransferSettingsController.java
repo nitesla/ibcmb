@@ -35,9 +35,6 @@ public class AdmTransferSettingsController {
     @GetMapping("/adjustTransfer")
     public String adjustTransferFee(Model model)
     {
-        String type = "TRANSFER_CHANNEL";
-        List<Code> getTransferChannel = codeRepo.findAllByType(type);
-        model.addAttribute("transferchannels",getTransferChannel);
         return "adjustTransferFee";
     }
 
