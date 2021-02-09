@@ -20,14 +20,14 @@ public interface AccountConfigService {
      * @param accountRestrictionDTO contains details of the restriction
      */
     @PreAuthorize("hasAuthority('ADD_ACCT_RESTRICT')")
-    String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws InternetBankingException;
+    String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO);
 
     /**
      * updates the restriction on the account
      * @param accountRestrictionDTO contains details of the restriction
      */
     @PreAuthorize("hasAuthority('UPDATE_ACCT_RESTRICT')")
-    String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws InternetBankingException;
+    String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO);
 
 
     /**
@@ -52,21 +52,21 @@ public interface AccountConfigService {
      * @param id the id
      */
     @PreAuthorize("hasAuthority('DELETE_ACCT_RESTRICT')")
-    String deleteAccountRestriction(Long id) throws InternetBankingException;
+    String deleteAccountRestriction(Long id) ;
 
     /**
      * Adds an account to a list of restricted accounts
      * @param accountClassRestrictionDTO contains details of the restriction
      */
     @PreAuthorize("hasAuthority('ADD_ACCT_CLASS_RESTRICT')")
-    String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException;
+    String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) ;
 
     /**
      * Updates the restriction on the account class
      * @param accountClassRestrictionDTO contains details of the restriction
      */
     @PreAuthorize("hasAuthority('UPDATE_ACCT_RESTRICT')")
-    String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException;
+    String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) ;
 
 
     /**
@@ -74,7 +74,7 @@ public interface AccountConfigService {
      * @param id the id
      */
     @PreAuthorize("hasAuthority('DELETE_ACCT_CLASS_RESTRICT')")
-    String deleteAccountClassRestriction(Long id) throws InternetBankingException;
+    String deleteAccountClassRestriction(Long id) ;
 
 
     /**

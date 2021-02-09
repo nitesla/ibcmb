@@ -189,7 +189,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+    public CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO transferRequestDTO)  {
 
             logger.info("transferType from service layer is {}", transferRequestDTO.getTransferType());
             pfDataItemStore(transferRequestDTO);
@@ -204,7 +204,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     @Override
-    public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+    public Object addTransferRequest(CorpTransferRequestDTO transferRequestDTO)  {
         logger.info("TRANSFER TYPE {}", transferRequestDTO.getTransferType());
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);

@@ -58,7 +58,7 @@ public class QuickBeneficiaryServiceImpl implements QuickBeneficiaryService {
     }
 
     @Override
-    public String addQuickBeneficiary(LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addQuickBeneficiary(LocalBeneficiaryDTO beneficiary)  {
 
         try {
             QuickBeneficiary quickBeneficiary = convertDTOToEntity(beneficiary);

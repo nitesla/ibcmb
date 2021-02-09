@@ -64,7 +64,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     @Override
     @Verifiable(operation="ADD_SQ",description="Adding Security Question")
-    public String addSecQuestion(String question) throws InternetBankingException {
+    public String addSecQuestion(String question)  {
 
         try {
             SecurityQuestions secQuestions = new SecurityQuestions();

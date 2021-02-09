@@ -63,7 +63,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public String addLocalBeneficiaryMobileApi(LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addLocalBeneficiaryMobileApi(LocalBeneficiaryDTO beneficiary)  {
 
         try {
             logger.info(" 1st Local Beneficiary: {}", beneficiary);
@@ -89,7 +89,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public String addLocalBeneficiary(LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addLocalBeneficiary(LocalBeneficiaryDTO beneficiary)  {
 
         try {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);

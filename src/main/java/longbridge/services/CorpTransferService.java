@@ -29,9 +29,9 @@ public interface CorpTransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
-    Object addTransferRequest(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
+    Object addTransferRequest(CorpTransferRequestDTO corpTransferRequestDTO) ;
 
-    CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingException;
+    CorpTransferRequestDTO makeNeftBulkTransfer(CorpTransferRequestDTO corpTransferRequestDTO) ;
 
 
     Page<CorpTransRequest> getTransferRequests(Pageable pageDetails);

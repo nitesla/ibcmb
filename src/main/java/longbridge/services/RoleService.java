@@ -24,7 +24,7 @@ public interface RoleService {
      * @param  role the role to be added to the system
      */
     @PreAuthorize("hasAuthority('ADD_ROLE')")
-    String addRole(RoleDTO role) throws InternetBankingException;
+    String addRole(RoleDTO role) ;
    // void addRole(Role role);
 
     /**
@@ -61,7 +61,7 @@ public interface RoleService {
      * @param role the role to be updated
      */
     @PreAuthorize("hasAuthority('UPDATE_ROLE')")
-    String updateRole(RoleDTO role) throws InternetBankingException;
+    String updateRole(RoleDTO role) ;
 
     /**
      * Deletes a role
@@ -69,14 +69,14 @@ public interface RoleService {
      * @param id
      */
 //    @PreAuthorize("hasAuthority('DELETE_ROLE')")
-    String deleteRole(Long id) throws InternetBankingException;
+    String deleteRole(Long id) ;
 
     /**
      * Adds a new permission to the system
      * @param permission  the permission to be deleted
      */
 //    @PreAuthorize("hasAuthority('ADD_ROLE')")
-    String addPermission(PermissionDTO permission) throws InternetBankingException;
+    String addPermission(PermissionDTO permission) ;
 
     /**
      * Returns the given  permission
@@ -109,14 +109,14 @@ public interface RoleService {
      * @param permission the permission to be deleted
      */
     @PreAuthorize("hasAuthority('ADD_ROLE')")
-    String updatePermission(PermissionDTO permission) throws InternetBankingException;
+    String updatePermission(PermissionDTO permission) ;
 
     /**
      * Deletes the permissiont
      * @param id the permission
      */
     @PreAuthorize("hasAuthority('DELETE_PERMISSION')")
-    String deletePermission(Long id) throws InternetBankingException;
+    String deletePermission(Long id) ;
 
  List<RoleDTO> getRolesByUserType(UserType userType);
 

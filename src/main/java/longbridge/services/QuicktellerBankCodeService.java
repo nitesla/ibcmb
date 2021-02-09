@@ -11,15 +11,15 @@ import java.util.List;
 
 public interface QuicktellerBankCodeService {
 
-    String addQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO) throws InternetBankingException;
+    String addQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO) ;
 
-    String updateQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO) throws InternetBankingException;
+    String updateQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO) ;
 
     List<QuicktellerBankCodeDTO> getQuicktellerBankCodes();
 
     QuicktellerBankCodeDTO getQuicktellerBankCode(Long id);
 
-    String deleteQuicktellerBankCode(Long id) throws InternetBankingException;
+    String deleteQuicktellerBankCode(Long id) ;
 
     Page<QuicktellerBankCode> getQuicktellerBankCodes(Pageable pageDetails);
 

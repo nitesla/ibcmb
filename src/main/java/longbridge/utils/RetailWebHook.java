@@ -1,6 +1,6 @@
 package longbridge.utils;
 
-import longbridge.apiLayer.models.WebhookResponse;
+import longbridge.apilayer.models.WebhookResponse;
 import longbridge.models.RetailUser;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;

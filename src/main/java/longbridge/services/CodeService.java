@@ -21,7 +21,7 @@ import java.util.List;
 public interface CodeService {
 
 	@PreAuthorize("hasAuthority('ADD_CODE')")
-	String addCode(CodeDTO code) throws InternetBankingException;
+	String addCode(CodeDTO code) ;
 
 	/**
 	 * Deletes a code from the system
@@ -30,7 +30,7 @@ public interface CodeService {
 	 *            the oode's id
 	 */
 	@PreAuthorize("hasAuthority('DELETE_CODE')")
-	String deleteCode(Long codeId) throws InternetBankingException;
+	String deleteCode(Long codeId) ;
 
 	/**
 	 * Returns the specified code
@@ -56,7 +56,7 @@ public interface CodeService {
 	List<CodeDTO> getCodesByType(String codeType);
 
 	@PreAuthorize("hasAuthority('UPDATE_CODE')")
-	String updateCode(CodeDTO codeDTO) throws InternetBankingException;
+	String updateCode(CodeDTO codeDTO) ;
 
 	@PreAuthorize("hasAuthority('GET_CODES')")
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);

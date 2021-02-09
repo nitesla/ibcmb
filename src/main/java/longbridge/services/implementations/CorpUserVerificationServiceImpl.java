@@ -111,7 +111,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
 
     @Override
-    public String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException {
+    public String changeStatusFromCorporateAdmin(Long id)  {
         CorporateUser corporateUser = corporateUserRepo.findById(id).get();
 
         if ("I".equals(corporateUser.getCorporate().getStatus())) {

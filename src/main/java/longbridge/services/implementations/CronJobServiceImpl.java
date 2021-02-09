@@ -68,7 +68,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException {
+    public void updateAllAccountName(Account account, AccountDetails accountDetails)  {
         if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
             account.setAccountName(accountDetails.getAcctName());
 //            System.out.println("the account name after setting is" + account.getAccountName());
@@ -77,7 +77,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc,String category) throws InternetBankingException {
+    public void keepCronJobEprsDetials(String username, String cronExpression,String cronExprDesc,String category)  {
         CronJobExpression cronJobExpression = new CronJobExpression();
         cronJobExpression.setUsername(username);
         cronJobExpression.setCreatedOn(new Date());
@@ -89,7 +89,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void deleteRunningJob(String category) throws InternetBankingException {
+    public void deleteRunningJob(String category)  {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
         logger.info("the job to be deleted {}",cronJobExpression);
         if (cronJobExpression != null){
@@ -100,7 +100,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateAllAccountCurrency(Account account, AccountDetails accountDetails) throws InternetBankingException {
+    public void updateAllAccountCurrency(Account account, AccountDetails accountDetails)  {
 //        logger.info("The account size {}",allAccounts.size());
         if (accountDetails.getAcctCrncyCode() !=null && (!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
             account.setCurrencyCode(accountDetails.getAcctCrncyCode());
@@ -109,7 +109,7 @@ public class CronJobServiceImpl implements CronJobService {
         }
     }
     @Override
-    public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
+    public void updateAccountStatus(Account account, AccountDetails accountDetails)  {
 //        logger.info("the account status after setting is {} and number {}", account.getStatus(),account.getAccountNumber(),accountDetails.getAcctStatus());
 
         if ((account.getStatus()==null)||(account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
@@ -121,7 +121,7 @@ public class CronJobServiceImpl implements CronJobService {
 
 
     @Override
-    public boolean updateAccountDetials() throws InternetBankingException {
+    public boolean updateAccountDetials()  {
         List<Account> allAccounts = accountRepo.findAll();
         if(allAccounts.size()>0){
             for (Account account : allAccounts) {
@@ -142,7 +142,7 @@ public class CronJobServiceImpl implements CronJobService {
         return false;
     }
     @Override
-    public boolean updateRetailUserDetails() throws InternetBankingException {
+    public boolean updateRetailUserDetails()  {
         List<RetailUser>retailUsers =  retailUserRepo.findAll();
 //        logger.info("the users gotten {}",retailUsers.size());
         for (RetailUser retailUser:retailUsers) {
@@ -166,7 +166,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateRetailUserBVN(RetailUser retailUser, CustomerDetails details) throws InternetBankingException {
+    public void updateRetailUserBVN(RetailUser retailUser, CustomerDetails details)  {
         String userBvn = retailUser.getBvn();
         if((userBvn == null)||userBvn.equalsIgnoreCase("")||(!userBvn.equalsIgnoreCase(details.getBvn()))){
             retailUser.setBvn(details.getBvn());
@@ -176,7 +176,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateRetailUserPhoneNo(RetailUser retailUser, CustomerDetails details) throws InternetBankingException {
+    public void updateRetailUserPhoneNo(RetailUser retailUser, CustomerDetails details)  {
         String retailUserPhoneNumber = retailUser.getPhoneNumber();
 //        logger.info("new phone number is {}",retailUser.getPhoneNumber());
         if((retailUserPhoneNumber == null)||retailUserPhoneNumber.equalsIgnoreCase("")||(!retailUserPhoneNumber.equalsIgnoreCase(details.getPhone()))){
@@ -188,7 +188,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateRetailUserEmail(RetailUser retailUser, CustomerDetails details) throws InternetBankingException {
+    public void updateRetailUserEmail(RetailUser retailUser, CustomerDetails details)  {
         String retailUserEmail = retailUser.getEmail();
 //        logger.info("new email is {} and username {}",retailUser.getEmail(),retailUser.getUserName());
         if((retailUserEmail == null)||retailUserEmail.equalsIgnoreCase("")||(!retailUserEmail.equalsIgnoreCase(details.getEmail()))){
@@ -198,7 +198,7 @@ public class CronJobServiceImpl implements CronJobService {
         }
     }
     @Override
-    public boolean updateCorporateUserDetails() throws InternetBankingException {
+    public boolean updateCorporateUserDetails()  {
 //        List<CorporateUser>corporateUsers =  corporateUserRepo.findAll();
 //        for (CorporateUser corporateUser:corporateUsers) {
 //            try {
@@ -212,7 +212,7 @@ public class CronJobServiceImpl implements CronJobService {
 //        }
         return false;
     }
-    public boolean updateCorporateDetails() throws InternetBankingException {
+    public boolean updateCorporateDetails()  {
         List<Corporate>corporates =  corporateRepo.findAll();
         for (Corporate corporate:corporates) {
             try {
@@ -231,7 +231,7 @@ public class CronJobServiceImpl implements CronJobService {
         return false;
     }
     @Override
-    public void updateCorporateUserBVN(Corporate corporate, CustomerDetails details) throws InternetBankingException {
+    public void updateCorporateUserBVN(Corporate corporate, CustomerDetails details)  {
         String corporateBvn = corporate.getBvn();
         if((corporateBvn == null)||corporateBvn.equalsIgnoreCase("")||(!corporateBvn.equalsIgnoreCase(details.getBvn()))){
             corporate.setBvn(details.getBvn());
@@ -245,7 +245,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateCorporateUserTaxId(Corporate corporate, CustomerDetails details) throws InternetBankingException {
+    public void updateCorporateUserTaxId(Corporate corporate, CustomerDetails details)  {
         String taxId = corporate.getTaxId();
         if((taxId == null)||taxId.equalsIgnoreCase("")||(!taxId.equalsIgnoreCase(details.getTaxId()))){
             corporate.setTaxId(details.getTaxId());
@@ -271,7 +271,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException {
+    public void updateCorporateUserPhoneNo(CorporateUser corporateUser, CustomerDetails details)  {
         String corporateUserPhoneNumber = corporateUser.getPhoneNumber();
         if((corporateUserPhoneNumber == null)||corporateUserPhoneNumber.equalsIgnoreCase("")||(!details.getPhone().equalsIgnoreCase(corporateUserPhoneNumber))){
             corporateUser.setPhoneNumber(details.getPhone());
@@ -285,7 +285,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void updateCorporateUserEmail(CorporateUser corporateUser, CustomerDetails details) throws InternetBankingException {
+    public void updateCorporateUserEmail(CorporateUser corporateUser, CustomerDetails details)  {
         String corporateUserEmail = corporateUser.getEmail();
         if((corporateUserEmail == null)||corporateUserEmail.equalsIgnoreCase("")||(!corporateUserEmail.equalsIgnoreCase(details.getEmail()))){
             corporateUser.setEmail(details.getEmail());
@@ -300,7 +300,7 @@ public class CronJobServiceImpl implements CronJobService {
 
 
     @Override
-    public void saveRunningJob(String jobCategory, String cronExpression) throws InternetBankingException {
+    public void saveRunningJob(String jobCategory, String cronExpression)  {
         CronJobMonitor jobMonitor = new CronJobMonitor();
         jobMonitor.setExpression(cronExpression);
         jobMonitor.setJobStartTime(new Date());
@@ -310,7 +310,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public String getCurrentExpression(String category) throws InternetBankingException {
+    public String getCurrentExpression(String category)  {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
         if(cronJobExpression == null){
             return "0 0 0 ? * * *";
@@ -318,7 +318,7 @@ public class CronJobServiceImpl implements CronJobService {
         return cronJobExpression.getCronExpression();
     }
     @Override
-    public String getCurrentJobDesc(String category) throws InternetBankingException {
+    public String getCurrentJobDesc(String category)  {
         CronJobExpression cronJobExpression = cronJobExpressionRepo.findLastByFlagAndCategory("Y",category);
         if(cronJobExpression != null) {
             return cronJobExpression.getCronExpressionDesc();
@@ -328,7 +328,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public boolean updateRunningJob() throws InternetBankingException {
+    public boolean updateRunningJob()  {
         CronJobMonitor lastIncompleteJob = cronJobMonitorRepo.findFirstByOrderByStillRunningDesc();
 //        logger.info("monitor is {}", lastIncompleteJob);
         if(lastIncompleteJob != null) {
@@ -343,7 +343,7 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public boolean startCronJob() throws InternetBankingException {
+    public boolean startCronJob()  {
         SettingDTO setting = configService.getSettingByName("ENABLE_CRON_JOB");
         if(setting != null && setting.isEnabled()) {
             logger.info("the setting read is {}",setting.isEnabled());
@@ -353,12 +353,12 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public boolean stopJob() throws InternetBankingException {
+    public boolean stopJob()  {
         return false;
     }
 
     @Override
-    public void addNewAccount() throws InternetBankingException {
+    public void addNewAccount()  {
         List<RetailUser>retailUsers =  retailUserRepo.findAll();
         SettingDTO setting = configService.getSettingByName("TRANSACTIONAL_ACCOUNTS");
         String[] list = StringUtils.split(setting.getValue(), ",");

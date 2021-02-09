@@ -35,12 +35,12 @@ public interface ReportService {
     Page<ReportDTO> searchReportsForuser(Pageable pageDetails, String search);
     Page<ReportDTO> getReports(Pageable pageDetails);
     Page<ReportDTO> findReports(String search, Pageable pageDetails);
-    boolean reportAlreadyExist(String reportName) throws InternetBankingException;
+    boolean reportAlreadyExist(String reportName) ;
     ReportDTO getReportById(Long id);
     boolean isUserAuthorized(ReportDTO reportDTO);
     String editReport(ReportDTO reportDTO, WebRequest webRequest) throws VerificationInterruptedException;
-    String deleteReport(Long id) throws InternetBankingException;
-    String deleteReport(Report report) throws InternetBankingException;
+    String deleteReport(Long id) ;
+    String deleteReport(Report report) ;
     List<FinancialInstitution> getFinancialInstutions();
 
     ReportDTO updateReportParameters(ReportDTO reportDTO, Long permissionId, String name, String originalFilename, MultipartFile file) throws IOException, JRException;

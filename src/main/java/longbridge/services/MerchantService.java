@@ -15,15 +15,15 @@ import java.util.List;
  */
 public interface MerchantService {
 
-	String addMerchant(Merchant merchant) throws InternetBankingException;
+	String addMerchant(Merchant merchant) ;
 
-	String deleteMerchant(Long id) throws InternetBankingException;
+	String deleteMerchant(Long id) ;
 
 	Merchant getMerchant(Long id);
 
 	List<Merchant> getMerchantsByCategory(String category);
 
-	String updateMerchant(Merchant merchant) throws InternetBankingException;
+	String updateMerchant(Merchant merchant) ;
 
 	Page<Merchant> getMerchantsByCategory(String category, Pageable pageDetails);
 

@@ -15,14 +15,14 @@ public interface InternationalBeneficiaryService {
      */
 
 	   @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-       String addInternationalBeneficiary(InternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
+       String addInternationalBeneficiary(InternationalBeneficiaryDTO beneficiary) ;
 
     /**
      * Deletes a beneficiary
      * @param beneficiaryId the beneficiary's id
      */
     @PreAuthorize("hasAuthority('DELETE_BENEFICIARY')")
-    String deleteInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException;
+    String deleteInternationalBeneficiary(Long beneficiaryId) ;
 
     /**
      * Returns a beneficiary specified by the {@code id}

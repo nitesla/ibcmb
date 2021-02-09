@@ -16,7 +16,7 @@ import java.util.List;
 public interface ServiceReqConfigService{
 
     @PreAuthorize("hasAuthority('ADD_SERV_REQ_CONFIG')")
-    String addServiceReqConfig(ServiceReqConfigDTO serviceReqFormField) throws InternetBankingException;
+    String addServiceReqConfig(ServiceReqConfigDTO serviceReqFormField) ;
 
     @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
     ServiceReqConfigDTO getServiceReqConfig(Long id);
@@ -33,13 +33,13 @@ public interface ServiceReqConfigService{
     Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize);
 
     @PreAuthorize("hasAuthority('UPDATE_SERV_REQ_CONFIG')")
-    String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfig) throws InternetBankingException;
+    String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfig) ;
 
 
     @PreAuthorize("hasAuthority('DELETE_SERV_REQ_CONFIG')")
-    String delServiceReqConfig(Long id) throws InternetBankingException;
+    String delServiceReqConfig(Long id) ;
 
-    String addServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField) throws InternetBankingException;
+    String addServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField) ;
 
     ServiceReqFormFieldDTO getServiceReqFormField(Long id);
 
@@ -49,9 +49,9 @@ public interface ServiceReqConfigService{
 
     Page<ServiceReqFormFieldDTO> getServiceReqFormFields(Pageable pageDetails);
     
-    String updateServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField) throws InternetBankingException;
+    String updateServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField) ;
 
-    String delServiceReqFormField(Long id) throws InternetBankingException;
+    String delServiceReqFormField(Long id) ;
 
     ServiceReqConfigDTO getServiceReqConfigRequestName(String requestName);
 

@@ -4,7 +4,7 @@ package longbridge.security.api;
  * Created by mac on 26/09/2018.
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.apiLayer.models.ApiUser;
+import longbridge.apilayer.models.ApiUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

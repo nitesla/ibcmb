@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @Repository
 public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> implements AuditRepo {
 
-    static long MILLISECONDS_IN_A_DAY = 86400000L;
     private EntityManager em;
     private AuditConfigService auditCfgService;
 
@@ -74,14 +73,13 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
                 criteria.add("crv.timestamp <= " + crit.getTo().getTime());
             }
             if (StringUtils.isNotBlank(crit.getIpAddress())) {
-                //criteria.add("crv.ipAddress = '" + crit.getIpAddress() + "'");
                 criteria.add(" crv.ipAddress = :ipAddress ");
                 addIpAddress = true;
             }
 
             if (StringUtils.isNotBlank(crit.getModifier())) {
                 //criteria.add("crv.lastChangedBy like '%" + crit.getModifier() + "%'");
-                criteria.add(" crv.lastChangedBy like :modifiedBy ");
+                criteria.add(" crv.lastChangedBy like %:modifiedBy% ");
                 addModifier = true;
             }
 
@@ -182,8 +180,7 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
             Class<?> aClass = Class.forName(type);
             AuditReader reader = AuditReaderFactory.get(em);
             AuditQuery auditQuery = reader.createQuery().forEntitiesAtRevision(aClass, entity.getRevision().getId());
-            Object o = auditQuery.getSingleResult();
-            return o;
+            return auditQuery.getSingleResult();
         } catch (ClassNotFoundException e) {
             throw new InternetBankingException("Invalid Entity");
         }
@@ -195,7 +192,6 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
         if (entity == null) throw new InternetBankingException("Invalid Entity");
         String type = entity.getEntity();
         String table = getTable(type);
-        String entityTable2 = StringUtils.substringBefore(table, "_aud");
         int rev = entity.getRevision().getId();
 
 
@@ -207,26 +203,24 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
 
         //check for next revision of entity
 
-        sql = String.format("select max(tab.rev) from %s tab where tab.id=%d and tab.rev < %d ", table, revisionMap.get("id"), rev);
+        sql = String.format("select max(tab.rev) from %s tab where tab.id=%d and tab.rev < %d ", table, (long) revisionMap.get("id"), rev);
         Long maxRev = template.queryForObject(sql, Long.class);
         Map<String, Object> newMap = null;
         if (maxRev != null) {
             // get it
-            sql = String.format("select * from %s tab where tab.id=%d and tab.rev = %d order by tab.rev desc", table, revisionMap.get("id"), maxRev);
+            sql = String.format("select * from %s tab where tab.id=%d and tab.rev = %d order by tab.rev desc", table, (long) revisionMap.get("id"), maxRev);
             newMap = template.queryForMap(sql);
             sanitize(newMap);
         } else {
             //get object if exists
-            newMap = new HashMap();
+            newMap = new HashMap<String, Object>();
         }
 
-        List<AuditBlob> data = compact(revisionMap, newMap);
-        return data;
+        return compact(revisionMap, newMap);
     }
 
     private List<AuditBlob> compact(Map<String, Object> revisionMap, Map<String, Object> newMap) {
-        List<AuditBlob> baggage = revisionMap.keySet().stream().filter(k -> !k.endsWith("_mod")).map(k -> AuditBlob.AuditBlobBuilder.anAuditBlob().withName(k).withNow(revisionMap.get(k)).withBefore(newMap.get(k)).build()).collect(Collectors.toList());
-        return baggage;
+        return revisionMap.keySet().stream().filter(k -> !k.endsWith("_mod")).map(k -> AuditBlob.AuditBlobBuilder.anAuditBlob().withName(k).withNow(revisionMap.get(k)).withBefore(newMap.get(k)).build()).collect(Collectors.toList());
     }
 
 
@@ -246,14 +240,9 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
         String auditEntityName = aec.getAuditEntityName(entity);
 
         // Now we need to get the entity information from ORM
-        try {
-            Class<?> aClass = Class.forName(entity);
-            MetamodelImplementor metamodel = (MetamodelImplementor) si.getMetamodel();
-//            ClassMetadata classMetadata = (ClassMetadata) metamodel.entityPersister(aClass.getName());
-            return ((Queryable) metamodel.entityPersister(auditEntityName)).getTableName();
-        } catch (ClassNotFoundException e) {
-            throw new InternetBankingException("Entity not found");
-        }
+        MetamodelImplementor metamodel = (MetamodelImplementor) si.getMetamodel();
+        return ((Queryable) metamodel.entityPersister(auditEntityName)).getTableName();
+
     }
 
 

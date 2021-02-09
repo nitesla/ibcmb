@@ -135,7 +135,7 @@ if(reportParam.getDatatype() != null){
         });
         return modelMap;
     }
-    public boolean deleteReportIfExist(boolean isFileTemp, String fileName) throws InternetBankingException {
+    public boolean deleteReportIfExist(boolean isFileTemp, String fileName)  {
         try {
             String jasperFileName = REPORT_PATH + fileName + ".jasper";
             String jrxmlFileName = REPORT_PATH + fileName + ".jrxml";

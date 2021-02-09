@@ -1,6 +1,6 @@
 package longbridge.security.api;
 
-import longbridge.apiLayer.data.ResponseData;
+import longbridge.apilayer.data.ResponseData;
 import longbridge.security.corpuser.CorporateUserDetailsService;
 import longbridge.security.retailuser.RetailUserDetailsService;
 import org.slf4j.Logger;

@@ -34,9 +34,9 @@ public interface BillerService {
 
     void readOnlyAmount(Long id, Boolean value);
 
-    Biller addBiller(BillerDTO billerDto) throws InternetBankingException;
+    Biller addBiller(BillerDTO billerDto) ;
 
-    String deleteBiller(Long id) throws InternetBankingException;
+    String deleteBiller(Long id) ;
 
     Biller getBiller(Long id);
 
@@ -49,7 +49,7 @@ public interface BillerService {
     Page<Biller> getBillerByCategory(String search, String category, Pageable pageDetails);
 
 
-    Biller updateBiller(BillerDTO biller) throws InternetBankingException;
+    Biller updateBiller(BillerDTO biller) ;
 
     Page<BillerCategory> getBillerCategories(Pageable pageDetails);
 

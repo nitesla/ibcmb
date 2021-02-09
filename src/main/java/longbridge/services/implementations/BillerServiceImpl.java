@@ -238,7 +238,7 @@ public class BillerServiceImpl implements BillerService {
     }
 
     @Override
-    public Biller updateBiller(BillerDTO biller) throws InternetBankingException {
+    public Biller updateBiller(BillerDTO biller)  {
         return null;
     }
 
@@ -347,12 +347,12 @@ public class BillerServiceImpl implements BillerService {
 
 
     @Override
-    public Biller addBiller(BillerDTO billerDto) throws InternetBankingException {
+    public Biller addBiller(BillerDTO billerDto)  {
         return null;
     }
 
     @Override
-    public String deleteBiller(Long id) throws InternetBankingException {
+    public String deleteBiller(Long id)  {
         return null;
     }
 

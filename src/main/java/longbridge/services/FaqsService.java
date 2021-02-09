@@ -21,13 +21,13 @@ public interface FaqsService {
     FaqsDTO getFaq(Long id);
 
     @PreAuthorize("hasAuthority('ADD_FAQ')")
-    String addFaq(FaqsDTO faqsDTO) throws InternetBankingException;
+    String addFaq(FaqsDTO faqsDTO) ;
 
     @PreAuthorize("hasAuthority('UPDATE_FAQ')")
-    String updateFaq(FaqsDTO faqsDTO) throws InternetBankingException;
+    String updateFaq(FaqsDTO faqsDTO) ;
 
     @PreAuthorize("hasAuthority('DELETE_FAQ')")
-    String deleteFaq(Long id) throws InternetBankingException;
+    String deleteFaq(Long id) ;
 
     FaqsDTO convertEntityToDTO(Faqs faqs);
 

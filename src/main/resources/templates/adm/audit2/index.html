@@ -6,6 +6,7 @@
 
 
 
+
 <body class="nav-md">
 <style>
     td.details-control {
@@ -206,9 +207,18 @@
 
         }
     });
+    $("#operations").select2({
+        allowClear: true
+    });
+    $("#entityName").select2({
+        placeholder: 'Table Name'
+    });
 
     /*<![CDATA[*/
     $(document).ready(function() {
+        $("#entityName > option").each(function () {
+            this.text = _.startCase(this.text)
+        });
         $('#searchContent').hide();
         $('#searchById').hide();
         $('.datepicker').datepicker({
@@ -242,11 +252,7 @@
                     var arr = $('#operations').val();
                     console.log(arr);
 
-                   if(arr) d.operations = arr.join()
-                   //  for (idx = 0; idx < arr.length; idx++) {
-                   //     // n= encodeURI(`operations[${idx}]`)
-                   //      d.operations.push(arr[idx]);
-                   //  }
+                   if(arr) d.operations = arr.join();
                 }
             },
             "dom": 'T<"clear">frtlp',
@@ -404,9 +410,6 @@
     } );
 
 
-    $("#operations").select2({
-        allowClear: true
-    });
 
     /*]]>*/
 </script>

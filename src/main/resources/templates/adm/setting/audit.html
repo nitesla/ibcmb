@@ -102,6 +102,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/lodash.min.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
@@ -135,7 +136,17 @@
                 { "data": "entityName" },
                 { "data": "enabled" },
             ] ,
-            "columnDefs" : [ {
+            "columnDefs" : [{
+                "targets": 0,
+                "data": "entityName",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                       return _.startCase(data);
+                    }
+                    return data;
+                }
+
+            } ,{
 				"targets" : 1,
 				"data" : "enabled",
 				"render" : function(data, type,full, meta) {

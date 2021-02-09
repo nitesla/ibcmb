@@ -51,7 +51,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     @Verifiable(operation="ADD_USER_GRP",description="Adding a Group")
-    public String addGroup(UserGroupDTO userGroupDTO) throws InternetBankingException {
+    public String addGroup(UserGroupDTO userGroupDTO)  {
         try {
             UserGroup userGroup = convertDTOToEntity(userGroupDTO);
             userGroupRepo.save(userGroup);
@@ -68,7 +68,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Verifiable(operation="UPDATE_USER_GRP",description="Updating a Group")
-    public String updateGroup(UserGroupDTO userGroupDTO) throws InternetBankingException{
+    public String updateGroup(UserGroupDTO userGroupDTO) {
         try {
             UserGroup userGroup = convertDTOToEntity(userGroupDTO);
             userGroup.setId(userGroupDTO.getId());
@@ -89,7 +89,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Verifiable(operation="DELETE_USER_GRP",description="Deleting a Group")
-    public String deleteGroup(Long id) throws InternetBankingException{
+    public String deleteGroup(Long id) {
         try {
            UserGroup group = userGroupRepo.findById(id).get();
            UserGroup userGroup = new UserGroup();
