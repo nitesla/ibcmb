@@ -5,7 +5,7 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.omnichannel.dto.CustomerInfo;
 import longbridge.api.omnichannel.dto.RetailUserCredentials;
-import longbridge.apiLayer.models.WebhookResponse;
+import longbridge.apilayer.models.WebhookResponse;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;

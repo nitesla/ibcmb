@@ -1,7 +1,7 @@
 package longbridge.utils;
 
-import longbridge.apiLayer.models.ApiResponse;
-import longbridge.apiLayer.models.ApiUser;
+import longbridge.apilayer.models.ApiResponse;
+import longbridge.apilayer.models.ApiUser;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;

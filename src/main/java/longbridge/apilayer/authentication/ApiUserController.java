@@ -1,9 +1,9 @@
-package longbridge.apiLayer.authentication;
+package longbridge.apilayer.authentication;
 
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import longbridge.apiLayer.models.ApiUser;
+import longbridge.apilayer.models.ApiUser;
 import longbridge.security.api.JwtTokenUtil;
 import longbridge.utils.ApiUtil;
 import org.slf4j.LoggerFactory;

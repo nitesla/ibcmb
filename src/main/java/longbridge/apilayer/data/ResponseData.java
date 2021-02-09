@@ -1,4 +1,4 @@
-package longbridge.apiLayer.data;
+package longbridge.apilayer.data;
 
 public class ResponseData {
     private String message;

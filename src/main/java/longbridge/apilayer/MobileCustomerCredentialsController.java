@@ -1,9 +1,9 @@
-package longbridge.apiLayer;
+package longbridge.apilayer;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import longbridge.apiLayer.data.ResponseData;
+import longbridge.apilayer.data.ResponseData;
 import longbridge.dtos.UserRetrievalDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustResetPassword;

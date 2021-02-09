@@ -1,7 +1,7 @@
 
 package longbridge.services.implementations;
 
-import longbridge.apiLayer.models.WebhookResponse;
+import longbridge.apilayer.models.WebhookResponse;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;

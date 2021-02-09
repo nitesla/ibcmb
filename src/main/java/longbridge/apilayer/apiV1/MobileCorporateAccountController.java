@@ -1,11 +1,11 @@
-package longbridge.apiLayer.apiV1;
+package longbridge.apilayer.apiV1;
 
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import longbridge.api.AccountDetails;
-import longbridge.apiLayer.data.ResponseData;
+import longbridge.apilayer.data.ResponseData;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.apidtos.MobileAccountDTO;
 import longbridge.dtos.apidtos.MobileAccountStatementDTO;

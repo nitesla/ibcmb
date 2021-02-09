@@ -1,8 +1,8 @@
-package longbridge.apiLayer;
+package longbridge.apilayer;
 
 import io.swagger.annotations.Api;
 import longbridge.api.CustomerDetails;
-import longbridge.apiLayer.data.ResponseData;
+import longbridge.apilayer.data.ResponseData;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.UserRegDTO;

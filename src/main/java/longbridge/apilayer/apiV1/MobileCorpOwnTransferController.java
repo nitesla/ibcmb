@@ -1,8 +1,8 @@
-package longbridge.apiLayer.apiV1;
+package longbridge.apilayer.apiV1;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import longbridge.apiLayer.data.ResponseData;
+import longbridge.apilayer.data.ResponseData;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;

@@ -1,7 +1,7 @@
-package longbridge.apiLayer.antiFraudApi;
+package longbridge.apilayer.antiFraudApi;
 
 import io.swagger.annotations.Api;
-import longbridge.apiLayer.data.ResponseData;
+import longbridge.apilayer.data.ResponseData;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.TransRequest;
 import longbridge.services.TransferService;

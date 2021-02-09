@@ -1,4 +1,4 @@
-package longbridge.apiLayer.configurations;
+package longbridge.apilayer.configurations;
 
 
 import org.springframework.context.annotation.Bean;

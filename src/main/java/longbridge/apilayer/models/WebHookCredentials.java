@@ -1,4 +1,4 @@
-package longbridge.apiLayer.models;
+package longbridge.apilayer.models;
 
 public class WebHookCredentials {
 
