@@ -1,12 +1,8 @@
-${AnsiColor.BRIGHT_BLACK} /₦₦₦₦₦₦                                                       /₦₦₦₦₦₦₦                      /₦₦       /₦₦
-${AnsiColor.BRIGHT_BLACK}|_  ₦₦_/                                                      | ₦₦__  ₦₦                    | ₦₦      |__/
-${AnsiColor.BRIGHT_BLACK}  | ₦₦    /₦₦₦₦₦₦₦  /₦₦₦₦₦₦  /₦₦₦₦₦₦₦         /₦₦₦₦₦₦         | ₦₦  \ ₦₦  /₦₦₦₦₦₦  /₦₦₦₦₦₦₦ | ₦₦   /₦₦ /₦₦ /₦₦₦₦₦₦₦   /₦₦₦₦₦₦
-${AnsiColor.BRIGHT_BLACK}  | ₦₦   /₦₦_____/ /₦₦__  ₦₦| ₦₦__  ₦₦       /₦₦__  ₦₦ /₦₦₦₦₦₦| ₦₦₦₦₦₦₦  |____  ₦₦| ₦₦__  ₦₦| ₦₦  /₦₦/| ₦₦| ₦₦__  ₦₦ /₦₦__  ₦₦
-${AnsiColor.BRIGHT_BLACK}  | ₦₦  | ₦₦      | ₦₦  \ ₦₦| ₦₦  \ ₦₦      | ₦₦₦₦₦₦₦₦|______/| ₦₦__  ₦₦  /₦₦₦₦₦₦₦| ₦₦  \ ₦₦| ₦₦₦₦₦₦/ | ₦₦| ₦₦  \ ₦₦| ₦₦  \ ₦₦
-${AnsiColor.BRIGHT_BLACK}  | ₦₦  | ₦₦      | ₦₦  | ₦₦| ₦₦  | ₦₦      | ₦₦_____/        | ₦₦  \ ₦₦ /₦₦__  ₦₦| ₦₦  | ₦₦| ₦₦_  ₦₦ | ₦₦| ₦₦  | ₦₦| ₦₦  | ₦₦
-${AnsiColor.BRIGHT_BLACK} /₦₦₦₦₦₦|  ₦₦₦₦₦₦₦|  ₦₦₦₦₦₦/| ₦₦  | ₦₦      |  ₦₦₦₦₦₦₦        | ₦₦₦₦₦₦₦/|  ₦₦₦₦₦₦₦| ₦₦  | ₦₦| ₦₦ \  ₦₦| ₦₦| ₦₦  | ₦₦|  ₦₦₦₦₦₦₦
-${AnsiColor.BRIGHT_BLACK}|______/ \_______/ \______/ |__/  |__/       \_______/        |_______/  \_______/|__/  |__/|__/  \__/|__/|__/  |__/ \____  ₦₦
-${AnsiColor.RED}                          :: Icon E-banking 2.0 ::${AnsiColor.BRIGHT_BLACK}                                                                   |  ₦₦₦₦₦₦/
-${AnsiColor.RED}                ::   Powered By : Longbridge Technologied Ltd. ::${AnsiColor.BRIGHT_BLACK}                                                     \______/
-${AnsiColor.BLACK}
- 
+${AnsiColor.BRIGHT_RED}███████╗    ${AnsiColor.BRIGHT_BLACK}██████╗  █████╗ ███╗   ██╗██╗  ██╗██╗███╗   ██╗ ██████╗
+${AnsiColor.BRIGHT_RED}██╔════╝    ${AnsiColor.BRIGHT_BLACK}██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██║████╗  ██║██╔════╝
+${AnsiColor.BRIGHT_RED}█████╗█████╗${AnsiColor.BRIGHT_BLACK}██████╔╝███████║██╔██╗ ██║█████╔╝ ██║██╔██╗ ██║██║  ███╗
+${AnsiColor.BRIGHT_RED}██╔══╝╚════╝${AnsiColor.BRIGHT_BLACK}██╔══██╗██╔══██║██║╚██╗██║██╔═██╗ ██║██║╚██╗██║██║   ██║
+${AnsiColor.BRIGHT_RED}███████╗    ${AnsiColor.BRIGHT_BLACK}██████╔╝██║  ██║██║ ╚████║██║  ██╗██║██║ ╚████║╚██████╔╝
+${AnsiColor.BRIGHT_RED}╚══════╝    ${AnsiColor.BRIGHT_BLACK}╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+                   :: Icon E-banking 2.0 ::
+    ::   Powered By : Longbridge Technologied Ltd. ::
