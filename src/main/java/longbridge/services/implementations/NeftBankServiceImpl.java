@@ -33,7 +33,7 @@ public class NeftBankServiceImpl implements NeftBankService {
 
 
     @Override
-    public String addNeftBank(NeftBankDTO code) throws InternetBankingException {
+    public String addNeftBank(NeftBankDTO code)  {
 
         try {
             NeftBank neftBank = convertDTOToEntity(code);
@@ -48,7 +48,7 @@ public class NeftBankServiceImpl implements NeftBankService {
     }
 
     @Override
-    public String deletNeftBank(Long neftBankId) throws InternetBankingException {
+    public String deletNeftBank(Long neftBankId)  {
         try {
             neftBankRepo.deleteById(neftBankId);
             return messageSource.getMessage("neftBank.delete.success", null, locale);
@@ -68,7 +68,7 @@ public class NeftBankServiceImpl implements NeftBankService {
     }
 
     @Override
-    public String updateNeftBank(NeftBankDTO neftBankDTO) throws InternetBankingException {
+    public String updateNeftBank(NeftBankDTO neftBankDTO)  {
         try {
             NeftBank neftBank = convertDTOToEntity(neftBankDTO);
             neftBankRepo.save(neftBank);

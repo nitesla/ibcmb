@@ -158,7 +158,6 @@ function validateSecAnswer(secAnswer){
         return false;
     }
 
-
 }
 
 function sendUsername(){

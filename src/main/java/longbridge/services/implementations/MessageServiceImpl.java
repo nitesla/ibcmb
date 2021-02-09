@@ -208,7 +208,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public String deleteSentMessage(User user,Long id)throws InternetBankingException{
+    public String deleteSentMessage(User user,Long id){
         try {
             Message message = new Message();
             message.setId(id);
@@ -224,7 +224,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public String deleteReceivedMessage(Long id)throws InternetBankingException {
+    public String deleteReceivedMessage(Long id) {
         try {
             this.messageRepo.delete(id);
             return messageSource.getMessage("message.delete.success", null, locale);
@@ -235,7 +235,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public String purge(int daysOld) throws InternetBankingException {
+    public String purge(int daysOld)  {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -359,7 +359,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException {
+    public String sendMessage(User sender, User recipient, MessageDTO message)  {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

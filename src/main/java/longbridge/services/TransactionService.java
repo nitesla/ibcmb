@@ -19,7 +19,7 @@ public interface TransactionService {
      * Adds a transaction fee
      * @param transactionFee
      */
-    String addTransactionFee(TransactionFeeDTO transactionFee) throws InternetBankingException;
+    String addTransactionFee(TransactionFeeDTO transactionFee) ;
 
     /**
      * Returns a transaction fee
@@ -32,13 +32,13 @@ public interface TransactionService {
      * Updates the transaction fees
      * @param transactionFeeDTO
      */
-    String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException;
+    String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) ;
 
     /**
      * Deletes the transaction fees
      * @param id
      */
-    String deleteTransactionFee(Long id) throws InternetBankingException;
+    String deleteTransactionFee(Long id) ;
 
 
     /**

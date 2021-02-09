@@ -16,10 +16,10 @@ import java.util.List;
 public interface FinancialInstitutionService {
 
     @PreAuthorize("hasAuthority('ADD_FIN_INST')")
-    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;
+    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) ;
 
     @PreAuthorize("hasAuthority('UPDATE_FIN_INST')")
-    String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;
+    String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) ;
 
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     List<FinancialInstitutionDTO> getFinancialInstitutions();
@@ -32,7 +32,7 @@ public interface FinancialInstitutionService {
     FinancialInstitutionDTO getFinancialInstitution(Long id);
 
     @PreAuthorize("hasAuthority('DELETE_FIN_INST')")
-    String deleteFinancialInstitution(Long id) throws InternetBankingException;
+    String deleteFinancialInstitution(Long id) ;
 
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails);

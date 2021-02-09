@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.*;
@@ -1912,7 +1911,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public Map<String, List<String>> getCoverageDetails(String coverageName, String customerId) {
+	public JsonNode getCoverageDetails(String coverageName, String customerId) {
 		Map<String,Object> payloadParameters = new HashMap<>();
         Map<String, List<String>> coverageDetails = new LinkedHashMap<>();
 
@@ -1923,18 +1922,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 			payloadParameters.put("coverageName",lowerCaseCoverageName);
 			payloadParameters.put("customerId",customerId.replaceAll("(\r\n|\r|\n)",""));
 			JsonNode coverageJsonNode = template.getForObject(uri, JsonNode.class, payloadParameters);
-			JsonNode value = coverageJsonNode.fields().next().getValue();
-			if(value instanceof ArrayNode){
-				value.forEach(jsonNode -> extractCoverageDetails(coverageDetails, jsonNode));
-			}else{
-                extractCoverageDetails(coverageDetails, value);
-			}
-
+//			JsonNode value = coverageJsonNode.fields().next().getValue();
+//			if(value instanceof ArrayNode){
+//				value.forEach(jsonNode -> extractCoverageDetails(coverageDetails, jsonNode));
+//			}else{
+//                extractCoverageDetails(coverageDetails, value);
+//			}
+			return coverageJsonNode;
 
 		} catch (Exception e) {
 			logger.error("Error getting coverage details", e);
+			throw new InternetBankingException(e.getMessage());
 		}
-		return coverageDetails;
 	}
 
 	private void extractCoverageDetails(Map<String, List<String>> coverageDetails, JsonNode jsonNode) {
@@ -1958,62 +1957,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
 
-//	@Override
-//	public NeftTransfer checkNeftStatus() {
-//		NeftResponse response;
-//
-//		List<NeftTransfer> checkStatus = neftTransferRepo.checkStatus();
-//		Map<String,Object> params = new HashMap<>();
-//		List<NeftTransfer> checkStatus1 = updateStatus(checkStatus);
-//		params.put("PFItemDataStores", neftTransfers);
-//
-//
-//		Map<String,Object> params = new HashMap<>();
-//		params.put("appid",appId);
-//		params.put("MsgID",getMsgId());
-//		params.put("TotalValue", totalValue);
-//		params.put("BankCode",bankcode);
-//		params.put("ItemCount", ItemCount);
-//		params.put("Date", newDate);
-//		params.put("SettlementTimeF", newDate);
-////		List<NeftTransfer> neftTransfers = getUnsettledNeftList.stream()
-////				.peek(neftTransfer -> updateNeftSettlement(newDate, neftTransfer))
-////				.collect(Collectors.toList());
-//		List<NeftTransfer> neftTransfers = updateSequenceNumber(getUnsettledNeftList, newDate);
-//		logger.info("Complete PFItemDataStores ========= {}", neftTransfers);
-//		params.put("PFItemDataStores", neftTransfers);
-//		logger.info("PARAMS ============ {}", params);
-//		try{
-//			if (!getUnsettledNeftList.isEmpty()){
-//				response = template.postForObject(uri,params, NeftResponse.class);
-//				logger.info("Neft Response {}", response);
-//				getUnsettledNeftList.forEach(neftTransfer -> {
-//					updateNeftSettlement(newDate, neftTransfer);
-//					neftTransferRepo.save(neftTransfer);
-//				});
-//			}else {
-//				logger.info("No pending requests");
-//			}
-//		}catch (HttpStatusCodeException e) {
-//
-//			logger.error("HTTP Error occurred", e);
-//
-//		}catch (Exception e){
-//			logger.info("Error processing request ", e);
-//		}
-//		return response;
-//	}
-//	private List<NeftTransfer> updateStatus(List<NeftTransfer> neftTransfers){
-//		List<NeftTransfer> neftTransferList = new ArrayList<>();
-//		for(int i = 0; i < neftTransfers.size(); i++){
-//			NeftTransfer neftTransfer = neftTransfers.get(i);
-//			neftTransferList.add(neftTransfer);
-//		}
-//		return neftTransferList.
-//				stream()
-//				.peek(neftTransfer -> updateNeftStatus(neftTransfer))
-//				.collect(Collectors.toList());
-//	}
+
 	@Override
     public NeftResponse submitNeftTransfer() {
 		NeftResponse response = new NeftResponse();

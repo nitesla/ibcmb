@@ -44,7 +44,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
     @Override
     @Transactional
     @Verifiable(operation = "ADJUST_TRANSFER_FEE", description = "Adjust transfer fee for a platform")
-    public String adjustTransferFee(TransferFeeAdjustmentDTO tfaDTO) throws InternetBankingException {
+    public String adjustTransferFee(TransferFeeAdjustmentDTO tfaDTO)  {
         try {
             TransferFeeAdjustment tfa = new TransferFeeAdjustment();
             tfa.setFeeDescription(tfaDTO.getFeeDescription());
@@ -53,7 +53,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
             tfa.setFixedAmountValue(tfaDTO.getFixedAmountValue());
             tfa.setRate(tfaDTO.getRate());
             tfa.setRateValue(tfaDTO.getRateValue());
-           tfa.setFeeRange(tfaDTO.getFeeRange());
+            tfa.setFeeRange(tfaDTO.getFeeRange());
             tfa.setDelFlag("N");
             transferAdjustFeeRepository.save(tfa);
             String apiService = integrationService.updateCharge(tfa);
@@ -74,7 +74,7 @@ public class TransferSettingsImpl implements TransferSettingsService {
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_TRANSFER_LIMIT", description = "Update transfer limit")
-    public String updateTransferLimit(TransferSetLimitDTO tslDTO)throws InternetBankingException{
+    public String updateTransferLimit(TransferSetLimitDTO tslDTO){
         try {
             TransferSetLimit tsl = new TransferSetLimit();
             tsl.setChannel(tslDTO.getChannel());

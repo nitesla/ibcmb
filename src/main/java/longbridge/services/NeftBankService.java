@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface NeftBankService {
 
-    String addNeftBank(NeftBankDTO code) throws InternetBankingException;
-    String deletNeftBank(Long codeId) throws InternetBankingException;
+    String addNeftBank(NeftBankDTO code) ;
+    String deletNeftBank(Long codeId) ;
     NeftBankDTO getNeftBank(Long codeId);
     List<NeftBankDTO> getNeftBranchesByBankName(String bankName);
-    String updateNeftBank(NeftBankDTO neftBankDTO) throws InternetBankingException;
+    String updateNeftBank(NeftBankDTO neftBankDTO) ;
     Page<NeftBankDTO> getNeftBranchesByBankName(String bankName, Pageable pageDetails);
     Page<NeftBankNameDTO> getNeftBankNames(Pageable pageDetails);
     Page<NeftBankDTO> getNeftBanks(Pageable pageDetails);

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CustomerFeedBackService {
 
-    String addFeedBack(CustomerFeedBackDTO feedBack) throws InternetBankingException;
+    String addFeedBack(CustomerFeedBackDTO feedBack) ;
 
     List<CustomerFeedBackSummaryDTO> getCustomerFeedBackSummary(Date startDate, Date endDate);
 

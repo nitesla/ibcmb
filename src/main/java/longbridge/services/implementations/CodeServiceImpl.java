@@ -56,7 +56,7 @@ public class CodeServiceImpl implements CodeService {
     @Override
     @Transactional
     @Verifiable(operation = "DELETE_CODE", description = "Deleting a Code")
-    public String deleteCode(Long codeId) throws InternetBankingException {
+    public String deleteCode(Long codeId)  {
         try {
             Code code = codeRepo.findById(codeId).get();
             if(code.getType().equals("ACCOUNT_COVERAGE")){
@@ -97,7 +97,7 @@ public class CodeServiceImpl implements CodeService {
     @Transactional
     @CacheEvict(value = "codes", key = "#codeDTO.type")
     @Verifiable(operation = "UPDATE_CODE", description = "Updating a Code")
-    public String updateCode(CodeDTO codeDTO) throws InternetBankingException {
+    public String updateCode(CodeDTO codeDTO)  {
         try {
             Code code = convertDTOToEntity(codeDTO);
             codeRepo.save(code);
@@ -142,7 +142,7 @@ public class CodeServiceImpl implements CodeService {
     @Verifiable(operation = "ADD_CODE", description = "Adding a Code")
     @Trace("alter-user")
     @CacheEvict(value = "codes", key = "#codeDTO.type")
-    public String addCode(CodeDTO codeDTO) throws InternetBankingException {
+    public String addCode(CodeDTO codeDTO)  {
         try {
             Code code = convertDTOToEntity(codeDTO);
             codeRepo.save(code);

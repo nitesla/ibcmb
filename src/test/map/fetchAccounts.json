@@ -1,0 +1,36 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/customer/([A-Za-z0-9]+)/accounts"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+		"accountId": "{{randomValue length=5 type='NUMERIC'}}",
+		"accountNumber": "{{randomValue length=10 type='NUMERIC'}}",
+		"accountCurrency": "{{{ pickRandom 'NGN' 'GBP' 'USD' 'NGN' }}}",
+		"accountOpenDate": "{{now offset='(randomValue length=5 type='NUMERIC') days'}}",
+		"accountName": "",
+		"accountStatus": "",
+		"customerId": "{{request.path.[1]}}",
+		"schemeType": "",
+		"schemeCode": "",
+		"solId": "",
+		"freezeCode": "",
+		"availableBalance": "",
+		"bookBalance": "",
+		"sanctionLimit": "",
+		"drawingPower": "",
+			"corp": " {{{ pickRandom 'true' 'true' 'true' 'false' }}} "
+		},
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
+
+
+
+
+
+

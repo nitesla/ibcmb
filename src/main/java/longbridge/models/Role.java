@@ -29,6 +29,15 @@ public class Role extends AbstractEntity implements PrettySerializer{
     @Enumerated(value = EnumType.STRING)
     private UserType userType;
 
+    public Role() {
+    }
+
+    public Role(long id) {
+        this.id = id;
+    }
+
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_permission", joinColumns =
     @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns =

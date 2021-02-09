@@ -24,7 +24,7 @@ import java.util.Map;
 public interface AccountService {
 
 
-    boolean AddFIAccount(String customerId, AccountInfo account) throws InternetBankingException;
+    boolean AddFIAccount(String customerId, AccountInfo account) ;
 
     /**
      * Adds the specified account to a customer's list of accounts
@@ -33,10 +33,10 @@ public interface AccountService {
      * @param accountdto   the account to be added
      * @return an {@link Account} object
      */
-    boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException;
+    boolean AddAccount(String customerId, AccountDTO accountdto) ;
 
 
-    String customizeAccount(Long id, String name) throws InternetBankingException;
+    String customizeAccount(Long id, String name) ;
 
     /**
      * Returns a particular account for a customer
@@ -132,7 +132,7 @@ public interface AccountService {
      * @param id
      * @return
      */
-    String hideAccount(Long id) throws InternetBankingException;
+    String hideAccount(Long id) ;
 
     /**
      * unhides the customers acoount from the platform
@@ -140,7 +140,7 @@ public interface AccountService {
      * @param id
      * @return
      */
-    String unhideAccount(Long id) throws InternetBankingException;
+    String unhideAccount(Long id) ;
 
     /**
      * makes account the customers primary acoount
@@ -149,14 +149,14 @@ public interface AccountService {
      * @param customerId
      * @return
      */
-    String makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
+    String makePrimaryAccount(Long id, String customerId) ;
 
 
     void deleteAccount(Long id);
 
-    void validateAccount(String accountNumber) throws InternetBankingException;
+    void validateAccount(String accountNumber) ;
 
-    List<Account> getAccountByCifIdAndSchemeType(String cifId, String schemeType) throws InternetBankingException;
+    List<Account> getAccountByCifIdAndSchemeType(String cifId, String schemeType) ;
 
     Page<Account> getLoanAccounts(List<String> accountNumbers,Pageable pageable);
     List<Account> getLoanAccounts(List<String> accountNumbers);

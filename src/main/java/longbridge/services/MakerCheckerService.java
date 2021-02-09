@@ -22,7 +22,7 @@ public interface MakerCheckerService {
     Page<MakerChecker> getEntities(Pageable pageDetails);
 
 
-    String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException;
+    String configureMakerChecker(MakerChecker makerChecker) ;
 
 
 

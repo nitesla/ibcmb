@@ -54,8 +54,6 @@ public class SettingController {
     @Autowired
     private CodeService codeService;
 
-    @Autowired
-    private CoverageService coverageService;
 
     @Autowired
     private RetailUserService retailUserService;
@@ -143,9 +141,6 @@ public class SettingController {
 
         List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
-        List<CoverageDetailsDTO> coverageDetails = coverageService.getCoverage(retailUser.getCoverage(), retailUser.getCustomerId());
-     logger.info("rtn m :{}",coverageDetails);
-
 
         model.addAttribute("accountList", accountList);
         model.addAttribute("retId",retId);
@@ -153,7 +148,6 @@ public class SettingController {
         model.addAttribute("mailLoanDTO",new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
-        model.addAttribute("coverageDetails", coverageDetails);
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
@@ -220,28 +214,6 @@ public class SettingController {
         out.setRecordsTotal(fixedDepositAccounts.getTotalElements());
         return out;
     }
-
-
-    @GetMapping("/dashboard/coverage")
-    public @ResponseBody DataTablesOutput<CoverageDetailsDTO> getCoverageDetails(DataTablesInput input) {
-
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CoverageDetailsDTO> coverageDetails = coverageService.getCoverages(retailUser.getCoverage(), retailUser.getCustomerId(), pageable);
-
-
-        DataTablesOutput<CoverageDetailsDTO> out = new DataTablesOutput<>();
-        out.setDraw(input.getDraw());
-        out.setData(coverageDetails.getContent());
-        out.setRecordsFiltered(coverageDetails.getTotalElements());
-        out.setRecordsTotal(coverageDetails.getTotalElements());
-        return out;
-    }
-
-
-
 
     @GetMapping("/error")
     public String getRetailErrorPage() {

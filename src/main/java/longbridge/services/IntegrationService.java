@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.*;
@@ -175,7 +176,7 @@ public interface IntegrationService {
     List<QuicktellerBankCodeDTO> getBankCodes();
 
     List<CoverageDetailsDTO> getCoverages(String coverageName, String customerId);
-    Map<String, List<String>> getCoverageDetails(String coverageName, String customerId);
+    JsonNode getCoverageDetails(String coverageName, String customerId);
     NeftResponse submitNeftTransfer();
 //    NeftTransfer checkNeftStatus();
     NeftResponseDTO submitInstantNeftTransfer(NeftTransfer neftTransfer);

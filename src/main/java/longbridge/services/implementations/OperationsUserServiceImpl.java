@@ -125,14 +125,14 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public String setPassword(OperationsUser user, String password) throws InternetBankingException {
+    public String setPassword(OperationsUser user, String password)  {
         return null;//TODO
     }
 
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_OPS_STATUS", description = "Change Operations User Activation Status")
-    public String changeActivationStatus(Long userId) throws InternetBankingException {
+    public String changeActivationStatus(Long userId)  {
         try {
             OperationsUser user = operationsUserRepo.findById(userId).get();
             entityManager.detach(user);
@@ -172,7 +172,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     @Verifiable(operation = "ADD_OPS_USER", description = "Adding an Operations User")
-    public String addUser(OperationsUserDTO user) throws InternetBankingException {
+    public String addUser(OperationsUserDTO user)  {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
@@ -191,6 +191,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setPhoneNumber(user.getPhoneNumber());
+            opsUser.setExpiryDate(new Date());
             opsUser.setStatus("A");
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findById(Long.parseLong(user.getRoleId())).get();
@@ -268,7 +269,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_OPS_USER", description = "Updating an Operations User")
-    public String updateUser(OperationsUserDTO user) throws InternetBankingException {
+    public String updateUser(OperationsUserDTO user)  {
 
         OperationsUser opsUser = operationsUserRepo.findById(user.getId()).get();
         if ("I".equals(opsUser.getStatus())) {
@@ -312,7 +313,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Verifiable(operation = "DELETE_OPS_USER", description = "Deleting an Ops User")
-    public String deleteUser(Long userId) throws InternetBankingException {
+    public String deleteUser(Long userId)  {
         try {
             OperationsUser opsUser = operationsUserRepo.findById(userId).get();
             operationsUserRepo.delete(opsUser);
@@ -335,7 +336,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public String resetPassword(Long id) throws InternetBankingException {
+    public String resetPassword(Long id)  {
         try {
             OperationsUser user = operationsUserRepo.findById(id).get();
             sendResetMessage(user);
@@ -347,7 +348,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public String resetPassword(String username) throws InternetBankingException {
+    public String resetPassword(String username)  {
         try {
             logger.debug("About to reset ops user {} password",username);
             OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(username);
@@ -378,7 +379,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    public String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException {
+    public String changePassword(OperationsUser user, ChangePassword changePassword)  {
 
         if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new WrongPasswordException();

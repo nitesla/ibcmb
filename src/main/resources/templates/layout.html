@@ -22,7 +22,7 @@
     <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
-
+    <link th:href="@{~/bank/vendors/select2/css/select2.min.css}" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/bank/vendors/jquery-steps/css/jquery.steps.css}" />
     <link th:href="@{~/bank/css/icon.css}" rel="stylesheet"/>
     <title th:text="#{menu.bank.name}"></title>
@@ -61,7 +61,14 @@
                     <li><a href="/admin/checker">Maker Checker</a></li>
                     <!--<li><a href="/admin/secquestions/">Security Questions</a></li>-->
                     <!--<li><a href="/admin/phishing/">Phishing Image</a></li>-->
-                    <li><a th:href="@{/admin/transfersettings/transfersettings}"> Transfer Settings</a></li>
+                    <!--<li><a th:href="@{/admin/transfersettings/transfersettings}"> Transfer Settings <span class="fa fa-chevron-down"></span></a>-->
+                    <li><a> Transfer Settings <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="/admin/transfersettings/adjustTransfer">Adjust Transfer Fees</a></li>
+                            <li><a href="/admin/transfersettings/setLimit">Set Transfer Limit</a></li>
+                        </ul>
+
+                    </li>
                     <li><a href="/admin/job">Batch Job</a></li>
                     <li sec:authorize="hasAuthority('GREETING_CONFIG')"><a href="/admin/greetings/">Greetings</a></li>
 

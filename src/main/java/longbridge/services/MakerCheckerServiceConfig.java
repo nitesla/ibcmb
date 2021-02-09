@@ -23,7 +23,7 @@ public interface MakerCheckerServiceConfig {
     Page<MakerChecker> findEntities(String pattern, Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKER_CHECKER_CONFIG')")
-    String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException;
+    String configureMakerChecker(MakerChecker makerChecker) ;
 
 
 

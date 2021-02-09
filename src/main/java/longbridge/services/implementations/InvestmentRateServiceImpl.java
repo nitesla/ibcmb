@@ -93,10 +93,10 @@ public class InvestmentRateServiceImpl implements InvestmentRateService {
     public String deleteRate(Long rateId) {
        logger.info("rateo"+rateId);
         try {
-            InvestmentRate investmentRate = rateRepo.findOneById(rateId);
+            InvestmentRate investmentRate = rateRepo.findById(rateId).get();
             rateRepo.delete(investmentRate);
             logger.info("Rate {} has been deleted", rateId.toString());
-            return messageSource.getMessage("code.delete.success", null, locale);
+            return messageSource.getMessage("rate.delete.success", null, locale);
         } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {

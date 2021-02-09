@@ -1,0 +1,19 @@
+{
+  "accountId": "",
+  "accountNumber": "",
+  "accountCurrency": "",
+  "accountOpenDate": "",
+  "accountName": "",
+  "accountStatus": "",
+  "customerId": "",
+  "schemeType": "",
+  "schemeCode": "",
+  "solId": "",
+  "freezeCode": "",
+  "availableBalance": "",
+  "bookBalance": "",
+  "sanctionLimit": "",
+  "drawingPower": ""
+}
+
+

@@ -3,11 +3,14 @@ package longbridge.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by Wunmi on 29/03/2017.
  */
@@ -66,7 +69,7 @@ public class User extends AbstractEntity{
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.userName = StringUtils.lowerCase(userName, Locale.ENGLISH);;
     }
 
     public String getFirstName() {

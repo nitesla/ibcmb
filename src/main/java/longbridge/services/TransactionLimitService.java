@@ -17,22 +17,22 @@ import java.util.List;
 public interface TransactionLimitService {
 
     @PreAuthorize("hasAuthority('ADD_TRANS_LIMIT')")
-    String addGlobalLimit(GlobalLimitDTO globalLimit) throws InternetBankingException;
+    String addGlobalLimit(GlobalLimitDTO globalLimit) ;
 
     @PreAuthorize("hasAuthority('UPDATE_TRANS_LIMIT')")
-    String updateGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException;
+    String updateGlobalLimit(GlobalLimitDTO globalLimitDTO) ;
 
     @PreAuthorize("hasAuthority('ADD_TRANS_LIMIT')")
-    String addClassLimit(ClassLimitDTO classLimit) throws InternetBankingException;
+    String addClassLimit(ClassLimitDTO classLimit) ;
 
     @PreAuthorize("hasAuthority('UPDATE_TRANS_LIMIT')")
-    String updateClassLimit(ClassLimitDTO classLimitDTO) throws InternetBankingException;
+    String updateClassLimit(ClassLimitDTO classLimitDTO) ;
 
     @PreAuthorize("hasAuthority('ADD_TRANS_LIMIT')")
-    String addAccountLimit(AccountLimitDTO accountLimit) throws InternetBankingException;
+    String addAccountLimit(AccountLimitDTO accountLimit) ;
 
     @PreAuthorize("hasAuthority('UPDATE_TRANS_LIMIT')")
-    String updateAccountLimit(AccountLimitDTO accountLimitDTO) throws InternetBankingException;
+    String updateAccountLimit(AccountLimitDTO accountLimitDTO) ;
 
     @PreAuthorize("hasAuthority('GET_TRANS_LIMIT')")
     GlobalLimitDTO getCorporateGlobalLimit(Long id);
@@ -71,22 +71,22 @@ public interface TransactionLimitService {
     List<AccountLimitDTO> getRetailAccountLimits();
 
     @PreAuthorize("hasAuthority('DELETE_TRANS_LIMIT')")
-    String deleteCorporateAccountLimit(Long id) throws InternetBankingException;
+    String deleteCorporateAccountLimit(Long id) ;
 
     @PreAuthorize("hasAuthority('DELETE_TRANS_LIMIT')")
-    String deleteCorporateClassLimit(Long id) throws InternetBankingException;
+    String deleteCorporateClassLimit(Long id) ;
 
     @PreAuthorize("hasAuthority('DELETE_TRANS_LIMIT')")
-    String deleteCorporateGlobalLimit(Long id) throws InternetBankingException;
+    String deleteCorporateGlobalLimit(Long id) ;
 
     @PreAuthorize("hasAuthority('DELETE_TRANS_LIMIT')")
-    String deleteRetailAccountLimit(Long id) throws InternetBankingException;
+    String deleteRetailAccountLimit(Long id) ;
 
     @PreAuthorize("hasAuthority('DELETE_TRANS_LIMIT')")
-    String deleteRetailClassLimit(Long id) throws InternetBankingException;
+    String deleteRetailClassLimit(Long id) ;
 
     @PreAuthorize("hasAuthority('DELETE_TRANS_LIMIT')")
-    String deleteRetailGlobalLimit(Long id) throws InternetBankingException;
+    String deleteRetailGlobalLimit(Long id) ;
 
     boolean isAboveInternetBankingLimit(TransferType transferType, UserType customerType, String accountNumber, BigDecimal amount);
 

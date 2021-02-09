@@ -37,7 +37,7 @@ public class CustomerFeedBackServiceImpl implements CustomerFeedBackService {
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Override
-    public String addFeedBack(CustomerFeedBackDTO feedBackDTO) throws InternetBankingException {
+    public String addFeedBack(CustomerFeedBackDTO feedBackDTO)  {
         if (null != feedBackDTO) {
             CustomerFeedBack feedBack = modelMapper.map(feedBackDTO, CustomerFeedBack.class);
             customerFeedBackRepo.save(feedBack);

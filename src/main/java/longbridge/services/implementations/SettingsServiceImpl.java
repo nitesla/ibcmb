@@ -45,7 +45,7 @@ public class SettingsServiceImpl implements SettingsService {
 	@Transactional
 	@Override
 	@Verifiable(operation="ADD_SETTING",description="Add Settings")
-	public String addSetting(SettingDTO dto) throws InternetBankingException {
+	public String addSetting(SettingDTO dto)  {
 		try {
 			ModelMapper mapper = new ModelMapper();
 			Setting setting = mapper.map(dto, Setting.class);
@@ -84,7 +84,7 @@ public class SettingsServiceImpl implements SettingsService {
 	@Override
 	@Verifiable(operation="UPDATE_SETTING",description="Update Settings")
 	@CacheEvict(value = "settings", key = "#dto.name")
-	public String updateSetting(SettingDTO dto) throws InternetBankingException {
+	public String updateSetting(SettingDTO dto)  {
 		try {
 			Setting setting = settingRepo.findById(dto.getId()).get();
 			entityManager.detach(setting);
@@ -106,7 +106,7 @@ public class SettingsServiceImpl implements SettingsService {
 
 	@Override
 	@Verifiable(operation="DELETE_SETTING",description="Delete Settings")
-	public String deleteSetting(Long id) throws InternetBankingException {
+	public String deleteSetting(Long id)  {
 		try {
 			Setting setting = settingRepo.findById(id).get();
 			settingRepo.delete(setting);

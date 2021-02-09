@@ -32,21 +32,6 @@ public class Account extends AbstractEntity {
     private String currencyCode;
     private String status;
 
-    public Account() {
-    }
-
-    public Account(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag, String currencyCode) {
-        this.accountId = accountId;
-        this.accountNumber = accountNumber;
-        this.accountName = accountName;
-        this.customerId = customerId;
-        this.schemeType = schemeType;
-        this.schemeCode = schemeCode;
-        this.solId = solId;
-        this.primaryFlag = primaryFlag;
-        this.hiddenFlag = hiddenFlag;
-        this.currencyCode=currencyCode;
-    }
 
     public String getAccountId() {
         return accountId;

@@ -162,7 +162,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     public ReportDTO updateReportParameters(ReportDTO reportDTO, Long permissionCode, String username,
-                                            String origFileName, MultipartFile file) throws InternetBankingException, IOException, JRException {
+                                            String origFileName, MultipartFile file) throws IOException, JRException {
         PermissionDTO permission = roleService.getPermission(permissionCode);
 //        File file = new File(jasperfileName);
         reportDTO.setPermission(permission);
@@ -363,7 +363,7 @@ public class ReportServiceImpl implements ReportService {
 
 
     @Override
-    public boolean reportAlreadyExist(String reportName) throws InternetBankingException {
+    public boolean reportAlreadyExist(String reportName)  {
         Report report = reportRepo.findByReportNameIgnoreCase(reportName);
         return report != null;
     }
@@ -417,7 +417,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Verifiable(operation = "DELETE_REPORT", description = "Delete Report")
-    public String deleteReport(Long id) throws InternetBankingException {
+    public String deleteReport(Long id)  {
         try {
             logger.info("the report id {}", id);
             Report report = reportRepo.findOneById(id);
@@ -436,7 +436,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String deleteReport(Report report) throws InternetBankingException {
+    public String deleteReport(Report report)  {
         reportRepo.delete(report);
         logger.info("is maker checker enable {}", makerCheckerService.isEnabled("DELETE_REPORT"));
         logger.info("the file name to deleted {}", report.getSysFileName());

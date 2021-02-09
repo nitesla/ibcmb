@@ -26,7 +26,7 @@ public interface CorporateService{
      * @param corporateDTO the corporate customer
      *
      */
-    String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException;
+    String addCorporate(CorporateDTO corporateDTO) ;
 
 //    /**
 //     * Adds a new corporate customer to the system
@@ -34,12 +34,12 @@ public interface CorporateService{
 //     * @param corporate the corporate customer
 //     */
 //    @PreAuthorize("hasAuthority('ADD_CORPORATE')")
-//    String  addCorporate(CorporateDTO corporate, CorporateUserDTO corporateUser) throws InternetBankingException;
+//    String  addCorporate(CorporateDTO corporate, CorporateUserDTO corporateUser) ;
 
 
-    String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
+    String addCorporate(CorporateRequestDTO corporateRequestDTO) ;
 
-//    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException;
+//    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) ;
 
     /**
      * Deletes the given corporate customer
@@ -47,7 +47,7 @@ public interface CorporateService{
      * @param corporateId the corporate customer's id
      */
     @PreAuthorize("hasAuthority('DELETE_CORPORATE')")
-    String deleteCorporate(Long corporateId) throws InternetBankingException;
+    String deleteCorporate(Long corporateId) ;
 
     /**
      * Updates the details of the corporate customer
@@ -55,7 +55,7 @@ public interface CorporateService{
      * @param corporate the corporate customer
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE')")
-    String updateCorporate(CorporateDTO corporate) throws InternetBankingException;
+    String updateCorporate(CorporateDTO corporate) ;
 
 
     /**
@@ -97,10 +97,10 @@ public interface CorporateService{
      * Changes the activation status of the corporate specified by the Id
      * @param id the Id of the corporate
      * @return a message is the status is changed successfully
-     * @throws InternetBankingException if changing the status fails
+     * @ if changing the status fails
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_STATUS')")
-    String changeActivationStatus(Long id) throws InternetBankingException;
+    String changeActivationStatus(Long id) ;
 
     /**
      * Adds an account to a corporate customer.
@@ -109,7 +109,7 @@ public interface CorporateService{
      * @param accountDTO           the account
      */
     @PreAuthorize("hasAuthority('ADD_CORPORATE_ACCOUNT')")
-    String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException;
+    String addAccount(Corporate corporate, AccountDTO accountDTO) ;
 
     /**
      * Returns a page list of accounts owned by the corporate identified by the corpId
@@ -126,10 +126,10 @@ public interface CorporateService{
      * Adds a corporate transfer rule
      * @param transferRuleDTO the transfer rule object
      * @return a message if successfully added
-     * @throws InternetBankingException if adding the rule fails
+     * @ if adding the rule fails
      */
     @PreAuthorize("hasAuthority('ADD_CORPORATE_RULE')")
-   String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException;
+   String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) ;
 
     /**
      * Returns a corporate transfer rule
@@ -143,10 +143,10 @@ public interface CorporateService{
      * updates the corporate transfer rule
      * @param transferRuleDTO the transfer rule object
      * @return a message if successfully updated
-     * @throws InternetBankingException if updating the rule fails
+     * @ if updating the rule fails
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_RULE')")
-   String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException;
+   String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) ;
 
     /**
      * Returns a list of corporate transfer rules
@@ -167,10 +167,10 @@ public interface CorporateService{
      * Deletes the corporate transfer rule
      * @param id the Id of the corporate rule
      * @return a message if successfully deleted
-     * @throws InternetBankingException if deleting the rule fails
+     * @ if deleting the rule fails
      */
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_RULE')")
-   String deleteCorporateRule(Long id) throws InternetBankingException;
+   String deleteCorporateRule(Long id) ;
 
     List<CorporateRoleDTO> getRoles(Long corpId);
 
@@ -189,12 +189,12 @@ public interface CorporateService{
 
 
     @PreAuthorize("hasAuthority('ADD_CORPORATE_ROLE')")
-    String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException;
+    String addCorporateRole(CorporateRoleDTO roleDTO) ;
 
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_ROLE')")
     String updateCorporateRole(CorporateRoleDTO roleDTO) throws  InternetBankingException;
 
-    void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException;
+    void updateCorporateRole(CorporateRole updatedRole) ;
 
     void updateUsersWithoutAuthorizerRoleToInitiators(Set<CorporateUser> originalUsers, Set<CorporateUser> updatedUsers);
 
@@ -205,7 +205,7 @@ public interface CorporateService{
     Set<CorporateRoleDTO> getCorporateRoles(Long corporateId);
 
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_ROLE')")
-    String deleteCorporateRole(Long id) throws InternetBankingException;
+    String deleteCorporateRole(Long id) ;
 
     @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding accounts to a Corporate Entity")
     String addCorporateAccounts(CorporateRequestDTO requestDTO);

@@ -127,9 +127,11 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
 
+    var resType =  /*[[${restrictionType}]]*/ [];
+    var resTypeMap = new Map(resType.map(i => [i.code, i.description]));
     $(document).ready(function() {
         var table = $('#restriction').DataTable({
             select:true,
@@ -148,7 +150,18 @@
                 { "data": "restrictedFor" },
                 { "data": "dateCreated" }
 
-            ] });
+            ],"columnDefs":[
+                {
+                        "targets": 0,
+                        "render": function (data, type, full, meta) {
+                            if (type === 'display') {
+                                return resTypeMap.get(data);
+                            }
+                            return data;
+                        }
+                }
+            ]
+        });
 
         table.on('select', function() {
             if (table.rows({

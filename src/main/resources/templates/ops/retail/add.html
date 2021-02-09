@@ -43,10 +43,20 @@
                                             <label class="col-sm-2 control-label">CifId:</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" th:field="*{user}" />
+                                                <input type="text" class="form-control" th:field="*{customerId}" />
+                                                <label id="response" class="hidden control-label"></label>
                                             </div>
 
-                                            <button class="btn btn-primary col-sm-2" type="submit">Browse</button>
+                                            <a class="btn btn-primary col-sm-2 fa" type="button" id="bt-find"><i
+                                                    id="spinner" class="fa fa-search"></i> Find</a>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Username</label>
+
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{userName}"/>
+                                            </div>
 
                                         </div>
                                         <div class="form-group">
@@ -73,7 +83,14 @@
                                             </div>
 
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Phone Number</label>
 
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{phoneNumber}"/>
+                                            </div>
+
+                                        </div>
 
                                         <div class="form-group">
 
@@ -83,23 +100,23 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Role</label>
                                             <div class="col-sm-6">
-                                                <select class="form-control m-b " name="account">
-                                                    <option>--Select role--</option>
-                                                    <option>Initializer</option>
-                                                    <option>Verifier</option>
-                                                    <option>Audit</option>
-                                                    <option>Admin</option>
-
+                                                <select class="form-control" th:field="*{roleId}">
+                                                    <option value="">Select..</option>
+                                                    <option th:each="role : ${roles}"
+                                                            th:value="${role.id}" th:text="${role.name}"
+                                                            th:selected="${role.id==retailUser.roleId}"
+                                                            required="required"></option>
                                                 </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <button class="btn btn-white" type="submit">Cancel</button>
-                                                <button class="btn btn-primary" type="submit">Save</button>
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                                <button class="btn btn-primary disabled" id="submit" type="submit" disabled>Save</button>
                                             </div>
                                         </div>
+                                        <div th:replace="layout :: form-validation"></div>
                                     </form>
                                 </div>
                             </div>
@@ -116,6 +133,32 @@
         <!-- /footer content -->
     </div>
 </div>
+<script th:inline="javascript">
+    $("#bt-find").on("click", function (e) {
+        e.preventDefault();
+        spinner = $("#spinner");
+        spinner.addClass("fa-spinner fa-spin");
+        spinner.removeClass("fa-search");
+        $("#submit").attr("disabled","disabled");
+        $("#submit").addClass("disabled");
+        $("#customerId").closest(".form-group").removeClass("has-error");
+        $.get("/ops/retail/users/" + $("#customerId").val() + "/name").done(function (data) {
+            $("#response").text("").addClass("hidden");
+            $("#lastName").val(data["firstName"]);
+            $("#lastName").val(data["lastName"]);
+            $("#email").val(data["email"]);
+            $("#phoneNumber").val(data["phone"]);
+            $("#submit").removeAttr("disabled");
+            $("#submit").removeClass("disabled");
+        }).fail(function (resp) {
+            $("#customerId").closest(".form-group").addClass("has-error");
+            $("#response").text(resp.responseText).removeClass("hidden");
+        }).always(function () {
+            spinner.removeClass("fa-spinner fa-spin");
+            spinner.addClass("fa-search");
+        });
+    });
 
+</script>
 </body>
 </html>

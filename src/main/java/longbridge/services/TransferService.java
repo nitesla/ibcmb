@@ -58,7 +58,7 @@ public interface TransferService {
     @PreAuthorize("hasAuthority('VIEW_TRANSACTIONS')")
     Page<TransferRequestDTO> getTransferReviews(TransferType transfertype, String accountNumber, Date startDate, Date endDate, Pageable pageDetails);
 
-//    Object addTransferRequest(TransferRequestDTO transferRequestDTO) throws InternetBankingException;
+//    Object addTransferRequest(TransferRequestDTO transferRequestDTO) ;
 
 
 

@@ -55,7 +55,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
-    public String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary)  {
         CorpInterBeneficiary corpInterBeneficiary = convertDTOToEntity(beneficiary);
         corpInterBeneficiary.setCorporate(getCurrentUser().getCorporate());
         validateBeneficiary(corpInterBeneficiary,getCurrentUser().getCorporate());
@@ -66,7 +66,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
-    public String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
+    public String deleteCorpInternationalBeneficiary(Long beneficiaryId)  {
         try {
             corpInternationalBeneficiaryRepo.delete(beneficiaryId);
             logger.info("Deleted beneficiary with Id {}", beneficiaryId);

@@ -105,7 +105,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     }
 
     @Override
-    public Page<FixedDepositDTO> getFixedDepositDetials(String cifId, Pageable pageable) throws InternetBankingException {
+    public Page<FixedDepositDTO> getFixedDepositDetials(String cifId, Pageable pageable)  {
 
         List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
         if(cifId != null){
@@ -131,7 +131,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     }
 
     @Override
-    public Response liquidateDeposit(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
+    public Response liquidateDeposit(FixedDepositDTO fixedDepositDTO)  {
         if(fixedDepositDTO.getLiquidateType().equalsIgnoreCase("P")) {
             fixedDepositDTO.setAction(FIxedDepositActions.PART_LIQUIDATE.toString());
         }else {
@@ -141,20 +141,20 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         return integrationService.liquidateFixDeposit(fixedDepositDTO);
     }
     @Override
-    public Response addFund(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
+    public Response addFund(FixedDepositDTO fixedDepositDTO)  {
         fixedDepositDTO.setAction(FIxedDepositActions.ADD_FUND.toString());
            Response response =  integrationService.addFundToDeposit(fixedDepositDTO);
         sendMail(fixedDepositDTO);
            return response;
     }
     @Override
-    public Response bookFixDeposit(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
+    public Response bookFixDeposit(FixedDepositDTO fixedDepositDTO)  {
         fixedDepositDTO.setAction(FIxedDepositActions.INITIATE.toString());
         return integrationService.bookFixDeposit(fixedDepositDTO);
     }
 
     @Override
-    public boolean isBalanceEnoughForBooking(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
+    public boolean isBalanceEnoughForBooking(FixedDepositDTO fixedDepositDTO)  {
 
         BigDecimal availableBalance = integrationService.getAvailableBalance(fixedDepositDTO.getAccountNumber());
         BigDecimal deposit = new BigDecimal(fixedDepositDTO.getInitialDepositAmount());
@@ -164,7 +164,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     }
 
     @Override
-    public String sendMail(FixedDepositDTO fixedDepositDTO) throws InternetBankingException {
+    public String sendMail(FixedDepositDTO fixedDepositDTO)  {
         User currentUser = getCurrentUser();
         if(currentUser != null) {
 
@@ -256,7 +256,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
 
     @Override
-    public Page<FixedDepositDTO> getFixedDepositForView(String accountNumber, Pageable pageable) throws InternetBankingException {
+    public Page<FixedDepositDTO> getFixedDepositForView(String accountNumber, Pageable pageable)  {
 
         List<FixedDepositDTO> fixedDepositDTOS  = new ArrayList<>();
         FixedDepositDTO depositDTO = integrationService.getFixedDepositDetails(accountNumber);
@@ -272,7 +272,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     }
 
     @Override
-    public Page<FixedDepositDTO> getFixedDepositsForView(String cifId, Pageable pageable) throws InternetBankingException {
+    public Page<FixedDepositDTO> getFixedDepositsForView(String cifId, Pageable pageable)  {
 
         List<FixedDepositDTO> depositDTO = integrationService.getFixedDepositsDetails(cifId);
         logger.info("Multiple FixedDeposit Fetched Successfully, HERE IS THE SIZE : {}",depositDTO.size());

@@ -15,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface SettingsService {
 
     @PreAuthorize("hasAuthority('ADD_SETTING')")
-    String addSetting( SettingDTO setting) throws InternetBankingException;
+    String addSetting( SettingDTO setting) ;
 
     SettingDTO getSetting(Long id);
 
@@ -26,9 +26,9 @@ public interface SettingsService {
     Page<SettingDTO> getSettings(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('UPDATE_SETTING')")
-    String updateSetting(SettingDTO setting) throws InternetBankingException;
+    String updateSetting(SettingDTO setting) ;
 
     @PreAuthorize("hasAuthority('DELETE_SETTING')")
-    String deleteSetting(Long id) throws InternetBankingException;
+    String deleteSetting(Long id) ;
 
 }

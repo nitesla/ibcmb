@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title th:text="#{menu.bank.name}" ></title>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}" />
     <link rel="shortcut icon" th:href="@{~/customer/{name}/img/favicon.ico(name=#{menu.custom})}" type="image/x-icon">
     <link rel="icon" th:href="@{~/customer/{name}/img/favico.ico(name=#{menu.custom})}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         @font-face {
@@ -36,7 +38,7 @@
 
         }
         hr{
-            rgin-top: 20px;
+            margin-top: 20px;
             margin-bottom: 20px;
             border: 0;
             border-top: 2px solid rgba(255, 255, 255, 0.23);
@@ -223,8 +225,8 @@
 <!--                                    <li><a href="/loginPageLostToken">REPORT LOST TOKEN</a></li>-->
                                     <li><a href="/reporttoken">REPORT LOST TOKEN (INDIVIDUAL)</a></li>
                                     <li><a href="/reporttokencorp">REPORT LOST TOKEN (CORPORATE)</a></li>
-                                    <!--<li><a target="_blank" href="/assets/cmb_soft_token_setup.pdf" th:text="#{softtoken.menu}"></a></li>-->
-                                    <li><a target="_blank" th:href="#{menu.bank.website}"  th:text="#{softtoken.menu}"></a></li>
+                                    <!--<li><a target="_blank" th:href="#{menu.token.setup}" th:text="#{softtoken.menu}"></a></li>-->
+                                    <li><a target="_blank" th:href="#{menu.token.setup}"  th:text="#{softtoken.menu}"></a></li>
                                 </ul>
                             </li>
 
@@ -242,8 +244,11 @@
             </div>
         </div>
     </div>
+
     <div layout:fragment="content">
     </div>
+
+
     <footer style="margin-top: 10px;">
         <div class="">
             <div class="container clearfix">

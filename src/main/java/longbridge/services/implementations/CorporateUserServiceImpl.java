@@ -1,7 +1,7 @@
 
 package longbridge.services.implementations;
 
-import longbridge.apiLayer.models.WebhookResponse;
+import longbridge.apilayer.models.WebhookResponse;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -149,7 +149,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Verifiable(operation = "UPDATE_CORPORATE_USER", description = "Updating Corporate User")
-    public String updateUser(CorporateUserDTO user) throws InternetBankingException {
+    public String updateUser(CorporateUserDTO user)  {
 
 
         CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
@@ -207,7 +207,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     @Transactional
     @Verifiable(operation = "ADD_CORPORATE_USER", description = "Adding Corporate User")
-    public String addUser(CorporateUserDTO user) throws InternetBankingException {
+    public String addUser(CorporateUserDTO user)  {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
@@ -383,7 +383,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
+    public String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user)  {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
@@ -424,7 +424,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_CORP_USER_STATUS", description = "Change corporate user activation status")
-    public String changeActivationStatus(Long userId) throws InternetBankingException {
+    public String changeActivationStatus(Long userId)  {
 
         CorporateUser user = corporateUserRepo.findById(userId).get();
         Corporate corporate = user.getCorporate();
@@ -539,7 +539,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
+    public String changeCorpActivationStatus(Long userId)  {
 
         CorporateUser user = corporateUserRepo.findById(userId).get();
         Corporate corporate = user.getCorporate();
@@ -611,7 +611,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Verifiable(operation = "DELETE_CORPORATE_USER", description = "Deleting a Corporate User")
-    public String deleteUser(Long userId) throws InternetBankingException {
+    public String deleteUser(Long userId)  {
         try {
             CorporateUser corporateUser = corporateUserRepo.findById(userId).get();
             corporateUserRepo.delete(corporateUser);
@@ -634,7 +634,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    public String unlockUser(Long id) throws InternetBankingException {
+    public String unlockUser(Long id)  {
 
         CorporateUser user = corporateUserRepo.findById(id).get();
         if (!"L".equals(user.getStatus())) {
@@ -956,7 +956,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    public String addAuthorizer(CorporateUserDTO user) throws InternetBankingException {
+    public String addAuthorizer(CorporateUserDTO user)  {
         try {
             CorporateUser corporateUser = new CorporateUser();
             corporateUser.setFirstName(user.getFirstName());
@@ -991,7 +991,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    public String addInitiator(CorporateUserDTO user) throws InternetBankingException {
+    public String addInitiator(CorporateUserDTO user)  {
         try {
             CorporateUser corporateUser = new CorporateUser();
             corporateUser.setFirstName(user.getFirstName());
@@ -1023,7 +1023,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException {
+    public String updateUserFromCorpAdmin(CorporateUserDTO user)  {
 
         try {
             CorporateUser corporateUser = corporateUserRepo.findById(user.getId()).get();
@@ -1070,7 +1070,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public String changeActivationStatusFromCorpAdmin(Long id) throws InternetBankingException {
+    public String changeActivationStatusFromCorpAdmin(Long id)  {
         CorporateUser corporateUser = corporateUserRepo.findById(id).get();
 
         if ("I".equals(corporateUser.getCorporate().getStatus())) {
@@ -1296,7 +1296,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public String changeFeedBackStatus(CorporateUser user) throws InternetBankingException{
+    public String changeFeedBackStatus(CorporateUser user) {
 
         try {
             if (getUser(user.getId()) == null) {
