@@ -87,6 +87,7 @@
                                         <th>Name</th>
                                         <th>Description</th>
                                         <th>Type</th>
+                                        <th>Status</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -98,6 +99,7 @@
                                         <th>Name</th>
                                         <th>Description</th>
                                         <th>Type</th>
+                                        <th>Status</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -153,8 +155,20 @@
             "columns": [
                 { "data": "name" },
                 { "data": "description" },
-                { "data": "type" }
-            ] });
+                { "data": "type" },
+                {"data": "enabled"}
+            ], "columnDefs": [{
+                "targets": 3,
+                "data": "enabled",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        return `<span class="label label-${data ? "success" : "warning"} pull-right">${data ? "Enabled" : "Disabled"}</span>`
+                    }
+                    return data;
+                }
+
+            }]
+        });
 
         table.on('select', function() {
             if (table.rows({
