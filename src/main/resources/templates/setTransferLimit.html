@@ -19,67 +19,75 @@
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
+                <div class="x_title">
+                    <h3>Set Transfer Limit</h3>
+
+                </div>
 
                 <div class="clearfix"></div>
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
-                            <div class="x_title">
-                                <h2>Set Transfer Limit</h2>
-
-                                <div class="clearfix"></div>
-                            </div>
-
-
-
                             <div class="x_content">
                                 <div class="ibox-content">
 
                                     <!-- ------------------------------------------------------- SET TRANSFER LIMIT --------------------------------------------------------------------------------------- -->
+                                    <form class="form-horizontal">
                                     <div class="col-lg-6 col-xl-3" id="withinOtherBanks">
-                                        <div id="selectLimitForBankUser">
+                                        <div class="form-group" id="selectLimitForBankUser">
                                             <br/>
-                                            <label>Select User <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <label class="col-sm-4 control-label">Select User <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <div class="col-sm-6">
                                             <select class="form-control" id="selectBankUser">
                                                 <option value="">-- Select --</option>
                                                 <option value="R">Retail </option>
                                                 <option value="C">Corporate </option>
                                             </select>
+                                            </div>
                                         </div>
                                         <br/>
 
                                         <div class="form-group" id="userChooseOtherBanks">
-                                            <label>Select Platform <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <label class="col-sm-4 control-label">Select Platform <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <div class="col-sm-6">
                                             <select class="form-control" id="selectPlatform">
                                                 <option value="">-- Select --</option>
                                                 <option th:each="message : ${transferchannels}" th:value="${message.description }"th:text="${message.description }"></option>
                                             </select>
+                                            </div>
                                         </div>
                                         <br/>
 
 
                                         <div class="form-group">
-                                            <label>Description <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <label class="col-sm-4 control-label">Description <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <div class="col-sm-6">
                                             <textarea name="accountnumber" type="text" class="form-control"  id="obankaccountnumberid"></textarea>
+                                            </div>
                                         </div>
                                         <br/>
                                         <div class="form-group">
-                                            <label>Set Lower Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <label class="col-sm-4 control-label">Set Lower Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <div class="col-sm-6">
                                             <input class="form-control" id="obankaccountnumberclass" type="number"  required>
+                                            </div>
 
 
                                         </div>
                                         <br/>
                                         <div class="form-group">
-                                            <label>Set Upper Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <label class="col-sm-4 control-label">Set Upper Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <div class="col-sm-6">
                                             <input name="limit" type="number" class="form-control" id="obanksetlimit" required>
+                                            </div>
                                         </div>
                                         <br/>
                                         <div>
                                             <button class="btn btn-success transferLimitBtn">Save</button>
                                         </div>
                                     </div>
+                                    </form>
 
                                 </div>
                             </div>

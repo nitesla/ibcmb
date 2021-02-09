@@ -19,32 +19,32 @@
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
+                <div class="x_title">
+                    <h3>Adjust Transfer Fees</h3>
+
+                </div>
 
                 <div class="clearfix"></div>
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
-                            <div class="x_title">
-                                <h2>Adjust Transfer Fees</h2>
-
-                                <div class="clearfix"></div>
-                            </div>
-
-
                             <div class="x_content">
                                 <div class="ibox-content">
 
                                     <div class="col-lg-6 col-xl-3" id="textInputForFeeAdjustment">
 
                                         <div class="form-group" id="bothSelection">
-                                            <form>
+                                            <form class="form-horizontal">
+
                                                 <!--------------------------------------------------  ADJUST TRANSFER FEES  ---------------------------------------------------------- ---------------------------------------           -->
 
-                                                <br/>
-                                                <div id="selectTransferPlatform">
-                                                    <label class="col-sm-2 control-label">Select Transfer Method<span class='req-inner' style=" font-size: 16px">*</span></label>
 
+                                                <div class="form-group"  id="selectTransferPlatform">
+                                                    <br/>
+                                                    <label class="col-sm-4 control-label">Select Transfer Method<span class='req-inner' style=" font-size: 16px">*</span></label>
+
+                                                    <div class="col-sm-6">
                                                     <select class="form-control" id="transferDropdown">
                                                         <option value="">-- Select --</option>
                                                         <option value="Nibss Instant Payment">Nibss Instant Payment</option>
@@ -54,50 +54,64 @@
                                                         <option value="Transfer Via Remittance">Transfer Via Remittance</option>
                                                         <option value="Bill Payments">Bill Payments</option>
                                                     </select>
+                                                    </div>
                                                 </div>
                                                 <br/>
 
+                                                <div class="form-group" >
 
-                                                <div>
+                                                    <label class="col-sm-4 control-label">Fee Range<span class='req-inner' style=" font-size: 16px">*</span></label>
 
-                                                    <label class="col-sm-2 control-label">Fee Range<span class='req-inner' style=" font-size: 16px">*</span></label>
-
+                                                    <div class="col-sm-6">
                                                     <input class="form-control" id="bothSelection1" name="feeRng"
                                                            required type="text">
+                                                    </div>
                                                 </div>
                                                 <br/>
-                                                <div>
-                                                    <label>Fixed Amount<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                <div class="form-group" >
+                                                    <label class="col-sm-4 control-label">Fixed Amount<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                    <div class="col-sm-6">
                                                     <input class="form-control" id="bothSelection2" name="fixedAmt"
                                                            required type="text">
+                                                    </div>
                                                 </div>
-                                                <br>
-                                                <div>
-                                                    <label>Fee Description<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                <br/>
+                                                <div class="form-group" >
+                                                    <label class="col-sm-4 control-label">Fee Description<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                    <div class="col-sm-6">
                                                     <textarea class="form-control" id="feeDescriptionIdBoth" name="feeDescrip"
                                                               required type="text"></textarea>
+                                                    </div>
                                                 </div>
-                                                <br>
-                                                <div>
-                                                    <label>Fixed Amount Value<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                <br/>
+                                                <div class="form-group" >
+                                                    <label class="col-sm-4 control-label">Fixed Amount Value<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                    <div class="col-sm-6">
                                                     <input class="form-control" id="fixedAmountValueIdBoth" name="fixedAmtVal"
                                                            required type="number">
+                                                    </div>
                                                 </div>
-                                                <br>
-                                                <div>
-                                                    <label>Rate<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                <br/>
+                                                <div class="form-group" >
+                                                    <label class="col-sm-4 control-label">Rate<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                    <div class="col-sm-6">
                                                     <input class="form-control" id="rateIdBoth" name="rt" required
                                                            type="text">
+                                                    </div>
                                                 </div>
-                                                <br>
-                                                <div>
-                                                    <label>Rate Value<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                <br/>
+                                                <div class="form-group" >
+                                                    <label class="col-sm-4 control-label">Rate Value<span class='req-inner' style=" font-size: 16px">*</span></label>
+                                                    <div class="col-sm-6">
                                                     <input class="form-control" id="rateValueIdBoth" name="rtVal"
                                                            required type="number">
+                                                    </div>
                                                 </div>
-                                                <br>
+                                                <br/>
+                                                <div >
                                                 <button class="btn btn-success adjustTransferFee" type="button">Submit
                                                 </button>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>
