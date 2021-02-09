@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Set Transfer Limit</h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+
+                                    <!-- ------------------------------------------------------- SET TRANSFER LIMIT --------------------------------------------------------------------------------------- -->
+                                    <div class="col-lg-6 col-xl-3" id="withinOtherBanks">
+                                        <div id="selectLimitForBankUser">
+                                            <br/>
+                                            <label>Select User <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <select class="form-control" id="selectBankUser">
+                                                <option value="">-- Select --</option>
+                                                <option value="R">Retail </option>
+                                                <option value="C">Corporate </option>
+                                            </select>
+                                        </div>
+                                        <br/>
+
+                                        <div class="form-group" id="userChooseOtherBanks">
+                                            <label>Select Platform <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <select class="form-control" id="selectPlatform">
+                                                <option value="">-- Select --</option>
+                                                <option th:each="message : ${transferchannels}" th:value="${message.description }"th:text="${message.description }"></option>
+                                            </select>
+                                        </div>
+                                        <br/>
+
+
+                                        <div class="form-group">
+                                            <label>Description <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <textarea name="accountnumber" type="text" class="form-control"  id="obankaccountnumberid"></textarea>
+                                        </div>
+                                        <br/>
+                                        <div class="form-group">
+                                            <label>Set Lower Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <input class="form-control" id="obankaccountnumberclass" type="number"  required>
+
+
+                                        </div>
+                                        <br/>
+                                        <div class="form-group">
+                                            <label>Set Upper Limit <span class='req-inner' style=" font-size: 16px">*</span></label>
+                                            <input name="limit" type="number" class="form-control" id="obanksetlimit" required>
+                                        </div>
+                                        <br/>
+                                        <div>
+                                            <button class="btn btn-success transferLimitBtn">Save</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<script>
+
+
+    $(".transferLimitBtn").on("click", function (){
+        var bankUserType = $("#selectBankUser option:selected").val();
+        var transferPlatform = $("#selectPlatform option:selected").val();
+        var obankAcctNum = $("#obankaccountnumberid").val();
+        var obankAcctclass = $("#obankaccountnumberclass").val();
+        var obankSetAcctLimit = $("#obanksetlimit").val();
+        // var obankFrequency = $("#obanksetfrequency").val();
+
+        if (validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum, bankUserType, transferPlatform) == false){
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/transfersettings/submitTransferLimitForAllTransactionChannels",
+                data: { customerType:bankUserType, channel:transferPlatform,  description: obankAcctNum, lowerLimit: obankAcctclass, upperLimit: obankSetAcctLimit }, // parameters
+                success :
+                    function(response) {
+                        console.log(response);
+                        showNotification(response, "success");
+                        setTimeout(function () {
+                            location.reload();
+                        },2000)
+                    },
+                error:
+                    function (response) {
+                        console.log(response.responseText);
+                        showNotification(response.responseText, "danger");
+                    }
+
+            })
+        }
+        // }
+
+    })
+
+    function showNotification(message , type){
+        $.notify({
+            // options
+            message: message
+        },{
+            // settings
+            type: type
+        });
+    }
+
+
+
+    function validateFields(obankAcctclass,obankSetAcctLimit, obankAcctNum, bankUserType, transferPlatform){
+        var error = false;
+        if (obankAcctclass == ""){
+            showNotification("Please supply Lower Limit","danger")
+            error = true;
+        }else
+        if (obankSetAcctLimit == ""){
+            showNotification("Please supply Upper Limit","danger")
+            error = true;
+        }else
+        if (obankAcctNum == ""){
+            showNotification("Please provide a description","danger")
+            error = true;
+        }else if(bankUserType == ""){
+            showNotification("Please select a user-type","danger")
+            error = true;
+        }else if(transferPlatform == ""){
+            showNotification("Please select a platform","danger")
+            error = true;
+        }
+
+        return error;
+    }
+
+</script>
+</body>
+</html>

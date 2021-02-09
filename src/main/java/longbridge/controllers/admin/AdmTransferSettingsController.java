@@ -32,13 +32,19 @@ public class AdmTransferSettingsController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/transfersettings")
-    public String adminSetTransferSettings(Model model)
+    @GetMapping("/adjustTransfer")
+    public String adjustTransferFee(Model model)
+    {
+        return "adjustTransferFee";
+    }
+
+    @GetMapping("/setLimit")
+    public String setTransferLimit(Model model)
     {
         String type = "TRANSFER_CHANNEL";
         List<Code> getTransferChannel = codeRepo.findAllByType(type);
         model.addAttribute("transferchannels",getTransferChannel);
-        return "transfersettings";
+        return "setTransferLimit";
     }
 
 
@@ -65,14 +71,14 @@ public class AdmTransferSettingsController {
     @PostMapping("/submitTransferAdjustments")
     public ResponseEntity<String> submitTransferAdjustments(TransferFeeAdjustmentDTO transferFeeAdjustment){
         logger.info("Input details for transfer adjustments " + transferFeeAdjustment);
-        String response = "Update charge request successfully sent";
+        String response = "";
         try {
-            String adjustTransfeFeeDetails = transferSettingsService.adjustTransferFee(transferFeeAdjustment);
+            response = transferSettingsService.adjustTransferFee(transferFeeAdjustment);
+            return new ResponseEntity<>(response,HttpStatus.OK);
         } catch (Exception e){
             response = "Error processing request, Please try again!";
            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(response,HttpStatus.OK);
 
     }
 
