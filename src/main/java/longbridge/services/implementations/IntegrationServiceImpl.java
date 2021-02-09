@@ -504,6 +504,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 					params.getAntiFraudData().setTranRequestId(transRequest.getId());
 
 					logger.info("response for transfer {}", response.toString());
+					logger.info("response Description {} ", response.getResponseDescription());
 					if(response.isStatusNull()){
 
 						transRequest.setStatusDescription(errorService.getMessage(response.getResponseCode()));
@@ -511,8 +512,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 					}
 
-						antiFraudRepo.save(params.getAntiFraudData());
-						logger.info("AntiFraud data saved {}", params.getAntiFraudData());
+					antiFraudRepo.save(params.getAntiFraudData());
+					logger.info("AntiFraud data saved {}", params.getAntiFraudData());
 
 
 					return transRequest;

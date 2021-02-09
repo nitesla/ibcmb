@@ -239,7 +239,7 @@ public class TransferServiceImpl implements TransferService {
             NeftResponse neftResponse = neftResponseRepo.save(convertResponseToEntity(response));
             neftTransfer.setNeftResponse(neftResponse);
             neftTransferRepo.save(neftTransfer);
-            transRequest2.setStatus("00");
+            transRequest2.setStatus("000");
             transRequest2.setStatusDescription("Transaction Successful");
             transRequest2.setReferenceNumber(longbridge.utils.NumberUtils.generateReferenceNumber(15));
             logger.info("Transfer reference Number : {} ", transRequest2.getReferenceNumber());
