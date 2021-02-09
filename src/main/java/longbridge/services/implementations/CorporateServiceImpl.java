@@ -107,7 +107,7 @@ public class CorporateServiceImpl implements CorporateService {
         return corporateRepo.count();
     }
 
-    public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
+    public String addCorporate(CorporateDTO corporateDTO)  {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
 
@@ -135,7 +135,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
-    public String addCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+    public String addCorporate(CorporateRequestDTO corporateRequestDTO)  {
 
         try {
             saveCorporateRequest(corporateRequestDTO);
@@ -148,7 +148,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Transactional
-    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+    void saveCorporateRequest(CorporateRequestDTO corporateRequestDTO)  {
 
         validateCorporate(corporateRequestDTO);
 
@@ -257,7 +257,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-    private void validateCorporate(CorporateRequestDTO corporateRequestDTO) throws InternetBankingException {
+    private void validateCorporate(CorporateRequestDTO corporateRequestDTO)  {
 
         if (corporateIdExists(corporateRequestDTO.getCorporateId())) {
             throw new DuplicateObjectException(messageSource.getMessage("corp.id.exists", null, locale));
@@ -461,7 +461,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public String deleteCorporate(Long id) throws InternetBankingException {
+    public String deleteCorporate(Long id)  {
         try {
             corporateRepo.deleteById(id);
             return messageSource.getMessage("corporate.delete.success", null, locale);
@@ -471,7 +471,7 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    public void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
+    public void sendUserCredentials(CorporateUser user, String password)  {
 
         final String url =
                 ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/corporate";
@@ -497,7 +497,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
 //    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")
-    public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
+    public String updateCorporate(CorporateDTO corporateDTO)  {
         try {
             Corporate corporate = corporateRepo.findById(corporateDTO.getId()).get();
             entityManager.detach(corporate);
@@ -544,7 +544,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    public String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException {
+    public String addAccount(Corporate corporate, AccountDTO accountDTO)  {
 
         try {
             boolean ok = accountService.AddAccount(corporate.getCustomerId(), accountDTO);
@@ -564,7 +564,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Transactional
     @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
-    public String changeActivationStatus(Long id) throws InternetBankingException {
+    public String changeActivationStatus(Long id)  {
         try {
             Corporate corporate = corporateRepo.findById(id).orElseThrow(IllegalAccessException::new);
             entityManager.detach(corporate);
@@ -618,7 +618,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule")
-    public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
+    public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO)  {
 
 
         if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
@@ -650,7 +650,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_CORPORATE_RULE", description = "Update Corporate Transfer Rule")
-    public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
+    public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO)  {
 
         if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
             throw new TransferRuleException(messageSource.getMessage("rule.amount.zero", null, locale));
@@ -739,7 +739,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Verifiable(operation = "DELETE_CORPORATE_RULE", description = "Delete Corporate Transfer Rule")
-    public String deleteCorporateRule(Long id) throws InternetBankingException {
+    public String deleteCorporateRule(Long id)  {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findById(id).get();
             corpTransferRuleRepo.delete(transferRule);
@@ -756,7 +756,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
-    public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
+    public String addCorporateRole(CorporateRoleDTO roleDTO)  {
 
         if (roleDTO.getRank() < 1) {
             throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
@@ -795,7 +795,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
-    public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
+    public String updateCorporateRole(CorporateRoleDTO roleDTO)  {
 
         if (roleDTO.getRank() < 1) {
             throw new InternetBankingException(messageSource.getMessage("auth.level.invalid", null, locale));
@@ -843,7 +843,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public void updateCorporateRole(CorporateRole updatedRole) throws InternetBankingException {
+    public void updateCorporateRole(CorporateRole updatedRole)  {
         try {
             CorporateRole originalRole = corporateRoleRepo.findById(updatedRole.getId()).get();
             Set<CorporateUser> originalUsers = new HashSet<>(originalRole.getUsers());
@@ -889,7 +889,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Verifiable(operation = "DELETE_CORPORATE_ROLE", description = "Deleting a Corporate Role")
-    public String deleteCorporateRole(Long id) throws InternetBankingException {
+    public String deleteCorporateRole(Long id)  {
 
         CorporateRole role = corporateRoleRepo.findById(id).get();
         if (!role.getUsers().isEmpty()) {
@@ -1116,7 +1116,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 //    @Override
-//    public boolean updateCorpCoverage(CorporateDTO corporate) throws InternetBankingException {
+//    public boolean updateCorpCoverage(CorporateDTO corporate)  {
 //            boolean ok = false;
 //            try {
 //                if (corporate != null) {

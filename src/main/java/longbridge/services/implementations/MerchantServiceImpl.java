@@ -43,7 +43,7 @@ public class MerchantServiceImpl implements MerchantService {
 
 	@Override
 	@Transactional
-	public String addMerchant(Merchant merchant) throws InternetBankingException {
+	public String addMerchant(Merchant merchant)  {
 
 		try {
 			prepare(merchant);
@@ -72,7 +72,7 @@ public class MerchantServiceImpl implements MerchantService {
 
 	@Override
 	@Transactional
-	public String deleteMerchant(Long id) throws InternetBankingException {
+	public String deleteMerchant(Long id)  {
 		try {
 			Merchant merchant = merchantrepo.findOneById(id);
 			merchantrepo.delete(merchant);
@@ -100,7 +100,7 @@ public class MerchantServiceImpl implements MerchantService {
 
 	@Override
 	@Transactional
-	public String updateMerchant(Merchant merchant) throws InternetBankingException {
+	public String updateMerchant(Merchant merchant)  {
 		try {
 			prepare(merchant);
 			merchantrepo.save(merchant);

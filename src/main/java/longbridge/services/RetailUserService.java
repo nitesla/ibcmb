@@ -32,7 +32,7 @@ public interface RetailUserService {
     Long countUser();
 
     @PreAuthorize("hasAuthority('UNLOCK_RETAIL_USER')")
-    String unlockUser(Long id) throws InternetBankingException;
+    String unlockUser(Long id) ;
 
 
     //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
@@ -65,14 +65,14 @@ public interface RetailUserService {
      * Adds a new retail user to the system
      * @param user the retail user to be added
      */
-    String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException;
+    String addUser(RetailUserDTO user, CustomerDetails details) ;
 
     /**
      * Adds a new retail user to the system
      *
      * @param user the retail user to be added
      */
-    String addUser(RetailUserDTO user) throws InternetBankingException;
+    String addUser(RetailUserDTO user) ;
 
 
     /**
@@ -80,7 +80,7 @@ public interface RetailUserService {
      * @param userId the retail user's id
      */
     @PreAuthorize("hasAuthority('DELETE_RETAIL_USER')")
-    String deleteUser(Long userId) throws InternetBankingException;
+    String deleteUser(Long userId) ;
 
 
 //    String setPassword(RetailUser user, String password) throws PasswordException;
@@ -108,7 +108,7 @@ public interface RetailUserService {
 
 
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_STATUS')")
-    String changeActivationStatus(Long userId) throws InternetBankingException;
+    String changeActivationStatus(Long userId) ;
 
 
     void sendActivationCredentials(RetailUser user, String password);

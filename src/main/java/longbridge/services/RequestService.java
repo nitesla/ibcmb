@@ -21,10 +21,10 @@ public interface RequestService {
      * @param request the request
      */
     @PreAuthorize("hasAuthority('ADD_SERVICE_REQUEST')")
-    String addRequest(ServiceRequestDTO request) throws InternetBankingException;
+    String addRequest(ServiceRequestDTO request) ;
 
     @PreAuthorize("hasAuthority('ADD_SERVICE_REQUEST')")
-    String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException;
+    String addCorpRequest(ServiceRequestDTO request) ;
 
     /**
      * Returns a request identified by the id
@@ -58,7 +58,7 @@ public interface RequestService {
      * @param requestHistory the request history
      */
     @PreAuthorize("hasAuthority('REQUEST_HISTORY')")
-    String addRequestHistory(RequestHistoryDTO requestHistory) throws InternetBankingException;
+    String addRequestHistory(RequestHistoryDTO requestHistory) ;
 
 
     /**

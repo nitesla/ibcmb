@@ -58,7 +58,7 @@ public class TransactionServiceImpl implements TransactionService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public String addTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
+    public String addTransactionFee(TransactionFeeDTO transactionFeeDTO)  {
         try {
             TransactionFee transactionFee = convertDTOToEntity(transactionFeeDTO);
             transactionFee.setDateCreated(new Date());
@@ -78,7 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
+    public String updateTransactionFee(TransactionFeeDTO transactionFeeDTO)  {
         try {
             TransactionFee transactionFee = transactionFeeRepo.findById(transactionFeeDTO.getId()).get();
             transactionFee.setVersion(transactionFeeDTO.getVersion());
@@ -97,7 +97,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public String deleteTransactionFee(Long id) throws InternetBankingException {
+    public String deleteTransactionFee(Long id)  {
         try {
             transactionFeeRepo.deleteById(id);
             logger.info("Transaction fee deleted");

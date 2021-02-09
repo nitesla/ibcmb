@@ -64,7 +64,7 @@ public class FaqsServiceImpl implements FaqsService {
 
     @Override
     @Verifiable(operation = "ADD_FAQ", description = "Adding FAQs")
-    public String addFaq(FaqsDTO faqsDTO) throws InternetBankingException {
+    public String addFaq(FaqsDTO faqsDTO)  {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
             faqsRepo.save(faqs);
@@ -82,7 +82,7 @@ public class FaqsServiceImpl implements FaqsService {
 
     @Override
     @Verifiable(operation = "UPDATE_FAQ", description = "Updating an FAQs")
-    public String updateFaq(FaqsDTO faqsDTO) throws InternetBankingException {
+    public String updateFaq(FaqsDTO faqsDTO)  {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
             faqsRepo.save(faqs);
@@ -102,7 +102,7 @@ public class FaqsServiceImpl implements FaqsService {
 
     @Override
     @Verifiable(operation = "DELETE_FAQ", description = "Deleting FAQs")
-    public String deleteFaq(Long id) throws InternetBankingException {
+    public String deleteFaq(Long id)  {
         try{
             Faqs faqs = faqsRepo.findById(id).get();
             faqsRepo.delete(faqs);

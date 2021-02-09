@@ -70,7 +70,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Verifiable(operation = "ADD_ROLE", description = "Adding a Role")
-    public String addRole(RoleDTO roleDTO) throws InternetBankingException {
+    public String addRole(RoleDTO roleDTO)  {
 
         Role role = roleRepo.findByUserTypeAndName(roleDTO.getUserType(),roleDTO.getName());
 
@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Verifiable(operation = "UPDATE_ROLE", description = "Updating a Role")
-    public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
+    public String updateRole(RoleDTO roleDTO)  {
 
           Role role = roleRepo.findByUserTypeAndName(roleDTO.getUserType(),roleDTO.getName());
 
@@ -141,7 +141,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Verifiable(operation = "DELETE_ROLE", description = "Deleting a Role")
-    public String deleteRole(Long id) throws InternetBankingException {
+    public String deleteRole(Long id)  {
 
         Role role = roleRepo.findById(id).get();
         Integer users = countUsers(role);
@@ -162,7 +162,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Verifiable(operation = "ADD_PERMISSION", description = "Adding a Permission")
-    public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
+    public String addPermission(PermissionDTO permissionDTO)  {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
             permissionRepo.save(permission);
@@ -209,7 +209,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Verifiable(operation = "UPDATE_PERMISSION", description = "Updating a Permission")
-    public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
+    public String updatePermission(PermissionDTO permissionDTO)  {
         try {
             Permission permission = permissionRepo.findById(permissionDTO.getId()).get();
             entityManager.detach(permission);
@@ -235,7 +235,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Verifiable(operation = "DELETE_PERMISSION", description = "Deleting a Permission")
-    public String deletePermission(Long id) throws InternetBankingException {
+    public String deletePermission(Long id)  {
         try {
             Permission permission = permissionRepo.findById(id).get();
             permissionRepo.delete(permission);

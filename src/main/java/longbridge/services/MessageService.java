@@ -52,8 +52,8 @@ public interface MessageService {
      * @param sender the sender of the message
      * @param message the message object
      */
-    String addMessage(User sender, MessageDTO message) throws InternetBankingException;
-    String addMessage(User sender, MessageDTO message,String category) throws InternetBankingException;
+    String addMessage(User sender, MessageDTO message) ;
+    String addMessage(User sender, MessageDTO message,String category) ;
 
     /**
      * Returns a list of messages of the specified user
@@ -143,7 +143,7 @@ public interface MessageService {
      * Deletes the sent message identified by the given {@code id}
      * @param id the message id
      */
-    String deleteSentMessage(User user, Long id) throws InternetBankingException;
+    String deleteSentMessage(User user, Long id) ;
 
     int getNumOfUnreadMessages(User user);
 
@@ -151,13 +151,13 @@ public interface MessageService {
      * Deletes the received message identified by the given {@code id}
      * @param id the message id
      */
-    String deleteReceivedMessage(Long id) throws InternetBankingException;
+    String deleteReceivedMessage(Long id) ;
 
     /**
      *Purges the messages after the specified days
      * @param daysOld the daysOld
      */
-    String purge(int daysOld) throws InternetBankingException;
+    String purge(int daysOld) ;
 
     String sendRetailContact(String message, RetailUser user);
 
@@ -167,7 +167,7 @@ public interface MessageService {
      * @param fromDate the start date
      * @param toDate the end date
      */
-    String purge(Date fromDate, Date toDate) throws InternetBankingException;
+    String purge(Date fromDate, Date toDate) ;
 
     /**
      * Creates and sends the message from the sender to the recipient
@@ -175,13 +175,13 @@ public interface MessageService {
      * @param recipient the user the receives the message
      * @param message  the message
      */
-    String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
+    String sendMessage(User sender, User recipient, MessageDTO message) ;
 
     /** Makes a request to send an email to using the details
      * in the {@link Email} object
      * @param messageDTO MessageDTO object containing all the details required to send an email
      */
-    void sendEmail(MessageDTO messageDTO) throws InternetBankingException;
+    void sendEmail(MessageDTO messageDTO) ;
 
     Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails);
     Page<MessageDTO> getMessages(User user, Pageable pageDetails);

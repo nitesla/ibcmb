@@ -73,7 +73,7 @@ public interface CorporateUserService{
      * @param user the corporate user
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
-    String updateUser(CorporateUserDTO user) throws InternetBankingException;
+    String updateUser(CorporateUserDTO user) ;
 
     /**
      * Adds a corporate user to a corporate customer
@@ -86,10 +86,10 @@ public interface CorporateUserService{
 
     @PreAuthorize("hasAuthority('UPDATE_CORP_USER_STATUS')")
     @Transactional
-    String changeActivationStatus(Long userId) throws InternetBankingException;
+    String changeActivationStatus(Long userId) ;
 
     @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
-    String changeCorpActivationStatus(Long userId) throws InternetBankingException;
+    String changeCorpActivationStatus(Long userId) ;
 
 
     void sendActivationCredentials(CorporateUser user, String password);
@@ -109,7 +109,7 @@ public interface CorporateUserService{
      * @param userId the corporate user's id
      */
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_USER')")
-    String deleteUser(Long userId) throws InternetBankingException;
+    String deleteUser(Long userId) ;
 
 
     /**
@@ -139,14 +139,14 @@ public interface CorporateUserService{
 
     void removeUserFromAuthorizerRole(CorporateUser corporateUser);
 
-    String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
+    String addCorpUserFromCorporateAdmin(CorpCorporateUserDTO user) ;
 
     String resetPassword(CorporateUser user, CustResetPassword changePassword);
 
     List<CorporateUserDTO> getUsersWithoutRole(Long corpId);
 
     @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
-    String unlockUser(Long id) throws InternetBankingException;
+    String unlockUser(Long id) ;
 
 
 
@@ -159,11 +159,11 @@ public interface CorporateUserService{
     /**
      * USER ADMIN OPERATIONS WITH VERIFICATION
      */
-    String addAuthorizer(CorporateUserDTO user)throws InternetBankingException;
+    String addAuthorizer(CorporateUserDTO user);
 
-    String addInitiator(CorporateUserDTO user)throws InternetBankingException;
-    String updateUserFromCorpAdmin(CorporateUserDTO user) throws InternetBankingException;
-    String changeActivationStatusFromCorpAdmin(Long id) throws InternetBankingException;
+    String addInitiator(CorporateUserDTO user);
+    String updateUserFromCorpAdmin(CorporateUserDTO user) ;
+    String changeActivationStatusFromCorpAdmin(Long id) ;
 
     String resetSecurityQuestion(Long id);
 
@@ -182,7 +182,7 @@ public interface CorporateUserService{
     Page<CorporateUserDTO> getUsers(CorporateDTO user, Pageable pageDetails);
 
 
-//    String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+//    String addUserFromCorporateAdmin(CorporateUserDTO user) ;
 //
-//    String updateUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+//    String updateUserFromCorporateAdmin(CorporateUserDTO user) ;
 }

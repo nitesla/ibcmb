@@ -46,7 +46,7 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
     }
 
     @Override
-    public String addInternationalBeneficiary(InternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
+    public String addInternationalBeneficiary(InternationalBeneficiaryDTO beneficiary)  {
         try {
             InternationalBeneficiary internationalBeneficiary = convertDTOToEntity(beneficiary);
             internationalBeneficiary.setUser(getCurrentUser());
@@ -68,7 +68,7 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
 
 
     @Override
-    public String deleteInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
+    public String deleteInternationalBeneficiary(Long beneficiaryId)  {
         try {
             internationalBeneficiaryRepo.delete(beneficiaryId);
             logger.info("Deleted beneficiary with Id{}", beneficiaryId);

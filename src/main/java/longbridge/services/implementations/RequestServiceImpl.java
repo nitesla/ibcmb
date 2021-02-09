@@ -93,7 +93,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
+    public String addRequest(ServiceRequestDTO request)  {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
             serviceRequest.setUser(retailUserRepo.findById(request.getUserId()).get());
@@ -131,7 +131,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException {
+    public String addCorpRequest(ServiceRequestDTO request)  {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
             Corporate corporate = corporateRepo.findById(request.getCorpId()).get();
@@ -183,7 +183,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public String addRequestHistory(RequestHistoryDTO requestHistoryDTO) throws InternetBankingException {
+    public String addRequestHistory(RequestHistoryDTO requestHistoryDTO)  {
         try {
             RequestHistory requestHistory = convertRequestHistoryDTOToEntity(requestHistoryDTO);
             ServiceRequest serviceRequest = requestHistory.getServiceRequest();

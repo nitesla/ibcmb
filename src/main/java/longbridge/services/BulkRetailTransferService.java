@@ -37,7 +37,7 @@ public interface BulkRetailTransferService {
 
 
     int getPendingBulkTransferRequests(Corporate corporate);
-    boolean transactionAboveLimit(BigDecimal totalCreditAmount, String debitAcccount) throws InternetBankingException;
+    boolean transactionAboveLimit(BigDecimal totalCreditAmount, String debitAcccount) ;
 
     List<BulkTransfer>getByStatus();
 

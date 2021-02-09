@@ -17,7 +17,7 @@ public interface AuditConfigService {
 
 
     @PreAuthorize("hasAuthority('UPDATE_AUDIT_CONFIG')")
-    boolean saveAuditConfig(AuditCfgDTO cfg) throws InternetBankingException;
+    boolean saveAuditConfig(AuditCfgDTO cfg) ;
 
     @PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
     Page<AuditConfig> getEntities(Pageable pageDetails);

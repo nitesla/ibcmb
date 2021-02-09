@@ -18,13 +18,13 @@ import java.util.List;
 public interface UserGroupService {
 
     @PreAuthorize("hasAuthority('ADD_USER_GRP')")
-    String addGroup(UserGroupDTO userGroupDTO) throws InternetBankingException;
+    String addGroup(UserGroupDTO userGroupDTO) ;
 
     @PreAuthorize("hasAuthority('UPDATE_USER_GRP')")
-    String updateGroup(UserGroupDTO userGroupDTO) throws InternetBankingException;
+    String updateGroup(UserGroupDTO userGroupDTO) ;
 
     @PreAuthorize("hasAuthority('DELETE_USER_GRP')")
-    String deleteGroup(Long id) throws InternetBankingException;
+    String deleteGroup(Long id) ;
 
     @PreAuthorize("hasAuthority('GET_USER_GRP')")
     List<UserGroupDTO> getGroups();

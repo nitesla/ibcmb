@@ -75,21 +75,21 @@ public interface OperationsUserService{
      * @param password the password
      */
     @PreAuthorize("hasAuthority('SET_OPS_PASSWORD')")
-    String setPassword(OperationsUser User, String password) throws InternetBankingException;
+    String setPassword(OperationsUser User, String password) ;
 
     /**
      * Creates an Operations User
      * @param user the new OperationsUser
      */
     @PreAuthorize("hasAuthority('ADD_OPS_USER')")
-    String addUser(OperationsUserDTO user) throws InternetBankingException;
+    String addUser(OperationsUserDTO user) ;
 
     /**
      * Update the details of the Operations User
      * @param user the Operations User
      */
     @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
-    String updateUser(OperationsUserDTO user) throws InternetBankingException;
+    String updateUser(OperationsUserDTO user) ;
 
     /**
      * Changes the activation status of the user
@@ -98,14 +98,14 @@ public interface OperationsUserService{
      * @param userId the user's Id
      */
     @PreAuthorize("hasAuthority('UPDATE_OPS_STATUS')")
-    String changeActivationStatus(Long userId) throws InternetBankingException;
+    String changeActivationStatus(Long userId) ;
 
     /**
      * Deletes an Operations User
      * @param userId the  Operations user's id
      */
     @PreAuthorize("hasAuthority('DELETE_OPS_USER')")
-    String deleteUser(Long userId) throws InternetBankingException;
+    String deleteUser(Long userId) ;
 
 
     OperationsUser createUserOnEntrustAndSendCredentials(OperationsUser opsUser);
@@ -115,7 +115,7 @@ public interface OperationsUserService{
      * @param id of the user
      */
     @PreAuthorize("hasAuthority('RESET_OPS_PASSWORD')")
-    String resetPassword(Long id) throws InternetBankingException;
+    String resetPassword(Long id) ;
 
 
 
@@ -128,13 +128,13 @@ public interface OperationsUserService{
      * @param changePassword
      */
     @PreAuthorize("hasAuthority('OPERATOR')")
-    String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException;
+    String changePassword(OperationsUser user, ChangePassword changePassword) ;
 
 
     @PreAuthorize("hasAuthority('OPS_CHANGE_PASSWORD')")
     String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
-    String resetPassword(String username) throws InternetBankingException;
+    String resetPassword(String username) ;
 
 
     void sendActivationCredentials(OperationsUser user, String password);

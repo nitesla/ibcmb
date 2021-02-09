@@ -16,14 +16,14 @@ public interface CorpInternationalBeneficiaryService {
      * @param  beneficiary  the beneficiary
      */
     @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-    String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
+    String addCorpInternationalBeneficiary(CorpInternationalBeneficiaryDTO beneficiary) ;
 
     /**
      * Deletes a beneficiary
      * @param beneficiaryId the beneficiary's id
      */
     @PreAuthorize("hasAuthority('DELETE_BENEFICIARY')")
-    String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException;
+    String deleteCorpInternationalBeneficiary(Long beneficiaryId) ;
 
     /**
      * Returns a beneficiary specified by the {@code id}

@@ -21,7 +21,7 @@ public interface CorpUserVerificationService {
     @Verifiable(operation = "UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN", description = "Update corporate user account permission")
     String updateAccountPermissionsFromCorporateAdmin(CorporateUserDTO corporateUserDTO);
 
-    String changeStatusFromCorporateAdmin(Long id) throws InternetBankingException;
+    String changeStatusFromCorporateAdmin(Long id) ;
 
     void addInitiator(CorporateUserDTO user, String operation, String description) throws VerificationException;
 

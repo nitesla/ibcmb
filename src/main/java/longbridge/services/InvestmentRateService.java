@@ -15,17 +15,17 @@ public interface InvestmentRateService {
     List<String> getDistinctInvestments();
 
     @PreAuthorize("hasAuthority('ADD_RATE')")
-    String addRate(InvestmentRateDTO investmentRateDTO) throws InternetBankingException;
+    String addRate(InvestmentRateDTO investmentRateDTO) ;
 
     Page<InvestmentRate> getAllRatesByInvestmentName(String investmentName, Pageable pageable);
 
     InvestmentRateDTO getInvestmentRate(Long rateId);
 
     @PreAuthorize("hasAuthority('UPDATE_RATE')")
-    String updateRate(InvestmentRateDTO investmentRateDTO) throws InternetBankingException;
+    String updateRate(InvestmentRateDTO investmentRateDTO) ;
 
     @PreAuthorize("hasAuthority('DELETE_RATE')")
-    String deleteRate(Long rateId) throws InternetBankingException;
+    String deleteRate(Long rateId) ;
 
     Optional<Integer> getRateByTenorAndAmount(String investmentName, int tenor, int amount);
 

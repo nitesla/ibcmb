@@ -106,7 +106,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public String unlockUser(Long id) throws InternetBankingException {
+    public String unlockUser(Long id)  {
 
         RetailUser user = retailUserRepo.findById(id).get();
         if (!"L".equals(user.getStatus())) {
@@ -156,7 +156,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Transactional
-    public String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException {
+    public String addUser(RetailUserDTO user, CustomerDetails details)  {
         try {
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
@@ -234,7 +234,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public String addUser(RetailUserDTO user) throws InternetBankingException {
+    public String addUser(RetailUserDTO user)  {
         try {
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
@@ -306,7 +306,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Verifiable(operation = "DELETE_RETAIL_USER", description = "Deleting a Retail User")
-    public String deleteUser(Long userId) throws InternetBankingException {
+    public String deleteUser(Long userId)  {
         try {
 
             RetailUser retailUser = retailUserRepo.findById(userId).get();
@@ -332,7 +332,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     @Transactional
     @Verifiable(operation = "UPDATE_RETAIL_STATUS", description = "Change Retail User Activation Status")
-    public String changeActivationStatus(Long userId) throws InternetBankingException {
+    public String changeActivationStatus(Long userId)  {
         try {
             RetailUser user = retailUserRepo.findById(userId).get();
             entityManager.detach(user);
@@ -842,7 +842,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
     @Override
-    public String changeFeedBackStatus(RetailUserDTO user) throws InternetBankingException {
+    public String changeFeedBackStatus(RetailUserDTO user)  {
 
         try {
             if (getUser(user.getId()) == null) {

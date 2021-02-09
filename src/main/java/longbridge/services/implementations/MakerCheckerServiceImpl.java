@@ -43,7 +43,7 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
 
 
 //    @Verifiable(operation="CONFIGURE_MAKER_CHECKER",description="Update Maker Checker")
-    public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException
+    public String configureMakerChecker(MakerChecker makerChecker)
     {
 
         try {

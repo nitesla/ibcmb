@@ -81,7 +81,7 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
     }
 
     @Override
-    public String addQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO) throws InternetBankingException {
+    public String addQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO)  {
 
         QuicktellerBankCode quicktellerBankCode;
         quicktellerBankCode = quicktellerBankCodeRepo.findByBankCodeAndCbnCode(quicktellerBankCodeDTO.getBankCode(), quicktellerBankCodeDTO.getCbnCode());
@@ -105,7 +105,7 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
     }
 
     @Override
-    public String updateQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO) throws InternetBankingException {
+    public String updateQuicktellerBankCode(QuicktellerBankCodeDTO quicktellerBankCodeDTO)  {
         try {
             QuicktellerBankCode quicktellerBankCode = new QuicktellerBankCode();
             quicktellerBankCode.setId((quicktellerBankCodeDTO.getId()));
@@ -147,7 +147,7 @@ public class QuicktellerBankCodeServiceImpl implements QuicktellerBankCodeServic
     }
 
     @Override
-    public String deleteQuicktellerBankCode(Long id) throws InternetBankingException {
+    public String deleteQuicktellerBankCode(Long id)  {
       try {
           QuicktellerBankCode finInst = quicktellerBankCodeRepo.findById(id).get();
           quicktellerBankCodeRepo.delete(finInst);
