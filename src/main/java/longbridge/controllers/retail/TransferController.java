@@ -249,77 +249,6 @@ public class TransferController {
         return transferUtils.doQuicktellerNameLookup(bank, accountNo);
 
     }
-//
-//    @PostMapping("/process/neft")
-//    public String neftTransfer(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception{
-//        NeftTransferRequestDTO transferRequestDTO = (NeftTransferRequestDTO) request.getSession().getAttribute("transferRequest");
-//
-//        if (request.getSession().getAttribute("auth-needed") != null) {
-//            String token = request.getParameter("token");
-//            if (token == null || token.isEmpty()) {
-//                model.addAttribute("failure", "Token is required");
-//                return "/cust/transfer/transferauth";
-//            }
-//            try {
-//                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-//                securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
-//
-//            } catch (InternetBankingSecurityException ibse) {
-//                ibse.printStackTrace();
-//                model.addAttribute("failure", ibse.getMessage());
-//                return "/cust/transfer/transferauth";
-//            }
-//            request.getSession().removeAttribute("auth-needed");
-//        }
-//        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-//        transferRequestDTO.setPayerName(retailUser.getFirstName() +' '+ retailUser.getLastName());
-//
-//        if (request.getSession().getAttribute("add") != null) {
-//            if (request.getSession().getAttribute("Nbeneficiary") != null) {
-//                NeftBeneficiaryDTO neftBeneficiaryDTO = (NeftBeneficiaryDTO) request.getSession().getAttribute("Nbeneficiary");
-//                RetailUser user = retailUserService.getUserByName(principal.getName());
-//                try {
-//                    neftBeneficiaryService.addNeftBeneficiary(neftBeneficiaryDTO);
-//                    request.getSession().removeAttribute("Nbeneficiary");
-//                    request.getSession().removeAttribute("add");
-//                } catch (InternetBankingException de) {
-//                    logger.error("Error adding beneficiary", de);
-//                }
-//            }
-//        }
-//
-//        transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
-//        model.addAttribute("transRequest", transferRequestDTO);
-//        logger.info("Transfer status {}", transferRequestDTO.getStatus());
-//        if (transferRequestDTO.getStatus().equalsIgnoreCase("00") || transferRequestDTO.getStatus().equalsIgnoreCase("000")) {
-//            model.addAttribute("message", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-//            logger.info("Transfer status1 {}", transferRequestDTO.getStatus());
-//
-//            return "cust/transfer/transferdetails";
-//
-//        }
-//        if (transferRequestDTO.getStatus().equalsIgnoreCase("34")) {
-////                model.addAttribute("failure", messages.getMessage("transaction.pending", null, locale));
-//            model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-//            logger.info("Transfer status..antifraud {}", transferRequestDTO.getStatus());
-//
-//            return "cust/transfer/pendingtransferdetails";
-//
-//        }
-//        if (transferRequestDTO.getStatus().equalsIgnoreCase("09")) {
-//            model.addAttribute("failure", messages.getMessage(transferErrorService.getMessage(transferRequestDTO.getStatus()), null, locale));
-//            logger.info("Transfer status..pending {}", transferRequestDTO.getStatus());
-//            return "cust/transfer/pendingtransferdetails";
-//
-//        } else {
-//            logger.info("Transfer status..others {}", transferRequestDTO.getStatus());
-//            redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));//GB
-//            return index(request);
-//        }
-//
-//        System.out.println("Neft Transfer processing "+ transferRequestDTO);
-//        return "redirect:/retail/transfer/interbank";
-//    }
 
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
@@ -441,7 +370,7 @@ public class TransferController {
 
             } else {
                 logger.info("Transfer status..others {}", transferRequestDTO.getStatus());
-                redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));//GB
+                redirectAttributes.addFlashAttribute("failure", transferRequestDTO.getStatusDescription());//GB
                 return index(request);
             }
 //            return "cust/transfer/transferdetails";
@@ -453,8 +382,8 @@ public class TransferController {
                 request.getSession().removeAttribute("Lbeneficiary");
             if (request.getSession().getAttribute("Nbeneficiary") != null)
                 request.getSession().removeAttribute("Nbeneficiary");
-//            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
-            redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));
+            redirectAttributes.addFlashAttribute("failure", messages.getMessage("transfer.failed", null, locale));
+//            redirectAttributes.addFlashAttribute("failure", transferErrorService.getMessage(transferRequestDTO.getStatus()));
             return index(request);
 
         } catch (Exception e) {

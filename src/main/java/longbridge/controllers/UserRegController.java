@@ -339,7 +339,8 @@ public class UserRegController {
             String contact = details.getPhone();
             if(contact != null && !contact.equalsIgnoreCase("") ) {
                 code = generateAndSendRegCode(contact);
-                if (!"".equals(code)) {
+                System.out.println("Code got here : "+ code);
+                if (!code.isEmpty()) {
                     logger.info("reg code {} and time {} saved successfully",code,new Date());
                     session.setAttribute("regCode", code);
                     session.setAttribute("regCodeTime", new Date());

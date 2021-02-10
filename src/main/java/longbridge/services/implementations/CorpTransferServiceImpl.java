@@ -873,7 +873,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                             return requestDTO.getStatusDescription();
 
                         } else {//failed transaction
-                            return messageSource.getMessage(transferErrorService.getMessage(requestDTO.getStatus()), null, locale);//GB
+                            return requestDTO.getStatusDescription();//GB
 
 //                        throw new InternetBankingTransferException(String.format(messageSource.getMessage("transfer.auth.failure.reason", null, locale), requestDTO.getStatusDescription()));
                         }
