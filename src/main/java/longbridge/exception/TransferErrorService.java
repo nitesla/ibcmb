@@ -1,6 +1,6 @@
 package longbridge.exception;
 
-import longbridge.models.TransferCodeTransalator;
+import longbridge.models.TransferCode;
 import longbridge.repositories.TransferCodeRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class TransferErrorService {
         String errorMessage;
 
         try {
-            TransferCodeTransalator codeTransalator = transferCodeRepo.findFirstByResponseCode(exception.getMessage());
+            TransferCode codeTransalator = transferCodeRepo.findFirstByResponseCode(exception.getMessage());
             if (codeTransalator != null) {
                 String error = codeTransalator.getResponseMessage();
                 return messages.getMessage(error, null, locale);
@@ -59,9 +59,11 @@ public class TransferErrorService {
         logger.info("ERROR CODE {} " , errorCode);
        String error="";
         try {
-            TransferCodeTransalator codeTransalator = transferCodeRepo.findFirstByResponseCode(errorCode);
+            TransferCode codeTransalator = transferCodeRepo.findFirstByResponseCode(errorCode);
             if (codeTransalator != null) {
-                 error = codeTransalator.getResponseDesc();
+//                 error = codeTransalator.getResponseDesc();
+                 error = codeTransalator.getResponseMessage();
+                 logger.info("CODE DESCRIPTION {} ", error);
                 return error;
             }
 

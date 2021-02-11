@@ -2,16 +2,22 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 public class TransferSetLimitDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;
+    @NotEmpty(message = "channel")
     private String channel;
+    @NotEmpty(message = "customerType")
     private String customerType;
+    @NotEmpty(message = "description")
     private String description;
+    @NotEmpty(message = "lowerLimit")
     private String lowerLimit;
+    @NotEmpty(message = "upperLimit")
     private String upperLimit;
 
     public Long getId() {

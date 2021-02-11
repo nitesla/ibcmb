@@ -2,19 +2,26 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 public class TransferFeeAdjustmentDTO implements Serializable {
 
     @JsonProperty("DT_RowId")
     private Long id;
+    @NotEmpty(message = "feeDescription")
     private String feeDescription;
+    @NotEmpty(message = "feeRange")
     private String feeRange;
+    @NotEmpty(message = "fixedAmount")
     private String fixedAmount;
+    @NotEmpty(message = "fixedAmountValue")
     private String fixedAmountValue;
+    @NotEmpty(message = "rate")
     private String rate;
+    @NotEmpty(message = "rateValue")
     private String rateValue;
+    @NotEmpty(message = "transactionChannel")
     private String transactionChannel;
 
     public Long getId() {
