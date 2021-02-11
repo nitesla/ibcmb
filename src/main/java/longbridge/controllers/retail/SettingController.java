@@ -149,6 +149,10 @@ public class SettingController {
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
 
+        List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        model.addAttribute("account_coverage", accountCoverage);
+
+
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
             model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));

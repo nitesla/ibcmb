@@ -124,51 +124,18 @@
                 </tfoot>
             </table>
 
+        </div>
 
+        <div class=" no-pad-lef table-responsive bg-white alert" th:each="crv : ${account_coverage}" style="padding:0px !important">
+            <table  class="table table-hover no-pad-lef coverage" th:id="${crv.code}">
+                <caption style="font-size: large" th:text="${crv.description}"> </caption>
+            </table>
         </div>
 
 
 
 
-        <div  th:if="${not #lists.isEmpty(coverageDetails)}" class=" no-pad-lef table-responsive bg-white alert">
-        <table class="table table-hover no-pad-lef" id="coverage">
-
-        <caption style="font-size: large">COVERAGE TYPES</caption>
-
-        <thead>
-        <tr>
-
-        <th>Customer ID</th>
-        <th>Coverage Name</th>
-        <th>Coverage Details</th>
-
-
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-        <tr>
-        <tr>
-        <th>Customer ID</th>
-        <th>Coverage Name</th>
-        <th>Coverage Details</th>
-
-        </tr>
-
-        </tr>
-        </tfoot>
-        </table>
-        </div>
-
-
-
-
-        <div id="coverage-div">
-
-        </div>
-
-
+    </div>
 
     </div>
 
@@ -249,6 +216,9 @@
 
 
 <th:block layout:fragment="scripts">
+
+    <script th:src="@{~/bank/js/moment.min.js}"></script>
+    <script th:src="@{~/bank/js/lodash.min.js}"></script>
 
     <script>
 
@@ -389,47 +359,85 @@
 
                             return'<a  onclick="fixdepositMail(\'' + data + '\')" ><i class="fa fa-envelope-o"></i> Send</a>';
                         }
-                    }
-                ]
-
-
-            })
-
-
-            // });
-            var table = $('#coverage').DataTable({
-                select:true,
-                responsive: true,
-                "lengthMenu" : [ [ 5, 10, 20,-1],	[ 5, 10,20, "All" ] ],
-                "pagingType" : "simple_numbers",
-                "searching": false,
-                "paging": true,
-                "serverSide" : true,
-                "ajax": "/retail/dashboard/coverage",
-                "dom": 'T<"clear">frtlp',
-                "columns": [
-                    { "data": "customerId"},
-                    { "data": "coverageName"},
-                    { "data": "coverageUrl", render : function (data,type,full,meta) {
-                            if(data!=null){
-                                console.log("The Data2 : " + data);
-                                return'<a href="/retail/coverage/view/' + data + '"><i class="fa fa-eye"></i>  View </a>';
-                            }
-
-                        }
-
-
-                    }
-
-                ]
+                    }]
 
 
             });
 
 
+            $('table.coverage').each(function (idx, e) {
+                let columns = [];
+                let id = $(e).attr("id")
+                console.log("Coverage name : " + id);
+                $.get('/retail/coverage?coverageName=' + id, function (resp) {
+                    // temp = JSON.parse(resp);
+                    console.log("returned data : " + resp);
+                    let data = resp[_.lowerCase(id)];
+                    console.log("Formatted data : " + data );
+                    if(data.length <= 0)
+                        return;
+                    let columnNames = Object.keys(data[0]);
+                    for (let i in columnNames) {
+                        columns.push({
+                            data: columnNames[i],
+                            title: _.startCase(columnNames[i])
+                        });
+                    }
+                    let tb= $("#" + id).DataTable({
+                        select: false,
+                        responsive: true,
+                        "searching": false,
+                        "paging": false,
+                        "serverSide": false,
+                        "dom": 'T<"clear">rtl',
+                        "columns": columns
+                    });
+                    $(tb.table().header()).addClass('thead underline');
+                    tb.rows.add(data).draw();
+                })
+            });
 
+
+
+            // $('table.coverage').each(function (idx, e) {
+            //     let columns = [];
+            //     let id = $(e).attr("id")
+            //     console.log("Coverage name retail : " + id);
+            //     $.get('/retail/coverage?coverageName=' + id, function (resp) {
+            //         // temp = JSON.parse(resp);
+            //         let data = resp[_.lowerCase(id)];
+            //         if(data.length <= 0)
+            //             return;
+            //         let columnNames = Object.keys(data[0]);
+            //         for (let i in columnNames) {
+            //             columns.push({
+            //                 data: columnNames[i],
+            //                 title: _.startCase(columnNames[i])
+            //             });
+            //         }
+            //         let tb= $("#" + id).DataTable({
+            //             select: false,
+            //             responsive: true,
+            //             "searching": false,
+            //             "paging": false,
+            //             "serverSide": false,
+            //             "dom": 'T<"clear">rtl',
+            //             "columns": columns
+            //         });
+            //         $(tb.table().header()).addClass('thead underline');
+            //         tb.rows.add(data).draw();
+            //     })
+            // });
 
         });
+
+
+
+
+
+
+
+
 
 
 
