@@ -35,6 +35,7 @@ public class CorpCoverageServiceImpl implements CorpCoverageService {
         CorporateUser corpuser = (CorporateUser) principal.getUser();
         Corporate corporate = corpuser.getCorporate();
         String coverages = corporate.getCoverage();
+
         boolean corpChecked = Arrays.stream(coverages.split(",")).filter(s -> s.equals(coverage)).count() >= 1;
 
         boolean confChecked = codeService.getCodesByType("ACCOUNT_COVERAGE").stream()

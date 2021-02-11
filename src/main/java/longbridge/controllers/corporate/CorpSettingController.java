@@ -1,5 +1,6 @@
 package longbridge.controllers.corporate;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -73,8 +74,7 @@ public class CorpSettingController {
     @Autowired
     private MessageSource messageSource;
 
-    @Autowired
-    private IntegrationService integrationService;
+    private CorpCoverageService corpCoverageService;
 
 
     @RequestMapping("/dashboard")
@@ -86,9 +86,8 @@ public class CorpSettingController {
         Long corpId = corporateUser.getCorporate().getId();
 
 
-//        Principal principal = SecurityContextHolder.getContext().getAuthentication();
         CustomUserPrincipal user = (CustomUserPrincipal) ((Authentication) principal).getPrincipal();
-        Corporate corporate = corporateService.getCorp(user.getCorpId());
+
 
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getAccounts());
@@ -129,9 +128,9 @@ public class CorpSettingController {
                     })
                     .collect(Collectors.toList());
         }
+
        List<Account> loanAccounts = accountService.getLoanAccounts(loansAccountList);
         List<Account> fixedDepositAccounts = accountService.getFixedDepositAccounts(fixedDepositDTOList);
-
 
         model.addAttribute("accountList", accountList);
         model.addAttribute("corpId", corpId);
@@ -139,6 +138,7 @@ public class CorpSettingController {
         model.addAttribute("mailLoanDTO", new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
+
 
         List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
         model.addAttribute("account_coverage", accountCoverage);
