@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+</head>
+
+<body>
+<h3>[[${name}]]</h3>
+<hr/>
+Date : [[${date}]]
+Name : [[${user.firstName + ' ' + user.lastName}]]
+E-banking Id : [[${user.userName}]]
+<table >
+    <tbody>
+    <tr th:each="detail : ${request}">
+        <th th:text="${detail.key}"></th>
+        <td th:text="${detail.value}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

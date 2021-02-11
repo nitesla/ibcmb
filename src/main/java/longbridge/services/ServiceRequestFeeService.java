@@ -1,7 +1,7 @@
 package longbridge.services;
 
 
-import longbridge.dtos.ServiceRequestDTO;
+import longbridge.servicerequests.client.ServiceRequestDTO;
 
 import java.util.Map;
 

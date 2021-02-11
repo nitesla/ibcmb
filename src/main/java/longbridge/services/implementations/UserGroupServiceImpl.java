@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -123,8 +124,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroupDTO getGroup(Long id) {
-        UserGroup userGroup = userGroupRepo.findById(id).get();
-        return convertEntityToDTO(userGroup);
+       return userGroupRepo.findById(id).map(this::convertEntityToDTO).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

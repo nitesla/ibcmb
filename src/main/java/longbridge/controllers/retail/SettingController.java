@@ -1,12 +1,14 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
+import longbridge.controllers.CustomerServiceRequestController;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
+import longbridge.servicerequests.client.RequestService;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -80,10 +82,10 @@ public class SettingController {
     private SecurityService securityService;
 
     @Autowired
-    ServiceRequestController serviceRequestController;
+    CustomerServiceRequestController serviceRequestController;
 
     @Autowired
-    ServiceReqConfigService serviceReqConfigService;
+    RequestService requestService;
 
 
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -559,7 +561,7 @@ public class SettingController {
     @GetMapping("/link/bvn")
     public String retailLinkBvn(Model model) {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
-        model.addAttribute("requestConfig", serviceReqConfigService.getServiceReqConfigRequestName("LINK-BVN"));
+        model.addAttribute("requestConfig", requestService.getRequestByName("LINK-BVN"));
         return "cust/bvn/linkbvn";
     }
 

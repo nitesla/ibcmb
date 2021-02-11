@@ -1,11 +1,11 @@
 package longbridge.controllers.corporate;
 
+import longbridge.controllers.CustomerServiceRequestController;
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.servicerequests.client.RequestService;
 import longbridge.services.ChequeService;
 import longbridge.services.CodeService;
-import longbridge.services.ServiceReqConfigService;
 import longbridge.services.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,23 +36,21 @@ public class CorpChequeController {
     MessageSource messageSource;
 
     @Autowired
-    ServiceReqConfigService serviceReqConfigService;
+    RequestService requestService;
     @Autowired
     SettingsService configurationService;
-
+    @Autowired
+    CustomerServiceRequestController serviceRequestController;
 
     @GetMapping("/chequebook")
     public String requestChequeBook(Principal principal, Model model) {
         List<CodeDTO> chequebooks = codeService.getCodesByType("CHEQUEBOOK");
         List<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CHEQUE-REQUEST");
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestService.getRequestByName("CHEQUE-REQUEST"));
         model.addAttribute("leaves", chequebooks);
         model.addAttribute("branches", pickUpBranch);
         return "corp/cheque/chequebook";
     }
-
-
 
     @PostMapping("/balance/check")
     @ResponseBody
@@ -70,55 +68,38 @@ public class CorpChequeController {
     }
 
     @GetMapping("/stop")
-    public String stopCheque(Model model,Locale locale) {
+    public String stopCheque(Model model, Locale locale) {
 
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("STOP-CHEQUE");
         SettingDTO stopChequeCharge = configurationService.getSettingByName("STOP-CHEQUE");
 
-        model.addAttribute("requestConfig", serviceReqConfig);
-        model.addAttribute("chargeMessage",messageSource.getMessage("stop.cheque.charge",null,locale));
-        model.addAttribute("charge",stopChequeCharge.getValue());
+        model.addAttribute("requestConfig", requestService.getRequestByName("STOP-CHEQUE"));
+        model.addAttribute("chargeMessage", messageSource.getMessage("stop.cheque.charge", null, locale));
+        model.addAttribute("charge", stopChequeCharge.getValue());
         return "corp/cheque/stopcheque";
     }
 
     @GetMapping("/confirm")
     public String confirmCheque(Model model) {
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CONFIRM-CHEQUE");
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestService.getRequestByName("CONFIRM-CHEQUE"));
         return "corp/cheque/confirmcheque";
     }
 
     @GetMapping("/draft")
-    public String requestDraft(Model model,Locale locale) {
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("DRAFT-REQUEST");
+    public String requestDraft(Model model, Locale locale) {
         Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
         SettingDTO draftCharge = configurationService.getSettingByName("DRAFT-REQUEST");
 
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestService.getRequestByName("DRAFT-REQUEST"));
         model.addAttribute("branches", pickUpBranch);
-        model.addAttribute("draftMessage",messageSource.getMessage("cheque.draft",null,locale));
-        model.addAttribute("charge",draftCharge.getValue());
+        model.addAttribute("draftMessage", messageSource.getMessage("cheque.draft", null, locale));
+        model.addAttribute("charge", draftCharge.getValue());
 
         return "corp/cheque/draftrequest";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    @Autowired
-    CorpServiceRequestController serviceRequestController;
     @GetMapping("/{reqId}")
-    public String reDirectRequest(@PathVariable Long reqId, Model model, Principal principal){
-        return serviceRequestController.makeRequest(reqId,model,principal);
+    public String reDirectRequest(@PathVariable Long reqId, Model model, Principal principal) {
+        return serviceRequestController.makeRequest(reqId, model, principal);
 //        return "redirect:/retail/requests/"+id;
 
     }

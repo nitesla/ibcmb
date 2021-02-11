@@ -3,6 +3,8 @@ package longbridge.controllers.corporate;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.CorporateUser;
+import longbridge.servicerequests.client.RequestService;
+import longbridge.servicerequests.client.ServiceRequestDTO;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -49,7 +51,7 @@ public class CorpFixedDepositController {
     @Autowired
     private FixedDepositService fixedDepositService;
     @Autowired
-    private ServiceReqConfigService serviceReqConfigService;
+    private RequestService requestService;
 
     @Autowired
     private IntegrationService integrationService;
@@ -100,11 +102,10 @@ public class CorpFixedDepositController {
         FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
         Iterable<CodeDTO> tenors = codeService.getCodesByType("TENOR");
         Iterable<CodeDTO> depositType = codeService.getCodesByType("FIXED_DEPOSIT_TYPE");
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("FIXED-DEPOSIT");
         model.addAttribute("fixedDepositDTO",fixedDepositDTO);
         model.addAttribute("tenors",tenors);
         model.addAttribute("depositTypes",depositType);
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestService.getRequestByName("FIXED-DEPOSIT"));
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         model.addAttribute("notice", messageSource.getMessage("deposit.notice",null,locale));
 
@@ -116,13 +117,12 @@ public class CorpFixedDepositController {
     @GetMapping("/liquidate/{acctNum}/{refNo}/{amount}")
     public String newFixedDeposits(Model model,@PathVariable String acctNum,@PathVariable String refNo,@PathVariable String amount) {
 
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("FIXED-DEPOSIT");
 
         model.addAttribute("refNo",refNo);
         model.addAttribute("depositNo",acctNum);
         model.addAttribute("initialAmount",amount);
 
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestService.getRequestByName("FIXED-DEPOSIT"));
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         return "corp/fixedDeposit/liquidate";
     }

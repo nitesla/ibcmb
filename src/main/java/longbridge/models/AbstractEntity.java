@@ -9,6 +9,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -95,7 +96,7 @@ public abstract class AbstractEntity implements Serializable{
     
     @JsonIgnore
 	 public List<String> getDefaultSearchFields(){
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
     @Override

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+<link rel="stylesheet" th:href="@{~/bank/vendors/datatables.net-buttons/css/buttons.bootstrap.css}">
+<link rel="stylesheet" th:href="@{~/bank/vendors/datatables-select/css/select.bootstrap.css}">
+<link rel="stylesheet" th:href="@{~/bank/vendors/datatables-scroller/css/scroller.dataTables.css}"/>
+<link rel="stylesheet" th:href="@{~/bank/vendors/datatables-scroller/css/scroller.bootstrap.css}"/>
+<link rel="stylesheet" th:href="@{~/bank/vendors/datatables-rowreorder/css/rowReorder.bootstrap.css}"/>
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Service Request</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Edit Service Request</h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="POST"
+                                      th:action="@{/admin/requests/config/{id}(id=${oldentity == true ? ''+config.id : ''})}"
+                                      th:object="${config}" class="form-horizontal">
+                                    <div class="x_content">
+                                        <br />
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Name <span class="required"></span>
+                                            </label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <input type="text" class="form-control col-sm-9" th:field="*{name}">
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Type <span class="required"></span></label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+
+                                                <select class="form-control" th:field="*{type}" id="type">
+                                                    <option value="" selected="selected">Choose your Type</option>
+                                                    <option th:each="code : ${requestTypes}"
+                                                            th:value="${code.code}" th:text="${code.description}"
+                                                            th:selected="${config.type==code.code}"></option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Group<span class="required"></span></label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+
+                                                <select class="form-control" th:field="*{groupId}" id="owner">
+                                                    <option value="" selected="selected">Choose service group</option>
+                                                    <option th:each="group : ${groups}"
+                                                            th:value="${group.id}" th:text="${group.name}"
+                                                            th:selected="${group.id==config.groupId}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">
+                                                Check if <span class="required"></span>
+                                            </label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <label><input type="checkbox" th:field="*{authRequired}" /> &nbsp; Requires Authentication</label>
+                                            </div>
+                                        </div>
+
+                                        <br/><br/>
+
+                                        <div class="form-group">
+                                            <div class="col-md-12 col-sm-6 col-xs-12">
+                                                <table id="table" class="table display" cellspacing="0" width="100%" >
+                                                    <thead>
+                                                    <tr>
+                                                        <th><i class="fa fa-arrows-v"></i></th>
+                                                        <th>Label</th>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>Data</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="req,stat : ${config.fields}">
+                                                        <td><i class="fa fa-arrows"></i></td>
+                                                        <td>
+                                                            <div class="container-fluid"><input
+                                                                    th:name="${'fields['+stat.index+'].label'}"
+                                                                    type="text" class="form-control"
+                                                                    th:value="${req.label}"/></div>
+                                                        </td>
+                                                        <td><input th:name="${'fields['+stat.index+'].name'}"
+                                                                   type="text"
+                                                                   class="form-control"
+                                                                   th:value="${req.name}"/></td>
+                                                        <td>
+                                                            <select class="form-control"
+                                                                    th:name="${'fields['+stat.index+'].type'}">
+                                                                <option th:each="type : ${fieldTypes}"
+                                                                        th:value="${type.name()}"
+                                                                        th:text="${type}"
+                                                                        th:selected="${#strings.equalsIgnoreCase(req.type,type.name())}"></option>
+                                                            </select>
+                                                        </td>
+                                                        <td><input th:name="${'fields['+stat.index+'].data'}"
+                                                                   type="text"
+                                                                   class="form-control"
+                                                                   th:value="${req.data}"/></td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <th:block th:if="${oldentity != null}">
+                                                    <input th:hidden="hidden" th:field="*{version}"/>
+                                                    <input th:hidden="hidden" th:field="*{id}"/>
+                                                </th:block>
+                                                <div hidden="hidden">
+                                                    <ul id="fieldErrors" th:if="${#fields.hasErrors('*')}">
+                                                        <li th:each="e : ${#fields.detailedErrors()}"
+                                                            th:attr="field=${e.fieldName}"
+                                                            th:text="${e.message}"></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4 col-sm-offset-2" align="center">
+                                        <button type="reset" id="cancel" class="btn btn-default" >Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+
+                                    </div>
+                                    <div th:replace="layout::form-validation"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:src="@{~/bank/vendors/switchery/switchery.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net-buttons/js/dataTables.buttons.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.js}"></script>
+<script th:src="@{~/bank/vendors/datatables-scroller/js/dataTables.scroller.js}"></script>
+<script th:src="@{~/bank/vendors/datatables-scroller/js/scroller.bootstrap.js}"></script>
+<script th:src="@{~/bank/vendors/datatables-rowreorder/js/dataTables.rowReorder.js}"></script>
+<script th:src="@{~/bank/vendors/datatables-rowreorder/js/rowReorder.bootstrap.js}"></script>
+
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/lodash.min.js}"></script>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(function ($) {
+
+
+        $('.js-switch').on('change', function (event, state) {
+            $('#authRequired').val(event.currentTarget.checked);
+        });
+
+        var fieldTypes = /*[[ ${fieldTypes} ]]*/[];
+        var table = $('#table').DataTable({
+            dom: 'Brt',
+            select: {
+                style: 'single'
+            },
+            "scrollY": "170px",
+            "scrollCollapse": true,
+            rowReorder: true,
+            "paging": false,
+            ordering: false,
+            "language": {
+                "emptyTable": "No request fields. Click Add"
+            }, buttons: [
+                {
+                    text: 'Add',
+                    className: "btn btn-xs ",
+                    action: function (e, dt, node, config) {
+                        add();
+                    },
+                },
+                {
+                    className: "selector btn btn-xs",
+                    text: 'Remove',
+                    action: function (e, dt, node, config) {
+                        id = dt.rows({selected: true}).data()[0]["id"];
+                        remove();
+                    },
+                    enabled: false
+                }
+            ]
+        });
+
+        table.on('select deselect', function () {
+            var selectedRows = table.rows({selected: true}).count();
+            table.buttons(".selector").enable(selectedRows > 0);
+        });
+
+        table.on('select select', function () {
+            var selectedRows = table.rows({selected: true}).count();
+            table.buttons(".selector").enable(selectedRows > 0);
+        });
+
+        var counter = table.rows().data().length;
+
+        function buildSelect() {
+            // select = $(`<select name="fields[' + ${cnt} + '].type" class="form-control"></select>`);
+            // console.log(select.html())
+            options = $('<select></select>')
+            for (i in fieldTypes) {
+                // Object.entries(object1)
+                key = fieldTypes[i];
+                value = _.startCase(_.toLower(key));
+                var option = new Option(value, key)
+                options.append($(option));
+            }
+            console.log(options.html())
+            return options.html()
+        }
+
+        function add() {
+            table.row.add(['<i class="fa fa-arrows">',
+                '<div class="container-fluid"><input name="fields[' + counter + '].label" type="text" class="form-control"></div>',
+                `<input name="fields[${counter}].name" type="text" class="form-control">`,
+                `<select name="fields[${counter}].type" class="form-control">${buildSelect()}</select>`,
+                `<input name="fields[${counter}].data" type="text" class="form-control ">`])
+                .draw(false);
+            counter++;
+        }
+
+        function remove() {
+            table.row('.selected').remove().draw(false);
+        }
+
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
