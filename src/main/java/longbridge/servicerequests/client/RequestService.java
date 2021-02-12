@@ -24,11 +24,7 @@ public interface RequestService {
      */
     @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     ServiceRequestDTO getRequest(Long id);
-
-
-    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
-    ServiceRequestDTO getRequestByName(String name);
-
+    
 
     @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     Page<ServiceRequestDTO>getUserRequests(Pageable pageDetails);

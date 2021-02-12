@@ -8,26 +8,18 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AddRequestCmd implements Serializable {
-    private String body;
-    private Date dateRequested;
+    private Map<String,Object> body;
     private Long serviceReqConfigId;
 
-    public String getBody() {
+    public Map<String, Object> getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(Map<String, Object> body) {
         this.body = body;
-    }
-
-    public Date getDateRequested() {
-        return dateRequested;
-    }
-
-    public void setDateRequested(Date dateRequested) {
-        this.dateRequested = dateRequested;
     }
 
     public Long getServiceReqConfigId() {

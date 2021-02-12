@@ -65,12 +65,11 @@ public class SessionUtils {
         try {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
             if (settingDTO != null && settingDTO.isEnabled()) {
+                String alertPreference = user.getAlertPreference();
                 logger.info("alertPref {}", user.getAlertPreference());
-                Code alertPreference = user.getAlertPreference();
                 if (alertPreference == null) {
                     return;
                 }
-                String preference = alertPreference.getCode();
                 String firstName = user.getFirstName();
                 String lastName = user.getLastName();
                 if (firstName == null) firstName = "";
@@ -92,13 +91,13 @@ public class SessionUtils {
                 String alertSubject = messageSource.getMessage(alertSub, null, locale);
                 logger.info("alertBen {}",alertSubject);
 
-                if ("SMS".equalsIgnoreCase(preference)) {
+                if ("SMS".equalsIgnoreCase(alertPreference)) {
                     integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
 
-                } else if ("EMAIL".equalsIgnoreCase(preference)) {
+                } else if ("EMAIL".equalsIgnoreCase(alertPreference)) {
                     sendMail(user, alertSubject);
 
-                } else if ("BOTH".equalsIgnoreCase(preference)) {
+                } else if ("BOTH".equalsIgnoreCase(alertPreference)) {
                     integrationService.sendSMS(smsMessage, user.getPhoneNumber(), alertSubject);
                     sendMail(user, alertSubject);
                 }

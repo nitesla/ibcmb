@@ -7,11 +7,12 @@
 </head>
 
 <body>
-<h3>[[${name}]]</h3>
+<h3>[[${config.description}]]</h3>
 <hr/>
-Date : [[${date}]]
-Name : [[${user.firstName + ' ' + user.lastName}]]
-E-banking Id : [[${user.userName}]]
+<p>Date : [[${date}]]</p>
+<p>Name : [[${user.firstName + ' ' + user.lastName}]]</p>
+<p>E-banking Id : [[${user.userName}]]</p>
+
 <table >
     <tbody>
     <tr th:each="detail : ${request}">

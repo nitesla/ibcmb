@@ -1,12 +1,12 @@
-package longbridge.controllers;
+package longbridge.controllers.corporate;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.*;
+import longbridge.controllers.customer.CustomerServiceRequestController;
+import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import longbridge.models.FinancialInstitutionType;
 import longbridge.servicerequests.client.AddRequestCmd;
 import longbridge.servicerequests.client.RequestService;
 import longbridge.servicerequests.client.ServiceRequestDTO;
@@ -15,7 +15,7 @@ import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.servicerequests.config.RequestField;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
-import longbridge.utils.NameValue;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +31,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.*;
-
-/**
- * Created by Fortune on 4/3/2017.
- */
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping({"/corporate/requests", "/retail/requests"})
-public class CustomerServiceRequestController {
+@RequestMapping("/corporate/requests")
+public class CorpServiceRequestController {
+
+    public static final String SUCCESSFULLY = "Submitted Successfully";
     @Autowired
     private RequestService requestService;
 
@@ -66,7 +67,7 @@ public class CustomerServiceRequestController {
     @Autowired
     private AccountService accountService;
 
-//TODO :change or cache
+    //TODO :change or cache
     @GetMapping
     public String getServiceRequests(Model model) {
         model.addAttribute("requestList", requestConfigService.getRequestConfigs());
@@ -74,41 +75,68 @@ public class CustomerServiceRequestController {
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") AddRequestCmd cmd, HttpSession session, Principal principal, RedirectAttributes redirectAttributes, Locale locale) {
+    public String processRequest(@ModelAttribute("requestDTO") AddRequestCmd cmd, @RequestParam Map<String, String> requestParams, HttpSession session, RedirectAttributes redirectAttributes, Locale locale) throws JsonProcessingException {
         RequestConfig requestConfig = requestConfigService.getRequestConfig(cmd.getServiceReqConfigId());
+        Map<String, Object> body = requestParams.entrySet().stream().filter((k) -> !k.getKey().equals("serviceReqConfigId"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        cmd.setBody(body);
         try {
 
             if (requestConfig.isAuthRequired()) {
                 if (session.getAttribute("authenticated") == null) {
                     session.setAttribute("requestDTO", cmd);
-                    session.setAttribute("redirectURL", "/corporate/requests");
+                    session.setAttribute("redirectURL", "/corporate/requests/process");
                     return "redirect:/corporate/token/authenticate";
-                }else{
+                } else {
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
                 }
             }
 
             requestService.addRequest(cmd);
-            redirectAttributes.addFlashAttribute("message", "Submitted Successfully");
+            redirectAttributes.addFlashAttribute("message", SUCCESSFULLY);
 
-        }
-
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "redirect:/corporate/requests/"+requestConfig.getId();
-        }
-        catch (Exception e) {
+            return "redirect:/corporate/requests/" + requestConfig.getId();
+        } catch (Exception e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-            return "redirect:/corporate/requests/"+ requestConfig.getId();
+            return "redirect:/corporate/requests/" + requestConfig.getId();
         }
         return "redirect:/corporate/requests/track";
 
     }
 
 
+    @GetMapping("/process")
+    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+
+        if (session.getAttribute("requestDTO") != null) {
+            AddRequestCmd requestDTO = (AddRequestCmd) session.getAttribute("requestDTO");
+
+            if (session.getAttribute("authenticated") != null) {
+
+                try {
+                    requestService.addRequest(requestDTO);
+                    session.removeAttribute("authenticated");
+                    session.removeAttribute("requestDTO");
+                    redirectAttributes.addFlashAttribute("message", SUCCESSFULLY);
+                } catch (InternetBankingException e) {
+                    logger.error("Service Request Error", e);
+                    model.addAttribute("failure", e.getMessage());
+                    return "redirect:/corporate/requests/" + requestDTO.getServiceReqConfigId();
+                } catch (Exception e) {
+                    logger.error("Service Request Error", e);
+                    redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+                    return "redirect:/corporate/requests/" + requestDTO.getServiceReqConfigId();
+                }
+            }
+
+        }
+        return "redirect:/corporate/requests/track";
+    }
 
 
     @GetMapping("/{reqId}")
@@ -117,31 +145,32 @@ public class CustomerServiceRequestController {
         CorporateDTO corporate = corporateService.getCorporate(user.getCorporate().getId());
         RequestConfig serviceReqConfig = requestConfigService.getRequestConfig(reqId);
         for (RequestField field : serviceReqConfig.getFields()) {
-            switch (field.getType()){
+            switch (field.getType()) {
                 case CODE:
                     model.addAttribute("codes", codeService.getCodesByType(field.getData()));
                     break;
                 case ACCOUNT:
-                    model.addAttribute("accts", accountService.getAccountsForDebitAndCredit(corporate.getCustomerId()));
+                    model.addAttribute("accts", accountService.getAccountsForDebit(corporate.getCustomerId()));
                     break;
                 case LIST:
-                    model.addAttribute("fixedList",field.getData().split(","));
+                    model.addAttribute("fixedList", field.getData().split(","));
             }
         }
-       logger.debug("{}",serviceReqConfig);
+        logger.debug("{}", serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "corp/servicerequest/add";
     }
 
     @GetMapping("/track")
-    public String trackRequests(Model model, Principal principal){
+    public String trackRequests(Model model, Principal principal) {
+        model.addAttribute("requestConfigInfo",requestConfigService.getRequestConfigs());
         return "corp/servicerequest/track";
     }
 
     //TODO
     @GetMapping(path = "/track/all")
     public @ResponseBody
-    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
+    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal) {
         CorporateUser user = userService.getUserByName(principal.getName());
         Corporate corporate = user.getCorporate();
         Pageable pageable = DataTablesUtils.getPageable(input);

@@ -141,7 +141,7 @@
                                 <ul class="dropdown-menu">
                                     <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
                                     <p th:each="requests : ${serviceRequests}">
-                                    <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
+                                    <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.name}"></a></li>
                                     </p>
                                 </ul>
                             </li>

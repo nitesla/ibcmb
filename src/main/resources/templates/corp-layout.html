@@ -242,7 +242,7 @@
                                     <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
                                     <p th:each="requests : ${serviceRequests}">
                                     <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
-                                        <a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a>
+                                        <a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.description}"></a>
                                     </li>
                                     </p>
                                 </ul>
@@ -257,14 +257,7 @@
                                     <li sec:authorize="hasAuthority('DRAFT-REQUEST')"><a th:href="@{/corporate/cheque/draft}" th:text="#{menu.cheque.draft}">Draft request</a></li>
 
                                 </ul>
-                                <!-- <ul class="dropdown-menu">
-                                     &lt;!&ndash;<li role="separator" class="divider"></li>&ndash;&gt;
-                                     <p th:each="requests : ${chequeRequests}">
-                                     <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
-                                         <a th:href="@{/corporate/cheque/} + ${requests.id}" th:text="${requests.requestName}"></a>
-                                     </li>
-                                     </p>
-                                 </ul>-->
+
                             </li>
 
                             <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}" sec:authorize="hasAuthority('CORP_USER_SETTINGS')">

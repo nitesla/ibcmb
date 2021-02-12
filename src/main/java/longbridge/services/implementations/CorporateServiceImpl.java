@@ -182,7 +182,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setLastName(user.getLastName());
             corporateUser.setEmail(user.getEmail());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
-            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+            corporateUser.setAlertPreference("BOTH");
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
             Role role;

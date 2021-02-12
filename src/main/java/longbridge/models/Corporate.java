@@ -233,8 +233,8 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @Override
 	public String toString() {
 		return "Corporate [rcNumber=" + rcNumber + ", customerId=" + customerId + ", corporateType=" + corporateType
-				+ ", name=" + name + ", email=" + email + ", address=" + address + ", status=" + status
-				+ ", createdOnDate=" + createdOnDate + ", bvn=" + bvn + ", coverage=" + coverage + "]";
+				+ ", name=" + name + ", status=" + status
+                + ", bvn=" + bvn + ", coverage=" + coverage + "]";
 	}
 
 	@Override @JsonIgnore

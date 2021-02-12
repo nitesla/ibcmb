@@ -80,7 +80,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     public  void sendAlert(User user , String beneficiary) {
         try {
             if (true) {
-                String preference = user.getAlertPreference().getCode();
+                String preference = user.getAlertPreference();
                 String customerName = user.getFirstName()+" "+user.getLastName();
                 String smsMessage = String.format(messageSource.getMessage("beneficiary.alert.message", null, locale),customerName,beneficiary);
 

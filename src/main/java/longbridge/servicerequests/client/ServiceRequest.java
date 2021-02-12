@@ -21,10 +21,13 @@ public class ServiceRequest extends AbstractEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     List<Comment> comments;
     private long entityId;
+    private String requester;
     private String requestName;
     private UserType userType;
     @Lob
-    private String body;
+    private String data;
+    @Lob
+    private String formatted;
     private String currentStatus;
     private Date dateRequested;
     private Long serviceReqConfigId;
@@ -45,12 +48,20 @@ public class ServiceRequest extends AbstractEntity {
         this.requestName = requestName;
     }
 
-    public String getBody() {
-        return body;
+    public String getData() {
+        return data;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getFormatted() {
+        return formatted;
+    }
+
+    public void setFormatted(String formatted) {
+        this.formatted = formatted;
     }
 
     public String getCurrentStatus() {
@@ -91,5 +102,13 @@ public class ServiceRequest extends AbstractEntity {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public String getRequester() {
+        return requester;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
     }
 }

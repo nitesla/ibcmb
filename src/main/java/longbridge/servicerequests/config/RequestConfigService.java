@@ -16,7 +16,7 @@ public interface RequestConfigService {
 
     Page<RequestConfig> getRequestConfigs(Pageable pageDetails);
 
-    List<RequestConfig> getRequestConfigs();
+    List<RequestConfigInfo> getRequestConfigs();
 
     Page<RequestConfig> getRequestConfigs(String pattern, Pageable pageDetails);
 

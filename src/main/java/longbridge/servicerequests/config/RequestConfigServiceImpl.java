@@ -82,8 +82,10 @@ public class RequestConfigServiceImpl implements RequestConfigService {
     }
 
     @Override
-    public List<RequestConfig> getRequestConfigs() {
-        return configRepo.findAll();
+    public List<RequestConfigInfo> getRequestConfigs() {
+        return configRepo.findAll().stream().map(cfg->
+            new RequestConfigInfo(cfg.getId(),cfg.getName(),cfg.getDescription(),cfg.isSystem()))
+                .collect(Collectors.toList());
     }
 
     @Override

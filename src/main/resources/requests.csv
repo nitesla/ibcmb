@@ -1,0 +1,9 @@
+name,type,authRequired,description
+CREATE-ACCOUNT,ACCOUNTS,true,Account Opening Request
+CHEQUE-REQUEST,CHEQUE,true,Cheque Book Request
+STOP-CHEQUE,CHEQUE,true,Stop Cheque
+CONFIRM-CHEQUE,CHEQUE,true,Cheque Confirmation
+DRAFT-REQUEST,CHEQUE,true,Draft Request
+FIXED-DEPOSIT,FIXED-DEPOSIT,true,Fixed Deposit
+TREASURY-BILL,TREASURY-BILL,true,Treasury Bill
+LINK-BVN,GENERAL,true,Link BVN

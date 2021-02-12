@@ -1,17 +1,17 @@
 package longbridge.servicerequests.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import longbridge.config.IbankingContext;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Email;
-import longbridge.models.OperationsUser;
-import longbridge.models.User;
+import longbridge.models.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.servicerequests.config.RequestConfig;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.UserGroupMessageService;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -20,13 +20,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -38,16 +36,30 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepo;
     private final UserGroupMessageService groupMessageService;
     private final String SRTEMPLATE = "srtemplate";
+    private final ObjectMapper objectMapper;
 
 
-    public RequestServiceImpl(RequestConfigService requestConfigService, TemplateEngine templateEngine, @Qualifier("msgTemplate") SpringResourceTemplateResolver templateResolver, RequestRepository requestRepo, UserGroupMessageService groupMessageService) {
+    public RequestServiceImpl(RequestConfigService requestConfigService, RequestRepository requestRepo, UserGroupMessageService groupMessageService, ObjectMapper objectMapper) {
         this.requestConfigService = requestConfigService;
         this.requestRepo = requestRepo;
         this.groupMessageService = groupMessageService;
-        this.templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
+        this.objectMapper = objectMapper;
+        this.templateEngine = initEngine();
+
     }
 
+    private TemplateEngine initEngine() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(IbankingContext.getApplicationContext());
+        templateResolver.setPrefix("classpath:/messaging/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML");
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setCacheable(false);
+        TemplateEngine t = new SpringTemplateEngine();
+        t.setTemplateResolver(templateResolver);
+        return t;
+    }
 
     @Override
     public void addRequest(AddRequestCmd request) {
@@ -55,20 +67,39 @@ public class RequestServiceImpl implements RequestService {
         User currentUser = getCurrentUser();
         ServiceRequest serviceRequest = new ServiceRequest();
         serviceRequest.setRequestName(requestConfig.getName());
+        if (currentUser.getUserType() == UserType.RETAIL) {
+            serviceRequest.setEntityId(currentUser.getId());
+            serviceRequest.setRequester(currentUser.getUserName());
+            serviceRequest.setUserType(UserType.RETAIL);
+        } else if (currentUser.getUserType() == UserType.CORPORATE) {
+            CorporateUser corporateUser = (CorporateUser) currentUser;
+            serviceRequest.setEntityId(corporateUser.getCorporate().getId());
+            serviceRequest.setRequester(corporateUser.getUserName());
+            serviceRequest.setUserType(UserType.CORPORATE);
+        }
+        serviceRequest.setServiceReqConfigId(request.getServiceReqConfigId());
+
         Date reqDate = new Date();
         serviceRequest.setDateRequested(reqDate);
         serviceRequest.setCurrentStatus("PENDING");
-        serviceRequest.setBody(request.getBody());
+        try {
+            serviceRequest.setData(objectMapper.writeValueAsString(request.getBody()));
+        } catch (JsonProcessingException e) {
+            logger.error("Error serializing request {}", e.getMessage());
+            throw new ApplicationContextException("Could not complete the request");
+        }
         logger.info("Saving service request {} {} ", requestConfig.getName(), currentUser.getUserName());
-        requestRepo.save(serviceRequest);
+
         logger.trace("{}", serviceRequest);
         Context context = new Context();
         context.setVariable("date", reqDate);
-        context.setVariable("name", requestConfig.getName());
         context.setVariable("user", currentUser);
-        context.setVariable("request", requestDetails(request.getBody()));
-
+        context.setVariable("request", request.getBody());
+        context.setVariable("config", requestConfig);
         String message = templateEngine.process(SRTEMPLATE, context);
+        serviceRequest.setFormatted(message);
+        requestRepo.save(serviceRequest);
+
         Email email = new Email.Builder()
                 .setSubject(serviceRequest.getRequestName())
                 .setBody(message)
@@ -89,30 +120,24 @@ public class RequestServiceImpl implements RequestService {
         throw new InternetBankingException("Unauthorized user");
     }
 
-    private Map<String, String> requestDetails(String json) {
-        JSONObject jObject = new JSONObject(json);
-        Map map = new HashMap();
-        for (Iterator<String> it = jObject.keys(); it.hasNext(); ) {
-            String key = it.next();
-            map.put(key, jObject.get(key));
-        }
-        return map;
-    }
 
     @Override
     public ServiceRequestDTO getRequest(Long id) {
         return requestRepo.findById(id).map(ServiceRequestDTO::new).orElseThrow(EntityNotFoundException::new);
     }
 
-    @Override
-    public ServiceRequestDTO getRequestByName(String name) {
-        return requestRepo.findFirstByRequestName(name).map(ServiceRequestDTO::new).orElseThrow(EntityNotFoundException::new);
-    }
 
     @Override
     public Page<ServiceRequestDTO> getUserRequests(Pageable pageDetails) {
         User currentUser = getCurrentUser();
-        return requestRepo.findForUser(currentUser.getUserType(), currentUser.getId()).map(ServiceRequestDTO::new);
+        Long entId = null;
+        if (currentUser.getUserType() == UserType.RETAIL) {
+            entId = currentUser.getId();
+        } else if (currentUser.getUserType() == UserType.CORPORATE) {
+            CorporateUser corporateUser = (CorporateUser) currentUser;
+            entId = corporateUser.getCorporate().getId();
+        }
+        return requestRepo.findForUser(currentUser.getUserType(), entId, pageDetails).map(ServiceRequestDTO::new);
     }
 
     @Override

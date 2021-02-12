@@ -27,7 +27,7 @@
         <form method="post" th:action="@{/corporate/requests}"  th:object="${requestDTO}" id="reqForm">
             <div class="col-md-5 col-sm-5 no-pad-left">
                 <input class="form-control" type="hidden" id="requestName" name="requestName"
-                       th:value="${requestConfig.requestName}"/>
+                       th:value="${requestConfig.name}"/>
                 <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
                 <input type="hidden" name="Charge" th:value="${charge}" id="chrg">
 

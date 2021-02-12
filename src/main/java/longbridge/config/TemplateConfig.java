@@ -22,16 +22,5 @@ public class TemplateConfig {
 //    }
 
 
-    @Bean("msgTemplate")
-    SpringResourceTemplateResolver msgTemplateResolver(ApplicationContext appCtx) {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setApplicationContext(appCtx);
-        templateResolver.setPrefix("classpath:/messaging/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML");
-        templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setCacheable(false);
-        return templateResolver;
-    }
 
 }

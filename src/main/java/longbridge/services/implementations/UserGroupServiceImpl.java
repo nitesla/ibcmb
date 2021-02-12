@@ -20,12 +20,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 5/3/2017.
@@ -183,9 +181,18 @@ public class UserGroupServiceImpl implements UserGroupService {
         userGroupDTO.setName(userGroup.getName());
         return userGroupDTO;
     }
+
+    private UserGroup load(Long groupId){
+        EntityGraph entityGraph = entityManager.createEntityGraph(UserGroup.class);
+        entityGraph.addAttributeNodes("users", "contacts");
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("javax.persistence.fetchgraph", entityGraph);
+        return entityManager.find(UserGroup.class, groupId, properties);
+    }
+
     @Override
     public List<ContactDTO> getContacts(Long groupId){
-        UserGroup userGroup = userGroupRepo.findById(groupId).get();
+        UserGroup userGroup = load(groupId);
         List<OperationsUser> internalUsers = userGroup.getUsers();
         List<Contact> externalUsers= userGroup.getContacts();
         List<ContactDTO> allUsers = new ArrayList<>();

@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.RetailUser;
 import longbridge.servicerequests.client.RequestService;
 import longbridge.servicerequests.client.ServiceRequestDTO;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -51,8 +52,7 @@ public class FixedDepositController {
     @Autowired
     private FixedDepositService fixedDepositService;
     @Autowired
-    private RequestService requestService;
-
+    private RequestConfigService requestConfigService;
     @Autowired
     private IntegrationService integrationService;
     @Autowired
@@ -104,7 +104,7 @@ public class FixedDepositController {
         model.addAttribute("fixedDepositDTO", fixedDepositDTO);
         model.addAttribute("tenors", tenors);
         model.addAttribute("depositTypes", depositType);
-        model.addAttribute("requestConfig", requestService.getRequestByName("FIXED-DEPOSIT"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("FIXED-DEPOSIT"));
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         model.addAttribute("notice", messageSource.getMessage("deposit.notice", null, locale));
         return "cust/fixedDeposit/new1";
@@ -119,7 +119,7 @@ public class FixedDepositController {
         model.addAttribute("depositNo", acctNum);
         model.addAttribute("initialAmount", amount);
 
-        model.addAttribute("requestConfig", requestService.getRequestByName("FIXED-DEPOSIT"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("FIXED-DEPOSIT"));
         model.addAttribute("requestDTO", new ServiceRequestDTO());
         return "cust/fixedDeposit/liquidate";
     }

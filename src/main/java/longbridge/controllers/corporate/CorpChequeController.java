@@ -1,9 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.controllers.CustomerServiceRequestController;
+import longbridge.controllers.customer.CustomerServiceRequestController;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.servicerequests.client.RequestService;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.ChequeService;
 import longbridge.services.CodeService;
 import longbridge.services.SettingsService;
@@ -36,7 +36,7 @@ public class CorpChequeController {
     MessageSource messageSource;
 
     @Autowired
-    RequestService requestService;
+    private RequestConfigService requestConfigService;
     @Autowired
     SettingsService configurationService;
     @Autowired
@@ -46,7 +46,7 @@ public class CorpChequeController {
     public String requestChequeBook(Principal principal, Model model) {
         List<CodeDTO> chequebooks = codeService.getCodesByType("CHEQUEBOOK");
         List<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
-        model.addAttribute("requestConfig", requestService.getRequestByName("CHEQUE-REQUEST"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("CHEQUE-REQUEST"));
         model.addAttribute("leaves", chequebooks);
         model.addAttribute("branches", pickUpBranch);
         return "corp/cheque/chequebook";
@@ -72,7 +72,7 @@ public class CorpChequeController {
 
         SettingDTO stopChequeCharge = configurationService.getSettingByName("STOP-CHEQUE");
 
-        model.addAttribute("requestConfig", requestService.getRequestByName("STOP-CHEQUE"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("STOP-CHEQUE"));
         model.addAttribute("chargeMessage", messageSource.getMessage("stop.cheque.charge", null, locale));
         model.addAttribute("charge", stopChequeCharge.getValue());
         return "corp/cheque/stopcheque";
@@ -80,7 +80,7 @@ public class CorpChequeController {
 
     @GetMapping("/confirm")
     public String confirmCheque(Model model) {
-        model.addAttribute("requestConfig", requestService.getRequestByName("CONFIRM-CHEQUE"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("CONFIRM-CHEQUE"));
         return "corp/cheque/confirmcheque";
     }
 
@@ -89,7 +89,7 @@ public class CorpChequeController {
         Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
         SettingDTO draftCharge = configurationService.getSettingByName("DRAFT-REQUEST");
 
-        model.addAttribute("requestConfig", requestService.getRequestByName("DRAFT-REQUEST"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("DRAFT-REQUEST"));
         model.addAttribute("branches", pickUpBranch);
         model.addAttribute("draftMessage", messageSource.getMessage("cheque.draft", null, locale));
         model.addAttribute("charge", draftCharge.getValue());

@@ -4,6 +4,7 @@ import longbridge.dtos.NotificationsDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.servicerequests.config.RequestConfig;
+import longbridge.servicerequests.config.RequestConfigInfo;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -88,13 +89,13 @@ public class RetailControllerAdvice {
             model.addAttribute("name", name);
             model.addAttribute("feedStatus", user.getFeedBackStatus());
 
-            List<RequestConfig> requestList = reqConfigService.getRequestConfigs();
-            List<RequestConfig> filteredRequests = new ArrayList<>();
-            List<RequestConfig> chequeRequests = new ArrayList<>();
-            List<RequestConfig> settingRequests = new ArrayList<>();
-            List<RequestConfig> accountRequests = new ArrayList<>();
+            List<RequestConfigInfo> requestList = reqConfigService.getRequestConfigs();
+            List<RequestConfigInfo> filteredRequests = new ArrayList<>();
+            List<RequestConfigInfo> chequeRequests = new ArrayList<>();
+            List<RequestConfigInfo> settingRequests = new ArrayList<>();
+            List<RequestConfigInfo> accountRequests = new ArrayList<>();
 
-            for (RequestConfig request : requestList) {
+            for (RequestConfigInfo request : requestList) {
                 if (!request.isSystem()) {
                     filteredRequests.add(request);
                 } else if (("CHEQUE").equalsIgnoreCase(request.getName().trim())) {

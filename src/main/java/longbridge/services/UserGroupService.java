@@ -32,10 +32,10 @@ public interface UserGroupService {
     @PreAuthorize("hasAuthority('GET_USER_GRP')")
     Page<UserGroupDTO> getGroups(Pageable pageDetails);
 
-    @PreAuthorize("hasAuthority('GET_USER_GRP')")
+//    @PreAuthorize("hasAuthority('GET_USER_GRP')")
     UserGroupDTO getGroup(Long id);
 
-    @PreAuthorize("hasAuthority('GET_USER_GRP')")
+//    @PreAuthorize("hasAuthority('GET_USER_GRP')")
     List<ContactDTO> getContacts(Long groupId);
 
     List<ContactDTO> getContacts(UserGroup userGroup);

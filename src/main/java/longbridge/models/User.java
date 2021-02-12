@@ -38,8 +38,7 @@ public class User extends AbstractEntity{
     @Enumerated(EnumType.ORDINAL)
     protected UserType userType;
 
-    @ManyToOne
-    protected Code alertPreference;
+    protected String alertPreference;
 
     @ManyToOne
     protected Role role;
@@ -130,12 +129,11 @@ public class User extends AbstractEntity{
         this.role = role;
     }
 
-
-    public Code getAlertPreference() {
+    public String getAlertPreference() {
         return alertPreference;
     }
 
-    public void setAlertPreference(Code alertPreference) {
+    public void setAlertPreference(String alertPreference) {
         this.alertPreference = alertPreference;
     }
 
@@ -217,19 +215,13 @@ public class User extends AbstractEntity{
                 "userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +
-                ", noOfLoginAttempts=" + noOfLoginAttempts +
-                ", noOfTokenAttempts=" + noOfTokenAttempts +
                 ", userType=" + userType +
                 ", role=" + ((role!=null)?role.getName():"null") +
                 ", entrustId='" + entrustId + '\'' +
-                ", entrustGroup='" + entrustGroup + '\'' +
                 '}';
     }
 }

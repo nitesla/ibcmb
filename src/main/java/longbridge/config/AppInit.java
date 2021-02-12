@@ -7,6 +7,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import groovy.lang.Lazy;
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.servicerequests.config.RequestConfig;
+import longbridge.servicerequests.config.RequestConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -50,6 +52,10 @@ public class AppInit implements InitializingBean {
     private SettingRepo settingRepo;
 
     @Autowired
+    @Lazy
+    private RequestConfigRepository requestConfigRepository;
+
+    @Autowired
     private CodeRepo codeRepository;
 
     @Autowired
@@ -64,12 +70,16 @@ public class AppInit implements InitializingBean {
     @Value("${auto.load.file.settings:settings.csv}")
     private String settingsFile;
 
+    @Value("${auto.load.file.requests:requests.csv}")
+    private String requestsFile;
+
     @Value("${auto.load.file.neftbank:neftbanks.csv}")
     private String neftBanksFile;
 
     @Transactional
     @Override
     public void afterPropertiesSet() {
+        loadServiceRequests();
         loadNeftBanks();
         loadCodes();
         loadPermissions();
@@ -145,6 +155,21 @@ public class AppInit implements InitializingBean {
             }
         });
     }
+
+    private void loadServiceRequests() {
+        List<RequestConfig> config = loadObjectList(RequestConfig.class, requestsFile);
+        config.forEach(c -> {
+            if (requestConfigRepository.findFirstByName(c.getName()) == null) {
+                try {
+                    c.setSystem(true);
+                    requestConfigRepository.save(c);
+                } catch (Exception e) {
+                    logger.trace("not adding request config {}", c);
+                }
+            }
+        });
+    }
+
 
     private void createDefaultAdmin(Role role) {
 
