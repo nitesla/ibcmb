@@ -4,4 +4,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface CorpCoverageService {
     JsonNode getCoverage(String coverage);
+    boolean  isCoverageEnabled(String coverage);
 }

@@ -73,7 +73,7 @@ public class CorpSettingController {
 
     @Autowired
     private MessageSource messageSource;
-
+    @Autowired
     private CorpCoverageService corpCoverageService;
 
 
@@ -141,7 +141,20 @@ public class CorpSettingController {
 
 
         List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
-        model.addAttribute("account_coverage", accountCoverage);
+        List<CodeDTO> enabledCoverage=new ArrayList<>();
+        model.addAttribute("enabledCoverage", enabledCoverage);
+//        model.addAttribute("account_coverage", accountCoverage);
+
+
+
+        for(CodeDTO codeDTO: accountCoverage){
+
+            boolean enabled= corpCoverageService.isCoverageEnabled(codeDTO.getCode());
+
+            if(enabled){
+                enabledCoverage.add(codeDTO);
+            }
+        }
 
         boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
 

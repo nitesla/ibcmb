@@ -85,6 +85,9 @@ public class SettingController {
     @Autowired
     ServiceReqConfigService serviceReqConfigService;
 
+    @Autowired
+    CoverageService coverageService;
+
 
     private final Locale locale = LocaleContextHolder.getLocale();
 
@@ -150,7 +153,25 @@ public class SettingController {
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
 
         List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
-        model.addAttribute("account_coverage", accountCoverage);
+        List<CodeDTO> enabledCoverage = new ArrayList();
+        model.addAttribute("enabledCoverage", enabledCoverage);
+      //  model.addAttribute("account_coverage", accountCoverage);
+
+        for (CodeDTO codeDto : accountCoverage){
+            boolean enabled = coverageService.isCoverageEnabled(codeDto.getCode());
+            if (enabled){
+                enabledCoverage.add(codeDto);
+            }
+        }
+
+//        for(int i = 0; i< accountCoverage.size(); i++){
+//          boolean enabled =  coverageService.isCoverageEnabled(accountCoverage.get(i).getCode());
+//          if (enabled){
+//              enabledCoverage.add(accountCoverage.get(i));
+//          }
+//        }
+
+
 
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());

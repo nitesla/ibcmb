@@ -126,13 +126,15 @@
 
         </div>
 
-        <div class=" no-pad-lef table-responsive bg-white alert" th:each="crv : ${account_coverage}" style="padding:0px !important">
+        <div  th:if="${not #lists.isEmpty(enabledCoverage)}" class=" no-pad-lef table-responsive bg-white alert">
+
+        <div class=" no-pad-lef table-responsive bg-white alert" th:each="crv : ${enabledCoverage}" style="padding:0px !important">
             <table  class="table table-hover no-pad-lef coverage" th:id="${crv.code}">
                 <caption style="font-size: large" th:text="${crv.description}"> </caption>
             </table>
         </div>
 
-
+        </div>
 
 
     </div>
