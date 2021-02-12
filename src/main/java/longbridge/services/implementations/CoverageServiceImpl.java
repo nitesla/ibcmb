@@ -30,20 +30,36 @@ public class CoverageServiceImpl implements CoverageService {
     @Override
     public JsonNode getCoverage(String coverage) {
 
+        boolean configChecked=codeService.getCodesByType("ACCOUNT_COVERAGE").stream()
+                .map(CodeDTO::getCode).filter(s-> s.equals(coverage)).count() >=1;
+        logger.info("Coverage configured  : {} ",configChecked);
+        if(!isCoverageEnabled(coverage)||!configChecked){
+            throw  new InternetBankingException("You are not authorized to use this service");
+        }
+        return integrationService.getCoverageDetails(coverage, getRetailUser().getCustomerId());
+    }
+
+    @Override
+    public boolean isCoverageEnabled(String coverage) {
+
+        String coverages=getRetailUser().getCoverage();
+        if (coverages == null){
+            logger.info("No Coverage enabled yet for the logged in user");
+            return  false;
+        }
+        boolean isEnabled= Arrays.stream(coverages.split(",")).filter(s-> s.equals(coverage)).count() >=1;
+        logger.info("The Coverage {} enabled ? : {}",coverage,isEnabled);
+        return isEnabled;
+    }
+
+
+    public RetailUser getRetailUser(){
         CustomUserPrincipal principal=(CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         RetailUser retailUser=(RetailUser)principal.getUser();
 
-        String coverages=retailUser.getCoverage();
-        boolean userChecked= Arrays.stream(coverages.split(",")).filter(s-> s.equals(coverage)).count() >=1;
-        boolean configChecked=codeService.getCodesByType("ACCOUNT_COVERAGE").stream()
-                .map(CodeDTO::getCode).filter(s-> s.equals(coverage)).count() >=1;
-        logger.info("Coverage check authorized : {} , configured {} , " ,userChecked,configChecked);
-        if(!userChecked||!configChecked){
-            throw  new InternetBankingException("You are not authorized to use this service");
-        }
-        return integrationService.getCoverageDetails(coverage, retailUser.getCustomerId());
+        return  retailUser;
     }
 
-    }
+}
 
