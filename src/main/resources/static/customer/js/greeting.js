@@ -59,7 +59,7 @@ function greetingUtility() {
         var imageName = $(this).val();
 
        console.log("here"+imageName);
-        $(".imageVal").html("<img style=\"width:600px;height:280px\"  alt=\"Special Greeting\" src=" + " /customer/img/" + imageName + " />")
+        $(".imageVal").html("<img style=\"width:600px;height:280px\"  alt=\"Special Greeting\" src=" + " /customer/cmb/img/" + imageName + " />")
 
         $('.greetingImageModal').modal({});
     });
