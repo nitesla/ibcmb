@@ -17,7 +17,6 @@ public class ServiceRequestDTO {
     private UserType userType;
     private String requestName;
     private String requester;
-    @Lob
     private String body;
     private String currentStatus;
     private Date dateRequested;
@@ -39,10 +38,10 @@ public class ServiceRequestDTO {
         this.serviceReqConfigId = request.getServiceReqConfigId();
         this.id = request.getId();
         this.comments= request.getComments().stream()
-                .map(this::makeComment).collect(Collectors.toList());
+                .map(ServiceRequestDTO::makeComment).collect(Collectors.toList());
     }
 
-    private CommentDTO makeComment(Comment cmt){
+    public static CommentDTO makeComment(Comment cmt){
         CommentDTO dto = new CommentDTO();
         dto.comments = cmt.getComments();
         dto.createdBy = cmt.getCreatedBy().getUserName();
@@ -147,7 +146,7 @@ public class ServiceRequestDTO {
         this.requester = requester;
     }
 
-    class CommentDTO {
+    public static class CommentDTO {
         private String status;
         private String comments;
         private String createdBy;

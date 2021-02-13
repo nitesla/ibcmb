@@ -1,7 +1,8 @@
 package longbridge.controllers.operations;
 
-import longbridge.dtos.RequestHistoryDTO;
+import longbridge.dtos.CodeDTO;
 import longbridge.models.OperationsUser;
+import longbridge.servicerequests.client.AddCommentCmd;
 import longbridge.servicerequests.client.RequestService;
 import longbridge.servicerequests.client.ServiceRequestDTO;
 import longbridge.services.CodeService;
@@ -14,13 +15,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -50,11 +53,9 @@ public class OpsServiceRequestController {
     public
     @ResponseBody
     DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input, Principal principal) {
-        logger.debug("DEBUGGING!!");
         OperationsUser opsUser = opsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ServiceRequestDTO> serviceRequests = requestService.getOpRequests(opsUser, pageable);
-        logger.info("DEBUGGING-2!! {}", serviceRequests.get().findFirst());
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());
@@ -67,51 +68,28 @@ public class OpsServiceRequestController {
     @GetMapping("/{reqId}/details")
     public String getRequest(Model model, @PathVariable Long reqId) {
         ServiceRequestDTO requestDTO = requestService.getRequest(reqId);
-
-
-        model.addAttribute("serviceRequest", requestDTO);
-        model.addAttribute("statuses", codeService.getCodesByType("REQUEST_STATUS"));
-        model.addAttribute("requestHistory", new RequestHistoryDTO());
+        model.addAttribute("request", requestDTO);
         return "/ops/request/details";
 
     }
 
-
-    @GetMapping("/history")
-    public String getRequestHistory(Model model) {
-        return "/ops/request/history/view";
-
+    @ModelAttribute("statuses")
+    Map<String, String> getCodeMaps(){
+        return codeService.getCodesByType("REQUEST_STATUS").stream()
+                .collect(Collectors.toMap(CodeDTO::getCode, CodeDTO::getDescription));
     }
 
 
-    @GetMapping("/history/new")
-    public String addRequestHistory(Model model) {
-        return "/ops/request/history/add";
-    }
 
-//Todo : Add back
-//    @PostMapping("/history")
-//    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
-//
-//        if (result.hasErrors()) {
-//            return "";
-//        }
-//
-//        requestHistoryDTO.setCreatedBy(principal.getName());
-//        logger.info("RequestHistoryDTO received: {}", requestHistoryDTO);
-//        requestService.addRequestHistory(requestHistoryDTO);
-//
-//        redirectAttributes.addFlashAttribute("message", "Request updated successfully");
-//        return "redirect:/ops/requests/" + requestHistoryDTO.getServiceRequestId() + "/details";
-//    }
-
-    @PostMapping
     @ResponseBody
-    public String processRequest(@RequestParam String jsonData) {
-
-        logger.info("The received data: {}", jsonData);
-        return "redirect:/ops/request/history/view";
-
+    @PostMapping
+    public ResponseEntity<ServiceRequestDTO.CommentDTO> commentOnRequest(@RequestBody AddCommentCmd cmd) {
+        try {
+            return ResponseEntity.ok(requestService.addRequestComment(cmd));
+        }catch (Exception e){
+            logger.error("Error modifying request {} with {}",cmd,e.getMessage() );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 

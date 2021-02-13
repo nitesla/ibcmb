@@ -93,4 +93,10 @@ public class RequestConfigServiceImpl implements RequestConfigService {
         return configRepo.findUsingPattern(pattern, pageDetails);
     }
 
+    @Override
+    public List<RequestConfigInfo> getRequestConfigByGroup(List<Long> groups) {
+        return configRepo.findByGroupIdIn(groups).stream().map(cfg ->
+                new RequestConfigInfo(cfg.getId(), cfg.getName(), cfg.getDescription(), cfg.isSystem()))
+                .collect(Collectors.toList());
+    }
 }

@@ -9,8 +9,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -19,7 +18,7 @@ import java.util.List;
 public class ServiceRequest extends AbstractEntity {
 
     @ElementCollection(fetch = FetchType.EAGER)
-    List<Comment> comments;
+    Set<Comment> comments;
     private long entityId;
     private String requester;
     private String requestName;
@@ -88,11 +87,11 @@ public class ServiceRequest extends AbstractEntity {
         this.serviceReqConfigId = serviceReqConfigId;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
@@ -110,5 +109,11 @@ public class ServiceRequest extends AbstractEntity {
 
     public void setRequester(String requester) {
         this.requester = requester;
+    }
+
+    public void addComments(Comment comment){
+        if(comments == null)
+            comments = new HashSet<>();
+        comments.add(comment);
     }
 }

@@ -86,7 +86,7 @@ public class AdmGroupController {
                 ContactDTO contactDTO = iterator.next();
                 if (!contactDTO.isExternal()) {
                     // is opuser
-                    OperationsUserDTO operationsUserDTO = operationsUserService.getUser(contactDTO.getDt_RowId());
+                    OperationsUserDTO operationsUserDTO = operationsUserService.getUser(contactDTO.getId());
                     opList.add(operationsUserDTO);
                     iterator.remove();
                 }
@@ -173,7 +173,7 @@ public class AdmGroupController {
                 ContactDTO contactDTO = iterator.next();
                 if (!contactDTO.isExternal()) {
                     // is opuser
-                    OperationsUserDTO operationsUserDTO = operationsUserService.getUser(contactDTO.getDt_RowId());
+                    OperationsUserDTO operationsUserDTO = operationsUserService.getUser(contactDTO.getId());
                     opList.add(operationsUserDTO);
                     iterator.remove();
                 }

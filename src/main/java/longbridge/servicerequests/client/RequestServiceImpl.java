@@ -7,8 +7,10 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.servicerequests.config.RequestConfig;
+import longbridge.servicerequests.config.RequestConfigInfo;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.UserGroupMessageService;
+import longbridge.services.UserGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextException;
@@ -25,6 +27,8 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -35,14 +39,16 @@ public class RequestServiceImpl implements RequestService {
     private final TemplateEngine templateEngine;
     private final RequestRepository requestRepo;
     private final UserGroupMessageService groupMessageService;
+    private final UserGroupService groupService;
     private final String SRTEMPLATE = "srtemplate";
     private final ObjectMapper objectMapper;
 
 
-    public RequestServiceImpl(RequestConfigService requestConfigService, RequestRepository requestRepo, UserGroupMessageService groupMessageService, ObjectMapper objectMapper) {
+    public RequestServiceImpl(RequestConfigService requestConfigService, RequestRepository requestRepo, UserGroupMessageService groupMessageService, UserGroupService groupService, ObjectMapper objectMapper) {
         this.requestConfigService = requestConfigService;
         this.requestRepo = requestRepo;
         this.groupMessageService = groupMessageService;
+        this.groupService = groupService;
         this.objectMapper = objectMapper;
         this.templateEngine = initEngine();
 
@@ -81,7 +87,6 @@ public class RequestServiceImpl implements RequestService {
 
         Date reqDate = new Date();
         serviceRequest.setDateRequested(reqDate);
-        serviceRequest.setCurrentStatus("PENDING");
         try {
             serviceRequest.setData(objectMapper.writeValueAsString(request.getBody()));
         } catch (JsonProcessingException e) {
@@ -142,6 +147,24 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Page<ServiceRequestDTO> getOpRequests(OperationsUser opsUser, Pageable pageDetails) {
-        return null;
+        List<Long> groups = groupService.getGroups(opsUser);
+        List<Long> configIds = requestConfigService.getRequestConfigByGroup(groups).stream()
+                .map(RequestConfigInfo::getId).collect(Collectors.toList());
+        return requestRepo.findByConfigIds(configIds,pageDetails).map(ServiceRequestDTO::new);
+    }
+
+    @Override
+    public ServiceRequestDTO.CommentDTO addRequestComment(AddCommentCmd commentCmd) {
+        OperationsUser currentUser = (OperationsUser)getCurrentUser();
+        ServiceRequest request = requestRepo.getOne(commentCmd.getRequestId());
+        Comment comment = new Comment();
+        comment.setComments(commentCmd.getComments());
+        comment.setCreatedOn(new Date());
+        comment.setStatus(commentCmd.getStatus());
+        comment.setCreatedBy(currentUser);
+        request.addComments(comment);
+        request.setCurrentStatus(commentCmd.getStatus());
+        requestRepo.save(request);
+        return ServiceRequestDTO.makeComment(comment);
     }
 }

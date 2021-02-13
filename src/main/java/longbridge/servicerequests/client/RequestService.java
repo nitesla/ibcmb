@@ -15,6 +15,9 @@ public interface RequestService {
      */
     @PreAuthorize("hasAuthority('ADD_SERVICE_REQUEST')")
     void addRequest(AddRequestCmd request) ;
+// TODO :Add back
+//    @PreAuthorize("hasAuthority('ALTER_SERVICE_REQUESTS')")
+    ServiceRequestDTO.CommentDTO addRequestComment(AddCommentCmd commentCmd);
 
 
     /**

@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RequestConfigRepository extends CommonRepo<RequestConfig,Long> {
 
@@ -14,4 +16,5 @@ public interface RequestConfigRepository extends CommonRepo<RequestConfig,Long> 
 
     RequestConfig findFirstByName(String name);
 
+    List<RequestConfig> findByGroupIdIn(List<Long> groups);
 }

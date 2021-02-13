@@ -13,6 +13,7 @@ public interface RequestConfigService {
 
     RequestConfig getRequestConfigByName(String name);
 
+    List<RequestConfigInfo> getRequestConfigByGroup(List<Long> groups);
 
     Page<RequestConfig> getRequestConfigs(Pageable pageDetails);
 

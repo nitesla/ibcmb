@@ -112,8 +112,9 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
+    var codeMap = /*[[${statuses}]]*/ null;
     $(document).ready(function() {
       var table = $('#request').DataTable({
             select:true,
@@ -122,18 +123,29 @@
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
+            "rowId" : "id",
             "serverSide" : true,
             "ajax": "/ops/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "requestName" },
-                { "data": "requestStatus" },
-                { "data": "fullName" },
+                { "data": "currentStatus","defaultContent":"Unknown" },
+                { "data": "requester" },
                 { "data": "userType" },
-                { "data": "date" },
+                { "data": "dateRequested" , type : "date"},
                 { "data": "serviceReqConfigId" }
 
-            ] });
+            ] , "columnDefs": [
+              {
+                  "targets": 1,
+                  "render": function (data, type, full, meta) {
+                      if (type === 'display') {
+                          return codeMap[data];
+                      }
+                      return data;
+                  }
+              }
+          ]});
 
             table.on('select', function() {
             if (table.rows({

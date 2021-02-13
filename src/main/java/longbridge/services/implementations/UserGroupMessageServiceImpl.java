@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mail.MailAuthenticationException;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -62,11 +60,9 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     }
 
 
-
-
     @Override
     @Async
-    public void send(Long groupId, Email email) throws MessageException{
+    public void send(Long groupId, Email email) throws MessageException {
 
         List<ContactDTO> contacts = userGroupService.getContacts(groupId);
         for (ContactDTO contact : contacts) {
@@ -74,14 +70,14 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
                 Message msg = new Message();
                 try {
                     msg.setSender(email.getSenderEmail());
-                    msg.setRecipient(opsUserRepo.findById(contact.getDt_RowId()).get().getUserName());
+                    msg.setRecipient(opsUserRepo.findById(contact.getId()).get().getUserName());
                     msg.setSubject(email.getMessageSubject());
                     msg.setBody(email.getMessageBody());
-                    msg.setRecipientType(opsUserRepo.findById(contact.getDt_RowId()).get().getUserType());
+                    msg.setRecipientType(opsUserRepo.findById(contact.getId()).get().getUserType());
                     msg.setDateCreated(new Date());
                     messageRepo.save(msg);
                 } catch (Exception me) {
-                    logger.error("Error saving message to {} with {}",msg.getRecipient(),me.getMessage());
+                    logger.error("Error saving message to {} with {}", msg.getRecipient(), me.getMessage());
 //                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
                 }
             }
