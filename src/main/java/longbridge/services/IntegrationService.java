@@ -161,7 +161,7 @@ public interface IntegrationService {
     Response liquidateFixDeposit(FixedDepositDTO fixedDepositDTO);
     Response addFundToDeposit(FixedDepositDTO fixedDepositDTO);
     Response bookFixDeposit(FixedDepositDTO fixedDepositDTO);
-    TransRequest checkQuicktellerTrTransaction(TransRequest transRequest);
+    TransRequest checkQuicktellerTransaction(TransRequest transRequest);
     TransRequest makeBackgroundTransfer(TransRequest transRequest) throws InternetBankingTransferException;
     LoanDTO getLoanDetails(String accountNumber);
     String updateTransferLimit(TransferSetLimit tsl);

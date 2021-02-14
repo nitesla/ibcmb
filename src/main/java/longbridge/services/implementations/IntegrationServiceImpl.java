@@ -598,18 +598,23 @@ public class IntegrationServiceImpl implements IntegrationService {
 				QuickDetails response;
 				String uri = QUICKTELLER_URI + quicktellerFundtransfer;
 				Map<String,Object> params = new HashMap<>();
-				String hashedCode = EncryptionUtil.getSHA512(transRequest.getQuickInitiation().getAmount() +
+				String macCode = EncryptionUtil.getSHA512(transRequest.getQuickInitiation().getAmount() +
 						transRequest.getQuickInitiation().getCurrencyCode() +
 						transRequest.getQuickInitiation().getPaymentMethodCode() +
 						transRequest.getQuickTermination().getAmount() +
 						transRequest.getQuickTermination().getCurrencyCode() +
 						transRequest.getQuickTermination().getPaymentMethodCode() +
 						transRequest.getQuickTermination().getCountryCode(), null);
-				params.put("appid", appId);
-				params.put("mac", hashedCode);
+				String hashCode = EncryptionUtil.getSHA512(appIdQuickteller +
+						transRequest.getTransferCode() +
+						secretKeyQuickteller, null);
+				params.put("appid", appIdQuickteller);
 				params.put("beneficiary", transRequest.getQuickBeneficiary());
+				params.put("customerAccount", transRequest.getCustomerAccountNumber());
+				params.put("hash", hashCode);
 				params.put("initiatingEntityCode", initiatingEntityCode);
 				params.put("initiation", transRequest.getQuickInitiation());
+				params.put("mac", macCode);
 				params.put("sender", transRequest.getQuickSender());
 				params.put("termination", transRequest.getQuickTermination());
 				params.put("transferCode", transRequest.getTransferCode());
@@ -621,6 +626,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 					logger.debug("Transfer Params: {}", params.toString());
 
 					response = template.postForObject(uri, params, QuickDetails.class);
+					logger.info("Response is: {}", response);
 					transRequest.setResponseCode(response.getResponseCode());
 					transRequest.setMac(response.getMac());
 					transRequest.setTransferCode(response.getTransferCode());
@@ -657,7 +663,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public TransRequest checkQuicktellerTrTransaction(TransRequest transRequest){
+	public TransRequest checkQuicktellerTransaction(TransRequest transRequest){
 
 
 		PaymentResponse checkTransaction;

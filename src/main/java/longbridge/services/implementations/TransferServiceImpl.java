@@ -226,7 +226,7 @@ public class TransferServiceImpl implements TransferService {
        if (transferRequestDTO.getTransferType() != TransferType.NEFT && transferRequestDTO.getTransferType() != TransferType.NEFT_BULK) {
            transRequest = integrationService.makeTransfer(transRequest2);
            if (transferRequestDTO.getTransferType() == TransferType.QUICKTELLER){
-               transRequest = integrationService.checkQuicktellerTrTransaction(transRequest);
+               transRequest = integrationService.checkQuicktellerTransaction(transRequest);
            }
            logger.info("Transfer Details: {}", transRequest);
        }
@@ -465,6 +465,11 @@ public class TransferServiceImpl implements TransferService {
         dto.setTranLocation(transRequest.getAntiFraudData().getTranLocation());
         dto.setNarration(transRequest.getNarration());
         dto.setRemarks(transRequest.getNarration());
+        if (transRequest.getRemarks() !=null){
+            dto.setRemarks(transRequest.getRemarks());
+        }
+
+        dto.setCustomerAccountNumber(transRequest.getCustomerAccountNumber());
         if(transRequest.getTransferType() == TransferType.QUICKTELLER){
             dto.setLastname(transRequest.getQuickBeneficiary().getLastname());
             dto.setFirstname(transRequest.getQuickBeneficiary().getOthernames());
@@ -559,6 +564,7 @@ public class TransferServiceImpl implements TransferService {
             int upperbound = 9999999;
             int random = rand.nextInt(upperbound);
             transRequest.setTransferCode("1453" + random);
+            transRequest.setCustomerAccountNumber(transferRequestDTO.getCustomerAccountNumber());
         }
 
 
