@@ -1,6 +1,7 @@
 package longbridge.servicerequests.config;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateRequestConfigCmd implements RequestConfigCmd, Serializable {
@@ -10,7 +11,7 @@ public class UpdateRequestConfigCmd implements RequestConfigCmd, Serializable {
     private String type;
     private boolean authRequired;
     private Long groupId;
-    private List<SRFieldDTO> fields;
+    private List<SRFieldDTO> fields = new ArrayList<>();;
 
 
 

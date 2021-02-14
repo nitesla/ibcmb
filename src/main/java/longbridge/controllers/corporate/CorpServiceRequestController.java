@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.controllers.customer.CustomerServiceRequestController;
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
@@ -136,6 +137,12 @@ public class CorpServiceRequestController {
 
         }
         return "redirect:/corporate/requests/track";
+    }
+
+    @ModelAttribute("statuses")
+    Map<String, String> getCodeMaps() {
+        return codeService.getCodesByType("REQUEST_STATUS").stream()
+                .collect(Collectors.toMap(CodeDTO::getCode, CodeDTO::getDescription));
     }
 
 

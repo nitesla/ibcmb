@@ -3,10 +3,11 @@ package longbridge.servicerequests.config;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddRequestConfigCmd implements RequestConfigCmd , Serializable {
-    List<SRFieldDTO> fields;
+    List<SRFieldDTO> fields = new ArrayList<>();
     @NotEmpty(message = "name")
     private String name;
     private String type;

@@ -11,7 +11,18 @@
             <option value="account">Overview</option>
         </select>
     </div>
-
+    <div id="request-details" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content no-bd-rad ">
+                <div class="modal-body">
+                    <h1 style="font-size: 20px" class="text-center">Request Details</h1>
+                    <br/>
+                    <div id="request-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-xs-12 " >
         <div class=" no-pad-lef table-responsive no-mt no-bd  alert" >
            <table class="table" id="track">
@@ -22,13 +33,10 @@
                                 <th>Requested By</th>
                                 <th>Status</th>
                                 <th>Reference ID</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <!--<tr th:each="req : ${requests}">-->
-                                <!--<td th:text="${req.requestName}"></td>-->
-                                <!--<td th:text="${req.dateRequested}"></td>-->
-                                <!--<td th:text="${req.requestStatus}"></td></tr>-->
                             </tbody>
             </table>
         </div>
@@ -42,6 +50,7 @@
     /*<![CDATA[*/
     var srConfigList = /*[[${requestConfigInfo}]]*/ [];
     var srConfigMap = new Map(srConfigList.map(i => [i.name, i.description]));
+    var statusMap = /*[[${statuses}]]*/ [];
     $(document).ready(function() {
         var url = "/corporate/requests/track/all";
         var table = $('#track').DataTable({
@@ -59,8 +68,9 @@
                 { "data": "requestName" },
                 { "data": "dateRequested" },
                 { "data": "requester"},
-                { "data": "currentStatus" },
-                { "data": "id" }
+                { "data": "currentStatus", "defaultContent" : "Unknown" },
+                { "data": "id" },
+                {"data": null}
             ], "columnDefs": [{
                 "targets": 0,
                 "data": "status",
@@ -70,10 +80,42 @@
                     }
                     return data;
                 }
+            }, {
+                "targets": 3,
+                "data": "status",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        return statusMap[data];
+                    }
+                    return data;
+                }
+            }, {
+                "targets": 5,
+                "data": "status",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        return "<a id='verify' class='btn btn-xs open-request fa fa-folder-open dt-body-center' data-id='"+full.id +"' text-align:center; margin:0 auto;'> </a>";
+                    }
+                    return data;
+                }
 
             }]
         });
+
+        $('#track tbody').on('click', '.open-request', function () {
+            var tr = $(this).closest('tr');
+            var data = table.row(tr).data();
+            console.log(data);
+            $("#request-content").html(data["formatted"]);
+            $('#request-details').modal('show');
+        });
+
+        // $('#request-details').on('hidden.bs.modal', function (evt) {
+        //     $('.modal .modal-body').empty();
+        // });
     });
+
+
 
     /*]]>*/
 </script>

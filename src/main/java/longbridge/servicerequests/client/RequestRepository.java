@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends CommonRepo<ServiceRequest, Long> {
 
-    @Query("select sr from ServiceRequest sr where sr.entityId=:entityId and sr.userType= :type")
+    @Query("select sr from ServiceRequest sr where sr.entityId=:entityId and sr.userType= :type order by sr.dateRequested desc")
     Page<ServiceRequest> findForUser(@Param("type") UserType type, @Param("entityId") Long entityId, Pageable pageDetails);
 
     @Query("select sr from ServiceRequest sr where sr.serviceReqConfigId in (:configByGroup) order by sr.dateRequested desc ")
