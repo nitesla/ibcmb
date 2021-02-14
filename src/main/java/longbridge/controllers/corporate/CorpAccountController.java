@@ -9,6 +9,8 @@ import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.AccountRepo;
+import longbridge.servicerequests.client.RequestService;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -60,7 +62,7 @@ import java.util.*;
 public class CorpAccountController {
 
     @Autowired
-    ServiceReqConfigService serviceReqConfigService;
+    private RequestConfigService requestConfigService;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -136,7 +138,8 @@ public class CorpAccountController {
         AccountDTO accountDTO = accountService.getAccount(id);
         if (!corporateUser.getCorporate().getCustomerId().equals(accountDTO.getCustomerId())) {
             redirectAttributes.addFlashAttribute("message", "Access Denied");
-            return "redirect:/corporate/logout";
+            logger.warn("{} tried to access {} ,denying access ",corporateUser,accountDTO);
+            return "redirect:/corporate/account/customize";
         }
 
         this.customizeAccountId = accountDTO.getId();
@@ -221,6 +224,7 @@ public class CorpAccountController {
 
     @GetMapping("/officer")
     public String getAccountOfficer() {
+        //TODO: where the account officer info, just put it in the model here
         return "corp/account/officer";
     }
 
@@ -701,8 +705,7 @@ public class CorpAccountController {
     public String createNewAccount(Model model) {
 
         Iterable<CodeDTO> accountType = codeService.getCodesByType("ACCOUNT_CLASS");
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CREATE-ACCOUNT");
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("CREATE-ACCOUNT"));
         model.addAttribute("accountType", accountType);
         model.addAttribute("TandC", messageSource.getMessage("account.new.terms.conditions", null, locale));
 

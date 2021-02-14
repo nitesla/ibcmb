@@ -3,9 +3,9 @@ package longbridge.controllers.operations;
 import longbridge.exception.AccountFetchException;
 import longbridge.exception.IdentificationException;
 import longbridge.models.OperationsUser;
+import longbridge.servicerequests.client.RequestService;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
-import longbridge.services.RequestService;
 import longbridge.services.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +50,8 @@ public class OperationsControllerAdvice {
             return "redirect://login/ops";
         }
         OperationsUser operationsUser = operationsUserService.getUserByName(principal.getName());
-        int numOfSubmittedRequests = requestService.getNumOfUnattendedRequests(operationsUser);
-        if(numOfSubmittedRequests>0) {
-            model.addAttribute("numOfSubmittedRequests",numOfSubmittedRequests);
-        }
+
+        model.addAttribute("requestStats",requestService.getOpRequestStats(operationsUser));
 
         int numOfUnreadMessages = messageService.getNumOfUnreadMessages(operationsUser);
         if(numOfUnreadMessages>0){
@@ -71,7 +69,6 @@ public class OperationsControllerAdvice {
 
         model.addAttribute("pendingMessages",numOfUnreadMessages);
         model.addAttribute("pendingApprovals", verificationNumber);
-        model.addAttribute("pendingRequests", numOfSubmittedRequests);
 
         return "";
     }

@@ -1934,6 +1934,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 //			}else{
 //                extractCoverageDetails(coverageDetails, value);
 //			}
+
 			return coverageJsonNode;
 
 		} catch (Exception e) {

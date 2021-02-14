@@ -160,7 +160,8 @@ import java.util.Locale;
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
-        return "redirect:/ops/rate/all";
+
+        return "redirect:/ops/rate";
     }
 
 }

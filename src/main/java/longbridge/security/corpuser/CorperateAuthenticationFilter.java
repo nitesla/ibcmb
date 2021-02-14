@@ -25,13 +25,7 @@ CorperateAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     }
 
-//    @Override
-//    public Authentication attemptAuthentication(HttpServletRequest request,
-//                                                HttpServletResponse response) throws AuthenticationException {
-//        logger.debug("Attempting for authentication. " + "username = "
-//                + request.getParameter("username") );
-//        return super.attemptAuthentication(request, response);
-//    }
+
 
     @Override
     protected String obtainUsername(HttpServletRequest request) {

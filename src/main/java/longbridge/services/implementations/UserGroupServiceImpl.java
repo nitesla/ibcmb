@@ -12,6 +12,7 @@ import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.UserGroupRepo;
 import longbridge.services.UserGroupService;
 import longbridge.utils.Verifiable;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -19,12 +20,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by Fortune on 5/3/2017.
@@ -41,8 +44,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     private OperationsUserRepo operationsUserRepo;
 
     @Autowired
-    private EntityManager entityManager;
-
+    private ModelMapper  mapper;
     @Autowired
     private MessageSource messageSource;
 
@@ -123,8 +125,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroupDTO getGroup(Long id) {
-        UserGroup userGroup = userGroupRepo.findById(id).get();
-        return convertEntityToDTO(userGroup);
+       return userGroupRepo.findById(id).map(this::convertEntityToDTO).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
@@ -183,56 +184,23 @@ public class UserGroupServiceImpl implements UserGroupService {
         userGroupDTO.setName(userGroup.getName());
         return userGroupDTO;
     }
-    @Override
+
+
+    @Override @Transactional
     public List<ContactDTO> getContacts(Long groupId){
-        UserGroup userGroup = userGroupRepo.findById(groupId).get();
-        List<OperationsUser> internalUsers = userGroup.getUsers();
-        List<Contact> externalUsers= userGroup.getContacts();
-        List<ContactDTO> allUsers = new ArrayList<>();
-        for(OperationsUser opsUser: internalUsers){
-            ContactDTO contactDTO = new ContactDTO();
-            contactDTO.setFirstName(opsUser.getFirstName());
-            contactDTO.setLastName(opsUser.getLastName());
-            contactDTO.setEmail(opsUser.getEmail());
-            contactDTO.setDt_RowId(opsUser.getId());
-            contactDTO.setExternal(false);
-            allUsers.add(contactDTO);
-        }
-        for(Contact extUser: externalUsers){
-            ContactDTO contactDTO = new ContactDTO();
-            contactDTO.setFirstName(extUser.getFirstName());
-            contactDTO.setLastName(extUser.getLastName());
-            contactDTO.setEmail(extUser.getEmail());
-            contactDTO.setDt_RowId(extUser.getId());
-            contactDTO.setExternal(true);
-            allUsers.add(contactDTO);
-        }
-        return allUsers;
+        return Stream.concat(userGroupRepo.findInternalMembers(groupId)
+                        .map(u -> mapper.map(u, ContactDTO.class).setExternal(false)),
+                userGroupRepo.findExternalMembers(groupId)
+                        .map(u -> mapper.map(u, ContactDTO.class).setExternal(true))).collect(Collectors.toList());
     }
 
     @Override
     public List<ContactDTO> getContacts(UserGroup userGroup){
-        List<OperationsUser> internalUsers = userGroup.getUsers();
-        List<Contact> externalUsers= userGroup.getContacts();
-        List<ContactDTO> allUsers = new ArrayList<>();
-        for(OperationsUser opsUser: internalUsers){
-            ContactDTO contactDTO = new ContactDTO();
-            contactDTO.setFirstName(opsUser.getFirstName());
-            contactDTO.setLastName(opsUser.getLastName());
-            contactDTO.setEmail(opsUser.getEmail());
-            contactDTO.setDt_RowId(opsUser.getId());
-            contactDTO.setExternal(false);
-            allUsers.add(contactDTO);
-        }
-        for(Contact extUser: externalUsers){
-            ContactDTO contactDTO = new ContactDTO();
-            contactDTO.setFirstName(extUser.getFirstName());
-            contactDTO.setLastName(extUser.getLastName());
-            contactDTO.setEmail(extUser.getEmail());
-            contactDTO.setDt_RowId(extUser.getId());
-            contactDTO.setExternal(true);
-            allUsers.add(contactDTO);
-        }
-        return allUsers;
+       return getContacts(userGroup.getId());
+    }
+
+    @Override
+    public List<Long> getGroups(OperationsUser user) {
+        return userGroupRepo.findUserSubscriptions(user);
     }
 }

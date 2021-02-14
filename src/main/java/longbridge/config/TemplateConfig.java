@@ -1,16 +1,14 @@
-//package longbridge.config;
-//
-//import longbridge.utils.JasperReport.JasperReportsMultiFormatView;
-//import longbridge.utils.JasperReport.JasperReportsViewResolver;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//
-////import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
-////import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver;
-//
-//@Configuration
-//public class TemplateConfig {
-//
+package longbridge.config;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+
+
+@Configuration
+public class TemplateConfig {
+
 //    @Bean
 //    public JasperReportsViewResolver getJasperReportsViewResolver() {
 //        JasperReportsViewResolver resolver = new JasperReportsViewResolver();
@@ -22,5 +20,7 @@
 //        resolver.setOrder(0);
 //        return resolver;
 //    }
-//
-//}
+
+
+
+}

@@ -1,11 +1,9 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.ChequeService;
 import longbridge.services.CodeService;
-import longbridge.services.ServiceReqConfigService;
 import longbridge.services.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,21 +38,16 @@ public class ChequeController {
     MessageSource messageSource;
 
     @Autowired
-    ServiceReqConfigService serviceReqConfigService;
+    RequestConfigService requestConfigService;
 
     @Autowired
     SettingsService configurationService;
 
     @GetMapping("/chequebook")
-    public String requestChequeBook( Model model) {
-
-        Iterable<CodeDTO> chequebooks = codeService.getCodesByType("CHEQUEBOOK");
-        Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CHEQUE-REQUEST");
-        model.addAttribute("requestConfig", serviceReqConfig);
-
-        model.addAttribute("leaves", chequebooks);
-        model.addAttribute("branches", pickUpBranch);
+    public String requestChequeBook(Model model) {
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("CHEQUE-REQUEST"));
+        model.addAttribute("leaves", codeService.getCodesByType("CHEQUEBOOK"));
+        model.addAttribute("branches", codeService.getCodesByType("BANK_BRANCH"));
         return "cust/cheque/chequebook";
     }
 
@@ -63,10 +56,10 @@ public class ChequeController {
     public String checkBalance(WebRequest webRequest, Locale locale) {
         int charge = Integer.parseInt(webRequest.getParameter("charge"));
         String accountNumber = webRequest.getParameter("accountNumber");
-       // logger.info("charge {}",charge);
+        // logger.info("charge {}",charge);
         if (!chequeService.isBalanceOk(charge, accountNumber)) {
 
-           return messageSource.getMessage("deposit.balance.insufficient", null, locale);
+            return messageSource.getMessage("deposit.balance.insufficient", null, locale);
         } else {
             return "";
         }
@@ -74,34 +67,29 @@ public class ChequeController {
     }
 
     @GetMapping("/stop")
-    public String stopCheque(Model model,Locale locale) {
+    public String stopCheque(Model model, Locale locale) {
 
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("STOP-CHEQUE");
         SettingDTO stopChequeCharge = configurationService.getSettingByName("STOP-CHEQUE");
 
-        model.addAttribute("requestConfig", serviceReqConfig);
-        model.addAttribute("chargeMessage",messageSource.getMessage("stop.cheque.charge",null,locale));
-        model.addAttribute("charge",stopChequeCharge.getValue());
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("STOP-CHEQUE"));
+        model.addAttribute("chargeMessage", messageSource.getMessage("stop.cheque.charge", null, locale));
+        model.addAttribute("charge", stopChequeCharge.getValue());
         return "cust/cheque/stopcheque";
     }
 
     @GetMapping("/confirm")
     public String confirmCheque(Model model) {
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CONFIRM-CHEQUE");
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("CONFIRM-CHEQUE"));
         return "cust/cheque/confirmcheque";
     }
 
     @GetMapping("/draft")
-    public String requestDraft(Model model,Locale locale) {
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("DRAFT-REQUEST");
-        Iterable<CodeDTO> pickUpBranch = codeService.getCodesByType("BANK_BRANCH");
+    public String requestDraft(Model model, Locale locale) {
         SettingDTO draftCharge = configurationService.getSettingByName("DRAFT-REQUEST");
-
-        model.addAttribute("requestConfig", serviceReqConfig);
-        model.addAttribute("branches", pickUpBranch);
-        model.addAttribute("draftMessage",messageSource.getMessage("cheque.draft",null,locale));
-        model.addAttribute("charge",draftCharge.getValue());
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("DRAFT-REQUEST"));
+        model.addAttribute("branches", codeService.getCodesByType("BANK_BRANCH"));
+        model.addAttribute("draftMessage", messageSource.getMessage("cheque.draft", null, locale));
+        model.addAttribute("charge", draftCharge.getValue());
 
         return "cust/cheque/draftrequest";
     }

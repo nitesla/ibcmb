@@ -110,10 +110,13 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/moment.min.js}"></script>
+<script th:src="@{~/bank/js/datetime.js}"></script>
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
+    var codeMap = /*[[${statuses}]]*/ null;
     $(document).ready(function() {
       var table = $('#request').DataTable({
             select:true,
@@ -122,18 +125,32 @@
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
+            "rowId" : "id",
             "serverSide" : true,
             "ajax": "/ops/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "requestName" },
-                { "data": "requestStatus" },
-                { "data": "fullName" },
+                { "data": "currentStatus","defaultContent":"Unknown" },
+                { "data": "requester" },
                 { "data": "userType" },
-                { "data": "date" },
+                { "data": "dateRequested" },
                 { "data": "serviceReqConfigId" }
 
-            ] });
+            ] , "columnDefs": [
+              {
+                  "targets": 1,
+                  "render": function (data, type, full, meta) {
+                      if (type === 'display') {
+                          return codeMap[data];
+                      }
+                      return data;
+                  }
+              }, {
+                  "targets": 4,
+                  render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'dddd, MMMM Do YYYY, h:mm:ss a')
+              }
+          ]});
 
             table.on('select', function() {
             if (table.rows({

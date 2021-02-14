@@ -32,7 +32,9 @@ import java.util.stream.StreamSupport;
  */
 @Service
 public class TransferUtils {
-    
+
+    private final Locale locale = LocaleContextHolder.getLocale();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private IntegrationService integrationService;
     private AccountService accountService;
     private RetailUserService retailUserService;
@@ -42,59 +44,55 @@ public class TransferUtils {
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     @Autowired
     private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
-
     @Autowired
     private CorpNeftBeneficiaryRepo corpNeftBeneficiaryRepo;
     @Autowired
     private MessageSource messageSource;
-    
-    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private AccountRepo accountRepo;
-
     @Autowired
     private NeftBeneficiaryRepo neftBeneficiaryRepo;
     @Autowired
     private CorporateRepo corporateRepo;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public void setCodeService(CodeService codeService) {
         this.codeService = codeService;
     }
-    
+
     @Autowired
     public void setCorporateService(CorporateService corporateService) {
         this.corporateService = corporateService;
     }
-    
+
     @Autowired
     public void setRetailUserService(RetailUserService retailUserService) {
         this.retailUserService = retailUserService;
     }
-    
+
     @Autowired
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;
     }
-    
+
     @Autowired
     public void setIntegrationService(IntegrationService integrationService) {
         this.integrationService = integrationService;
     }
-    
+
     private String createMessage(String message, boolean successOrFailure) {
         JSONObject object = new JSONObject();
         try {
             object.put("message", message);
             object.put("success", successOrFailure);
-            
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return object.toString();
     }
-    
-    
+
+
     public String doIntraBankkNameLookup(String acctNo) {
         if (getCurrentUser() != null && !acctNo.isEmpty()) {
             User user = getCurrentUser();
@@ -110,23 +108,23 @@ public class TransferUtils {
                     return createMessage("A beneficary with these details already exists", false);
                 }
             }
-            
+
             String name = integrationService.viewAccountDetails(acctNo).getAcctName();
             if (name != null && !name.isEmpty()) {
                 return createMessage(name, true);
             }
-            
+
             return createMessage("Invalid Account", false);
-            
+
         }
-        
+
         return "";
     }
-    
+
     public String doInterBankNameLookup(String bank, String accountNo) {
-        
+
         if (getCurrentUser() != null && !accountNo.isEmpty()) {
-            
+
             User user = getCurrentUser();
             if (user.getUserType().equals(UserType.RETAIL)) {
                 LocalBeneficiary localBeneficiary = localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), accountNo);
@@ -140,23 +138,23 @@ public class TransferUtils {
                     return createMessage("A beneficary with these details already exists", false);
                 }
             }
-            
-            
+
+
             NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
             if (details == null)
                 return createMessage("Service unavailable, please try again later", false);
-            
-            
+
+
             if (details.getResponseCode() != null && !details.getResponseCode().equalsIgnoreCase("00"))
                 return createMessage(details.getResponseDescription(), false);
-            
-            
+
+
             if (details.getAccountName() != null && details.getResponseCode() != null && details.getResponseCode().equalsIgnoreCase("00"))
                 return createMessage(details.getAccountName(), true);
-            
-            
+
+
             return createMessage("session_expired", false);
-            
+
         }
         return "";
     }
@@ -233,8 +231,8 @@ public class TransferUtils {
         }
         return "";
     }
-    
-    
+
+
     public String getBalance(String accountNumber) {
         if (getCurrentUser() != null) {
             validate(accountNumber);
@@ -245,8 +243,8 @@ public class TransferUtils {
         }
         return createMessage("", false);
     }
-    
-    
+
+
     public String getLimit(String accountNumber, String channel) {
         validate(accountNumber);
         if (getCurrentUser() != null) {
@@ -254,7 +252,7 @@ public class TransferUtils {
             if (limit != null && !limit.isEmpty())
                 return createMessage(getCurrency(accountNumber) + "" + limit, true);
         }
-        
+
         return "";
     }
 
@@ -268,79 +266,81 @@ public class TransferUtils {
 
         return "";
     }
-    
-    
+
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
             return currentUser.getUser();
         }
-        
+
         return null;
     }
-    
+
     public List<Account> getNairaAccounts() {
-        
+
         RetailUser user = retailUserService.getUserByName(getCurrentUser().getUserName());
         List<Account> accountList = new ArrayList<>();
         if (user != null) {
-            
-            
+
+
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
-            
+
             StreamSupport.stream(accounts.spliterator(), false)
-                     .filter(Objects::nonNull)
-                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                     
-                     .forEach(accountList::add);
-            
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(accountList::add);
+
         }
         return accountList;
     }
-    
-    
+
+
     public List<Account> getNairaAccounts(String custId) {
-        
+
         List<Account> accountList = new ArrayList<>();
         if (custId != null && !custId.isEmpty()) {
-            
+
             Iterable<Account> accounts = accountService.getAccountsForDebit(custId);
-            
+
             StreamSupport.stream(accounts.spliterator(), false)
-                     .filter(Objects::nonNull)
-                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                     .forEach(i ->{
-                         validate(i);
-                         accountList.add(i);});
-            
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+                    .forEach(i -> {
+                        validate(i);
+                        accountList.add(i);
+                    });
+
         }
         return accountList;
     }
-    
-    
+
+
     public List<Account> getNairaAccounts(Long corpId) {
         List<Account> accountList = new ArrayList<>();
         if (corpId != null) {
-            
+
             Iterable<Account> accounts = accountService.getAccountsForDebit(corporateService.getAccounts(corpId));
             StreamSupport.stream(accounts.spliterator(), false)
-                     .filter(Objects::nonNull)
-                     .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
-                     
-                     .forEach(i -> {
-                         validate(i);
-                         accountList.add(i);});
-            
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> {
+                        validate(i);
+                        accountList.add(i);
+                    });
+
         }
         return accountList;
     }
-    
-    
-    public String getFee(String...channel) {
+
+
+    public String getFee(String... channel) {
         String result = "";
         try {
-            Rate rate = integrationService.getFee(channel[0],channel[1]);
+            Rate rate = integrationService.getFee(channel[0], channel[1]);
             if ("FIXED".equalsIgnoreCase(rate.getFeeName())) {
 //                result = StringEscapeUtils.unescapeHtml4("&#8358;") + "" + rate.getFeeValue();
                 result = "" + rate.getFeeValue();
@@ -349,13 +349,13 @@ public class TransferUtils {
             } else if ("RATE".equalsIgnoreCase(rate.getFeeName())) {
                 result = rate.getFeeValue() + "" + "%";
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
-    
+
     public String calculateFee(BigDecimal amount, String channel) {
         String result = "";
         try {
@@ -367,74 +367,83 @@ public class TransferUtils {
             } else if ("RATE".equalsIgnoreCase(rate.getFeeName())) {
                 result = rate.getFeeValue();
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
-    
-    
+
+
     public void validateTransferCriteria() {
-        
+        //TODO :Consider externalizing the validation checks through scripts
+        // this would allow new validations to be added
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        logger.info("Validating transfer criteria for user {}",authentication.getPrincipal());
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             CustomUserPrincipal currentUser = (CustomUserPrincipal) authentication.getPrincipal();
-            
-            if(currentUser == null){
-                throw new InternetBankingTransferException(messageSource.getMessage("user.invalid",null,locale));
+            logger.debug("Current User is {}", authentication.getPrincipal());
+            if (currentUser == null) {
+
+                throw new InternetBankingTransferException(messageSource.getMessage("user.invalid", null, locale));
             }
             if (currentUser.getCorpId() == null) {
-                
+
                 RetailUser retailUser = retailUserService.getUserByName(currentUser.getUsername());
-                
+
                 if (retailUser.getBvn() == null || "NO BVN".equalsIgnoreCase(retailUser.getBvn()) || retailUser.getBvn().isEmpty()) {
-                    
+                    logger.debug("Retail {} failed BVN Validation Check", retailUser);
                     throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
                 }
-                
+
             } else {
-                CorporateUser user  = (CorporateUser)currentUser.getUser();
-                if(CorpUserType.AUTHORIZER.equals(user.getCorpUserType())){
-                    throw new InternetBankingTransferException(messageSource.getMessage("transfer.initiate.disallowed",null,locale));
-                    
+                CorporateUser user = (CorporateUser) currentUser.getUser();
+                //TODO: make decision of how authorize will work
+                if (CorpUserType.AUTHORIZER.equals(user.getCorpUserType())) {
+                    logger.debug("Authorizer not allowed Validation Check failed for {}", user);
+                    throw new InternetBankingTransferException(messageSource.getMessage("transfer.initiate.disallowed", null, locale));
+
                 }
-                
+
                 Corporate corporate = corporateService.getCorp(currentUser.getCorpId());
-                if (corporate == null) throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
-                
-                if ((corporate.getRcNumber() == null || corporate.getRcNumber().isEmpty() ) && (corporate.getTaxId()==null ||corporate.getTaxId().isEmpty() )){
+                if (corporate == null) {
+                    logger.debug("Corporate not definded for corpId : {} ", currentUser.getCorpId());
+                    throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+                }
+
+                if ((corporate.getRcNumber() == null || corporate.getRcNumber().isEmpty()) && (corporate.getTaxId() == null || corporate.getTaxId().isEmpty())) {
+                    logger.debug("Validation checks for RC/TIN No failed for {}", corporate);
                     throw new InternetBankingTransferException(TransferExceptions.NO_RC.toString());
                 }
-                
+
             }
-            
-            
+
         }
-        
+
     }
-    
-    
+
+
     public String getCurrency(String accountNumber) {
         String currency = "";
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account != null) {
             Code code = codeService.getByTypeAndCode("CURRENCY", account.getCurrencyCode());
             if (code != null && null != code.getExtraInfo()) {
-                
+
                 currency = StringEscapeUtils.unescapeHtml4(code.getExtraInfo());
                 return currency;
             }
             currency = account.getCurrencyCode();
-            
+
         }
         return currency;
-        
+
     }
+
     private void validate(Account account) {
         validate(account.getAccountNumber());
     }
-    
+
     private void validate(String account) {
         User currentUser = getCurrentUser();
         switch (currentUser.getUserType()) {
@@ -453,7 +462,8 @@ public class TransferUtils {
                 CorporateUser user = (CorporateUser) currentUser;
                 Account acct = accountRepo.findFirstByAccountNumber(account);
                 Corporate corporate = corporateRepo.findById(user.getCorporate().getId()).get();
-                boolean valid = corporate.getAccounts().contains(acct);			if (!valid) {
+                boolean valid = corporate.getAccounts().contains(acct);
+                if (!valid) {
                     logger.warn("User " + user.toString() + "trying to access other accounts");
                     throw new InternetBankingException("Access Denied");
                 }
@@ -467,13 +477,12 @@ public class TransferUtils {
     }
 
 
-
     public String generateReferenceNumber(int numOfDigits) {
-        if(numOfDigits<1) {
+        if (numOfDigits < 1) {
             throw new IllegalArgumentException(numOfDigits + ": Number must be equal or greater than 1");
         }
-        long random = (long) Math.floor(Math.random() * 9 * (long)Math.pow(10,numOfDigits-1)) + (long)Math.pow(10,numOfDigits-1);
+        long random = (long) Math.floor(Math.random() * 9 * (long) Math.pow(10, numOfDigits - 1)) + (long) Math.pow(10, numOfDigits - 1);
         return Long.toString(random);
     }
-    
+
 }

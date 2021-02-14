@@ -181,7 +181,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             Role role = roleService.getTheRole(settingDTO.getValue());
             retailUser.setRole(role);
             retailUser.setStatus("A");
-            retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+            retailUser.setAlertPreference("BOTH");
             String errorMsg = passwordPolicyService.validate(user.getPassword(), null);
             if (!"".equals(errorMsg)) {
                 throw new PasswordPolicyViolationException(errorMsg);
@@ -257,7 +257,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setBvn(user.getBvn());
             retailUser.setRole(new Role(user.getRoleId()));
             retailUser.setStatus("A");
-            retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
+            retailUser.setAlertPreference("BOTH");
 
             retailUserRepo.save(retailUser);
 
@@ -672,7 +672,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             RetailUser retailUser = convertDTOToEntity(user);
             Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getCode());
-            retailUser.setAlertPreference(code);
+            retailUser.setAlertPreference(code.getCode());
             this.retailUserRepo.save(retailUser);
             logger.info("USER {}'s alert preference set", user.getId());
             ok = true;

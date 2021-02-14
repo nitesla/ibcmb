@@ -1,16 +1,13 @@
 package longbridge.controllers.operations;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.RequestHistoryDTO;
-import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.OperationsUser;
+import longbridge.servicerequests.client.AddCommentCmd;
+import longbridge.servicerequests.client.RequestService;
+import longbridge.servicerequests.client.ServiceRequestDTO;
 import longbridge.services.CodeService;
 import longbridge.services.OperationsUserService;
-import longbridge.services.RequestService;
 import longbridge.utils.DataTablesUtils;
-import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +15,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,17 +36,13 @@ import java.util.List;
 public class OpsServiceRequestController {
 
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private CodeService codeService;
-
     @Autowired
     private OperationsUserService opsUserService;
-
     @Autowired
     private RequestService requestService;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
     @GetMapping
     public String getRequests() {
@@ -58,12 +52,10 @@ public class OpsServiceRequestController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input,Principal principal) {
-        logger.info("DEBUGGING!!");
+    DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input, Principal principal) {
         OperationsUser opsUser = opsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(opsUser,pageable);
-        logger.info("DEBUGGING-2!! {}",  serviceRequests.get().findFirst());
+        Page<ServiceRequestDTO> serviceRequests = requestService.getOpRequests(opsUser, pageable);
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());
@@ -76,62 +68,28 @@ public class OpsServiceRequestController {
     @GetMapping("/{reqId}/details")
     public String getRequest(Model model, @PathVariable Long reqId) {
         ServiceRequestDTO requestDTO = requestService.getRequest(reqId);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<NameValue> requestBody = null;
-        try {
-            requestBody = objectMapper.readValue(requestDTO.getBody(), new TypeReference<>() {
-            });
-        } catch (Exception e) {
-        }
-        Iterable<CodeDTO> statusCodes = codeService.getCodesByType("REQUEST_STATUS");
-        Iterable<RequestHistoryDTO> requestHistories = requestService.getRequestHistories(reqId);
-        model.addAttribute("serviceRequest", requestDTO);
-        model.addAttribute("histories", requestHistories);
-        model.addAttribute("requestBody", requestBody);
-        model.addAttribute("statuses", statusCodes);
-        model.addAttribute("requestHistory", new RequestHistoryDTO());
-        logger.info("Request Histories :{}", requestHistories.toString());
+        model.addAttribute("request", requestDTO);
         return "/ops/request/details";
 
     }
 
-
-    @GetMapping("/history")
-    public String getRequestHistory(Model model) {
-        return "/ops/request/history/view";
-
+    @ModelAttribute("statuses")
+    Map<String, String> getCodeMaps(){
+        return codeService.getCodesByType("REQUEST_STATUS").stream()
+                .collect(Collectors.toMap(CodeDTO::getCode, CodeDTO::getDescription));
     }
 
 
-    @GetMapping("/history/new")
-    public String addRequestHistory(Model model) {
-        return "/ops/request/history/add";
-    }
 
-
-    @PostMapping("/history")
-    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result, Principal principal,RedirectAttributes redirectAttributes) {
-
-        if (result.hasErrors()) {
-            return "";
-        }
-
-        requestHistoryDTO.setCreatedBy(principal.getName());
-        logger.info("RequestHistoryDTO received: {}", requestHistoryDTO);
-        requestService.addRequestHistory(requestHistoryDTO);
-
-        redirectAttributes.addFlashAttribute("message", "Request updated successfully");
-        return "redirect:/ops/requests/" + requestHistoryDTO.getServiceRequestId() + "/details";
-    }
-
-    @PostMapping
     @ResponseBody
-    public String processRequest(@RequestParam String jsonData) {
-
-        logger.info("The received data: {}", jsonData);
-        return "redirect:/ops/request/history/view";
-
+    @PostMapping
+    public ResponseEntity<ServiceRequestDTO.CommentDTO> commentOnRequest(@RequestBody AddCommentCmd cmd) {
+        try {
+            return ResponseEntity.ok(requestService.addRequestComment(cmd));
+        }catch (Exception e){
+            logger.error("Error modifying request {} with {}",cmd,e.getMessage() );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 

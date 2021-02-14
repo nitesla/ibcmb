@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 <head>
     <link rel="stylesheet" type="text/css"
-          th:href="@{~/bank/vendors/datatables.net/datatables.net-buttons/css/buttons.dataTables.min.css}"/></head>
+          th:href="@{~/bank/vendors/datatables.net-buttons/css/buttons.dataTables.min.css}"/></head>
 <body onload="javascript:var bread = 'home';currentBar('dashboard');breadCrumb(bread)">
 
 <div layout:fragment="content">
@@ -119,7 +119,6 @@
                     <th>Excel</th>
                     <th>Email</th>
 
-
                 </tr>
                 </tfoot>
             </table>
@@ -127,13 +126,16 @@
 
         </div>
 
+        <div  th:if="${not #lists.isEmpty(enabledCoverage)}" class=" no-pad-lef table-responsive bg-white alert">
 
-        <div class=" no-pad-lef table-responsive bg-white alert" th:each="crv : ${account_coverage}" style="padding:0px !important">
+
+        <div class=" no-pad-lef table-responsive bg-white alert" th:each="crv : ${enabledCoverage}" style="padding:0px !important">
             <table  class="table table-hover no-pad-lef coverage" th:id="${crv.code}">
                 <caption style="font-size: large" th:text="${crv.description}"> </caption>
             </table>
         </div>
-
+            
+        </div>
 
         </div>
 
@@ -373,9 +375,12 @@
             $('table.coverage').each(function (idx, e) {
                 let columns = [];
                 let id = $(e).attr("id")
+                console.log("Coverage name : " + id);
                 $.get('/corporate/coverage?coverageName=' + id, function (resp) {
                     // temp = JSON.parse(resp);
+                    console.log("returned data : " + resp);
                     let data = resp[_.lowerCase(id)];
+                    console.log("Formatted data : " + data );
                     if(data.length <= 0)
                         return;
                     let columnNames = Object.keys(data[0]);

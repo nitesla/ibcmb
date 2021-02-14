@@ -9,6 +9,8 @@ import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.RetailUser;
+import longbridge.servicerequests.client.RequestService;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.JasperReport.ReportHelper;
@@ -63,7 +65,9 @@ import java.util.*;
 public class AccountController {
 
     @Autowired
-    ServiceReqConfigService serviceReqConfigService;
+    RequestService requestService;
+    @Autowired
+    RequestConfigService requestConfigService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private AccountService accountService;
@@ -706,8 +710,7 @@ public class AccountController {
     public String createNewAccount(Model model) {
 
         Iterable<CodeDTO> accountType = codeService.getCodesByType("ACCOUNT_CLASS");
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigRequestName("CREATE-ACCOUNT");
-        model.addAttribute("requestConfig", serviceReqConfig);
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("CREATE-ACCOUNT"));
         model.addAttribute("accountType", accountType);
         model.addAttribute("TandC", messageSource.getMessage("account.new.terms.conditions", null, locale));
 
