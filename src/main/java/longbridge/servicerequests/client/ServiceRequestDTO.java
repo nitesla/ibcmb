@@ -19,6 +19,7 @@ public class ServiceRequestDTO {
     private String requester;
     private String body;
     private String currentStatus;
+
     private Date dateRequested;
     private Long serviceReqConfigId;
 

@@ -81,6 +81,9 @@
                     return data;
                 }
             }, {
+                "targets": 1,
+                render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'dddd, MMMM Do YYYY, h:mm:ss a')
+            }, {
                 "targets": 3,
                 "data": "status",
                 "render": function (data, type, full, meta) {

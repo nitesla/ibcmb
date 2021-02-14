@@ -110,6 +110,8 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/moment.min.js}"></script>
+<script th:src="@{~/bank/js/datetime.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
@@ -132,7 +134,7 @@
                 { "data": "currentStatus","defaultContent":"Unknown" },
                 { "data": "requester" },
                 { "data": "userType" },
-                { "data": "dateRequested" , type : "date"},
+                { "data": "dateRequested" },
                 { "data": "serviceReqConfigId" }
 
             ] , "columnDefs": [
@@ -144,6 +146,9 @@
                       }
                       return data;
                   }
+              }, {
+                  "targets": 4,
+                  render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'dddd, MMMM Do YYYY, h:mm:ss a')
               }
           ]});
 

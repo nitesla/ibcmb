@@ -104,14 +104,14 @@ public class ApplicationErrorController implements ErrorController {
                     .append("Message: " + message + "\n")
                     .append("Trace: " + trace + "\n");
 
-            if(devMembersMails!=null) {
-                String[] mailAddresses = StringUtils.split(devMembersMails, ",");
-                Email email = new Email.Builder().setRecipients(mailAddresses)
-                        .setSubject(error)
-                        .setBody(messageBuilder.toString())
-                        .build();
-                new Thread(() -> mailService.send(email)).start();
-            }
+//            if(devMembersMails!=null) {
+//                String[] mailAddresses = StringUtils.split(devMembersMails, ",");
+//                Email email = new Email.Builder().setRecipients(mailAddresses)
+//                        .setSubject(error)
+//                        .setBody(messageBuilder.toString())
+//                        .build();
+//                new Thread(() -> mailService.send(email)).start();
+//            }
         }
 
 

@@ -50,11 +50,8 @@ public class OperationsControllerAdvice {
             return "redirect://login/ops";
         }
         OperationsUser operationsUser = operationsUserService.getUserByName(principal.getName());
-        //Todo : Add fuctionality back
-//        int numOfSubmittedRequests = requestService.getNumOfUnattendedRequests(operationsUser);
-//        if(numOfSubmittedRequests>0) {
-//            model.addAttribute("numOfSubmittedRequests",numOfSubmittedRequests);
-//        }
+
+        model.addAttribute("requestStats",requestService.getOpRequestStats(operationsUser));
 
         int numOfUnreadMessages = messageService.getNumOfUnreadMessages(operationsUser);
         if(numOfUnreadMessages>0){
@@ -72,8 +69,6 @@ public class OperationsControllerAdvice {
 
         model.addAttribute("pendingMessages",numOfUnreadMessages);
         model.addAttribute("pendingApprovals", verificationNumber);
-        //Todo : Add fuctionality back
-//        model.addAttribute("pendingRequests", numOfSubmittedRequests);
 
         return "";
     }

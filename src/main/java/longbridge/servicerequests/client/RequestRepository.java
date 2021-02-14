@@ -21,4 +21,10 @@ public interface RequestRepository extends CommonRepo<ServiceRequest, Long> {
 
     @Query("select sr from ServiceRequest sr where sr.serviceReqConfigId in (:configByGroup) order by sr.dateRequested desc ")
     Page<ServiceRequest> findByConfigIds(@Param("configByGroup") List<Long> configByGroupId, Pageable pageDetails);
+
+    @Query("select count(sr) from ServiceRequest sr where sr.serviceReqConfigId in (:configByGroup) and sr.currentStatus not in ('C','R')")
+    Integer unattendRequest(@Param("configByGroup") List<Long> configByGroupId);
+
+    @Query("select count(sr) from ServiceRequest sr where sr.serviceReqConfigId in (:configByGroup)")
+    Integer allRequest(@Param("configByGroup") List<Long> configByGroupId);
 }

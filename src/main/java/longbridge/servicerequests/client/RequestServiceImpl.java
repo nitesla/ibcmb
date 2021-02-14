@@ -154,6 +154,17 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public RequestStats getOpRequestStats(OperationsUser opsUser) {
+        List<Long> groups = groupService.getGroups(opsUser);
+        List<Long> configIds = requestConfigService.getRequestConfigByGroup(groups).stream()
+                .map(RequestConfigInfo::getId).collect(Collectors.toList());
+
+        Integer all = requestRepo.allRequest(configIds);
+        Integer untreated = requestRepo.unattendRequest(configIds);
+        return new RequestStats(all,untreated);
+    }
+
+    @Override
     public ServiceRequestDTO.CommentDTO addRequestComment(AddCommentCmd commentCmd) {
         OperationsUser currentUser = (OperationsUser)getCurrentUser();
         ServiceRequest request = requestRepo.getOne(commentCmd.getRequestId());

@@ -52,7 +52,7 @@
                                         </tr>
                                         <tr>
                                             <td>Date Requested</td>
-                                            <td th:text="${request.dateRequested}"></td>
+                                            <td th:text="${#dates.format(request.dateRequested, 'EEE, d MMM yyyy HH:mm a')}"></td>
                                         </tr>
 
                                         <tr>

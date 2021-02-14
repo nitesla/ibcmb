@@ -36,5 +36,6 @@ public interface RequestService {
     @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     Page<ServiceRequestDTO>getOpRequests(OperationsUser opsUser, Pageable pageDetails);
 
+    RequestStats getOpRequestStats(OperationsUser opsUser);
 
 }
