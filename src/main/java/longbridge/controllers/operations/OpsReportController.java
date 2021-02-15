@@ -62,7 +62,7 @@ public class OpsReportController {
     @Autowired
     private ApplicationContext appContext;
 
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     @GetMapping("/generate/index")

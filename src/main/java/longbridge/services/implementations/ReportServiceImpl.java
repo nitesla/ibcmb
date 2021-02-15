@@ -73,7 +73,7 @@ public class ReportServiceImpl implements ReportService {
     private MessageSource messageSource;
     @Autowired
     private MakerCheckerService makerCheckerService;
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
     @Autowired
     private SettingsService configurationService;

@@ -67,8 +67,7 @@ public class OpsServiceRequestController {
 
     @GetMapping("/{reqId}/details")
     public String getRequest(Model model, @PathVariable Long reqId) {
-        ServiceRequestDTO requestDTO = requestService.getRequest(reqId);
-        model.addAttribute("request", requestDTO);
+        model.addAttribute("request", requestService.getRequest(reqId));
         return "/ops/request/details";
 
     }

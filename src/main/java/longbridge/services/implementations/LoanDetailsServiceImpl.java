@@ -45,7 +45,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     @Value("${mail.from}")
     private String sender;
 
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
 

@@ -75,7 +75,7 @@ public class CorpFixedDepositController {
     CorporateUserService corporateUserService;
 
 
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     @GetMapping("/view")

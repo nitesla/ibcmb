@@ -3,7 +3,6 @@ package longbridge.controllers.retail;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.RetailUser;
-import longbridge.servicerequests.client.RequestService;
 import longbridge.servicerequests.client.ServiceRequestDTO;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
@@ -71,7 +70,7 @@ public class FixedDepositController {
     @Autowired
     private RetailUserService retailUserService;
 
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     @GetMapping("/view")

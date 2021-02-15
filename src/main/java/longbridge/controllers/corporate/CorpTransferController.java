@@ -57,7 +57,7 @@ public class CorpTransferController {
 
     @Autowired
     CorpTransferRequestRepo transferRequestRepo;
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
     private final CorporateService corporateService;
     private final CorporateUserService corporateUserService;

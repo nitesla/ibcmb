@@ -1,15 +1,18 @@
 package longbridge.controllers.corporate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import longbridge.api.AccountDetails;
 import longbridge.api.PaginationDetails;
-import longbridge.dtos.*;
+import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.GreetingDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.AccountRepo;
-import longbridge.servicerequests.client.RequestService;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -19,10 +22,11 @@ import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +49,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.OutputStream;
 import java.security.Principal;
 import java.text.DecimalFormat;
@@ -61,6 +63,8 @@ import java.util.*;
 @RequestMapping("/corporate/account")
 public class CorpAccountController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private RequestConfigService requestConfigService;
     @Autowired
@@ -81,14 +85,11 @@ public class CorpAccountController {
     private ApplicationContext appContext;
     @Autowired
     private GreetingService greetingService;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private Long customizeAccountId;
-    private final Locale locale = LocaleContextHolder.getLocale();
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
-    @Value("${jrxmlFile.path}")
-    private String jrxmlPath;
+    @Value("${account-statement.template.name}")
+    private String accountStatementName;
     //TODO :check bankname works
     @Value("${bank.name:}")
     private String bankName;
@@ -138,7 +139,7 @@ public class CorpAccountController {
         AccountDTO accountDTO = accountService.getAccount(id);
         if (!corporateUser.getCorporate().getCustomerId().equals(accountDTO.getCustomerId())) {
             redirectAttributes.addFlashAttribute("message", "Access Denied");
-            logger.warn("{} tried to access {} ,denying access ",corporateUser,accountDTO);
+            logger.warn("{} tried to access {} ,denying access ", corporateUser, accountDTO);
             return "redirect:/corporate/account/customize";
         }
 
@@ -401,8 +402,6 @@ public class CorpAccountController {
             if (accountStatement != null) {
                 list = accountStatement.getTransactionDetails();
                 session.setAttribute("hasMoreTransaction", accountStatement.getHasMoreData());
-
-
             }
             session.removeAttribute("acctStmtLastDetails");
             if (list != null) {
@@ -421,19 +420,14 @@ public class CorpAccountController {
 
     }
 
-    @GetMapping("/downloadstatement")
-    public void downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
+    @GetMapping("/downloadstatement/{format}")
+    public void downloadStatementData(@PathVariable("format") String format,
+                                      ModelMap modelMap, String acctNumber, String fromDate, String toDate, String tranType, RedirectAttributes redirectAttributes, HttpServletResponse response) throws Exception {
 
-                                      String fromDate, String toDate, String tranType, Principal principal, RedirectAttributes redirectAttributes, HttpServletResponse response) throws Exception {
-        Date from = null;
-        Date to = null;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-
-        from = format.parse(fromDate);
-        to = format.parse(toDate);
-        AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
-        out.setDraw(input.getDraw());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date fDate = sdf.parse(fromDate);
+        Date tDate =sdf.parse(toDate);
+        AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, fDate, tDate, tranType);
         List<TransactionDetails> list = accountStatement.getTransactionDetails();
         Account account = accountService.getAccountByAccountNumber(acctNumber);
 //            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -486,116 +480,47 @@ public class CorpAccountController {
         } else {
             modelMap.put("summary.address", "");
         }
-        modelMap.put("fromDate", fromDate);
-        modelMap.put("toDate", toDate);
-        Date today = new Date();
-        modelMap.put("today", today);
-        modelMap.put("imagePath", imagePath);
-        JasperReport jasperReport = ReportHelper.getJasperReport("rpt_account-statement");
-
-        response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", "attachment; filename=\"account-statement.pdf\"");
-
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, new JRBeanCollectionDataSource(list));
-        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-    }
-
-    @GetMapping("/downloadstatement/excel")
-    public void downloadStatementExcel(ModelMap modelMap, String acctNumber,
-                                       String fromDate, String toDate, String tranType, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
-        Date from = null;
-        Date to = null;
-        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<>();
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-        from = format.parse(fromDate);
-        to = format.parse(toDate);
-        logger.info("from date {} to date {} type {}", fromDate, toDate, tranType);
-        File file = new File(jrxmlPath);
-        AccountStatement accountStatement = integrationService.getFullAccountStatement(acctNumber, from, to, tranType);
-//			out.setDraw(input.getDraw());
-        List<TransactionDetails> list = accountStatement.getTransactionDetails();
-        if (list != null) {
-            logger.info("statemet list is {}", list);
-        } else {
-            logger.info("statement list is empty");
-        }
-        Account account = accountService.getAccountByAccountNumber(acctNumber);
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
-//			modelMap.put("datasource", list);
-        modelMap.put("bankName", bankName);
-        modelMap.put("format", "pdf");
-        modelMap.put("summary.accountNum", acctNumber);
-        modelMap.put("summary.customerName", account.getAccountName());
-        modelMap.put("summary.customerNo", account.getCustomerId());
-
-        double amount = Double.parseDouble(accountStatement.getOpeningBalance());
-        modelMap.put("summary.openingBalance", formatter.format(amount));
-        // the total debit and credit is referred as total debit count and credit count
-        if (accountStatement.getDebitCount() != null) {
-            modelMap.put("summary.debitCount", accountStatement.getDebitCount());
-        } else {
-            modelMap.put("summary.debitCount", "");
-        }
-        if (accountStatement.getCreditCount() != null) {
-            modelMap.put("summary.creditCount", accountStatement.getCreditCount());
-        } else {
-            modelMap.put("summary.creditCount", "");
-        }
-        modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
-        if (accountStatement.getClosingBalance() != null) {
-            double closingbal = Double.parseDouble(accountStatement.getClosingBalance());
-
-            modelMap.put("summary.closingBalance", formatter.format(closingbal));
-        } else {
-            modelMap.put("summary.closingBalance", "");
-        }
-
-        // the total debit and credit is referred as total debit count and credit count
-        if (accountStatement.getTotalDebit() != null) {
-            double totalDebit = Double.parseDouble(accountStatement.getTotalDebit());
-            modelMap.put("summary.totalDebit", formatter.format(totalDebit));
-        } else {
-            modelMap.put("summary.totalDebit", "");
-            logger.info("total debit is empty");
-        }
-        if (accountStatement.getTotalCredit() != null) {
-            double totalCredit = Double.parseDouble(accountStatement.getTotalCredit());
-            modelMap.put("summary.totalCredit", formatter.format(totalCredit));
-        } else {
-            modelMap.put("summary.totalCredit", "");
-            logger.info("total Credit is empty");
-        }
-        if (accountStatement.getAddress() != null) {
-            modelMap.put("summary.address", accountStatement.getAddress());
-        } else {
-            modelMap.put("summary.address", "");
-        }
-        modelMap.put("fromDate", fromDate);
-        modelMap.put("toDate", toDate);
+        modelMap.put("fromDate", fDate);
+        modelMap.put("toDate", tDate);
         Date today = new Date();
         modelMap.put("today", today);
         modelMap.put("imagePath", imagePath);
 
-        JRDataSource dataSource = new JRBeanCollectionDataSource(list);
-        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(file);
-        JasperPrint print = JasperFillManager.fillReport(jasperReport, modelMap, dataSource);
-        JRXlsxExporter exporter = new JRXlsxExporter();
-        exporter.setExporterInput(new SimpleExporterInput(print));
-        ByteArrayOutputStream pdfReportStream = new ByteArrayOutputStream();
-        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfReportStream));
 
-        exporter.exportReport();
-        response.setHeader("Content-Length", String.valueOf(pdfReportStream.size()));
-        response.setContentType("application/vnd.ms-excel");
-        response.addHeader("Content-Disposition", "inline; filename=\"" + "Account_Statement.xlsx" + "\"");
-        OutputStream responseOutputStream = response.getOutputStream();
-        responseOutputStream.write(pdfReportStream.toByteArray());
+        //stat
+        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(list);
+        JasperPrint jasperPrint = null;
+        JasperReport jasperReport = ReportHelper.getJasperReport(accountStatementName);
+        OutputStream out = response.getOutputStream();
+        jasperPrint = JasperFillManager.fillReport(jasperReport, modelMap, beanColDataSource);
 
-        responseOutputStream.close();
-        pdfReportStream.close();
-        responseOutputStream.flush();
-//
+        if(jasperPrint != null) {
+            logger.info("generating statement ... {}" , format);
+            if ("PDF".equalsIgnoreCase(format)) {
+                response.setContentType("application/x-downloadPdf");
+                response.setHeader("Content-Disposition", "attachment; filename=\"statement.pdf\"");
+                JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+            }else if("EXCEL".equalsIgnoreCase(format)) {
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "attachment; filename=\"statement.xlsx\"");
+                JRXlsxExporter exporter = new JRXlsxExporter();
+                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
+                exporter.exportReport();
+            } else if ("CSV".equalsIgnoreCase(format)) {
+                response.setContentType("text/csv");
+                response.setHeader("Content-Disposition", "attachment; filename=\"statement.csv\"");
+                JRCsvExporter exporter = new JRCsvExporter();
+                exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                exporter.setExporterOutput(new SimpleWriterExporterOutput(out));
+                exporter.exportReport();
+            }
+        } else {
+            logger.warn("unsupported report format {}", format);
+            throw new InternetBankingException("unsupported report format " + format);
+        }
     }
+
 
     @GetMapping("/viewstatement/corp/display/data/next")
     @ResponseBody

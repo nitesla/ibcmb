@@ -57,11 +57,11 @@ public class CorpCompletedTransferController {
     @Autowired
     private MessageSource messageSource;
 
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
     @Value("${jsonFile.path}")
     private String JOSNpath;
-    @Value("${jrxmlFile.path}")
+    @Value("${account-statement.template.name}")
     private String jrxmlPath;
     @Value("${savedDocFile.path}")
     private String savedDoc;

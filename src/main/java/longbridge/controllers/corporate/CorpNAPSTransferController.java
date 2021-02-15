@@ -88,7 +88,7 @@ public class CorpNAPSTransferController {
     private TransferUtils transferUtils;
     @Autowired
     private ApplicationContext appContext;
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
     @Value("${jrxmlBulkExcelFile.path}")
     private String jrxmlBulkExcelFile;

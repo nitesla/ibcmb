@@ -59,9 +59,7 @@ public class CorporateControllerAdvice {
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";
         }
-
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        logger.info("corporateUser", corporateUser);
         if (corporateUser == null) {
             return "";
         }

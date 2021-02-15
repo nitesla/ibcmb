@@ -42,7 +42,7 @@ public class RetailLoanController {
     private final Locale locale = LocaleContextHolder.getLocale();
 
     private final Logger logger= LoggerFactory.getLogger(this.getClass());
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     @PostMapping("/email")

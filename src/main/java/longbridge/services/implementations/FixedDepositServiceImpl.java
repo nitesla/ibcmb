@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.FixedDepositDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.UserGroupRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
@@ -67,7 +66,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     @Value("${mail.from}")
     private String sender;
 
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -159,7 +158,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         BigDecimal availableBalance = integrationService.getAvailableBalance(fixedDepositDTO.getAccountNumber());
         BigDecimal deposit = new BigDecimal(fixedDepositDTO.getInitialDepositAmount());
         int comparator = availableBalance.compareTo(deposit);
-        logger.info("the comparator {}",comparator);
+        logger.info("FD deposit bal check {}",comparator > 0);
         return comparator > 0;
     }
 
@@ -167,7 +166,6 @@ public class FixedDepositServiceImpl implements FixedDepositService {
     public String sendMail(FixedDepositDTO fixedDepositDTO)  {
         User currentUser = getCurrentUser();
         if(currentUser != null) {
-
             Context context = context(fixedDepositDTO);
             context.setVariable("username",currentUser.getUserName());
             sendMails(context);
