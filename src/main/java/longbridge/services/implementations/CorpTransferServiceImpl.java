@@ -320,7 +320,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransRequest corpTransRequestNew = (CorpTransRequest) integrationService.makeTransfer(corpTransRequest);//name change by GB
         logger.trace("Transfer Details {} by {}", corpTransRequestNew.toString(), corpTransRequestNew.getUserReferenceNumber());
         if (corpTransferRequestDTO.getTransferType() == TransferType.QUICKTELLER){
-            corpTransRequestNew = (CorpTransRequest) integrationService.checkQuicktellerTrTransaction(corpTransRequestNew);
+            corpTransRequestNew = (CorpTransRequest) integrationService.checkQuicktellerTransaction(corpTransRequestNew);
         }
 
         if (corpTransRequestNew != null ) {
