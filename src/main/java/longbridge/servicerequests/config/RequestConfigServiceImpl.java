@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,11 @@ public class RequestConfigServiceImpl implements RequestConfigService {
     @Verifiable(operation = "MODIFY_REQUEST_CONFIG", description = "Modify existing Request Config")
     public RequestConfig updateRequestConfig(UpdateRequestConfigCmd cmd) {
         RequestConfig config = configRepo.findById(cmd.getId()).orElseThrow(EntityNotFoundException::new);
+        if(config.isSystem()){
+            cmd.setFields(Collections.emptyList());
+            cmd.setType(config.getType());
+            cmd.setName(config.getName());
+        }
         return configRepo.save(update(config, cmd));
     }
 

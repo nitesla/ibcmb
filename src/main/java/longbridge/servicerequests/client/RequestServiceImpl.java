@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 public class RequestServiceImpl implements RequestService {
 
+    public static final String INITIAL_STATUS = "P";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final RequestConfigService requestConfigService;
@@ -73,6 +74,7 @@ public class RequestServiceImpl implements RequestService {
         User currentUser = getCurrentUser();
         ServiceRequest serviceRequest = new ServiceRequest();
         serviceRequest.setRequestName(requestConfig.getName());
+        serviceRequest.setCurrentStatus(INITIAL_STATUS);
         if (currentUser.getUserType() == UserType.RETAIL) {
             serviceRequest.setEntityId(currentUser.getId());
             serviceRequest.setRequester(currentUser.getUserName());

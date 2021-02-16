@@ -15,7 +15,7 @@
         <!--<div class="col-xs-11 no-pad-lef no-mt alert no-bd">-->
         <div class="col-md-6 col-sm-6 no-pad-left">
             <form method="post" th:action="@{/retail/requests}"  th:object="${requestDTO}" id="reqForm">
-                <input class="form-control" type="hidden" id="requestName" name="requestName"
+                <input class="form-control" type="hidden" id="requestName"
                        th:value="${requestConfig.name}"/>
                 <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
                 <!--<input type="hidden" name="urlPart" value="cheque/chequebook"/>-->

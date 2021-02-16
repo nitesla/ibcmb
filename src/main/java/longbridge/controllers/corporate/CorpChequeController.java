@@ -1,6 +1,5 @@
 package longbridge.controllers.corporate;
 
-import longbridge.controllers.customer.CustomerServiceRequestController;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.servicerequests.config.RequestConfigService;
@@ -39,8 +38,6 @@ public class CorpChequeController {
     private RequestConfigService requestConfigService;
     @Autowired
     SettingsService configurationService;
-    @Autowired
-    CustomerServiceRequestController serviceRequestController;
 
     @GetMapping("/chequebook")
     public String requestChequeBook(Principal principal, Model model) {
@@ -98,9 +95,7 @@ public class CorpChequeController {
     }
 
     @GetMapping("/{reqId}")
-    public String reDirectRequest(@PathVariable Long reqId, Model model, Principal principal) {
-        return serviceRequestController.makeRequest(reqId, model, principal);
-//        return "redirect:/retail/requests/"+id;
-
+    public String reDirectRequest(@PathVariable Long reqId) {
+        return "redirect:/retail/requests/"+reqId;
     }
 }

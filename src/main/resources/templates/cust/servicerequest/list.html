@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <p th:each="req : ${requestList}">
-                        <li><a th:href="@{'/retail/requests/'+ ${req.id}}" th:text="${req.requestName}"></a></li>
+                        <li><a th:href="@{'/retail/requests/'+ ${req.id}}" th:text="${req.description}"></a></li>
                         </p>
                     </div>
                     <div class="col-md-2 col-sm-2">

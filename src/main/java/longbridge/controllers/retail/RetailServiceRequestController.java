@@ -1,19 +1,20 @@
-package longbridge.controllers.corporate;
+package longbridge.controllers.retail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorporateUser;
+import longbridge.models.RetailUser;
 import longbridge.servicerequests.client.AddRequestCmd;
 import longbridge.servicerequests.client.RequestService;
 import longbridge.servicerequests.client.ServiceRequestDTO;
 import longbridge.servicerequests.config.RequestConfig;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.servicerequests.config.RequestField;
-import longbridge.services.*;
+import longbridge.services.AccountService;
+import longbridge.services.CodeService;
+import longbridge.services.FinancialInstitutionService;
+import longbridge.services.RetailUserService;
 import longbridge.utils.DataTablesUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/corporate/requests")
-public class CorpServiceRequestController {
+@RequestMapping("/retail/requests")
+public class RetailServiceRequestController {
 
     public static final String SUCCESSFULLY = "Submitted Successfully";
     @Autowired
@@ -54,10 +54,8 @@ public class CorpServiceRequestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private CorporateUserService userService;
+    private RetailUserService userService;
 
-    @Autowired
-    private CorporateService corporateService;
 
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
@@ -69,7 +67,7 @@ public class CorpServiceRequestController {
     @GetMapping
     public String getServiceRequests(Model model) {
         model.addAttribute("requestList", requestConfigService.getRequestConfigs());
-        return "corp/servicerequest/list";
+        return "cust/servicerequest/list";
     }
 
     @PostMapping
@@ -83,8 +81,8 @@ public class CorpServiceRequestController {
             if (requestConfig.isAuthRequired()) {
                 if (session.getAttribute("authenticated") == null) {
                     session.setAttribute("requestDTO", cmd);
-                    session.setAttribute("redirectURL", "/corporate/requests/process");
-                    return "redirect:/corporate/token/authenticate";
+                    session.setAttribute("redirectURL", "/retail/requests/process");
+                    return "redirect:/retail/token/authenticate";
                 } else {
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
@@ -97,13 +95,13 @@ public class CorpServiceRequestController {
         } catch (InternetBankingException e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "redirect:/corporate/requests/" + requestConfig.getId();
+            return "redirect:/retail/requests/" + requestConfig.getId();
         } catch (Exception e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-            return "redirect:/corporate/requests/" + requestConfig.getId();
+            return "redirect:/retail/requests/" + requestConfig.getId();
         }
-        return "redirect:/corporate/requests/track";
+        return "redirect:/retail/requests/track";
 
     }
 
@@ -124,16 +122,16 @@ public class CorpServiceRequestController {
                 } catch (InternetBankingException e) {
                     logger.error("Service Request Error", e);
                     model.addAttribute("failure", e.getMessage());
-                    return "redirect:/corporate/requests/" + requestDTO.getServiceReqConfigId();
+                    return "redirect:/retail/requests/" + requestDTO.getServiceReqConfigId();
                 } catch (Exception e) {
                     logger.error("Service Request Error", e);
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-                    return "redirect:/corporate/requests/" + requestDTO.getServiceReqConfigId();
+                    return "redirect:/retail/requests/" + requestDTO.getServiceReqConfigId();
                 }
             }
 
         }
-        return "redirect:/corporate/requests/track";
+        return "redirect:/retail/requests/track";
     }
 
     @ModelAttribute("statuses")
@@ -145,8 +143,7 @@ public class CorpServiceRequestController {
 
     @GetMapping("/{reqId}")
     public String makeRequest(@PathVariable Long reqId, Model model, Principal principal) {
-        CorporateUser user = userService.getUserByName(principal.getName());
-        CorporateDTO corporate = corporateService.getCorporate(user.getCorporate().getId());
+        RetailUser user = userService.getUserByName(principal.getName());
         RequestConfig serviceReqConfig = requestConfigService.getRequestConfig(reqId);
         for (RequestField field : serviceReqConfig.getFields()) {
             switch (field.getType()) {
@@ -154,7 +151,7 @@ public class CorpServiceRequestController {
                     model.addAttribute("codes", codeService.getCodesByType(field.getData()));
                     break;
                 case ACCOUNT:
-                    model.addAttribute("accts", accountService.getAccountsForDebit(corporate.getCustomerId()));
+                    model.addAttribute("accts", accountService.getAccountsForDebit(user.getCustomerId()));
                     break;
                 case LIST:
                     model.addAttribute("fixedList", field.getData().split(","));
@@ -162,13 +159,13 @@ public class CorpServiceRequestController {
         }
         logger.debug("{}", serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
-        return "corp/servicerequest/add";
+        return "cust/servicerequest/add";
     }
 
     @GetMapping("/track")
     public String trackRequests(Model model, Principal principal) {
-        model.addAttribute("requestConfigInfo",requestConfigService.getRequestConfigs());
-        return "corp/servicerequest/track";
+        model.addAttribute("requestConfigInfo", requestConfigService.getRequestConfigs());
+        return "cust/servicerequest/track";
     }
 
     //TODO

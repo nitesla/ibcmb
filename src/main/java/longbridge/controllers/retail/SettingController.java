@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.ExchangeRate;
-import longbridge.controllers.customer.CustomerServiceRequestController;
 import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -80,9 +79,6 @@ public class SettingController {
 
     @Autowired
     private SecurityService securityService;
-
-    @Autowired
-    CustomerServiceRequestController serviceRequestController;
 
     @Autowired
     private RequestConfigService requestConfigService;
@@ -165,15 +161,6 @@ public class SettingController {
                 enabledCoverage.add(codeDto);
             }
         }
-
-//        for(int i = 0; i< accountCoverage.size(); i++){
-//          boolean enabled =  coverageService.isCoverageEnabled(accountCoverage.get(i).getCode());
-//          if (enabled){
-//              enabledCoverage.add(accountCoverage.get(i));
-//          }
-//        }
-
-
 
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
@@ -398,7 +385,6 @@ public class SettingController {
 
         try {
             String message = retailUserService.resetPassword(user, custResetPassword);
-//            redirectAttributes.addFlashAttribute("message", message);
 
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
@@ -555,11 +541,9 @@ public class SettingController {
     }
 
     @GetMapping("/settings/request/{reqId}")
-    public String reDirectRequest(@PathVariable Long reqId, Model model, Principal principal){
+    public String reDirectRequest(@PathVariable Long reqId){
         logger.info("routing setting request {}",reqId);
-        return serviceRequestController.makeRequest(reqId,model,principal);
-//        return "redirect:/retail/requests/"+id;
-
+        return "redirect:/retail/requests/"+reqId;
     }
 
     @GetMapping("/settings/customerfeedback")
