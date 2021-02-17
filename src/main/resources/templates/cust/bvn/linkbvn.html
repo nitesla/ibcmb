@@ -23,8 +23,9 @@
                 <div class="form-group">
                     <label>BVN</label>
                     <span class="req"></span>
-                    <input type="number" min="0" th:name="BVN" th:value="${bvNumber}" required
+                    <input onchange="bvnError()"  type="number" id="bvn" th:name="BVN" pattern="\d{11}"  th:value="${bvNumber}"  placeholder="11 Digits Only" required
                            class="form-control"/>
+                    <span id="bvnError" style="color:red"></span>
                 </div>
 
                 <div class="form-group">
@@ -56,7 +57,7 @@
                             required="required" >
                         <option value="">Select</option>
 
-                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}"
+                        <option onclick="bvnError()"  th:each="s: ${accounts}" th:value="${s.accountNumber}"
                                 th:text="${s.accountNumber}"></option>
                     </select>
                 </div>
@@ -121,6 +122,22 @@
                 }
 
             })
+        }
+
+        function bvnError() {
+            var bvn = $("#bvn").val();
+            console.log("BVN is " + bvn)
+            if(bvn < 9999999999) {
+                $("#bvnError").text("BVN must be 11 digits")
+                $("#submit").attr("disabled", true);
+            }else if (bvn > 99999999999){
+                $("#bvnError").text("BVN must be 11 digits")
+                $("#submit").attr("disabled", true);
+            }else{
+                $("#bvnError").text("")
+                $("#submit").attr("disabled",false);
+            }
+
         }
 
 
