@@ -15,7 +15,7 @@ jacoco-0.7.9
 .project
 .settings
 .springBeans
-
+.gradle/
 ### IntelliJ IDEA ###
 .idea
 *.iws
