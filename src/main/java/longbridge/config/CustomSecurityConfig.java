@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
         prePostEnabled = true,
         securedEnabled = true,
         jsr250Enabled = true)
-public class CustomSecutityConfig extends GlobalMethodSecurityConfiguration {
+public class CustomSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected AccessDecisionManager accessDecisionManager() {
