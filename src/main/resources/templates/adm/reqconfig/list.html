@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" th:with="current_module='requests'"
+	  layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Request Configurations</title>
+	<link rel="stylesheet" th:href="@{/webjars/datatables/css/jquery.dataTables.css}">
+	<link rel="stylesheet" th:href="@{/webjars/datatables/css/dataTables.bootstrap4.css}">
+	<link rel="stylesheet" th:href="@{/webjars/datatables-buttons/css/buttons.bootstrap4.css}">
+	<link rel="stylesheet" th:href="@{/webjars/datatables-select/css/select.bootstrap4.css}">
+</head>
+<body>
+
+<nav aria-label="breadcrumb" layout:fragment="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a th:href="@{/}">Dashboard</a></li>
+		<li class="breadcrumb-item" active>Service Requests</li>
+	</ol>
+</nav>
+
+
+<div layout:fragment="content" class="col-12 col-md-12 col-lg-12">
+	<div class="card">
+		<div class="card-header">
+			<h5>Service Requests</h5>
+		</div>
+		<div class="card-body">
+			<table id="table" class="display footer" style="width:100%">
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Owner</th>
+					<th>Enabled</th>
+				</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+</body>
+<th:block layout:fragment="scripts">
+	<script th:src="@{/webjars/datatables/js/jquery.dataTables.js}"></script>
+	<script th:src="@{/webjars/datatables-buttons/js/dataTables.buttons.js}"></script>
+	<script th:src="@{/webjars/datatables-select/js/dataTables.select.js}"></script>
+	<script th:src="@{/webjars/datatables/js/dataTables.bootstrap4.js}"></script>
+	<script th:src="@{/webjars/datatables-buttons/js/buttons.bootstrap4.js}"></script>
+	<script th:src="@{/webjars/datatables-select/js/select.bootstrap4.js}"></script>
+	<script th:src="@{/js/jquery.spring-friendly.min.js}"></script>
+	<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+    	var table = $("#table").DataTable({
+    		select : {
+    			style : 'single'
+    		},
+    		"language" : {
+				searchPlaceholder: 'Search...',
+				"search": "",
+				"processing": "<i class='fa fa-spinner fa-spin'/>",
+				"emptyTable": "No Service Request Configurations found"
+    		},
+			dom: 'Bfrtpl',
+    		"lengthMenu" : [ [ 5, 10, -1 ], [ 5, 10, "All" ] ],
+    		"pagingType" : "simple_numbers",
+    		"searching" : false,
+    		"processing" : true,rowId : "id",
+    		"serverSide" : true,
+    		"ordering" : false,
+    		"ajax" : "/requests/config/list",
+    		"columns" :   [ {
+    			"data" : "name"
+    		}, {
+    			"data" : "type"
+    		},{
+    			"data" : "owner.name"
+    		},{
+    			"data" : "enabled"
+    		}  ],
+    		"columnDefs" : [{
+				"targets": 3,
+				"className": "dt-center",
+				"data": "status",
+				"render": function (data, type, full, meta) {
+					if (type === 'display') {
+						if (data == "true") {
+							return "<div class='badge badge-success'>Enabled</div>";
+						} else if (data == "false") {
+							return "<div class='badge badge-danger'>Disabled</div>";
+
+						} else {
+							return "<div class='badge badge-light'>Undefined</div>";
+						}
+					}
+					return data;
+				}
+			}],
+			buttons: [
+				{
+					text: '<i class="fa fa-plus"></i> New',
+					className: "btn btn-primary btn-app",
+					action: function (e, dt, node, config) {
+						window.location.assign("/requests/config/new");
+					},
+				},
+				{
+					className: "selector btn btn-primary btn-app",
+					text: '<i class="fa fa-pencil "></i> Edit',
+					action: function (e, dt, node, config) {
+						id = dt.rows({selected: true}).data()[0]["id"];
+						window.location.assign(`/requests/config/${id}/edit`);
+					},
+					enabled: false
+				}
+			]
+
+    	});
+
+		table.on('select deselect', function () {
+			var selectedRows = table.rows({selected: true}).count();
+			table.buttons(".selector").enable(selectedRows > 0);
+		});
+
+	});
+
+
+
+    /*]]>*/
+</script>
+</th:block>
+</html>

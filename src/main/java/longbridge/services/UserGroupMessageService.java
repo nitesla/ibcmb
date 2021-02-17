@@ -13,7 +13,7 @@ public interface UserGroupMessageService {
     String send(Long groupId, String sender,String subject, String message) throws MailException, InternetBankingException;
 
 
-    String send(Long groupId, Email email) throws MailException, InternetBankingException;
+    void send(Long groupId, Email email) throws MailException, InternetBankingException;
 
 
 

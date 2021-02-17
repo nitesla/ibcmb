@@ -76,7 +76,7 @@ public class AdmReportController {
     private CodeService codeService;
     @Autowired
     private MakerCheckerService makerCheckerService;
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     @GetMapping("/view")

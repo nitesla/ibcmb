@@ -96,10 +96,11 @@ public class CorpNEFTTransferController {
 
     @ModelAttribute
     public void getNeftbanks(Model model) {
-        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+//        List<CodeDTO> bankNames = codeService.getCodesByType("NEFT_BANKS");
+        List<NeftBankDTO> bankNames = neftBankService.getNeftBankList();
         Set<String> names = bankNames
                 .stream()
-                .map(CodeDTO::getDescription)
+                .map(NeftBankDTO::getBankName)
                 .collect(Collectors.toSet());
         Collections.sort(new ArrayList<>(names));
         model.addAttribute("neftCorpBanks"

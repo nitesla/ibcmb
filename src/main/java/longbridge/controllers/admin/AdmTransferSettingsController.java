@@ -12,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -52,7 +50,7 @@ public class AdmTransferSettingsController {
 
     @ResponseBody
     @PostMapping("/submitTransferLimitForAllTransactionChannels")
-    public ResponseEntity<String> submitTransferLimit(TransferSetLimitDTO transferSetLimit){
+    public ResponseEntity<String> submitTransferLimit(@ModelAttribute("transferSetLimit") @Valid TransferSetLimitDTO transferSetLimit){
         logger.info("Input details for transfer limit = " + transferSetLimit);
         String response = "Update limit request successfully sent";
 
@@ -69,7 +67,7 @@ public class AdmTransferSettingsController {
 
     @ResponseBody
     @PostMapping("/submitTransferAdjustments")
-    public ResponseEntity<String> submitTransferAdjustments(TransferFeeAdjustmentDTO transferFeeAdjustment){
+    public ResponseEntity<String> submitTransferAdjustments(@ModelAttribute("transferFeeAdjustment")@Valid TransferFeeAdjustmentDTO transferFeeAdjustment){
         logger.info("Input details for transfer adjustments " + transferFeeAdjustment);
         String response = "";
         try {

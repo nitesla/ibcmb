@@ -30,21 +30,39 @@ public class CorpCoverageServiceImpl implements CorpCoverageService {
 
     @Override
     public JsonNode getCoverage(String coverage) {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        CorporateUser corpuser = (CorporateUser) principal.getUser();
-        Corporate corporate = corpuser.getCorporate();
-        String coverages = corporate.getCoverage();
-        boolean corpChecked = Arrays.stream(coverages.split(",")).filter(s -> s.equals(coverage)).count() >= 1;
 
         boolean confChecked = codeService.getCodesByType("ACCOUNT_COVERAGE").stream()
                 .map(CodeDTO::getCode).filter(s -> s.equals(coverage)).count() >= 1;
 
-        logger.info("Coverage check authorized : {} , configured {}", corpChecked, confChecked);
+        logger.info("Coverage configured : {}", confChecked);
 
-        if (!corpChecked || !confChecked) {
+        if (!isCoverageEnabled(coverage)|| !confChecked) {
             throw new InternetBankingException("You are not authorized to use this service");
         }
-        return integrationService.getCoverageDetails(coverage, corporate.getCustomerId());
+        return integrationService.getCoverageDetails(coverage, getCorporate().getCustomerId());
+    }
+
+    @Override
+    public boolean isCoverageEnabled(String coverage) {
+  
+        String coverages = getCorporate().getCoverage();
+        if (coverages == null){
+            logger.info("No Coverage enabled yet for the logged in user");
+            return  false;
+        }
+        boolean isEnabled = Arrays.stream(coverages.split(",")).filter(s -> s.equals(coverage)).count() >= 1;
+        logger.info("The Coverage {} enabled ? : {}",coverage,isEnabled);
+        return isEnabled;
+
+    }
+
+
+    public Corporate getCorporate(){
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        CorporateUser corpuser = (CorporateUser) principal.getUser();
+        Corporate corporate = corpuser.getCorporate();
+        return corporate;
+
     }
 }

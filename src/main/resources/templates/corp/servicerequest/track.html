@@ -11,7 +11,18 @@
             <option value="account">Overview</option>
         </select>
     </div>
-
+    <div id="request-details" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content no-bd-rad ">
+                <div class="modal-body">
+                    <h1 style="font-size: 20px" class="text-center">Request Details</h1>
+                    <br/>
+                    <div id="request-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-xs-12 " >
         <div class=" no-pad-lef table-responsive no-mt no-bd  alert" >
            <table class="table" id="track">
@@ -19,15 +30,13 @@
                             <tr>
                                 <th>Request Name</th>
                                 <th>Request Date</th>
+                                <th>Requested By</th>
                                 <th>Status</th>
                                 <th>Reference ID</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <!--<tr th:each="req : ${requests}">-->
-                                <!--<td th:text="${req.requestName}"></td>-->
-                                <!--<td th:text="${req.dateRequested}"></td>-->
-                                <!--<td th:text="${req.requestStatus}"></td></tr>-->
                             </tbody>
             </table>
         </div>
@@ -39,11 +48,15 @@
 <th:block layout:fragment="scripts">
 <script th:inline="javascript">
     /*<![CDATA[*/
+    var srConfigList = /*[[${requestConfigInfo}]]*/ [];
+    var srConfigMap = new Map(srConfigList.map(i => [i.name, i.description]));
+    var statusMap = /*[[${statuses}]]*/ [];
     $(document).ready(function() {
         var url = "/corporate/requests/track/all";
         var table = $('#track').DataTable({
             select: true,
             responsive : false,
+            "rowId" : "id",
             "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
             "pagingType" : "input",
             "searching" : false,
@@ -53,12 +66,59 @@
             "dom" : 'T<"clear">frtlp',
             "columns" : [
                 { "data": "requestName" },
-                { "data": "date" },
-                { "data": "requestStatus" },
-                { "data": "serviceReqConfigId" }
-            ]
+                { "data": "dateRequested" },
+                { "data": "requester"},
+                { "data": "currentStatus", "defaultContent" : "Unknown" },
+                { "data": "id" },
+                {"data": null}
+            ], "columnDefs": [{
+                "targets": 0,
+                "data": "status",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        return srConfigMap.get(data);
+                    }
+                    return data;
+                }
+            }, {
+                "targets": 1,
+                render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'dddd, MMMM Do YYYY, h:mm:ss a')
+            }, {
+                "targets": 3,
+                "data": "status",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        return statusMap[data];
+                    }
+                    return data;
+                }
+            }, {
+                "targets": 5,
+                "data": "status",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+                        return "<a id='verify' class='btn btn-xs open-request fa fa-folder-open dt-body-center' data-id='"+full.id +"' text-align:center; margin:0 auto;'> </a>";
+                    }
+                    return data;
+                }
+
+            }]
         });
+
+        $('#track tbody').on('click', '.open-request', function () {
+            var tr = $(this).closest('tr');
+            var data = table.row(tr).data();
+            console.log(data);
+            $("#request-content").html(data["formatted"]);
+            $('#request-details').modal('show');
+        });
+
+        // $('#request-details').on('hidden.bs.modal', function (evt) {
+        //     $('.modal .modal-body').empty();
+        // });
     });
+
+
 
     /*]]>*/
 </script>

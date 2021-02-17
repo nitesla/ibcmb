@@ -44,7 +44,7 @@ public class CorpLoanController {
 
 
     private final Logger logger= LoggerFactory.getLogger(this.getClass());
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
     @PostMapping("/email")

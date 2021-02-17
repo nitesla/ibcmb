@@ -22,7 +22,7 @@
                            <label>Date Range</label>
                            <div class="input-daterange input-group" id="date-range">
                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                               <span class="input-group-addon no-border no-bd" style="bacground:transparent !important">to</span>
+                               <span class="input-group-addon no-border no-bd" style="background:transparent !important">to</span>
                                <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                            <!--<span id="emptyDateError"   class="error">Start and end date is mandatory</span>-->
                            </div>
@@ -56,8 +56,9 @@
 
 
                    <p>
-                       <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"  ></i>&nbsp; PDF</a>
-                       <a id="excel" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"  ></i>&nbsp; Excel</a>
+                       <a data-format="pdf"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"></i>&nbsp; PDF</a>
+                       <a data-format="csv"  class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print"></i>&nbsp; CSV</a>
+                       <a data-format="excel" class="btn bt-link-act pull-right btn-print"> <i class="fa fa-print" ></i>&nbsp; Excel</a>
                        <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
                    </p>
 
@@ -148,19 +149,6 @@
                 {"data" : "accountBalance"}
             ],
             "columnDefs" : [
-//                {
-//                "targets" : 3,
-//                "data" : "tranType",
-//                "render" : function(data, type,full, meta) {
-//                    if (type === 'display') {
-//                        if(data == null) return data;
-//
-//                       var spacedData = '         '+data;
-//                        return spacedData;
-//                    }
-//                    return data;
-//                }
-//            },
                 {
                 "targets" : 1,
                 "data" : "postDate",
@@ -233,24 +221,6 @@
                 } ]
 
         });
-//        var table = $('#tranDetails').DataTable({
-//            drawCallback: function(){
-//                $('.paginate_button.next', this.api().table().container())
-//                        .on('click', function(){
-//                            alert('next');
-//                        });
-//            }
-//        });
-//        $("#btn-find").on("click", function(e) {
-//
-//            e.preventDefault();
-//            dt = $('#tranDetails').DataTable();
-//            $('.btn-print').show();
-//            dt.ajax.reload(null, true);
-//
-//        });
-//        $('#tranDetails_paginate').hide();
-//        $('#tranDetails_length').hide();
         $("#btn-find").on("click", function(e) {
             console.log("the start "+$('#start').val());
             console.log("the end "+$('#endDate').val());
@@ -323,30 +293,21 @@
         $('#next').hide();
         $('#tranDetails_length').hide();
         $('#tranDetails_paginate').hide();
-        $("#btn-print").on("click", function(e) {
+        $(".btn-print").on("click", function(e) {
             e.preventDefault();
             showSpinner();
+            fmt = $(this).attr("data-format")
 //            var table = $('#tranDetails').DataTable();
+
             var data = { "acctNumber" : $('[name=acctNumber]').val(),
                     "fromDate" : $('[name=fromDate]').val(),
                     "toDate" : $('[name=toDate]').val(),
                     "tranType" : $('[name=tranType]').val()} ;
             console.log("data "+data);
-            $.download("/retail/account/downloadstatement", "data", data);
+            $.download(`/retail/account/downloadstatement/${fmt}`, "data", data);
             hideSpinner();
         });
-        $("#excel").on("click", function(e) {
-            e.preventDefault();
-            showSpinner();
-//            var table = $('#tranDetails').DataTable();
-            var data = { "acctNumber" : $('[name=acctNumber]').val(),
-                    "fromDate" : $('[name=fromDate]').val(),
-                    "toDate" : $('[name=toDate]').val(),
-                    "tranType" : $('[name=tranType]').val()} ;
-            console.log("data "+data);
-            $.download("/retail/account/downloadstatement/excel", "data", data);
-            hideSpinner();
-        });
+
 
         $('.dataTables_empty').html('No data available');
 
@@ -356,18 +317,6 @@
         return mdy;
     }
     function dateDifference(first, second) {
-//        console.log("date 1"+new Date(first));
-//        var dateP = first[1]+"/"+first[0]+"/"+first[2]
-//        var dateA = second[1]+"/"+second[0]+"/"+second[2]
-//        var testDate1 = new Date(dateP);
-//        var testDate2 = new Date(dateA);
-//        console.log("date 2"+new Date(second));
-//        var timeDiff = Math.abs(testDate2.getTime() - testDate1.getTime());
-//        console.log("date time"+timeDiff);
-//
-//        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-//        console.log("day diff"+diffDays);
-
         var yearsDiff = second[2]-first[2];
         var monthDiff = second[1]-first[1];
         var dayDiff = second[0]-first[0];

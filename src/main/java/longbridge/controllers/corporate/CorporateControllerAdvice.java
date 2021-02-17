@@ -3,7 +3,9 @@ package longbridge.controllers.corporate;
 import longbridge.models.Account;
 import longbridge.models.CorpUserType;
 import longbridge.models.CorporateUser;
-import longbridge.models.SRConfig;
+import longbridge.servicerequests.config.RequestConfig;
+import longbridge.servicerequests.config.RequestConfigInfo;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.HostMaster;
@@ -27,24 +29,24 @@ import java.util.stream.StreamSupport;
 @ControllerAdvice(basePackages = {"longbridge.controllers.corporate"})
 public class CorporateControllerAdvice {
 
-    @Autowired
-    HostMaster hostMaster;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final CorporateUserService corporateUserService;
     private final AccountService accountService;
-    private final ServiceReqConfigService reqConfigService;
+    private final RequestConfigService reqConfigService;
     private final MessageService messageService;
+    @Autowired
+    HostMaster hostMaster;
     @Autowired
     private SettingsService configurationService;
     @Autowired
-    private  CorpTransferService corpTransferService;
+    private CorpTransferService corpTransferService;
     @Autowired
-    private  BulkTransferService bulkTransferService;
+    private BulkTransferService bulkTransferService;
     @Autowired
     private CorpUserVerificationService corpUserVerificationService;
 
     @Autowired
-    public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
+    public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, RequestConfigService reqConfigService, MessageService messageService) {
         this.corporateUserService = corporateUserService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
@@ -54,13 +56,11 @@ public class CorporateControllerAdvice {
     @ModelAttribute
     public String globalAtrributes(Model model, Principal principal) {
         String greeting = "";
-        if (principal== null||principal.getName()==null) {
+        if (principal == null || principal.getName() == null) {
             return "redirect:/login/corporate";
         }
-
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        logger.info("corporateUser",corporateUser);
-        if(corporateUser==null){
+        if (corporateUser == null) {
             return "";
         }
 
@@ -112,30 +112,20 @@ public class CorporateControllerAdvice {
 
         String name = firstName + ' ' + lastName;
         model.addAttribute("name", name);
-        model.addAttribute("feedStatus",corporateUser.getFeedBackStatus());
+        model.addAttribute("feedStatus", corporateUser.getFeedBackStatus());
 
-        List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
-        List<SRConfig> filteredRequests = new ArrayList<>();
-        List<SRConfig> chequeRequests = new ArrayList<>();
-        List<SRConfig> settingRequests = new ArrayList<>();
-//            List<SRConfig> filteredRequests = requestList.stream().filter(request -> !("LOAN").equals(request.getRequestType()) && !("FIXED_DEPOSIT").equals(request.getRequestType())).collect(Collectors.toList());
-        for (SRConfig request : requestList) {
-            if (!("LOAN").equalsIgnoreCase(request.getRequestType().trim()) && !("FIXED-DEPOSIT").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("CHEQUE-REQUEST").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("STOP-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("CREATE-ACCOUNT").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("TREASURY-BILL").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("CONFIRM-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("DRAFT-REQUEST").equalsIgnoreCase(request.getRequestType().trim())&&
-                    !("LINK-BVN").equalsIgnoreCase(request.getRequestType().trim())) {
+        List<RequestConfigInfo> requestList = reqConfigService.getRequestConfigs();
+        List<RequestConfigInfo> filteredRequests = new ArrayList<>();
+        List<RequestConfigInfo> chequeRequests = new ArrayList<>();
+        List<RequestConfigInfo> settingRequests = new ArrayList<>();
 
-                if (("CHEQUE").equalsIgnoreCase(request.getRequestType().trim())) {
-                    chequeRequests.add(request);
-                }else if (("SETTING").equalsIgnoreCase(request.getRequestType().trim())) {
-                    settingRequests.add(request);
-                } else {
-                    filteredRequests.add(request);
-                }
+        for (RequestConfigInfo request : requestList) {
+            if (!request.isSystem()) {
+                filteredRequests.add(request);
+            } else if (("CHEQUE").equalsIgnoreCase(request.getName().trim())) {
+                chequeRequests.add(request);
+            } else if (("SETTING").equalsIgnoreCase(request.getName().trim())) {
+                settingRequests.add(request);
             }
         }
         model.addAttribute("serviceRequests", filteredRequests);
@@ -143,16 +133,10 @@ public class CorporateControllerAdvice {
         model.addAttribute("settingRequests", settingRequests);
 
 
-//        List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
-//        model.addAttribute("serviceRequests", requestList);
-
         int numOfUnreadMessages = messageService.getNumOfUnreadMessages(corporateUser);
         if (numOfUnreadMessages > 0) {
             model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
         }
-
-//        boolean isUserAdmin = corporateUser.isAdmin();
-//        model.addAttribute("isUserAdmin",isUserAdmin);
         if (CorpUserType.ADMIN.equals(corporateUser.getCorpUserType())) {
             boolean isUserAdmin = true;
             model.addAttribute("isUserAdmin", isUserAdmin);
@@ -163,7 +147,7 @@ public class CorporateControllerAdvice {
             model.addAttribute("isAuthorizer", isAuthorizer);
         }
 
-        if ("MULTI".equals(corporateUser.getCorporate().getCorporateType())){
+        if ("MULTI".equals(corporateUser.getCorporate().getCorporateType())) {
             int pendingRequests = corpTransferService.countPendingRequest();
             if (pendingRequests > 0)
                 model.addAttribute("pendingRequests", pendingRequests);
@@ -212,29 +196,9 @@ public class CorporateControllerAdvice {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .forEach(accountListStmt::add);
-
-
             model.addAttribute("accountsStmt", accountsStmt);
         }
 
         return "";
     }
-
-
-
-//    @ModelAttribute
-//    public void sessionTimeout(Model model) {
-//        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-//        try {
-//            if (setting != null && setting.isEnabled()) {
-//                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
-//                logger.info("SESSION TIME OUT PERIOD CORP" + timeOut);
-//                model.addAttribute("timeOut", timeOut);
-//            }
-//
-//        } catch (Exception ex) {
-//        }
-//    }
-
-
 }

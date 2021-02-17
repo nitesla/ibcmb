@@ -1,15 +1,19 @@
 package longbridge.controllers.corporate;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import longbridge.models.FinancialInstitutionType;
+import longbridge.servicerequests.client.AddRequestCmd;
+import longbridge.servicerequests.client.RequestService;
+import longbridge.servicerequests.client.ServiceRequestDTO;
+import longbridge.servicerequests.config.RequestConfig;
+import longbridge.servicerequests.config.RequestConfigService;
+import longbridge.servicerequests.config.RequestField;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
-import longbridge.utils.NameValue;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +29,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.*;
-
-/**
- * Created by Fortune on 4/3/2017.
- */
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/corporate/requests")
 public class CorpServiceRequestController {
+
+    public static final String SUCCESSFULLY = "Submitted Successfully";
     @Autowired
     private RequestService requestService;
 
     @Autowired
-    private ServiceReqConfigService serviceReqConfigService;
+    private RequestConfigService requestConfigService;
 
     @Autowired
     private MessageSource messageSource;
@@ -60,162 +65,118 @@ public class CorpServiceRequestController {
     @Autowired
     private AccountService accountService;
 
-
+    //TODO :change or cache
     @GetMapping
     public String getServiceRequests(Model model) {
-        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
-        model.addAttribute("requestList", requestList);
+        model.addAttribute("requestList", requestConfigService.getRequestConfigs());
         return "corp/servicerequest/list";
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, HttpSession session, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
-
-        String requestBody = requestDTO.getRequestName();
-        Long serviceReqConfigId = 0L;
-        ObjectMapper objectMapper = new ObjectMapper();
-        ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO();
+    public String processRequest(@ModelAttribute("requestDTO") AddRequestCmd cmd, @RequestParam Map<String, String> requestParams, HttpSession session, RedirectAttributes redirectAttributes, Locale locale) throws JsonProcessingException {
+        RequestConfig requestConfig = requestConfigService.getRequestConfig(cmd.getServiceReqConfigId());
+        Map<String, Object> body = requestParams.entrySet().stream().filter((k) -> !k.getKey().equals("serviceReqConfigId"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        cmd.setBody(body);
         try {
-            ArrayList<NameValue> myFormObjects = objectMapper.readValue(requestBody, new TypeReference<>() {
-            });
-            Iterator<NameValue> iterator = myFormObjects.iterator();
-            while (iterator.hasNext()) {
-                NameValue nameValue = iterator.next();
-                String name = nameValue.getName();
-                String value = nameValue.getValue();
-                if (name.equals("requestName")) {
-                    serviceRequestDTO.setRequestName(value);
-                    iterator.remove();
-                }
-                if (name.equals("serviceReqConfigId")) {
-                    serviceReqConfigId = Long.parseLong(nameValue.getValue());
-                    serviceRequestDTO.setServiceReqConfigId(serviceReqConfigId);
-                    iterator.remove();
-                }
-            }
-            ServiceReqConfigDTO serviceReqConfigDTO = serviceReqConfigService.getServiceReqConfig(serviceReqConfigId);
-            List<ServiceReqFormFieldDTO> formFieldDTOs = serviceReqConfigDTO.getFormFields();
 
-            if (myFormObjects.size() == formFieldDTOs.size()) {
-                int num = myFormObjects.size();
-
-                for (int i = 0; i < num; i++) {
-                    if (myFormObjects.get(i).getName().equals(formFieldDTOs.get(i).getFieldName())) {
-                        myFormObjects.get(i).setName(formFieldDTOs.get(i).getFieldLabel());
-                    }
-                }
-            }
-
-            requestBody = objectMapper.writeValueAsString(myFormObjects);
-
-            CorporateUser user = userService.getUserByName(principal.getName());
-            serviceRequestDTO.setBody(requestBody);
-            serviceRequestDTO.setRequestStatus("S");
-            serviceRequestDTO.setCorpId(user.getCorporate().getId());
-            serviceRequestDTO.setDateRequested(new Date());
-
-            if (serviceReqConfigDTO.isAuthenticate()) {
+            if (requestConfig.isAuthRequired()) {
                 if (session.getAttribute("authenticated") == null) {
-                    session.setAttribute("requestDTO", serviceRequestDTO);
+                    session.setAttribute("requestDTO", cmd);
                     session.setAttribute("redirectURL", "/corporate/requests/process");
                     return "redirect:/corporate/token/authenticate";
+                } else {
+                    session.removeAttribute("authenticated");
+                    session.removeAttribute("requestDTO");
                 }
             }
 
-            String message = requestService.addCorpRequest(serviceRequestDTO);
-            redirectAttributes.addFlashAttribute("message", message);
+            requestService.addRequest(cmd);
+            redirectAttributes.addFlashAttribute("message", SUCCESSFULLY);
 
-        }
-
-        catch (InternetBankingException e){
+        } catch (InternetBankingException e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", e.getMessage());
-            return "redirect:/corporate/requests/"+serviceReqConfigId;
-        }
-        catch (Exception e) {
+            return "redirect:/corporate/requests/" + requestConfig.getId();
+        } catch (Exception e) {
             logger.error("Service Request Error", e);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-            return "redirect:/corporate/requests/"+serviceReqConfigId;
+            return "redirect:/corporate/requests/" + requestConfig.getId();
         }
         return "redirect:/corporate/requests/track";
 
     }
-
 
 
     @GetMapping("/process")
-    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale){
+    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale) {
 
-        if(session.getAttribute("requestDTO")!=null){
-            ServiceRequestDTO requestDTO = (ServiceRequestDTO)session.getAttribute("requestDTO");
+        if (session.getAttribute("requestDTO") != null) {
+            AddRequestCmd requestDTO = (AddRequestCmd) session.getAttribute("requestDTO");
 
-            if(session.getAttribute("authenticated")!=null){
+            if (session.getAttribute("authenticated") != null) {
 
                 try {
-                    String message = requestService.addCorpRequest(requestDTO);
+                    requestService.addRequest(requestDTO);
                     session.removeAttribute("authenticated");
                     session.removeAttribute("requestDTO");
-                    redirectAttributes.addFlashAttribute("message", message);
-                }
-                catch (InternetBankingException e){
+                    redirectAttributes.addFlashAttribute("message", SUCCESSFULLY);
+                } catch (InternetBankingException e) {
                     logger.error("Service Request Error", e);
                     model.addAttribute("failure", e.getMessage());
-                    return "redirect:/corporate/requests/"+requestDTO.getServiceReqConfigId();
+                    return "redirect:/corporate/requests/" + requestDTO.getServiceReqConfigId();
                 } catch (Exception e) {
                     logger.error("Service Request Error", e);
                     redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
-                    return "redirect:/corporate/requests/"+requestDTO.getServiceReqConfigId();
+                    return "redirect:/corporate/requests/" + requestDTO.getServiceReqConfigId();
                 }
             }
 
         }
         return "redirect:/corporate/requests/track";
     }
+
+    @ModelAttribute("statuses")
+    Map<String, String> getCodeMaps() {
+        return codeService.getCodesByType("REQUEST_STATUS").stream()
+                .collect(Collectors.toMap(CodeDTO::getCode, CodeDTO::getDescription));
+    }
+
 
     @GetMapping("/{reqId}")
     public String makeRequest(@PathVariable Long reqId, Model model, Principal principal) {
         CorporateUser user = userService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(user.getCorporate().getId());
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
-        for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
-            if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
-                List<CodeDTO> codeList = codeService.getCodesByType(field.getTypeData());
-                model.addAttribute("codes", codeList);
-            }
-
-            if (field.getFieldType() != null && field.getFieldType().equals("ACCT")) {
-                List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(corporate.getCustomerId());
-                model.addAttribute("accts", acctList);
-            }
-
-            if (field.getFieldType() != null && field.getFieldType().equals("FI")) {
-                List<FinancialInstitutionDTO> fiList = financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL);
-                model.addAttribute("banks", fiList);
-            }
-
-            if (field.getFieldType() != null && field.getFieldType().equals("LIST")) {
-                String list = field.getTypeData();
-                String[] myList = list.split(",");
-                model.addAttribute("fixedList", myList);
+        RequestConfig serviceReqConfig = requestConfigService.getRequestConfig(reqId);
+        for (RequestField field : serviceReqConfig.getFields()) {
+            switch (field.getType()) {
+                case CODE:
+                    model.addAttribute("codes", codeService.getCodesByType(field.getData()));
+                    break;
+                case ACCOUNT:
+                    model.addAttribute("accts", accountService.getAccountsForDebit(corporate.getCustomerId()));
+                    break;
+                case LIST:
+                    model.addAttribute("fixedList", field.getData().split(","));
             }
         }
-        System.out.println(serviceReqConfig);
+        logger.debug("{}", serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "corp/servicerequest/add";
     }
 
     @GetMapping("/track")
-    public String trackRequests(Model model, Principal principal){
+    public String trackRequests(Model model, Principal principal) {
+        model.addAttribute("requestConfigInfo",requestConfigService.getRequestConfigs());
         return "corp/servicerequest/track";
     }
 
+    //TODO
     @GetMapping(path = "/track/all")
     public @ResponseBody
-    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
-        CorporateUser user = userService.getUserByName(principal.getName());
-        Corporate corporate = user.getCorporate();
+    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(corporate, pageable);
+        Page<ServiceRequestDTO> serviceRequests = requestService.getUserRequests(pageable);
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());

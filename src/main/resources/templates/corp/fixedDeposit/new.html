@@ -16,13 +16,13 @@
             <!--<form id="local" method="post" th:action="@{/retail/fixdeposit/new}"
                   th:object="${fixedDepositDTO}" >-->
             <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
-                <input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/>
+                <input class="form-control" type="hidden" id="requestName" th:value="${requestConfig.name}"/>
                 <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
 
                 <div class="col-md-6 col-sm-6 no-pad-left">
                     <div class="">
-                        <input class="form-control" type="hidden" id="requestName" name="requestName"
-                               th:value="${requestConfig.requestName}"/>
+                        <input class="form-control" type="hidden" id="requestName"
+                               th:value="${requestConfig.name}"/>
                         <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
 
 

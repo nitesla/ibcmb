@@ -1,6 +1,7 @@
 package longbridge.config;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -71,10 +72,12 @@ public class UtilityConfig {
         return new RequestContextListener();
     }
 
+
+
     @Bean @Primary
-    public ResourceBundleMessageSource messageSource() {
+    public ResourceBundleMessageSource messageSource(@Value("${client.mnemonic:menu}") String clientMnemonic) {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        String[] baseNames = new String[]{"i18n/messages", "i18n/menu" ,"i18n/integration"};
+        String[] baseNames = new String[]{"i18n/messages","i18n/integration" , "i18n/"+clientMnemonic};
         source.setBasenames(baseNames);  // name of the resource bundle
         source.setCacheSeconds(1000);
         source.setUseCodeAsDefaultMessage(true);

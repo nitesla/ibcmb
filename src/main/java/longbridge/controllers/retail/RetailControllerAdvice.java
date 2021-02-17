@@ -3,7 +3,9 @@ package longbridge.controllers.retail;
 import longbridge.dtos.NotificationsDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.models.SRConfig;
+import longbridge.servicerequests.config.RequestConfig;
+import longbridge.servicerequests.config.RequestConfigInfo;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.slf4j.Logger;
@@ -18,26 +20,21 @@ import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-/**
- * Created by Wunmi Sowunmi on 28/04/2017.
- */
-
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Value("${bank.code}")
-    private String bankCode;
     private final RetailUserService retailUserService;
     private final AccountService accountService;
-    private final ServiceReqConfigService reqConfigService;
+    private final RequestConfigService reqConfigService;
     private final MessageService messageService;
     private final NotificationsService notificationsService;
+    @Value("${bank.code}")
+    private String bankCode;
 
     @Autowired
-    public RetailControllerAdvice(RetailUserService retailUserService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
+    public RetailControllerAdvice(RetailUserService retailUserService, AccountService accountService, RequestConfigService reqConfigService, MessageService messageService
             , FinancialInstitutionService financialInstitutionService, NotificationsService notificationsService
     ) {
         this.retailUserService = retailUserService;
@@ -51,8 +48,6 @@ public class RetailControllerAdvice {
     @ModelAttribute
     public String globalAttributes(Model model, Principal principal) {
         String greeting = "";
-
-
         if (principal == null) {
             return "redirect:/login/retail";
         }
@@ -92,52 +87,33 @@ public class RetailControllerAdvice {
 
             String name = firstName + ' ' + lastName;
             model.addAttribute("name", name);
-            model.addAttribute("feedStatus",user.getFeedBackStatus());
+            model.addAttribute("feedStatus", user.getFeedBackStatus());
 
-            List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
-            Map<String,List<SRConfig>> conditionalRequests = new HashMap<>();
-            List<SRConfig> filteredRequests = new ArrayList<>();
-            List<SRConfig> chequeRequests = new ArrayList<>();
-            List<SRConfig> settingRequests = new ArrayList<>();
-            List<SRConfig> accountRequests = new ArrayList<>();
-////            List<SRConfig> filteredRequests = requestList.stream().filter(request -> !("LOAN").equals(request.getRequestType()) && !("FIXED_DEPOSIT").equals(request.getRequestType())).collect(Collectors.toList());
-            for (SRConfig request : requestList) {
-                if (!("LOAN").equalsIgnoreCase(request.getRequestType().trim()) &&
-                        !("FIXED-DEPOSIT").equalsIgnoreCase(request.getRequestType().trim())&&
-                        !("CHEQUE-REQUEST").equalsIgnoreCase(request.getRequestType().trim())&&
-                        !("STOP-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
-                        !("CREATE-ACCOUNT").equalsIgnoreCase(request.getRequestType().trim())&&
-                        !("TREASURY-BILL").equalsIgnoreCase(request.getRequestType().trim()) &&
-                        !("CONFIRM-CHEQUE").equalsIgnoreCase(request.getRequestType().trim())&&
-                        !("DRAFT-REQUEST").equalsIgnoreCase(request.getRequestType().trim()) &&
-                        !("LINK-BVN").equalsIgnoreCase(request.getRequestName().trim())&&
-                        !("BVN").equalsIgnoreCase(request.getRequestName().trim())) {
+            List<RequestConfigInfo> requestList = reqConfigService.getRequestConfigs();
+            List<RequestConfigInfo> filteredRequests = new ArrayList<>();
+            List<RequestConfigInfo> chequeRequests = new ArrayList<>();
+            List<RequestConfigInfo> settingRequests = new ArrayList<>();
+            List<RequestConfigInfo> accountRequests = new ArrayList<>();
 
-                    if (("CHEQUE").equalsIgnoreCase(request.getRequestType().trim())) {
-                        chequeRequests.add(request);
-                    }else if (("SETTING").equalsIgnoreCase(request.getRequestType().trim())) {
-                        settingRequests.add(request);
-                    }
-                    else if (("ACCOUNT").equalsIgnoreCase(request.getRequestType().trim())) {
-                        accountRequests.add(request);
-                    }
-                    else {
-                        filteredRequests.add(request);
-                    }
+            for (RequestConfigInfo request : requestList) {
+                if (!request.isSystem()) {
+                    filteredRequests.add(request);
+                } else if (("CHEQUE").equalsIgnoreCase(request.getName().trim())) {
+                    chequeRequests.add(request);
+                } else if (("SETTING").equalsIgnoreCase(request.getName().trim())) {
+                    settingRequests.add(request);
+                } else if (("ACCOUNT").equalsIgnoreCase(request.getName().trim())) {
+                    accountRequests.add(request);
                 }
             }
             model.addAttribute("serviceRequests", filteredRequests);
             model.addAttribute("chequeRequests", chequeRequests);
             model.addAttribute("settingRequests", settingRequests);
             model.addAttribute("accountRequests", accountRequests);
-
-
             int numOfUnreadMessages = messageService.getNumOfUnreadMessages(user);
             if (numOfUnreadMessages > 0) {
                 model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
             }
-
-
         }
 
         return "";
@@ -145,12 +121,9 @@ public class RetailControllerAdvice {
 
     @ModelAttribute
     public String getCustomerAccounts(Model model, Principal principal) {
-
-
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/retail";
         }
-
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
@@ -161,10 +134,7 @@ public class RetailControllerAdvice {
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
                     .forEach(accountList::add);
-
-
             model.addAttribute("accounts", accountList);
-//            logger.info("fetch accounts from account table {} ",accountList);
         }
 
         return "";
@@ -174,36 +144,12 @@ public class RetailControllerAdvice {
     public String getSystemNotifications(Model model) {
         try {
             List<NotificationsDTO> notifications = notificationsService.getNotifications();
-//            NotificationsDTO notificationsDTO = new NotificationsDTO();
-//            notificationsDTO.setMessage("welcome");
-//            notifications.add(notificationsDTO);
             model.addAttribute("notifications", notifications);
         } catch (Exception e) {
             logger.warn(e.getMessage());
         }
-
-
         return "";
     }
-
-
-//    @ModelAttribute
-//    public String sessionTimeout(Model model) {
-//        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-//        try {
-//            if (setting != null && setting.isEnabled()) {
-//                Long timeOut = (Long.parseLong(setting.getValue()) * 60000) - 25000;
-//                logger.info("SESSION TIME OUT PERIOD" + timeOut);
-//                model.addAttribute("timeOut", timeOut);
-//            }
-//
-//        }
-//        catch (Exception ex) {
-//        }
-//
-//        return "";
-//
-//    }
 
 
 }

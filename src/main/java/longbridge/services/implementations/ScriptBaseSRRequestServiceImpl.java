@@ -1,7 +1,7 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.ServiceRequestDTO;
 import longbridge.dtos.SettingDTO;
+import longbridge.servicerequests.client.ServiceRequestDTO;
 import longbridge.services.ServiceRequestFeeService;
 import longbridge.services.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScriptBaseSRRequestServiceImpl implements ServiceRequestFeeService {
-
+//TODO: Replace customization engine
 	private final String SCRIPT_PATH = "SCRIPT_PATH";
 	@Autowired
     SettingsService config;

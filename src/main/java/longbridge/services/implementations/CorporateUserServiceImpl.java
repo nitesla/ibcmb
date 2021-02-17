@@ -787,7 +787,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 return ok;
             }
             Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getCode());
-            corporateUser.setAlertPreference(code);
+            corporateUser.setAlertPreference(code.getCode());
             corporateUserRepo.save(corporateUser);
             logger.info("User {}'s alert preference set", corporateUser.getId());
             ok = true;

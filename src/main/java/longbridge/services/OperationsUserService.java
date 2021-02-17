@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.OperationsUserDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
@@ -127,7 +126,7 @@ public interface OperationsUserService{
      * * @param oldPassword the oldPassword
      * @param changePassword
      */
-    @PreAuthorize("hasAuthority('OPERATOR')")
+    @PreAuthorize("hasAuthority('OPS_CHANGE_PASSWORD')")
     String changePassword(OperationsUser user, ChangePassword changePassword) ;
 
 

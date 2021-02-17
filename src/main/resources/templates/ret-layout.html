@@ -23,6 +23,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/{name}/css/custom.css(name=#{menu.custom})}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/media.css}"/>
 
@@ -304,7 +305,7 @@
                                     <p th:each="requests : ${serviceRequests}">
                                     <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
                                         <a th:href="@{/retail/requests/} + ${requests.id}"
-                                           th:text="${requests.requestName}"></a>
+                                           th:text="${requests.description}"></a>
                                     </li>
                                     </p>
                                 </ul>
@@ -352,7 +353,7 @@
                                     <p th:each="requests : ${settingRequests}">
                                     <li sec:authorize="hasAuthority('MAKE_SERV_REQ')">
                                         <a th:href="@{/retail/settings/request/} + ${requests.id}"
-                                           th:text="${requests.requestName}"></a>
+                                           th:text="${requests.description}"></a>
                                     </li>
                                 </ul>
                             </li>
@@ -375,33 +376,12 @@
                                             th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                                 </ul>
                             </li>
-
-                            <!--                            <li class="dropdown  active-more">-->
-                            <!--                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"-->
-                            <!--                                    aria-haspopup="true" aria-expanded="false">Support-->
-
-                            <!--                                    </a>-->
-                            <!--                                    <ul class="dropdown-menu">-->
-
-                            <!--                                        <li> T +234 01-2797640 </li>-->
-                            <!--                                        <li> T +234 01-2797641 </li>-->
-                            <!--                                        <li> T +234 01-2797642 </li>-->
-                            <!--                                        <li> T +234 01-2797643 </li>-->
-
-                            <!--                                        <li class="icontext pull-right " data-toggle="modal" data-target="#myCod"><button class="btn btn-link pantone-1">Call back</button></li>-->
-
-                            <!--                                    </ul>-->
-                            <!--                            </li>-->
-
                         </ul>
 
                         <ul class="nav navbar-nav pull-right hidden-xs">
                             <li><a class="logout" th:href="@{/retail/logout}"> Log out
-                                <!--<span class="fa-stack fa-lg no-bd-rad">-->
-                                <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
                                 <i class="fa fa-power-off fa-inverse no-bd-rad power"
                                    style="font-size:12px;color:white"></i>
-                                <!--</span>-->
                             </a>
                             </li>
                         </ul>
@@ -484,9 +464,6 @@
                                             time_holder.innerHTML = timer;
                                             day_holder.innerHTML = day;
                                             cur_date_holder.innerHTML = cur_date;
-                                            //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                                            //   var holder = document.getElementById('time_');
-                                            //   holder.innerHTML = time_function;
                                         },
                                         1000);
                                 </script>
@@ -575,6 +552,7 @@
         <script th:src="@{~/customer/js/dataTables.input.js}"></script>
         <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
         <script th:src="@{~/customer/js/moment.min.js}"></script>
+        <script th:src="@{~/customer/js/datetime.js}"></script>
         <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>

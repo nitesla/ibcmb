@@ -76,7 +76,7 @@ public class TransferController {
 
     @Value("${bank.code}")
     private String bankCode;
-    @Value("${jrxmlImage.path}")
+    @Value("${report.logo.url}")
     private String imagePath;
 
 

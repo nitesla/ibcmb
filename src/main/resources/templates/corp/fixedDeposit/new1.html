@@ -16,10 +16,10 @@
         <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
 
 
-            <!--<h6 class="sub_header pantone-1 text-bold" th:text="${requestConfig.requestName}"></h6>-->
+            <!--<h6 class="sub_header pantone-1 text-bold" th:text="${requestConfig.name}"></h6>-->
             <form method="post" th:action="@{/corporate/requests}" th:object="${requestDTO}" id="reqForm">
-                <input class="form-control" type="hidden" id="requestName" name="requestName"
-                       th:value="${requestConfig.requestName}"/>
+                <input class="form-control" type="hidden" id="requestName"
+                       th:value="${requestConfig.name}"/>
                 <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
                 <div class="col-md-6 col-sm-6 no-pad-left">
                     <div class="">

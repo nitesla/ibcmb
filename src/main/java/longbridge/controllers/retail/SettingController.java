@@ -7,6 +7,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
+import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
 import longbridge.utils.DataTablesUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -80,10 +81,10 @@ public class SettingController {
     private SecurityService securityService;
 
     @Autowired
-    ServiceRequestController serviceRequestController;
+    private RequestConfigService requestConfigService;
 
     @Autowired
-    ServiceReqConfigService serviceReqConfigService;
+    CoverageService coverageService;
 
 
     private final Locale locale = LocaleContextHolder.getLocale();
@@ -148,6 +149,19 @@ public class SettingController {
         model.addAttribute("mailLoanDTO",new MailLoanDTO());
         model.addAttribute("fixedDepositAccounts", fixedDepositAccounts);
         model.addAttribute("fixedDepositDTO", new FixedDepositDTO());
+
+        List<CodeDTO> accountCoverage = codeService.getCodesByType("ACCOUNT_COVERAGE");
+        List<CodeDTO> enabledCoverage = new ArrayList();
+        model.addAttribute("enabledCoverage", enabledCoverage);
+      //  model.addAttribute("account_coverage", accountCoverage);
+
+        for (CodeDTO codeDto : accountCoverage){
+            boolean enabled = coverageService.isCoverageEnabled(codeDto.getCode());
+            if (enabled){
+                enabledCoverage.add(codeDto);
+            }
+        }
+
 
         boolean expired = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
         if (expired) {
@@ -371,7 +385,6 @@ public class SettingController {
 
         try {
             String message = retailUserService.resetPassword(user, custResetPassword);
-//            redirectAttributes.addFlashAttribute("message", message);
 
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
@@ -528,11 +541,9 @@ public class SettingController {
     }
 
     @GetMapping("/settings/request/{reqId}")
-    public String reDirectRequest(@PathVariable Long reqId, Model model, Principal principal){
+    public String reDirectRequest(@PathVariable Long reqId){
         logger.info("routing setting request {}",reqId);
-        return serviceRequestController.makeRequest(reqId,model,principal);
-//        return "redirect:/retail/requests/"+id;
-
+        return "redirect:/retail/requests/"+reqId;
     }
 
     @GetMapping("/settings/customerfeedback")
@@ -559,7 +570,7 @@ public class SettingController {
     @GetMapping("/link/bvn")
     public String retailLinkBvn(Model model) {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
-        model.addAttribute("requestConfig", serviceReqConfigService.getServiceReqConfigRequestName("LINK-BVN"));
+        model.addAttribute("requestConfig", requestConfigService.getRequestConfigByName("LINK-BVN"));
         return "cust/bvn/linkbvn";
     }
 
