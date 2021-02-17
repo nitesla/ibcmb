@@ -47,6 +47,7 @@ Get  Financial Institution,GET_FIN_INST,CORPORATE,Get Financial,Financial Instit
 Get Cheques,GET_CHEQUES,CORPORATE,Corporate,To get uploaded cheques
 Get corporate user,GET_CORPORATE_USER,CORPORATE,corporate,Get corporate user
 Get corporate role,GET_CORPORATE_ROLE,CORPORATE,corporate,To get corporate role
+Get corporate role,GET_CORPORATE_ROLE,OPERATIONS,corporate,To get corporate role
 Add corporate role,ADD_CORPORATE_ROLE,CORPORATE,corporate,To add corporate role
 update corporate role,UPDATE_CORPORATE_ROLE,CORPORATE,corporate,To update corporate role
 Maker Checker Config,MAKER_CHECKER_CONFIG,ADMIN,Admin,To enable maker checker
