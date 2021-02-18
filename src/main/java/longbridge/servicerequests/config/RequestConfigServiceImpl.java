@@ -1,11 +1,15 @@
 package longbridge.servicerequests.config;
 
 import longbridge.dtos.UserGroupDTO;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.services.UserGroupService;
 import longbridge.utils.Verifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +26,11 @@ public class RequestConfigServiceImpl implements RequestConfigService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final RequestConfigRepository configRepo;
     private final UserGroupService groupService;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    private final Locale locale = LocaleContextHolder.getLocale();
 
 
     @Autowired
@@ -47,6 +57,25 @@ public class RequestConfigServiceImpl implements RequestConfigService {
             cmd.setName(config.getName());
         }
         return configRepo.save(update(config, cmd));
+    }
+
+    @Override
+    @Verifiable(operation="DELETE_REQUEST_CONFIG",description="Delete existing Request Config")
+    public String deleteRequest(Long id)  {
+        try {
+            RequestConfig config = configRepo.findById(id).orElseThrow(EntityNotFoundException::new);
+            configRepo.delete(config);
+            return messageSource.getMessage("request.delete.success", null, locale);
+        }
+        catch (VerificationInterruptedException e){
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("request.delete.failure", null, locale),e);
+        }
     }
 
     private RequestConfig update(RequestConfig config, RequestConfigCmd cmd) {

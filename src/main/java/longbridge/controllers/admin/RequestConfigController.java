@@ -2,6 +2,7 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.UserGroupDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.servicerequests.config.*;
 import longbridge.services.CodeService;
 import longbridge.services.UserGroupService;
@@ -71,6 +72,22 @@ public class RequestConfigController {
     @GetMapping
     public String getRequestCfgs() {
         return "/adm/reqconfig/view";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deleteRequest(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            String message = configService.deleteRequest(id);
+            logger.info("the Id is {}", id);
+            redirectAttributes.addFlashAttribute("message", message);
+
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error deleting setting",ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/admin/requests/config";
     }
 
 

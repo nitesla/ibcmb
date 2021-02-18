@@ -23,5 +23,7 @@ public interface RequestConfigService {
 
     RequestConfig updateRequestConfig(UpdateRequestConfigCmd config);
 
+    String deleteRequest(Long id) ;
+
 
 }
