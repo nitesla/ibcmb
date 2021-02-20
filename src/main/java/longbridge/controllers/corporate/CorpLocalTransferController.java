@@ -89,9 +89,9 @@ public class CorpLocalTransferController {
             model.addAttribute("beneficiary", beneficiary);
 
         }
-        if (result.hasErrors()) {
-            return page + "pageii";
-        }
+//        if (result.hasErrors()) {
+//            return page + "pageii";
+//        }
         try {
             System.out.println(corpTransferRequestDTO);
             corpTransferService.validateTransfer(corpTransferRequestDTO);
@@ -169,6 +169,20 @@ public class CorpLocalTransferController {
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
         model.addAttribute("fee",transferUtils.getFee("CMB"));
+    }
+
+    @ResponseBody
+    @GetMapping("{amount}/fee")
+    public String getInterBankTransferFee(@PathVariable("amount") String amount) {
+        String fee="";
+        try {
+            fee=transferUtils.getFee("CMB", amount);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return fee;
+
     }
 
     @PostMapping("/edit")

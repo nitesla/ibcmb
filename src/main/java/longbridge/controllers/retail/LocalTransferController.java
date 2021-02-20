@@ -115,9 +115,9 @@ public class LocalTransferController {
 
 
         }
-        if (result.hasErrors()) {
-            return page + "pageii";
-        }
+//        if (result.hasErrors()) {
+//            return page + "pageii";
+//        }
 
         try {
             transferService.validateTransfer(transferRequestDTO);
@@ -203,6 +203,20 @@ public class LocalTransferController {
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
         model.addAttribute("fee", transferUtils.getFee("INTRABANK"));
+    }
+
+    @ResponseBody
+    @GetMapping("{amount}/fee")
+    public String getInterBankTransferFee(@PathVariable("amount") String amount) {
+        String fee="";
+        try {
+            fee=transferUtils.getFee("INTRABANK", amount);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        return fee;
+
     }
 
 
