@@ -230,9 +230,9 @@ public class CorpInternationalTransferController {
         }
 
         model.addAttribute("internationalBeneficiaryDTO", internationalBeneficiaryDTO);
-        if (result.hasErrors()) {
-            return page + "pageii";
-        }
+//        if (result.hasErrors()) {
+//            return page + "pageii";
+//        }
 //            transferService.validateTransfer(transferRequestDTO);
         transferRequestDTO.setTransferType(TransferType.INTERNATIONAL_TRANSFER);
         servletRequest.getSession().setAttribute("corpTransferRequest", transferRequestDTO);
