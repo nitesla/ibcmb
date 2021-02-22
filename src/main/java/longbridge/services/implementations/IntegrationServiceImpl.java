@@ -910,7 +910,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	@Override
 	public CustomerDetails viewCustomerDetailsByCif(String cifId) {
 		CustomerDetails result = new CustomerDetails();
-		String uri = URI + "/customer/{cifId}";
+		String uri = URI + "/retail/customer/{cifId}";
 		Map<String, String> params = new HashMap<>();
 		params.put("cifId", cifId);
 		try {
