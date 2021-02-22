@@ -2,7 +2,6 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.Code;
-import longbridge.models.Role;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,9 +21,13 @@ public class RetailUserDTO implements Serializable {
     private String entrustId;
     private String customerId;
     private String version;
+    @NotEmpty(message = "firstName")
     private String firstName;
+    @NotEmpty(message = "lastName")
     private String lastName;
+    @NotEmpty(message = "email")
     private String email;
+    @NotEmpty(message = "phoneNumber")
     private String phoneNumber;
     private Date birthDate;
     private String password;
