@@ -47,6 +47,9 @@ public interface CorpCustomDutyService {
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
     Page<CorpPaymentRequest> getPayments(Pageable pageable, String search);
 
+    @PreAuthorize("hasAuthority('CUSTOM_DUTY')")
+    Page<CorpPaymentRequest> getPayments(Pageable pageable);
+
     CorpTransferAuth getAuthorizations(CorpPaymentRequest corpPaymentRequest);
 
     @PreAuthorize("hasAuthority('CUSTOM_DUTY')")

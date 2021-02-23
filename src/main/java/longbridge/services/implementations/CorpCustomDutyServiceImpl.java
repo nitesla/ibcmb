@@ -376,8 +376,13 @@ public class CorpCustomDutyServiceImpl implements CorpCustomDutyService {
     }
 
     @Override
-    public Page<CorpPaymentRequest> getPayments(Pageable pageable,String search) {
+    public Page<CorpPaymentRequest> getPayments(Pageable pageable) {
         return corpPaymentRequestRepo.findAllByOrderByTranDateDesc(pageable);
+    }
+
+    @Override
+    public Page<CorpPaymentRequest> getPayments(Pageable pageDetails, String pattern ) {
+        return corpPaymentRequestRepo.findUsingPattern(pattern, pageDetails);
     }
 
     private CorporateUser getCurrentUser() {
