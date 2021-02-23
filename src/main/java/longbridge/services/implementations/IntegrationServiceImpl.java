@@ -908,9 +908,30 @@ public class IntegrationServiceImpl implements IntegrationService {
 	}
 
 	@Override
-	public CustomerDetails viewCustomerDetailsByCif(String cifId) {
+	public CustomerDetails viewRetailCustomerDetailsByCif(String cifId) {
 		CustomerDetails result = new CustomerDetails();
 		String uri = URI + "/retail/customer/{cifId}";
+		Map<String, String> params = new HashMap<>();
+		params.put("cifId", cifId);
+		try {
+			logger.info("Fetching customer details with CIFID {}",cifId);
+
+			result = template.getForObject(uri, CustomerDetails.class, params);
+
+			logger.debug("Customer details {}",result.toString());
+			logger.info("Successfully fetched customer details with CIFID {}",cifId);
+
+			return result;
+		} catch (Exception e) {
+			logger.error("Error occurred getting customer details", e);
+		}
+		return result;
+	}
+
+	@Override
+	public CustomerDetails viewCustomerDetailsByCif(String cifId) {
+		CustomerDetails result = new CustomerDetails();
+		String uri = URI + "/customer/{cifId}";
 		Map<String, String> params = new HashMap<>();
 		params.put("cifId", cifId);
 		try {

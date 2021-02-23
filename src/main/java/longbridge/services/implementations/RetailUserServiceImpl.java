@@ -258,10 +258,59 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setRole(new Role(user.getRoleId()));
             retailUser.setStatus("A");
             retailUser.setAlertPreference("BOTH");
+            String phoneNo = user.getPhoneNumber();
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
 
+                    retailUser.setEntrustId(user.getUserName());
+
+                    String defaultGroup = configService.getSettingByName("DEF_ENTRUST_RET_GRP").getValue();
+
+                    retailUser.setEntrustGroup(defaultGroup);
+
+                    createEntrustUser(retailUser.getEntrustId(), retailUser.getEntrustGroup(), fullName);
+
+                    addUserContact(retailUser.getEntrustId(), retailUser.getEntrustGroup(), phoneNo, user.getEmail());
+
+                    setEntrustUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
+                    setEntrustUserMutualAuth(retailUser.getEntrustId(), retailUser.getEntrustGroup(), user.getCaptionSec(), user.getPhishingSec());
+                }
+            }
+
+            String password = passwordPolicyService.generatePassword();
+            retailUser.setPassword(passwordEncoder.encode(password));
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            List<AccountInfo> accounts = integrationService.fetchAccounts(user.getCustomerId());
+            for (AccountInfo acct : accounts) {
+                accountService.AddFIAccount(user.getCustomerId(), acct);
+            }
+            passwordPolicyService.saveRetailPassword(retailUser);
+
+            logger.info("I ammm hereeeeee ");
+            logger.info("Retail userrrrrrrrrrrrr is {}", retailUser);
             retailUserRepo.save(retailUser);
 
-            logger.info("Retail user {} created", user.getUserName());
+            String url =
+                    ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/retail";
+
+            Context context = new Context();
+            context.setVariable("fullName", fullName);
+            context.setVariable("username", retailUser.getUserName());
+            context.setVariable("password", password);
+            context.setVariable("url", url);
+
+            Email email = new Email.Builder()
+                    .setRecipient(retailUser.getEmail())
+                    .setSubject(messageSource.getMessage("customer.activation.subject", null, locale))
+                    .setTemplate("mail/retailactivation")
+                    .build();
+            mailService.sendMail(email, context);
+
+
+        logger.info("Retail user {} created", user.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
