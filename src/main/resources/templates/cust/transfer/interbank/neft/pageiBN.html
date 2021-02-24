@@ -66,8 +66,9 @@
                      <div class="form-group">
                          <label >BVN Number</label>
 <!--                         <input onblur="getAccountName()" type="number" class="form-control" pattern="\d{10}"  th:field="*{accountNumber}"-->
-                         <input type="number" class="form-control" pattern="\d{10}"  th:field="*{beneficiaryBVN}"
-                                id="bnv_num" placeholder="11 digits only" required="required"/><span class='req-inner'></span>
+                         <input onchange="bvnError()" type="number" class="form-control" pattern="\d{11}"  th:field="*{beneficiaryBVN}"
+                                id="bnv_num" placeholder="11 digits only" required="required"/><span class='req-inner'></span><br/>
+                         <span id="bvnError" style="color:red"></span>
                          <p class="errors" th:if="${#fields.hasErrors('beneficiaryBVN')}" th:errors="*{beneficiaryBVN}">&times;</p>
                          <p class="acctError" style="display:none;">invalid BVN number</p>
 <!--                         <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Getting Account Name. Please Wait</p>-->
@@ -153,6 +154,22 @@
             })
         }
     })
+
+    function bvnError() {
+        var bvn = $("#bnv_num").val();
+        console.log("BVN is " + bvn)
+        if(bvn < 9999999999) {
+            $("#bvnError").text("BVN must be 11 digits")
+            $("#localsave").attr("disabled", true);
+        }else if (bvn > 99999999999){
+            $("#bvnError").text("BVN must be 11 digits")
+            $("#localsave").attr("disabled", true);
+        }else{
+            $("#bvnError").text("")
+            $("#localsave").attr("disabled",false);
+        }
+
+    }
 
     function getAccountName() {
         $('#loading-icon').show();

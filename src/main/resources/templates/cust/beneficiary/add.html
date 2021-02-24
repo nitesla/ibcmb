@@ -43,10 +43,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Account Number</label>
-                                    <span class="req"></span><input onblur="getAccountName()" type="number" min="0"
+                                    <span class="req"></span><input onblur="getAccountName()" onchange="accountError()" type="number" pattern="\d{10}"
                                                                     id="acct_num" name="acct_num" class="form-control full-width"
                                                                     th:field="*{accountNumber}"
-                                                                    placeholder="Account Number"/>
+                                                                    placeholder="10 Digits Only" required/>
+                                    <span id="accountError" style="color:red"></span>
                                     <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
                                        th:errors="*{accountNumber}">&times;</p>
                                     <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin'
@@ -159,11 +160,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Account Number</label>
-                                    <span class="required"></span><input onblur="getIntraBankAccountName();" type="number" min="0" class="form-control full-width"
+                                    <span class="required"></span><input onblur="getIntraBankAccountName();" onchange="iaccountError()" type="number" pattern="\d{10}" class="form-control full-width"
                                                                          name="accountNumber"
                                                                          th:field="*{accountNumber}"
-                                                                         id="iacct_num" placeholder="Account Number"
+                                                                         id="iacct_num" placeholder="10 Digits Only"
                                                                          required="required"/>
+                                    <span id="iaccountError" style="color:red"></span>
 
                                 </div>
 
@@ -233,6 +235,37 @@
             $("#beneficiaryBank").prop("selectedIndex", -1);
 
         });
+
+        function accountError() {
+            var acctNumber = $("#acct_num").val();
+            console.log("Account Number is " + acctNumber)
+            if(acctNumber < 999999999) {
+                $("#accountError").text("Account Number must be 10 digits")
+                $("#localsave").attr("disabled", true);
+            }else if (acctNumber > 9999999999){
+                $("#accountError").text("Account Number must be 10 digits")
+                $("#localsave").attr("disabled", true);
+            }else{
+                $("#accountError").text("")
+                $("#localsave").attr("disabled",false);
+            }
+
+        }
+
+        function iaccountError() {
+            var acctNumber = $("#iacct_num").val();
+            console.log("Account Number is " + acctNumber)
+            if (acctNumber < 999999999) {
+                $("#iaccountError").text("Account Number must be 10 digits")
+                $("#ilocalsave").attr("disabled", true);
+            } else if (acctNumber > 9999999999) {
+                $("#iaccountError").text("Account Number must be 10 digits")
+                $("#ilocalsave").attr("disabled", true);
+            } else {
+                $("#iaccountError").text("")
+                $("#ilocalsave").attr("disabled", false);
+            }
+        }
 
 
         function getAccountName() {
