@@ -150,7 +150,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
                         noOfMismatch++;
                     }
                 }
-                logger.debug("no of mis match is {}",noOfMismatch);
+                logger.debug("no of mis match is {}", noOfMismatch);
                 if(noOfMismatch==0){
                     return "true";
                 }
@@ -158,7 +158,7 @@ public @ResponseBody String getSecAns(WebRequest webRequest, HttpSession session
         }
         //return (String) session.getAttribute("username");
     }catch (Exception e){
-        logger.info(e.getMessage());
+        logger.error(e.getMessage());
         return messageSource.getMessage("sec.ans.failed", null, locale);
     }
     return messageSource.getMessage("sec.ans.failed", null, locale);

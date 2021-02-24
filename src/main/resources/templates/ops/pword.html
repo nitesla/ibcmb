@@ -41,34 +41,30 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
+                                    <div>
+                                        <ul id="">
+                                            <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
+                                        </ul>
+                                    </div>
+
                                     <form method="post" class="form-horizontal" th:action="@{/ops/users/password}" th:object="${changePassword}">
-
-                                        <div >
-                                            <ul id="">
-                                                <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
-                                            </ul>
-                                        </div>
-
-
-
-
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Old Password</label>
                                             <div class="col-sm-4">
-                                                <input id="password" type="password" class="form-control" th:field="*{oldPassword}"/>
+                                                <input  type="password" class="form-control password" th:field="*{oldPassword}"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">New Password</label>
                                             <div class="col-sm-4">
-                                                <input id="password" type="password" class="form-control" th:field="*{newPassword}"/>
+                                                <input type="password" class="form-control password" th:field="*{newPassword}"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Confirm New Password</label>
                                             <div class="col-sm-4">
-                                                <input id="password" type="password" class="form-control" th:field="*{confirmPassword}"/>
+                                                <input  type="password" class="form-control password" th:field="*{confirmPassword}"/>
                                             </div>
                                         </div>
 
@@ -104,7 +100,7 @@ location.href = "/ops/dashboard";
 }
 </script>
 <script>
-    $('#password').bind("cut copy paste",function(e) {
+    $('.password').bind("cut copy paste",function(e) {
         e.preventDefault();
     });
 </script>

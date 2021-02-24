@@ -509,7 +509,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         String adminUrl =
                 ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString() + "/login/admin";
 
-
         if ("A".equals(user.getStatus())) {
 
             String fullName = user.getFirstName() + " " + user.getLastName();

@@ -39,16 +39,15 @@ form.children("div").steps({
             var noOfQs = $('#noOfQuestion').val();
             var i = 0;
             var secAnswer ="";
-            for(var i = 0;i<parseInt(noOfQs);i++){
+            for(var i = 0;i < parseInt(noOfQs);i++){
                 // console.log("answer "+$('#securityAnswer'+i).val());
                 if(i ===0){
                     secAnswer+=$('#securityAnswer'+i).val();
                 }else{
                     secAnswer +=','+$('#securityAnswer'+i).val();
-
                 }
             }
-            // console.log("answer 2 "+secAnswer);
+            // console.log("Answers Passed to be validated: ", secAnswer);
             return isValid && validateSecAnswer(secAnswer);
         }
         if(VALIDATE_GEN_PASS === currentIndex){
@@ -85,7 +84,6 @@ form.children("div").steps({
 
 function validateSecAnswer(secAnswers){
     $('#myLoader').modal('show');
-    var secAnswer = secAnswers;
     var sent = "";
     var result;
     var username = $('input[name="username"]').val();
@@ -94,7 +92,7 @@ function validateSecAnswer(secAnswers){
     $.ajax({
         type:'POST',
         url:"/rest/corp/secAns",
-        data: {username : username,secAnswers:secAnswer},
+        data: {username : username,secAnswers:secAnswers},
         async:false,
 
         success:function(data){

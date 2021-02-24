@@ -432,7 +432,9 @@ public class CorpSettingController {
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal){
         CorporateUser user=corporateUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertPref", user.getAlertPreference());
+
+        model.addAttribute("alertPref", alertPref);
+        model.addAttribute("userPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         return "corp/settings/alertpref";
     }
@@ -445,15 +447,14 @@ public class CorpSettingController {
         }
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        System.out.println(alertPref);
-
         corporateUserService.changeAlertPreference(user, alertPref);
 
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
 
-        model.addAttribute("alertPref", user.getAlertPreference());
+        model.addAttribute("alertPref", alertPref);
+        model.addAttribute("userPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
-        model.addAttribute("message","Preference Change Successful");
+        redirectAttributes.addFlashAttribute("message", "Preference Change Successful");
         return "redirect:/corporate/settings/alert_preference";
     }
 
