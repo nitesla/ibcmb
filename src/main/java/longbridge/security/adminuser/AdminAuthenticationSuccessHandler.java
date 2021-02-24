@@ -50,16 +50,11 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     @Override
     @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-
-        sessionUtils.setTimeout(session);
+        HttpSession session = request.getSession();
 
         AdminUser user = adminUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
-        LocalDate date = new LocalDate(user.getExpiryDate());
-
-        if (today.isAfter(date) || today.isEqual(date)) {
-            session.setAttribute("expired-password", "expired-password");
-        }
+        sessionUtils.setTimeout(session);
+        sessionUtils.validateExpiredPassword(user,session);
 
         logger.info("Admin user {} successfully passed first authentication",user.getUserName());
         user.setLastLoginDate(new Date());
@@ -70,9 +65,11 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 //        adminUserRepo.updateUserAfterLogin(authentication.getName());
 
 
-
         sessionUtils.sendAlert(user);
         super.onAuthenticationSuccess(request, response, authentication);
+
+        sessionUtils.validateExpiredPassword(user,session);
+
 
     }
 

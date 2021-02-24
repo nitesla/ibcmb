@@ -60,7 +60,7 @@ public class SessionUtils {
 
     @Async
     public void sendAlert(User user) {
-        logger.info("TEMPLATE2 {}",user.getEmailTemplate());
+        logger.info("TEMPLATE2 {}", user.getEmailTemplate());
 
         try {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
