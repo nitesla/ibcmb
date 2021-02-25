@@ -96,7 +96,7 @@ public class AuditRepoImpl extends SimpleJpaRepository<ModifiedType, Long> imple
                 addOps = true;
             }
             if (crit.getTableIndex() != null) {
-                criteria.add("mon.entityClassName = '" + auditCfgService.getAuditEntity(crit.getTableIndex()).getFullName() + "'");
+                criteria.add("mon.entity = '" + auditCfgService.getAuditEntity(crit.getTableIndex()).getFullName() + "'");
             }
 
         }

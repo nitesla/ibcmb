@@ -28,7 +28,6 @@ public class User extends AbstractEntity{
     protected Date createdOnDate;
     protected Date expiryDate;
     protected Date lockedUntilDate;
-    @NotAudited
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
     protected Integer noOfTokenAttempts =0;
