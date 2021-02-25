@@ -79,7 +79,6 @@ public class FailedLoginService {
 
     public void loginSucceeded(final User user) {
         unLockUser(user);
-
     }
 
     public void loginFailed(final User user) {

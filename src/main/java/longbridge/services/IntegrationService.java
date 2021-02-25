@@ -83,6 +83,8 @@ public interface IntegrationService {
 
     CustomerDetails viewCustomerDetailsByCif(String cifId);
 
+    CustomerDetails viewRetailCustomerDetailsByCif(String cifId);
+
 
     /** Validate the account, with a valid account number, email and dob
      *

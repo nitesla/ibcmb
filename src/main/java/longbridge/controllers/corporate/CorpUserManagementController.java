@@ -102,7 +102,7 @@ public class CorpUserManagementController {
 //    }
 
     @GetMapping
-    public String viewUsers(Principal principal, Model model) {
+    public String viewUsers(Principal principal, Model model, RedirectAttributes redirectAttributes) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         if(!corporateUser.getCorpUserType().equals(CorpUserType.INITIATOR)) {
@@ -111,6 +111,7 @@ public class CorpUserManagementController {
             return "corp/user/view";
         }
         //Redirect the Initiator to dashboard, has no right to manage users
+//        redirectAttributes.addFlashAttribute("error", "User must be an Initiator");
         return "redirect:/corporate/dashboard";
     }
 
@@ -173,6 +174,8 @@ public class CorpUserManagementController {
 
         try {
 
+            String message = null;
+
             if (CorpUserType.AUTHORIZER.equals(corporateUserDTO.getCorpUserType())) {
                 CorporateRoleDTO corporateRole = corporateService.getCorporateRole(corporateUserDTO.getCorporateRoleId());
                 corporateUserDTO.setCorporateRole(corporateRole.getName() + " " + corporateRole.getRank());
@@ -180,17 +183,18 @@ public class CorpUserManagementController {
                 if (makerCheckerService.isEnabled("ADD_AUTHORIZER_FROM_CORPORATE_ADMIN")) {
                     corpUserVerificationService.addAuthorizer(corporateUserDTO, "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", "Add an authorizer by corporate Admin");
                 } else {
-                    corporateUserService.addAuthorizer(corporateUserDTO);
+                    message = corporateUserService.addAuthorizer(corporateUserDTO);
                 }
 
             } else {
                 if (makerCheckerService.isEnabled("ADD_INITIATOR_FROM_CORPORATE_ADMIN")) {
                     corpUserVerificationService.addInitiator(corporateUserDTO, "ADD_INITIATOR_FROM_CORPORATE_ADMIN", "Add an initiator by corporate Admin");
                 } else {
-                    corporateUserService.addInitiator(corporateUserDTO);
+                    message = corporateUserService.addInitiator(corporateUserDTO);
                 }
             }
 
+            redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/corporate/users/";
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));

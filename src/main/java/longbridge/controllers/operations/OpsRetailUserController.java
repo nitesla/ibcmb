@@ -3,7 +3,6 @@ package longbridge.controllers.operations;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
-import longbridge.dtos.RoleDTO;
 import longbridge.dtos.UpdateCoverageCmd;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -327,7 +326,7 @@ public class OpsRetailUserController {
     @ResponseBody
     public ResponseEntity<?> getCustomerName(@PathVariable String cifid) {
 
-        CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(cifid);
+        CustomerDetails customerDetails = integrationService.viewRetailCustomerDetailsByCif(cifid);
 
         if (customerDetails.getCustomerName() == null) {
             logger.warn("The account details for CIFID {} could not be found. The reasons could be that the account is NOT VERIFIED, CLOSED or DELETED", cifid);

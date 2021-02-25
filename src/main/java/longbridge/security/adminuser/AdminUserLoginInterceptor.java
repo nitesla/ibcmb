@@ -42,19 +42,18 @@ public class AdminUserLoginInterceptor extends HandlerInterceptorAdapter {
         }
 
 
-
-
         if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/admin/users/password/new"))) {
 
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
-
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
             modelAndView.addObject("changePassword", changePassword);
             modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
-            modelAndView.setViewName("/adm/admin/new-pword");
+            modelAndView.setViewName("adm/admin/new-pword");
             throw new ModelAndViewDefiningException(modelAndView);
         }
+
+
         if (httpServletRequest.getSession().getAttribute("2FA") != null && !(uri.equalsIgnoreCase("/admin/token"))) {
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");

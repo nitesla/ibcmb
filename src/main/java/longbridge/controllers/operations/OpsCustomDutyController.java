@@ -4,6 +4,7 @@ import longbridge.models.CorpPaymentRequest;
 import longbridge.services.CorpCustomDutyService;
 import longbridge.utils.CustomDutyCode;
 import longbridge.utils.DataTablesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,14 @@ public class OpsCustomDutyController {
     @GetMapping("/all")
     public @ResponseBody DataTablesOutput<CorpPaymentRequest>  viewExistingCustomDuty(DataTablesInput input, @RequestParam("csearch") String search){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        logger.info("the custom duty {}",search);
-        Page<CorpPaymentRequest> corpPaymentRequests =customDutyService.getPayments(pageable,search);
+        Page<CorpPaymentRequest> corpPaymentRequests = null;
+        if (StringUtils.isNoneBlank(search)) {
+            logger.info("the custom duty {}",search);
+            corpPaymentRequests = customDutyService.getPayments(pageable, search);
+        } else {
+            logger.info("the custom duty is here");
+            corpPaymentRequests = customDutyService.getPayments(pageable);
+        }
         for (CorpPaymentRequest request:corpPaymentRequests) {
             request.getCustomDutyPayment().setMessage(
                     CustomDutyCode.getCustomDutyCodeByCodeForOPS(

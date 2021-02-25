@@ -129,12 +129,10 @@ public interface OperationsUserService{
     @PreAuthorize("hasAuthority('OPS_CHANGE_PASSWORD')")
     String changePassword(OperationsUser user, ChangePassword changePassword) ;
 
-
     @PreAuthorize("hasAuthority('OPS_CHANGE_PASSWORD')")
     String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
     String resetPassword(String username) ;
-
 
     void sendActivationCredentials(OperationsUser user, String password);
 }
