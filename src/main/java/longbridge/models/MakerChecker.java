@@ -19,7 +19,7 @@ public class MakerChecker extends AbstractEntity {
     private String enabled;
     private String operation;
     private String description;
-    @Enumerated(value = EnumType.STRING.STRING)
+    @Enumerated(value = EnumType.STRING)
     private UserType type;
 
 
