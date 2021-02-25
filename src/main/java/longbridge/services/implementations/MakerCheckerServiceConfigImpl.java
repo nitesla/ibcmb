@@ -80,16 +80,6 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
         return makerCheckerRepo.findAll(pageDetails);
     }
 
-    private MakerChecker convertEntityToDTO(MakerCheckerDTO makerCheckerDTO)
-    {
-        return modelMapper.map(makerCheckerDTO, MakerChecker.class);
-    }
-
-    private MakerChecker convertDTOToEntity(MakerCheckerDTO makerCheckerDTO)
-    {
-        return modelMapper.map(makerCheckerDTO,MakerChecker.class);
-    }
-
 	@Override
 	public Page<MakerChecker> findEntities(String pattern, Pageable pageDetails) {
 		 return makerCheckerRepo.findUsingPattern(pattern,pageDetails);

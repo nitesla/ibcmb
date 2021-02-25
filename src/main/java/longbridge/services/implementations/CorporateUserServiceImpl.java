@@ -148,7 +148,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation = "UPDATE_CORPORATE_USER", description = "Updating Corporate User")
+    @Verifiable(operation = "UPDATE_CORPORATE_USER", description = "Updating Corporate User", type = UserType.OPERATIONS)
     public String updateUser(CorporateUserDTO user)  {
 
 
@@ -206,7 +206,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "ADD_CORPORATE_USER", description = "Adding Corporate User")
+    @Verifiable(operation = "ADD_CORPORATE_USER", description = "Adding Corporate User", type = UserType.OPERATIONS)
     public String addUser(CorporateUserDTO user)  {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -423,7 +423,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "UPDATE_CORP_USER_STATUS", description = "Change corporate user activation status")
+    @Verifiable(operation = "UPDATE_CORP_USER_STATUS", description = "Change corporate user activation status", type = UserType.OPERATIONS)
     public String changeActivationStatus(Long userId)  {
 
         CorporateUser user = corporateUserRepo.findById(userId).get();
@@ -610,7 +610,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    @Verifiable(operation = "DELETE_CORPORATE_USER", description = "Deleting a Corporate User")
+    @Verifiable(operation = "DELETE_CORPORATE_USER", description = "Deleting a Corporate User",type = UserType.OPERATIONS)
     public String deleteUser(Long userId)  {
         try {
             CorporateUser corporateUser = corporateUserRepo.findById(userId).get();

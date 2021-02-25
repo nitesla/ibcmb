@@ -27,6 +27,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,6 +99,9 @@ public class VerificationServiceImpl implements VerificationService {
         Verification verification = verificationRepo.findById(dto.getId()).get();
         String verifiedBy = getCurrentUserName();
 
+        if(!isAuthorised(dto.getOperation()+"_V")){
+            throw new VerificationException("You do not have the authority to decline");
+        }
         if (verifiedBy.equals(verification.getInitiatedBy())) {
             throw new VerificationException("You cannot verify what you initiated");
         }
@@ -132,9 +136,13 @@ public class VerificationServiceImpl implements VerificationService {
 
         Verification verification = verificationRepo.findById(dto.getId()).get();
         String verifiedBy = getCurrentUserName();
+        if (!isAuthorised(dto.getOperation() + "_V")) {
+            throw new VerificationException("You do not have the authority to verify");
+        }
         if (verifiedBy.equals(verification.getInitiatedBy())) {
             throw new VerificationException("You cannot verify what you initiated");
         }
+
 
         if (!VerificationStatus.PENDING.equals(verification.getStatus())) {
             throw new VerificationException("Verification is not pending for the operation");
@@ -486,6 +494,10 @@ public class VerificationServiceImpl implements VerificationService {
     private User getCurrentUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUser();
+    }
+
+    private boolean isAuthorised(String authority) {
+       return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority(authority));
     }
 }
 

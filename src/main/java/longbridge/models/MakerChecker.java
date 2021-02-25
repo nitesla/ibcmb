@@ -3,6 +3,8 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
@@ -17,6 +19,8 @@ public class MakerChecker extends AbstractEntity {
     private String enabled;
     private String operation;
     private String description;
+    @Enumerated(value = EnumType.STRING.STRING)
+    private UserType type;
 
 
     public String getEnabled()
@@ -43,6 +47,14 @@ public class MakerChecker extends AbstractEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 
     @Override

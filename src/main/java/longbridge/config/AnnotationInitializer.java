@@ -1,7 +1,9 @@
 package longbridge.config;
 
 import longbridge.models.MakerChecker;
+import longbridge.models.Permission;
 import longbridge.repositories.MakerCheckerRepo;
+import longbridge.repositories.PermissionRepo;
 import longbridge.trace.Trace;
 import longbridge.utils.Verifiable;
 import org.slf4j.Logger;
@@ -26,6 +28,8 @@ public class AnnotationInitializer implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private MakerCheckerRepo makerCheckerRepo;
+    @Autowired
+    PermissionRepo permissionRepo;
     private Set<String> traceOps = new HashSet<>();
 
     private ClassPathScanningCandidateComponentProvider createComponentScanner() {
@@ -61,11 +65,23 @@ public class AnnotationInitializer implements InitializingBean {
                             MakerChecker makerChecker = new MakerChecker();
                             makerChecker.setVersion(0);
                             makerChecker.setDelFlag("N");
-                            makerChecker.setOperation(operation);
-                            makerChecker.setDescription(description);
+                            makerChecker.setOperation(verifyAnno.operation());
+                            makerChecker.setDescription(verifyAnno.description());
                             makerChecker.setEnabled("N");
+                            makerChecker.setType(verifyAnno.type());
                             makerChecker = makerCheckerRepo.save(makerChecker);
                             logger.debug("Initialized {} ", makerChecker);
+                        }
+
+                        if (!permissionRepo.existsByNameAndUserType(verifyAnno.operation() + "_V", verifyAnno.type().name())) {
+                            Permission p = new Permission();
+                            p.setCategory("Verification");
+                            p.setDescription("Verification for :" + verifyAnno.description());
+                            p.setUserType(verifyAnno.type().name());
+                            p.setCode(verifyAnno.operation() + "_V");
+                            p.setName("Verify:" + (verifyAnno.description()));
+                            permissionRepo.save(p);
+                            logger.info("Added permission {} ", p);
                         }
                     }
                     if (method.isAnnotationPresent(Trace.class)) {

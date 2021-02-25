@@ -207,7 +207,7 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_ROLE')")
     String deleteCorporateRole(Long id) ;
 
-    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding accounts to a Corporate Entity")
+    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding accounts to a Corporate Entity", type = UserType.OPERATIONS)
     String addCorporateAccounts(CorporateRequestDTO requestDTO);
 
     void addAccounts(CorporateRequestDTO requestDTO);

@@ -84,6 +84,7 @@
                                     <thead>
                                     <tr>
                                         <th>Operations</th>
+                                        <th>Type</th>
                                         <th>Description</th>
                                         <th>Enabled</th>
 
@@ -96,6 +97,7 @@
                                     <tfoot>
                                     <tr>
                                         <th>Operation</th>
+                                        <th>Type</th>
                                         <th>Description</th>
                                         <th>Enabled</th>
 
@@ -157,12 +159,13 @@
             },
             "columns": [
                 { "data": "operation" },
+                {"data": "type"},
                 { "data": "description" },
                 { "data": "enabled" }
 
             ] ,
             "columnDefs" : [ {
-                "targets" : 2,
+                "targets" : 3,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {

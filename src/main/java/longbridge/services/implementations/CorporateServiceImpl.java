@@ -134,7 +134,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
+    @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity", type = UserType.OPERATIONS)
     public String addCorporate(CorporateRequestDTO corporateRequestDTO)  {
 
         try {
@@ -368,7 +368,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding Corporate Accounts")
+    @Verifiable(operation = "ADD_CORPORATE_ACCOUNT", description = "Adding Corporate Accounts", type = UserType.OPERATIONS)
     public String addCorporateAccounts(CorporateRequestDTO requestDTO) {
 
         try {
@@ -563,7 +563,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
 
     @Transactional
-    @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
+    @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status", type = UserType.OPERATIONS)
     public String changeActivationStatus(Long id)  {
         try {
             Corporate corporate = corporateRepo.findById(id).orElseThrow(IllegalAccessException::new);
@@ -617,7 +617,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule")
+    @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule", type = UserType.OPERATIONS)
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO)  {
 
 
@@ -649,7 +649,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "UPDATE_CORPORATE_RULE", description = "Update Corporate Transfer Rule")
+    @Verifiable(operation = "UPDATE_CORPORATE_RULE", description = "Update Corporate Transfer Rule", type = UserType.OPERATIONS)
     public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO)  {
 
         if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
@@ -691,7 +691,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_CORPORATE_ACCOUNT", description = "Delete Corporate Account")
+    @Verifiable(operation = "DELETE_CORPORATE_ACCOUNT", description = "Delete Corporate Account", type = UserType.OPERATIONS)
     public String deleteCorporateAccount(CorporateRequestDTO requestDTO) {
 
         try {
@@ -738,7 +738,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_CORPORATE_RULE", description = "Delete Corporate Transfer Rule")
+    @Verifiable(operation = "DELETE_CORPORATE_RULE", description = "Delete Corporate Transfer Rule", type = UserType.OPERATIONS)
     public String deleteCorporateRule(Long id)  {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findById(id).get();
@@ -755,7 +755,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
+    @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role", type = UserType.OPERATIONS)
     public String addCorporateRole(CorporateRoleDTO roleDTO)  {
 
         if (roleDTO.getRank() < 1) {
@@ -794,7 +794,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
+    @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role", type = UserType.OPERATIONS)
     public String updateCorporateRole(CorporateRoleDTO roleDTO)  {
 
         if (roleDTO.getRank() < 1) {
@@ -888,7 +888,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_CORPORATE_ROLE", description = "Deleting a Corporate Role")
+    @Verifiable(operation = "DELETE_CORPORATE_ROLE", description = "Deleting a Corporate Role", type = UserType.OPERATIONS)
     public String deleteCorporateRole(Long id)  {
 
         CorporateRole role = corporateRoleRepo.findById(id).get();

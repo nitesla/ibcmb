@@ -1,5 +1,7 @@
 package longbridge.utils;
 
+import longbridge.models.UserType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -13,6 +15,7 @@ public @interface Verifiable
 
 	String operation() default "";
 	String description() default "";
+	UserType type() default UserType.ADMIN ;
 }
 
 

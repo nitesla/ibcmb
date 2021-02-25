@@ -94,7 +94,7 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
 
 
     @Override
-    @Verifiable(operation = "UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN", description = "Update corporate user account permission")
+    @Verifiable(operation = "UPDATE_ACCOUNT_PERMISSION_FROM_CORPORATE_ADMIN", description = "Update corporate user account permission", type = UserType.CORPORATE)
     public String updateAccountPermissionsFromCorporateAdmin(CorporateUserDTO corporateUserDTO) {
 
         try {
@@ -139,13 +139,13 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-    @Verifiable(operation = "ADD_INITIATOR_FROM_CORPORATE_ADMIN", description = "Add an initiator by corporate Admin")
+    @Verifiable(operation = "ADD_INITIATOR_FROM_CORPORATE_ADMIN", description = "Add an initiator by corporate Admin", type = UserType.CORPORATE)
     public void addInitiator(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveInit(userDTO, operation, description);
     }
 
     @Override
-    @Verifiable(operation = "UPDATE_USER_FROM_CORPORATE_ADMIN", description = "Edit an initiator by corporate Admin")
+    @Verifiable(operation = "UPDATE_USER_FROM_CORPORATE_ADMIN", description = "Edit an initiator by corporate Admin", type = UserType.CORPORATE)
     public void saveInitiator(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveInit(userDTO, operation, description);
     }
@@ -261,13 +261,13 @@ public class CorpUserVerificationServiceImpl implements CorpUserVerificationServ
     }
 
     @Override
-    @Verifiable(operation = "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", description = "Add an authorizer by corporate Admin")
+    @Verifiable(operation = "ADD_AUTHORIZER_FROM_CORPORATE_ADMIN", description = "Add an authorizer by corporate Admin", type = UserType.CORPORATE)
     public void addAuthorizer(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveAuth(userDTO, operation, description);
     }
 
     @Override
-    @Verifiable(operation = "UPDATE_USER_FROM_CORPORATE_ADMIN", description = "Edit an authorizer by corporate Admin")
+    @Verifiable(operation = "UPDATE_USER_FROM_CORPORATE_ADMIN", description = "Edit an authorizer by corporate Admin", type = UserType.CORPORATE)
     public void saveAuthorizer(CorporateUserDTO userDTO, String operation, String description) throws VerificationException {
         saveAuth(userDTO, operation, description);
     }

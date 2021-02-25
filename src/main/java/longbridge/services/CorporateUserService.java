@@ -169,7 +169,6 @@ public interface CorporateUserService{
 
     void setSecurityQuestion(Long id);
 
-    //    @Verifiable(operation = "UPDATE_USER_ACCOUNT_PERMISSION", description = "Update corporate user account permission")
     String updateAccountPermissions(CorporateUserDTO corporateUserDTO);
 
     String updateAccountRestrictionsBasedOnPermissions(CorporateUserDTO userDTO);

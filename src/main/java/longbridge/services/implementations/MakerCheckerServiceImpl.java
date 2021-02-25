@@ -42,7 +42,6 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
 
 
 
-//    @Verifiable(operation="CONFIGURE_MAKER_CHECKER",description="Update Maker Checker")
     public String configureMakerChecker(MakerChecker makerChecker)
     {
 
@@ -88,13 +87,4 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
         return makerCheckerRepo.findAll(pageDetails);
     }
 
-    private MakerChecker convertEntityToDTO(MakerCheckerDTO makerCheckerDTO)
-    {
-        return modelMapper.map(makerCheckerDTO, MakerChecker.class);
-    }
-
-    private MakerChecker convertDTOToEntity(MakerCheckerDTO makerCheckerDTO)
-    {
-        return modelMapper.map(makerCheckerDTO,MakerChecker.class);
-    }
 }

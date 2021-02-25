@@ -354,7 +354,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_RETAIL_USER", description = "Deleting a Retail User")
+    @Verifiable(operation = "DELETE_RETAIL_USER", description = "Deleting a Retail User", type = UserType.OPERATIONS)
     public String deleteUser(Long userId)  {
         try {
 
@@ -380,7 +380,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "UPDATE_RETAIL_STATUS", description = "Change Retail User Activation Status")
+    @Verifiable(operation = "UPDATE_RETAIL_STATUS", description = "Change Retail User Activation Status", type = UserType.OPERATIONS)
     public String changeActivationStatus(Long userId)  {
         try {
             RetailUser user = retailUserRepo.findById(userId).get();
