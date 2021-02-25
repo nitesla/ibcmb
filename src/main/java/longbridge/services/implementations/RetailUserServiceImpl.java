@@ -719,7 +719,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         return retailUserRepo.findAll(pageDetails).map(this::convertEntityToDTO);
     }
 
-
+//TODO : Remove serves no clear purpose
     @Override
     public String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer) {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
