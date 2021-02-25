@@ -4,6 +4,7 @@ package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ public class User extends AbstractEntity{
     protected Date createdOnDate;
     protected Date expiryDate;
     protected Date lockedUntilDate;
+    @NotAudited
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
     protected Integer noOfTokenAttempts =0;

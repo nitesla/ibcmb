@@ -12,7 +12,6 @@ import java.util.Date;
  * Created by Fortune on 4/5/2017.
  */
 public class OperationsUserDTO implements Person{
-    @JsonProperty("DT_RowId")
     private Long id;
 
     private int version;

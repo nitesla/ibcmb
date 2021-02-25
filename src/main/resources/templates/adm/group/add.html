@@ -225,7 +225,7 @@ $(document).ready(function() {
                     lname = $("input[name='lastName']").val();
                     eMail = $.trim($("input[name='email']").val());
                     od = {
-                        'DT_RowId': null,
+                        'id': null,
                         'firstName': fname,
                         'lastName': lname,
                         'email': eMail,
@@ -303,10 +303,10 @@ $(document).ready(function() {
                         selected: true
                     }).data().each(function(d) {
                         cnt = contactsTab.rows().data().filter(function(value, index) {
-                            return (value['DT_RowId'] == d['DT_RowId']) && (value['external'] == d['external']) ? true : false;
+                            return (value['id'] == d['id']) && (value['external'] == d['external']) ? true : false;
                         }).count();
                         var od = {
-                            'DT_RowId': d['DT_RowId'],
+                            'id': d['id'],
                             'firstName': d['firstName'],
                             'lastName': d['lastName'],
                             'email': d['email'],

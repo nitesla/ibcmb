@@ -46,20 +46,6 @@
 
                                         </div>
 
-
-                                       <!--  <div class="form-group">
-                                            <label class="col-sm-2 control-label">Role</label>
-                                            <div class="col-sm-6">
-
-                                                <select class="form-control" th:field="*{role}">
-                                                    <option value="" >Select..</option>
-                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'operations')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==operationsUser.roleId}"></option>
-                                                </select>
-
-                                            </div>
-                                        </div> -->
-
-
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <button class="btn " id='btn-search' type="submit">Search</button>
@@ -120,6 +106,7 @@ $(document).ready(function() {
         "searching": false,
         "deferLoading" : 0,
         "paging": true,
+		"rowId" :"id",
         "serverSide" : true,
         "ajax" : {
 			url :"/admin/operations/users/find",

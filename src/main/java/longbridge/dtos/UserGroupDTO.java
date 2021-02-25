@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class UserGroupDTO implements Serializable {
 
-    @JsonProperty("DT_RowId")
     private Long id;
     private int version;
     @NotEmpty(message = "name")
