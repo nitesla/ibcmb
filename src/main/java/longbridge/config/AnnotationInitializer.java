@@ -73,7 +73,7 @@ public class AnnotationInitializer implements InitializingBean {
                             logger.debug("Initialized {} ", makerChecker);
                         }
 
-                        if (!permissionRepo.existsByNameAndUserType(verifyAnno.operation() + "_V", verifyAnno.type().name())) {
+                        if (!permissionRepo.existsByCodeAndUserType(verifyAnno.operation() + "_V", verifyAnno.type().name())) {
                             Permission p = new Permission();
                             p.setCategory("Verification");
                             p.setDescription("Verification for :" + verifyAnno.description());

@@ -21,6 +21,8 @@ public interface PermissionRepo extends CommonRepo<Permission, Long> {
 
     boolean existsByNameAndUserType(String name, String type);
 
+    boolean existsByCodeAndUserType(String s, String name);
+
 //    @Query( "select v from permission v where v.initiatedBy != :initiated and v.operation in :permissionlist")
 //    Page<Verification> findPermissionForUser(@Param("initiated") String initiatedBy, @Param("permissionlist") List<String> operation);
 

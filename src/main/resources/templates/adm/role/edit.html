@@ -15,7 +15,23 @@
             </div>
         </div>
         <div th:replace="layout :: top-nav"></div>
+<style>
+    .dual-list .list-group {
+        margin-top: 8px;
+    }
 
+    .list-left li, .list-right li {
+        cursor: pointer;
+    }
+
+    .list-arrows {
+        padding-top: 100px;
+    }
+
+    .list-arrows button {
+        margin-bottom: 20px;
+    }
+</style>
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
@@ -39,7 +55,7 @@
 
                             <div class="x_content">
 
-                                <form method="post" th:action="@{/admin/roles/update}"
+                                <form id="form" method="post" th:action="@{/admin/roles/update}"
                                       class="form-horizontal" th:object="${role}">
                                     <div class="panel panel-default">
                                         <div class="panel-body">
@@ -86,41 +102,92 @@
                                             </fieldset>
                                             <fieldset>
                                                 <legend>Permissions</legend>
+
+
+                                            <div class="container">
+                                                <br/>
                                                 <div class="row">
 
-                                                    <div class="form-group text-left col-lg-5">
-                                                        <select multiple="multiple"
-                                                                class="form-control left-selector">
-                                                            <option th:each="permission: ${permissions}"
-                                                                    th:class="${permission.userType}"
-                                                                    th:value="${permission.id}"
-                                                                    th:text="${permission.name}"></option>
+                                                    <div class="dual-list list-left col-md-5">
+                                                        <div class="well text-right">
+                                                            <div class="row">
+                                                                <div class="col-md-10">
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-addon glyphicon glyphicon-search"></span>
+                                                                        <input type="text"
+                                                                               class="form-control SearchDualList"
+                                                                               placeholder="search"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="btn-group">
+                                                                        <a class="btn btn-default selector"
+                                                                           title="select all"><i
+                                                                                class="glyphicon glyphicon-unchecked"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                  <div style="height: 250px;position:relative;">
+                                                      <div style="max-height:100%;overflow:auto;border:1px solid grey;">
+                                                          <ul class="list-group">
 
-                                                        </select>
+                                                              <li class="list-group-item"
+                                                                  th:classappend="${permission.userType}"
+                                                                  th:each="permission: ${permissions}"
+                                                                  th:data-id="${permission.id}"
+                                                                  th:text="${permission.name}"></li>
+
+                                                          </ul>
+                                                      </div>
+                                                  </div>
+
+                                                        </div>
                                                     </div>
 
-                                                    <div class="btn-group-vertical col-xs-2 ">
-                                                        <button type="button"
-                                                                class="btn btn-default text- btn-circle btn-default right-btn">
-                                                            <i class="fa fa-long-arrow-right"></i>
-                                                        </button>
-                                                        <button type="button"
-                                                                class="btn btn-default text-center btn-circle left-btn">
-                                                            <i class="fa fa-long-arrow-left"></i>
+                                                    <div class="list-arrows col-md-1 text-center">
+                                                        <button type="button" class="btn btn-default btn-sm move-left">
+                                                            <span class="glyphicon glyphicon-chevron-left"></span>
                                                         </button>
 
+                                                        <button type="button" class="btn btn-default btn-sm move-right">
+                                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                                        </button>
                                                     </div>
-                                                    <div class="form-group text-right col-lg-5">
-                                                        <select id="inputID" multiple="multiple"
-                                                                class="form-control right-selector"
-                                                                name="permissionsList">
-                                                            <option th:each="p: ${role.permissions}"
-                                                                    th:value="${p.id}" th:text="${p.name}"></option>
 
-                                                        </select>
+                                                    <div class="dual-list list-right col-md-5">
+                                                        <div class="well">
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <div class="btn-group">
+                                                                        <a class="btn btn-default selector"
+                                                                           title="select all"><i
+                                                                                class="glyphicon glyphicon-unchecked"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    <div class="input-group">
+                                                                        <input type="text"
+                                                                               class="form-control SearchDualList"
+                                                                               placeholder="search"/>
+                                                                        <span class="input-group-addon glyphicon glyphicon-search"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div style="height: 250px;position:relative;">
+                                                                <div style="max-height:100%;overflow:auto;border:1px solid grey;">
+                                                            <ul class="list-group" id="target_permissions">
+                                                                <li class="list-group-item"
+                                                                    th:each="permission: ${role.permissions}"
+                                                                    th:data-id="${permission.id}"
+                                                                    th:text="${permission.name}">pern</li>
+
+                                                            </ul>
+                                                                </div></div>
+                                                        </div>
                                                     </div>
 
                                                 </div>
+                                            </div>
                                             </fieldset>
                                         </div>
                                         <div th:replace="layout::form-validation"></div>
@@ -152,6 +219,7 @@
 <script type="text/javascript">
     $().ready(
         function () {
+
             if( $('#userType').val()==="RETAIL"){
                 $(".RETAIL").show()
                 $(".ADMIN").hide()
@@ -196,8 +264,11 @@
         });
 
     $("#btn-save").on("click", function (e) {
-        $('.right-selector option').prop("selected", true);
-        $("#form-save").submit();
+        $("#target_permissions li").each(function (i, el) {
+            $('#form').append('<input name="permissionsList" type="hidden" value="' + $(el).data("id") + '" />');
+
+        })
+        $("#form").submit();
     });
 
     $('#userType').on('change',function(){
@@ -242,6 +313,47 @@
     document.getElementById("cancel").onclick = function () {
         location.href = "/admin/roles";
     }
+
+    $(function () {
+
+        $('body').on('click', '.list-group .list-group-item', function () {
+            $(this).toggleClass('active');
+        });
+        $('.list-arrows button').click(function () {
+            var $button = $(this), actives = '';
+            if ($button.hasClass('move-left')) {
+                actives = $('.list-right ul li.active');
+                actives.clone().appendTo('.list-left ul');
+                actives.remove();
+            } else if ($button.hasClass('move-right')) {
+                actives = $('.list-left ul li.active');
+                actives.clone().appendTo('.list-right ul');
+                actives.remove();
+            }
+        });
+        $('.dual-list .selector').click(function () {
+            var $checkBox = $(this);
+            if (!$checkBox.hasClass('selected')) {
+                $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
+                $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+            } else {
+                $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
+                $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+            }
+        });
+        $('.SearchDualList').keyup(function (e) {
+            var code = e.keyCode || e.which;
+            if (code == '9') return;
+            if (code == '27') $(this).val(null);
+            var $rows = $(this).closest('.dual-list').find('.list-group li');
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+            $rows.show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+
+    });
 
 </script>
 </body>
