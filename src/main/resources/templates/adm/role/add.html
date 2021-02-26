@@ -219,11 +219,12 @@
 
     });
     $("#btn-save").on("click", function (e) {
-        $("#target_permissions li").each(function (i, el) {
-            $('#form').append('<input name="permissionsList" type="hidden" value="' + $(el).data("id") + '" />');
+        utype =  $('#userType').val()
+        $("#target_permissions li."+utype).each(function (i, el) {
+            $('#form-save').append('<input name="permissionsList" type="hidden" value="' + $(el).data("id") + '" />');
 
         })
-        $("#form").submit();
+        $("#form-save").submit();
     });
 
 

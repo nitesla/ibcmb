@@ -5,10 +5,7 @@ import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationInterruptedException;
-import longbridge.models.Account;
-import longbridge.models.AccountClassRestriction;
-import longbridge.models.AccountRestriction;
-import longbridge.models.UserAccountRestriction;
+import longbridge.models.*;
 import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
@@ -77,7 +74,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation = "ADD_ACCT_RESTRICT", description = "Adding Account Restriction")
+    @Verifiable(operation = "ADD_ACCT_RESTRICT", description = "Adding Account Restriction", type = UserType.OPERATIONS)
     public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -95,7 +92,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
 
     @Override
-    @Verifiable(operation = "UPDATE_ACCT_RESTRICT", description = "Updating Account Restriction")
+    @Verifiable(operation = "UPDATE_ACCT_RESTRICT", description = "Updating Account Restriction", type = UserType.OPERATIONS)
     public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -130,7 +127,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "DELETE_ACCT_RESTRICT", description = "Deleting Account Restriction")
+    @Verifiable(operation = "DELETE_ACCT_RESTRICT", description = "Deleting Account Restriction", type = UserType.OPERATIONS)
     public String deleteAccountRestriction(Long id) {
         try {
             AccountRestriction accountRestriction = accountRestrictionRepo.findById(id).orElseThrow(EntityNotFoundException::new);
