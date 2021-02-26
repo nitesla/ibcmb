@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.QuicktellerBankCodeDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.QuicktellerBankCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

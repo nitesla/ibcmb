@@ -5,7 +5,6 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.TransferDetails;
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;

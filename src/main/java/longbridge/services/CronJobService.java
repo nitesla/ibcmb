@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.CustomerDetails;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;

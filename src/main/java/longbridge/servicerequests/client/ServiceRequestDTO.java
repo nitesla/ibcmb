@@ -2,7 +2,6 @@ package longbridge.servicerequests.client;
 
 import longbridge.models.UserType;
 
-import javax.persistence.Lob;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;

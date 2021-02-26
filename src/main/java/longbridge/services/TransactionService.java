@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.TransactionFeeDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
 import longbridge.models.NeftTransfer;
 import longbridge.models.RetailUser;

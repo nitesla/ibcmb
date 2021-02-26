@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import longbridge.models.CorpTransReqEntry;

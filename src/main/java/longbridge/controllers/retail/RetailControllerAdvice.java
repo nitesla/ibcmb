@@ -3,7 +3,6 @@ package longbridge.controllers.retail;
 import longbridge.dtos.NotificationsDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.servicerequests.config.RequestConfig;
 import longbridge.servicerequests.config.RequestConfigInfo;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;
@@ -17,7 +16,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 

@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.BillerDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Biller;
 import longbridge.models.BillerCategory;
 import longbridge.models.PaymentItem;

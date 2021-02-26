@@ -1,10 +1,8 @@
 package longbridge.models;
 
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.util.Arrays;

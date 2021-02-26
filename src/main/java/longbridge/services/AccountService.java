@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.utils.statement.AccountStatement;
 import org.springframework.data.domain.Page;

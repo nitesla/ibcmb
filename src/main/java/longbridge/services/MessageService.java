@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.MessageDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.utils.MessageCategory;
 import org.springframework.data.domain.Page;

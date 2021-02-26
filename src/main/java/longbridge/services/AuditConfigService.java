@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.audit.AuditCfgDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

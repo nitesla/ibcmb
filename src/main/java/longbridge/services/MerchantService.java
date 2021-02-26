@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.CategoryDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Merchant;
 import longbridge.models.Product;
 import org.springframework.data.domain.Page;

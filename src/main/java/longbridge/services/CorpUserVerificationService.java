@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.CorpUserVerificationDTO;
 import longbridge.dtos.CorporateUserDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.CorpUserVerification;
 import longbridge.models.Role;

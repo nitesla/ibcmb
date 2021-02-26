@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.UserGroupDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.OperationsUser;
 import longbridge.models.UserGroup;
 import org.springframework.data.domain.Page;

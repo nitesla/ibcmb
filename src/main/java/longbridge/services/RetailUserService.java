@@ -6,7 +6,6 @@ import longbridge.api.omnichannel.dto.RetailUserCredentials;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.apidtos.MobileRetailUserDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;

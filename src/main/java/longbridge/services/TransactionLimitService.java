@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.dtos.AccountLimitDTO;
 import longbridge.dtos.ClassLimitDTO;
 import longbridge.dtos.GlobalLimitDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.UserType;
 import longbridge.utils.TransferType;
 import org.springframework.security.access.prepost.PreAuthorize;

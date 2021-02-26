@@ -1,7 +1,6 @@
 package longbridge.utils;
 
 import longbridge.dtos.ReportDTO;
-import longbridge.exception.InternetBankingException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

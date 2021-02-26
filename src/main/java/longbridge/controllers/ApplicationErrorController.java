@@ -1,6 +1,5 @@
 package longbridge.controllers;
 
-import longbridge.models.Email;
 import longbridge.services.MailService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

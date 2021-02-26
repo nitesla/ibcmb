@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.models.Person;
 import longbridge.models.RetailUser;
 
 import java.util.List;

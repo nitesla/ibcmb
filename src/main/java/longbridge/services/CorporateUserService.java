@@ -4,7 +4,6 @@ import longbridge.dtos.AccountPermissionDTO;
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;

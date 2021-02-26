@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.AdminUserDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;

@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.FaqsDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Faqs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import org.springframework.data.domain.Page;

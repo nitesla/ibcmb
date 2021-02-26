@@ -1,9 +1,6 @@
 package longbridge.config;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 
 @Configuration

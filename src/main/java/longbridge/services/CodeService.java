@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Code;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

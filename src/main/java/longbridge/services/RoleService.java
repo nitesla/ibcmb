@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.Permission;
 import longbridge.models.Role;
 import longbridge.models.User;

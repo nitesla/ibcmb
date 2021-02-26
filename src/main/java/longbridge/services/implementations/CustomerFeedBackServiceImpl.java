@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CustomerFeedBackDTO;
 import longbridge.dtos.CustomerFeedBackSummaryDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.CustomerFeedBack;
 import longbridge.repositories.CustomerFeedBackRepo;
 import longbridge.services.CustomerFeedBackService;

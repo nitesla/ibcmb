@@ -1,7 +1,10 @@
 package longbridge.security;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.models.*;
+import longbridge.models.CorporateUser;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
+import longbridge.models.User;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import longbridge.services.SettingsService;

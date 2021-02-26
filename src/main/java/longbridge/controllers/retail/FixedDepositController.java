@@ -1,6 +1,8 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.*;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.FixedDepositDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.RetailUser;
 import longbridge.servicerequests.client.ServiceRequestDTO;

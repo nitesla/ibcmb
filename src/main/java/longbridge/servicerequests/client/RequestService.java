@@ -1,6 +1,6 @@
 package longbridge.servicerequests.client;
 
-import longbridge.models.*;
+import longbridge.models.OperationsUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;

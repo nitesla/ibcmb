@@ -1,7 +1,6 @@
 package longbridge.services;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpInterBeneficiary;
 import org.springframework.security.access.prepost.PreAuthorize;
 

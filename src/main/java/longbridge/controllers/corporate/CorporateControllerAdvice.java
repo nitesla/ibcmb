@@ -3,7 +3,6 @@ package longbridge.controllers.corporate;
 import longbridge.models.Account;
 import longbridge.models.CorpUserType;
 import longbridge.models.CorporateUser;
-import longbridge.servicerequests.config.RequestConfig;
 import longbridge.servicerequests.config.RequestConfigInfo;
 import longbridge.servicerequests.config.RequestConfigService;
 import longbridge.services.*;

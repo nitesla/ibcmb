@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.dtos.BulkStatusDTO;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
 import longbridge.models.CreditRequest;

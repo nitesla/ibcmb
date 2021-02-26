@@ -1,7 +1,6 @@
 package longbridge.servicerequests.client;
 
 import java.io.Serializable;
-import java.util.Map;
 
 public class AddCommentCmd implements Serializable {
     private long requestId;

@@ -1,6 +1,5 @@
 package longbridge.services;
 
-import longbridge.exception.InternetBankingException;
 import longbridge.models.MakerChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

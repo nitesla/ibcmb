@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.CustomerFeedBackDTO;
 import longbridge.dtos.CustomerFeedBackSummaryDTO;
-import longbridge.exception.InternetBankingException;
 
 import java.util.Date;
 import java.util.List;

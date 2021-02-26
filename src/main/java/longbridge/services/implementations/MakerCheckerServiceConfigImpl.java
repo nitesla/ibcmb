@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.MakerCheckerDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;

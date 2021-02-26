@@ -1,9 +1,7 @@
 package longbridge.servicerequests.client;
 
-import longbridge.models.OperationsUser;
 import longbridge.models.UserType;
 import longbridge.repositories.CommonRepo;
-import longbridge.servicerequests.config.RequestConfigInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

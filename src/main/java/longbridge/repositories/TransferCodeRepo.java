@@ -1,7 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.TransferCode;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
