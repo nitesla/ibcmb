@@ -38,7 +38,7 @@ public interface OperationsUserService{
     boolean userExists(String username);
 
 
-    @PreAuthorize("hasAuthority('GET_OPS_USER')")
+//    @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUser getUserByName(String name);
 
     OperationsUser getUserByNameWithoutAuthentication(String name);

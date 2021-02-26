@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Transactional
-public class CustomUserPrincipal implements CustomeUserDetails {
+public class CustomUserPrincipal implements CustomUserDetails {
 
 	private static final long serialVersionUID = 1L;
 
